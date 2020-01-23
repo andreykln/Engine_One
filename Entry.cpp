@@ -4,6 +4,8 @@
 #include <tchar.h>
 #include <sstream>
 #include <string>
+
+#include "Window.h"
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 HINSTANCE hInst;
 std::ostringstream oss;
@@ -16,48 +18,8 @@ int CALLBACK WinMain(
 	_In_ LPSTR     lpCmdLine,
 	_In_ int       nCmdShow)
 {
-	const char* class_name = "class name";
 
-	RECT rectangle;
-	rectangle.left = 0;
-	rectangle.right = 800 ;
-	rectangle.top = 0;
-	rectangle.bottom = 600 ;
-
-
-	AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
-
-
-	WNDCLASSEX wcex;
-	wcex.cbSize = sizeof(wcex);
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = NULL;
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = NULL;
-	wcex.lpszMenuName = NULL;
-	wcex.lpszClassName = class_name;
-	wcex.hIconSm = NULL;
-	RegisterClassEx(&wcex);
-
-	const char* window_name = "window name";
-	hInst = hInstance;
-	HWND hWnd = CreateWindowEx(0,
-		class_name,
-		window_name,
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		600, 300,
-		rectangle.right - rectangle.left, rectangle.bottom - rectangle.top,
-		NULL,
-		NULL,
-		hInstance,
-		NULL
-	);
-	ShowWindow(hWnd, SW_SHOW);
-
+	Window wnd("window", 800, 600);
 	MSG msg;
 
 	while (GetMessage(&msg, NULL, 0, 0))
