@@ -25,6 +25,7 @@ public:
 	Window& operator=(const Window&) = delete;
 	Window(const Window&) = delete;
 	const char* GetWindowName();
+	int ProcessMessages();
 
 
 private:
@@ -32,7 +33,6 @@ private:
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	HWND handleWindow;
-	//static Window wnd;
 	const char* windowName = {};
 	unsigned int width = 0;
 	unsigned int height = 0;

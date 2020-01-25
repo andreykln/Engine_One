@@ -43,9 +43,9 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 {
 	RECT rectangle;
 	rectangle.left = 0;
-	rectangle.right = 800;
+	rectangle.right = width;
 	rectangle.top = 0;
-	rectangle.bottom = 600;
+	rectangle.bottom = height;
 	AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
 	handleWindow = CreateWindowEx(
@@ -63,6 +63,18 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 const char* Window::GetWindowName()
 {
 	return windowName;
+}
+
+int Window::ProcessMessages()
+{
+	MSG msg;
+
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return (int)msg.lParam;
 }
 
 //create pointer to instance of the window into win API, so they will be handled by custom function
@@ -99,5 +111,15 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+
+	return 0;
 }
