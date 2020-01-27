@@ -1,7 +1,7 @@
 #pragma once
 #include "WindowsEdited.h"
-
-
+#include <string>
+#include <sstream>
 class Window
 {
 	class WindowClass
@@ -16,7 +16,7 @@ class Window
 		static constexpr const char* class_name = "Engine window";
 		HINSTANCE hWindowInstance;
 		static WindowClass wndClass;
-
+	public:
 		~WindowClass();
 	};
 
@@ -25,9 +25,9 @@ public:
 	Window& operator=(const Window&) = delete;
 	Window(const Window&) = delete;
 	const char* GetWindowName();
-	int ProcessMessages();
-
-
+	static int ProcessMessages();
+	void SetTitle(const std::string& text);
+	~Window();
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

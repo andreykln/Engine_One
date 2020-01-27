@@ -34,6 +34,7 @@ HINSTANCE Window::WindowClass::GetInstance()
 Window::WindowClass::~WindowClass()
 {
 	UnregisterClass(WindowClass::GetClassName(), GetInstance());
+
 }
 // ======  WINDOW CLASS
 
@@ -68,13 +69,31 @@ const char* Window::GetWindowName()
 int Window::ProcessMessages()
 {
 	MSG msg;
-
-	while (GetMessage(&msg, NULL, 0, 0))
+	Sleep(1);
+	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if (msg.message == WM_QUIT)
+		{
+			return (int)msg.wParam;
+
+		}
+		else
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 	return (int)msg.lParam;
+}
+
+void Window::SetTitle(const std::string& text)
+{
+	SetWindowTextA(handleWindow, text.c_str());
+}
+
+Window::~Window()
+{
+	PostQuitMessage(0);
 }
 
 //create pointer to instance of the window into win API, so they will be handled by custom function
@@ -117,9 +136,18 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 
+	case WM_MOUSEMOVE:
+	{
+		POINTS points = MAKEPOINTS(lParam);
+		std::stringstream oss;
+		oss << "x: " << points.x << " Y: " << points.y;
+		SetWindowTextA(hWnd, oss.str().c_str());
+		break;
+	}
 	default:
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
+
 
 	return 0;
 }
