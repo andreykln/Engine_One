@@ -7,6 +7,7 @@ class App
 public:
 	App();
 	int Go();
+	void SendTextToTitle();
 private:
 	Window wnd;
 	Timer timer;

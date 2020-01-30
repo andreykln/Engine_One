@@ -13,7 +13,7 @@ public:
 
 	float TotalTime() const;
 	void Tick() ;
-
+	void Reset();
 private:
 	double secondsPerCount = {};
 	double deltaTime = {};

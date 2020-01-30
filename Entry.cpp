@@ -7,11 +7,6 @@
 
 #include "App.h"
 #include "Window.h"
-//LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-// HINSTANCE hInst;
-// std::ostringstream oss;
-// const char* title = "Esc pressed";
-// std::string input_string;
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,

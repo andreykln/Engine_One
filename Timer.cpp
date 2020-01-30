@@ -30,3 +30,12 @@ void Timer::Tick()
 	if (deltaTime < 0.0f) { deltaTime = 0.0; }
 }
 
+void Timer::Reset()
+{
+	__int64 t_currtime = {0};
+	QueryPerformanceCounter((LARGE_INTEGER*)&t_currtime);
+
+	baseTime = t_currtime;
+	previousTime = t_currtime;
+}
+

@@ -9,6 +9,7 @@ App::App()
 
 int App::Go()
 {
+	timer.Reset();
 	while (true)
 	{
 		Sleep(1);
@@ -17,37 +18,17 @@ int App::Go()
 		{
 			return *ecode;
 		}
- 		std::ostringstream oss;
- 		oss << "time is: " << timer.TotalTime();
-		wnd.SetTitle(oss.str().c_str());
+		SendTextToTitle();
 	}
 	return 0;
 }
 
 
-
-/*
-int App::Go()
+void App::SendTextToTitle()
 {
-	timer.Tick();
-	while (true)
-	{
-		Sleep(1);
+	std::ostringstream oss;
 
-		//wnd.ProcessMessages();
-		if (Window::ProcessMessages())
-		{
-			Sleep(1);
-
-
-		}
-		std::ostringstream oss;
-		oss << "time is: " << timer.TotalTime();
-// 		oss << "test";
-// 		wnd.SetTitle("hey");
-		//wnd.SetTitle(oss.str().c_str());
-	}
-	return 0;
+	oss << "Time running is: " << timer.TotalTime();
+	wnd.SetTitle(oss.str().c_str());
 }
 
-*/
