@@ -6,7 +6,7 @@ Window::WindowClass::WindowClass()
 	: hWindowInstance(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX windowclass = {};
-	windowclass.cbSize = sizeof(WNDCLASSEX);
+	windowclass.cbSize = sizeof(windowclass);
 	windowclass.style = CS_OWNDC | CS_VREDRAW;
 	windowclass.lpfnWndProc = HandleMsgSetup;
 	windowclass.cbClsExtra = 0u;
@@ -66,26 +66,38 @@ const char* Window::GetWindowName()
 	return windowName;
 }
 
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+	while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+		{
+			return (int)msg.wParam;
+		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return {};
+}
+
+
+/*
 int Window::ProcessMessages()
 {
 	MSG msg;
-	Sleep(1);
 	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{
 			return (int)msg.wParam;
-
 		}
-		else
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
-	return (int)msg.lParam;
+	return (int)msg.wParam;
 }
-
+*/
 void Window::SetTitle(const std::string& text)
 {
 	SetWindowTextA(handleWindow, text.c_str());
@@ -93,7 +105,7 @@ void Window::SetTitle(const std::string& text)
 
 Window::~Window()
 {
-	PostQuitMessage(0);
+	DestroyWindow(handleWindow);
 }
 
 //create pointer to instance of the window into win API, so they will be handled by custom function
@@ -132,9 +144,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-	case WM_DESTROY:
+
+	case WM_CLOSE:
 		PostQuitMessage(0);
 		break;
+// 	case WM_DESTROY:
+// 		PostQuitMessage(0);
+// 		return 0;
 
 	case WM_MOUSEMOVE:
 	{
@@ -144,10 +160,9 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowTextA(hWnd, oss.str().c_str());
 		break;
 	}
-	default:
-		return DefWindowProc(hWnd, msg, wParam, lParam);
+		
 	}
 
 
-	return 0;
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

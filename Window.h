@@ -2,6 +2,7 @@
 #include "WindowsEdited.h"
 #include <string>
 #include <sstream>
+#include <optional>
 class Window
 {
 	class WindowClass
@@ -25,7 +26,7 @@ public:
 	Window& operator=(const Window&) = delete;
 	Window(const Window&) = delete;
 	const char* GetWindowName();
-	static int ProcessMessages();
+	static std::optional<int> ProcessMessages();
 	void SetTitle(const std::string& text);
 	~Window();
 private:
