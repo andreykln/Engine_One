@@ -9,11 +9,10 @@ App::App()
 
 int App::Go()
 {
-	timer.Tick();
 	while (true)
 	{
 		Sleep(1);
-
+		timer.Tick();
 		if (const auto ecode = Window::ProcessMessages())
 		{
 			return *ecode;
