@@ -39,6 +39,10 @@ public:
 		Type type;
 	};
 
+	Keyboard() = default;
+	Keyboard& operator=(const Keyboard&) = delete;
+	Keyboard(const Keyboard&) = delete;
+
 	void OnKeyPressed(unsigned char keycode);
 	void OnKeyReleased(unsigned char keycode);
 	void OnCharPressed(unsigned char keycode);

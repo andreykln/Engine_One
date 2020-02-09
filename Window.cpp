@@ -47,10 +47,13 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 	rectangle.right = width;
 	rectangle.top = 0;
 	rectangle.bottom = height;
-	AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	if (AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
+	{
+		throw ThrowWin32LastCustomException();
+	}
 
 	handleWindow = CreateWindowEx(
-	0u, WindowClass::GetClassName(),
+	0u, WindowClass::GetClassName(), //test here
 		GetWindowName(),
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		wndPositionX, wndPositionY,
@@ -58,6 +61,11 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
 		this); // that was nullptr and giving error
+
+	if (handleWindow == nullptr)
+	{
+		throw ThrowWin32LastCustomException();
+	}
 	ShowWindow(handleWindow, SW_SHOW);
 }
 
@@ -83,7 +91,10 @@ std::optional<int> Window::ProcessMessages()
 
 void Window::SetTitle(const std::string& text)
 {
-	SetWindowTextA(handleWindow, text.c_str());
+	if (SetWindowTextA(handleWindow, text.c_str()) == 0)
+	{
+		throw ThrowWin32LastCustomException();
+	}
 }
 
 Window::~Window()
@@ -159,4 +170,55 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+std::string Window::Win32Exception::TranslateErrorCode(HRESULT hr) noexcept
+{
+	LPSTR errorbuffer = nullptr;
+	DWORD error_message = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		hr,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		LPSTR(&errorbuffer),
+		NULL,
+		NULL);
+
+	if (error_message == 0)
+		return "Unknown error code"; // no message been recorded
+
+	std::string error_string = errorbuffer;
+	LocalFree(errorbuffer);
+	return error_string;
+}
+
+std::string Window::Win32Exception::GetErrorString() const noexcept
+{
+	return TranslateErrorCode(hr);
+}
+
+HRESULT Window::Win32Exception::GetErrorCode() const noexcept
+{
+	return hr;
+}
+
+const char* Window::Win32Exception::what() const noexcept
+{
+	std::ostringstream oss;
+	oss << GetType() << std::endl
+		<< "[Error code] " << GetErrorCode() << std::endl
+		<< " [Description] " << GetErrorString() << std::endl
+		<< GetOriginString();
+	whatBuffer = oss.str();
+	return whatBuffer.c_str();
+}
+
+const char* Window::Win32Exception::GetType() const noexcept
+{
+	return "Win32 exception";
+}
+
+Window::Win32Exception::Win32Exception(int in_line, const char* file, HRESULT in_hr)
+	: CustomException(in_line, file), hr(in_hr)
+{
+
 }

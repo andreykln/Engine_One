@@ -1,12 +1,28 @@
 #pragma once
-#include "WindowsEdited.h"
 #include "Keyboard.h"
-//#include "KeyboardOld.h"
-#include <string>
+#include "CustomException.h"
 #include <sstream>
 #include <optional>
+#define ThrowWin32LastCustomException() Window::Win32Exception(__LINE__,__FILE__, GetLastError())
+#define ThrowWin32CustomException(hr) Window::Win32Exception(__LINE__, __FILE__, hr)
+
 class Window
 {
+public:
+	class Win32Exception : public CustomException
+	{
+	public:
+		Win32Exception(int in_line, const char* file, HRESULT hr);
+		static std::string TranslateErrorCode(HRESULT hr) noexcept;
+		std::string GetErrorString() const noexcept;
+		HRESULT GetErrorCode() const noexcept;
+		virtual const char* what() const noexcept override;
+		virtual const char* GetType() const noexcept override;
+	private:
+		HRESULT hr;
+	};
+
+private:
 	class WindowClass
 	{
 	public:

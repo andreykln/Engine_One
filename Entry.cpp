@@ -14,7 +14,22 @@ int CALLBACK WinMain(
 	_In_ LPSTR     lpCmdLine,
 	_In_ int       nCmdShow)
 {
- 	App::App().Go();
+
+	try
+	{
+		App::App().Go();
+
+	}
+	catch (const CustomException& e)
+	{
+		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (const std::exception & e)
+	{
+		MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+
+	}
+ 	//App::App().Go();
 
 	return -1;
 }

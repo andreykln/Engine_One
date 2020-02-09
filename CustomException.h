@@ -1,21 +1,22 @@
 #pragma once
 #include <exception>
-
+#include <string>
+#include "WindowsEdited.h"
 class CustomException : public std::exception
 {
 public:
 	CustomException(int in_line, const char* file);
 	const char* what() const override;
 	unsigned int GetLine() const;
-	virtual const char* GetFile() const; //std::string???
+	virtual std::string GetFile() const; //std::string???
 	virtual const char* GetType() const;
-	const char* GetOriginString() const; // const char?
+	std::string GetOriginString() const; // const char?
 
 protected:
-	mutable const char* whatBuffer = {};
+	mutable std::string whatBuffer;
 
 private:
-	const char* ex_file = {};
-	unsigned int ex_line = {};
+	std::string ex_file;
+	unsigned int ex_line;
 };
 
