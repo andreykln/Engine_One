@@ -57,7 +57,7 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 		rectangle.right - rectangle.left, rectangle.bottom - rectangle.top,
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
-		this); // that was nullptr and error
+		this); // that was nullptr and giving error
 	ShowWindow(handleWindow, SW_SHOW);
 }
 
@@ -125,7 +125,8 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	const char* test_text = "hello";
+	const char* char_text = "charkey pressed";
+	const char* syskey_text = "syskey pressed";
 	switch (msg)
 	{
 
@@ -137,10 +138,12 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		if (!(lParam & 0x40000000) || kbd.IsAutoRepeatEnabled())
 		{
 			kbd.OnKeyPressed(unsigned char(wParam));
-			SetWindowTextA(hWnd, test_text);
+			SetWindowTextA(hWnd, syskey_text);
 		}
 		break;
-
+	case WM_CHAR:
+		SetWindowTextA(hWnd, char_text);
+		break;
 
 
 // 	case WM_MOUSEMOVE:
@@ -151,8 +154,9 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 // 		SetWindowTextA(hWnd, oss.str().c_str());
 // 		break;
 // 	}
-		
+	default:
+		DefWindowProc(hWnd, msg, wParam, lParam);
 	}
-
+	
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

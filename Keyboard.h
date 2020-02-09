@@ -39,15 +39,7 @@ public:
 		Type type;
 	};
 
-
-
-
-
-
-
 	void OnKeyPressed(unsigned char keycode);
-
-
 	void OnKeyReleased(unsigned char keycode);
 	void OnCharPressed(unsigned char keycode);
 	bool KeyIsPressed(unsigned char keycode) const;
