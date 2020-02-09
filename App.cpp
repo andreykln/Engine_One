@@ -18,7 +18,7 @@ int App::Go()
 		{
 			return *ecode;
 		}
-		SendTextToTitle();
+		//SendTextToTitle();
 	}
 	return 0;
 }

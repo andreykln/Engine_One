@@ -1,5 +1,7 @@
 #pragma once
 #include "WindowsEdited.h"
+#include "Keyboard.h"
+//#include "KeyboardOld.h"
 #include <string>
 #include <sstream>
 #include <optional>
@@ -17,7 +19,6 @@ class Window
 		static constexpr const char* class_name = "Engine window";
 		HINSTANCE hWindowInstance;
 		static WindowClass wndClass;
-	public:
 		~WindowClass();
 	};
 
@@ -29,6 +30,9 @@ public:
 	static std::optional<int> ProcessMessages();
 	void SetTitle(const std::string& text);
 	~Window();
+
+public:
+	Keyboard kbd;
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

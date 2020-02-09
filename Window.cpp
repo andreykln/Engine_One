@@ -33,7 +33,7 @@ HINSTANCE Window::WindowClass::GetInstance()
 
 Window::WindowClass::~WindowClass()
 {
-	UnregisterClass(WindowClass::GetClassName(), GetInstance());
+	UnregisterClass(class_name, GetInstance());
 
 }
 // ======  WINDOW CLASS
@@ -57,7 +57,7 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 		rectangle.right - rectangle.left, rectangle.bottom - rectangle.top,
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
-		nullptr);
+		this); // that was nullptr and error
 	ShowWindow(handleWindow, SW_SHOW);
 }
 
@@ -81,23 +81,6 @@ std::optional<int> Window::ProcessMessages()
 	return {};
 }
 
-
-/*
-int Window::ProcessMessages()
-{
-	MSG msg;
-	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-	{
-		if (msg.message == WM_QUIT)
-		{
-			return (int)msg.wParam;
-		}
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	return (int)msg.wParam;
-}
-*/
 void Window::SetTitle(const std::string& text)
 {
 	SetWindowTextA(handleWindow, text.c_str());
@@ -142,27 +125,34 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	const char* test_text = "hello";
 	switch (msg)
 	{
 
 	case WM_CLOSE:
 		PostQuitMessage(0);
 		break;
-// 	case WM_DESTROY:
-// 		PostQuitMessage(0);
-// 		return 0;
-
-	case WM_MOUSEMOVE:
-	{
-		POINTS points = MAKEPOINTS(lParam);
-		std::stringstream oss;
-		oss << "x: " << points.x << " Y: " << points.y;
-		SetWindowTextA(hWnd, oss.str().c_str());
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (!(lParam & 0x40000000) || kbd.IsAutoRepeatEnabled())
+		{
+			kbd.OnKeyPressed(unsigned char(wParam));
+			SetWindowTextA(hWnd, test_text);
+		}
 		break;
-	}
+
+
+
+// 	case WM_MOUSEMOVE:
+// 	{
+// 		POINTS points = MAKEPOINTS(lParam);
+// 		std::stringstream oss;
+// 		oss << "x: " << points.x << " Y: " << points.y;
+// 		SetWindowTextA(hWnd, oss.str().c_str());
+// 		break;
+// 	}
 		
 	}
-
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
