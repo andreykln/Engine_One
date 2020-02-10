@@ -156,7 +156,17 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowTextA(hWnd, char_text);
 		break;
 
+	/// MOUSE MESSAGES
+	case WM_MOUSEMOVE:
+	{
+		const POINTS points = MAKEPOINTS(lParam);
+		mouse.OnMouseMove(points.x, points.y);
+		std::stringstream oss;
+		oss << "X: " << mouse.GetPosX() << " Y: " << mouse.GetPosY();
+		SetWindowTextA(hWnd, oss.str().c_str());
+	}
 
+	/// END MOUSE
 // 	case WM_MOUSEMOVE:
 // 	{
 // 		POINTS points = MAKEPOINTS(lParam);

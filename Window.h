@@ -1,5 +1,6 @@
 #pragma once
 #include "Keyboard.h"
+#include "Mouse.h"
 #include "CustomException.h"
 #include <sstream>
 #include <optional>
@@ -49,6 +50,7 @@ public:
 
 public:
 	Keyboard kbd;
+	Mouse mouse;
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
