@@ -183,18 +183,54 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		
+		break;
+	}
+
+	case WM_LBUTTONDOWN:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftPress(pt.x, pt.y);
+		break;
+	}
+
+	case WM_LBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnLeftRelease(pt.x, pt.y);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightPress(pt.x, pt.y);
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnRightRelease(pt.x, pt.y);
+		break;
+	}
+	case WM_MBUTTONDOWN:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnMiddlePress(pt.x, pt.y);
+		break;
+	}
+	case WM_MBUTTONUP:
+	{
+		const POINTS pt = MAKEPOINTS(lParam);
+		mouse.OnMiddleRelease(pt.x, pt.y);
+		break;
+	}
+	case WM_MOUSEWHEEL:
+	{		
+		const POINTS pt = MAKEPOINTS(lParam);
+		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		mouse.OnWheelDelta(pt.x, pt.y, delta);
 
 	}
 
-	/// END MOUSE
-// 	case WM_MOUSEMOVE:
-// 	{
-// 		POINTS points = MAKEPOINTS(lParam);
-// 		std::stringstream oss;
-// 		oss << "x: " << points.x << " Y: " << points.y;
-// 		SetWindowTextA(hWnd, oss.str().c_str());
-// 		break;
-// 	}
 	default:
 		DefWindowProc(hWnd, msg, wParam, lParam);
 	}

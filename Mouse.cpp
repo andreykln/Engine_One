@@ -15,6 +15,8 @@ int Mouse::GetPosY() const noexcept
 	return y;
 }
 
+
+
 bool Mouse::IsLeftPressed() const noexcept
 {
 	return leftIsPressed;

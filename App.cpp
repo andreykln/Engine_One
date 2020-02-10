@@ -28,7 +28,7 @@ void App::SendTextToTitle()
 {
 	std::ostringstream oss;
 
-	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY();
+	oss << "Delta: " << wnd.mouse.GetDelta();
 	wnd.SetTitle(oss.str().c_str());
 }
 
