@@ -18,7 +18,7 @@ int App::Go()
 		{
 			return *ecode;
 		}
-		//SendTextToTitle();
+		SendTextToTitle();
 	}
 	return 0;
 }
@@ -28,7 +28,7 @@ void App::SendTextToTitle()
 {
 	std::ostringstream oss;
 
-	oss << "Time running is: " << timer.TotalTime();
+	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY();
 	wnd.SetTitle(oss.str().c_str());
 }
 

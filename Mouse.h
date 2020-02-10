@@ -89,8 +89,8 @@ public:
 	void Clear() noexcept;
 private:
 	void OnMouseMove(int newx, int newy) noexcept;
-	void OnMouseEnter(int x, int y) noexcept;
-	void OnMouseLeave(int x, int y) noexcept;
+	void OnMouseEnter() noexcept;
+	void OnMouseLeave() noexcept;
 	void OnLeftPress(int x, int y) noexcept;
 	void OnLeftRelease(int x, int y) noexcept;
 	void OnRightPress(int x, int y) noexcept;

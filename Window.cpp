@@ -159,11 +159,31 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	/// MOUSE MESSAGES
 	case WM_MOUSEMOVE:
 	{
-		const POINTS points = MAKEPOINTS(lParam);
-		mouse.OnMouseMove(points.x, points.y);
-		std::stringstream oss;
-		oss << "X: " << mouse.GetPosX() << " Y: " << mouse.GetPosY();
-		SetWindowTextA(hWnd, oss.str().c_str());
+		const POINTS pt = MAKEPOINTS(lParam);
+		//in client region => log move, enter and capture mouse
+		if (pt.x >= 0 && pt.x <= width && pt.y >= 0 && pt.y <= height)
+		{
+			mouse.OnMouseMove(pt.x, pt.y);
+			if (!mouse.IsInWindow())
+			{
+				SetCapture(hWnd);
+				mouse.OnMouseEnter();
+			}
+		}
+		else
+		{
+			if (wParam & (MK_LBUTTON | MK_RBUTTON))
+			{
+				mouse.OnMouseMove(pt.x, pt.y);
+			}
+			else //button up
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+		}
+		
+
 	}
 
 	/// END MOUSE

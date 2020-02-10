@@ -67,14 +67,14 @@ void Mouse::OnMouseMove(int newx, int newy) noexcept
 	TrimBuffer();
 }
 
-void Mouse::OnMouseEnter(int x, int y) noexcept
+void Mouse::OnMouseEnter() noexcept
 {
 	inWindow = true;
 	eventBuffer.push(Mouse::Event(Mouse::Event::Type::Enter, *this));
 	TrimBuffer();
 }
 
-void Mouse::OnMouseLeave(int x, int y) noexcept
+void Mouse::OnMouseLeave() noexcept
 {
 	inWindow = false;
 	eventBuffer.push(Mouse::Event(Mouse::Event::Type::Leave, *this));
