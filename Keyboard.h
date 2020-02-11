@@ -22,15 +22,15 @@ public:
 		Event(unsigned char in_code, Keyboard::Event::Type in_type)
 			: type(in_type), code(in_code)  {}
 
-		bool IsPressed()
+		bool IsPressed() noexcept
 		{
 			return Event::Type::Press == type;
 		}
-		bool IsReleased()
+		bool IsReleased() noexcept
 		{
 			return Event::Type::Release == type;
 		}
-		bool IsValid()
+		bool IsValid() noexcept
 		{
 			return !(Event::Type::Invalid == type);
 		}
@@ -43,21 +43,21 @@ public:
 	Keyboard& operator=(const Keyboard&) = delete;
 	Keyboard(const Keyboard&) = delete;
 
-	void OnKeyPressed(unsigned char keycode);
-	void OnKeyReleased(unsigned char keycode);
-	void OnCharPressed(unsigned char keycode);
-	bool KeyIsPressed(unsigned char keycode) const;
-	bool KeyQueueIsEmpty() const;
-	Keyboard::Event ReadKey();
-	void ClearKeyQueue();
-	char ReadChar();
-	bool CharIsEmpty() const;
-	bool CharQueueIsEmpty() const;
-	void ClearCharQueue();
-	void EnableAutoRepeat();
-	void DisableAutoRepeate();
-	bool IsAutoRepeatEnabled();
-	template<typename T> void TrimBuffer(std::queue<T>& queue);
+	void OnKeyPressed(unsigned char keycode) noexcept;
+	void OnKeyReleased(unsigned char keycode) noexcept;
+	void OnCharPressed(unsigned char keycode) noexcept;
+	bool KeyIsPressed(unsigned char keycode) const noexcept;
+	bool KeyQueueIsEmpty() const noexcept;
+	Keyboard::Event ReadKey() noexcept;
+	void ClearKeyQueue() noexcept;
+	char ReadChar() noexcept;
+	bool CharIsEmpty() const noexcept;
+	bool CharQueueIsEmpty() const noexcept;
+	void ClearCharQueue() noexcept;
+	void EnableAutoRepeat() noexcept;
+	void DisableAutoRepeate() noexcept;
+	bool IsAutoRepeatEnabled() const noexcept;
+	template<typename T> void TrimBuffer(std::queue<T>& queue) noexcept;
 private:
 	static constexpr unsigned int nKeys = 256u;
 	static constexpr unsigned int k_Buffersize = 16u;

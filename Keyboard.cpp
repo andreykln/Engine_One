@@ -1,20 +1,20 @@
 #include "Keyboard.h"
 
-void Keyboard::OnKeyPressed(unsigned char keycode)
+void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
 {
 	k_KeyStates[keycode] = true;
 	k_keyEventBuffer.push(Keyboard::Event(keycode, Keyboard::Event::Type::Press));
 	TrimBuffer(k_keyEventBuffer);
 }
 
-void Keyboard::OnKeyReleased(unsigned char keycode)
+void Keyboard::OnKeyReleased(unsigned char keycode) noexcept
 {
 	k_KeyStates[keycode] = false;
 	k_keyEventBuffer.push(Keyboard::Event(keycode, Keyboard::Event::Type::Release));
 	TrimBuffer(k_keyEventBuffer);
 }
 
-void Keyboard::OnCharPressed(unsigned char keycode)
+void Keyboard::OnCharPressed(unsigned char keycode) noexcept
 {
 	k_Charbuffer.push(keycode);
 	TrimBuffer(k_Charbuffer);
@@ -22,17 +22,17 @@ void Keyboard::OnCharPressed(unsigned char keycode)
 
 
 
-bool Keyboard::KeyIsPressed(unsigned char keycode) const
+bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
 {
 	return k_KeyStates[keycode];
 }
 
-bool Keyboard::KeyQueueIsEmpty() const
+bool Keyboard::KeyQueueIsEmpty() const noexcept
 {
 	return k_keyEventBuffer.empty();
 }
 
-Keyboard::Event Keyboard::ReadKey()
+Keyboard::Event Keyboard::ReadKey() noexcept
 {
 	if (!k_keyEventBuffer.empty())
 	{
@@ -46,12 +46,12 @@ Keyboard::Event Keyboard::ReadKey()
 	}
 }
 
-void Keyboard::ClearKeyQueue()
+void Keyboard::ClearKeyQueue() noexcept
 {
 	k_keyEventBuffer = std::queue<Event>();
 }
 
-char Keyboard::ReadChar() 
+char Keyboard::ReadChar()  noexcept
 {
 	if (!k_Charbuffer.empty())
 	{
@@ -65,38 +65,38 @@ char Keyboard::ReadChar()
 	}
 }
 
-bool Keyboard::CharIsEmpty() const
+bool Keyboard::CharIsEmpty() const noexcept
 {
 	return k_Charbuffer.empty();
 }
 
-bool Keyboard::CharQueueIsEmpty() const
+bool Keyboard::CharQueueIsEmpty() const noexcept
 {
 	return k_Charbuffer.empty();
 }
 
-void Keyboard::ClearCharQueue()
+void Keyboard::ClearCharQueue() noexcept
 {
 	k_Charbuffer = std::queue<char>();
 }
 
-void Keyboard::EnableAutoRepeat()
+void Keyboard::EnableAutoRepeat() noexcept
 {
 	k_AutoRepeatEnabled = true;
 }
 
-void Keyboard::DisableAutoRepeate()
+void Keyboard::DisableAutoRepeate() noexcept
 {
 	k_AutoRepeatEnabled = false;
 }
 
-bool Keyboard::IsAutoRepeatEnabled()
+bool Keyboard::IsAutoRepeatEnabled() const noexcept
 {
 	return k_AutoRepeatEnabled;
 }
 
 template<typename T>
-void Keyboard::TrimBuffer(std::queue<T>& queue)
+void Keyboard::TrimBuffer(std::queue<T>& queue) noexcept
 {
 	while (queue.size() > k_Buffersize)
 	{

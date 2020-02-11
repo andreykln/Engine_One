@@ -20,6 +20,7 @@ int App::Go()
 		{
 			return *ecode;
 		}
+		SendTextToTitle();
 	}
 	return 0;
 }
@@ -28,7 +29,11 @@ int App::Go()
 void App::SendTextToTitle()
 {
 	std::ostringstream oss;
-
+	if (wnd.mouse.IsLeftPressed() || wnd.mouse.IsRightPressed())
+	{
+		oss << "X: " << wnd.mouse.GetPosX()
+			<< " Y: " << wnd.mouse.GetPosY();
+	}
 	
 	wnd.SetTitle(oss.str().c_str());
 }
