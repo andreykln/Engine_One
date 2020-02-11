@@ -1,5 +1,7 @@
 #include "App.h"
 
+static int count = 0;
+
 App::App()
 	: wnd("Output Window", 800, 600)
 
@@ -18,7 +20,6 @@ int App::Go()
 		{
 			return *ecode;
 		}
-		SendTextToTitle();
 	}
 	return 0;
 }
@@ -28,7 +29,7 @@ void App::SendTextToTitle()
 {
 	std::ostringstream oss;
 
-	oss << "Delta: " << wnd.mouse.GetDelta();
+	
 	wnd.SetTitle(oss.str().c_str());
 }
 
