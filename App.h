@@ -8,6 +8,7 @@ public:
 	App();
 	int Go();
 	void SendTextToTitle();
+	void CalculateFrameStats();
 private:
 	Window wnd;
 	Timer timer;

@@ -20,7 +20,7 @@ int App::Go()
 		{
 			return *ecode;
 		}
-		SendTextToTitle();
+		CalculateFrameStats();
 	}
 	return 0;
 }
@@ -29,12 +29,28 @@ int App::Go()
 void App::SendTextToTitle()
 {
 	std::ostringstream oss;
-	if (wnd.mouse.IsLeftPressed() || wnd.mouse.IsRightPressed())
-	{
-		oss << "X: " << wnd.mouse.GetPosX()
-			<< " Y: " << wnd.mouse.GetPosY();
-	}
+	oss << "Test string";
 	
 	wnd.SetTitle(oss.str().c_str());
+}
+
+void App::CalculateFrameStats()
+{
+	static int frameCount = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCount++;
+	if (timer.TotalTime() - timeElapsed >= 1.0f)
+	{
+		float fps = static_cast<float>(frameCount);
+		float ms_per_frame = 1000.0f / fps;
+		std::ostringstream oss;
+		oss << "D3D. FPS:" << fps
+			<< "; Frame Time: " << ms_per_frame
+			<< "; Total time " << timer.TotalTime();
+		wnd.SetTitle(oss.str().c_str());
+	}
+
+
 }
 
