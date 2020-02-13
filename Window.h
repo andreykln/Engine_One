@@ -57,8 +57,8 @@ private:
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	HWND handleWindow;
 	const char* windowName = {};
-	unsigned int width = 0;
-	unsigned int height = 0;
+	int width = 0;
+	int height = 0;
 	unsigned int wndPositionX = 600;
 	unsigned int wndPositionY = 300;
 
