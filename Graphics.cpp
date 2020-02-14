@@ -20,7 +20,11 @@ Graphics::Graphics(HWND wnd)
 	swapChainDesc.OutputWindow = wnd;
 	swapChainDesc.Windowed = FALSE;
 
-	IDXGIFactory::CreateSwapChain(gfx_pDevice, &swapChainDesc, &gfx_SwapChain);
+	gfx_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)(&idxgi_Device));
+	idxgi_Device->GetParent(__uuidof(IDXGIAdapter), (void**)(&idxgi_Adapter));
+	idxgi_Adapter->GetParent(__uuidof(IDXGIFactory), (void**)(&idxgi_Factory));
+
+	idxgi_Factory->CreateSwapChain((IUnknown*)gfx_pDevice.GetAddressOf(), &swapChainDesc, &gfx_SwapChain);
 
 
 	D3D11CreateDeviceAndSwapChain(NULL,
@@ -31,7 +35,10 @@ Graphics::Graphics(HWND wnd)
 		7u,
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
+		&gfx_SwapChain,
+		&gfx_pDevice,
+		NULL, //TODO make sure that DX 11.1 feature level is being enabled.
+		&gfx_pDeviceContext);
 
-
-		)
+		
 }

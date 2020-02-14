@@ -1,5 +1,5 @@
 #pragma once
-#include "WindowsEdited.h"
+#define NO_STRICT
 #include <d3d11.h>
 #include <wrl.h>
 #include <vector>
@@ -8,6 +8,8 @@
 #include <d3dcompiler.h>
 #include "CustomException.h"
 
+class Window;
+
 class Graphics
 {
 public:
@@ -15,6 +17,14 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> gfx_pDeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> gfx_SwapChain;
 
+
+
+	Microsoft::WRL::ComPtr<IDXGIDevice> idxgi_Device;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> idxgi_Adapter;
+	Microsoft::WRL::ComPtr<IDXGIFactory> idxgi_Factory;
+
+
+	HWND wnd;
 	Graphics(HWND wnd);
 
 
