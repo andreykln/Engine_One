@@ -1,5 +1,4 @@
 #pragma once
-#define NO_STRICT
 #include <d3d11.h>
 #include <wrl.h>
 #include <vector>
@@ -8,14 +7,18 @@
 #include <d3dcompiler.h>
 #include "CustomException.h"
 
-class Window;
 
 class Graphics
 {
 public:
-	Microsoft::WRL::ComPtr<ID3D11Device> gfx_pDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> gfx_pDeviceContext;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> gfx_SwapChain;
+	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
+
+
+
 
 
 
@@ -24,11 +27,11 @@ public:
 	Microsoft::WRL::ComPtr<IDXGIFactory> idxgi_Factory;
 
 
-	HWND wnd;
 	Graphics(HWND wnd);
 
 
 private:
+	D3D_FEATURE_LEVEL featureLevel{};
 	D3D_FEATURE_LEVEL d3dFeatureLevels [7]
 	{
 		D3D_FEATURE_LEVEL_11_1,

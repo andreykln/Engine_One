@@ -67,6 +67,8 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 		throw ThrowWin32LastCustomException();
 	}
 	ShowWindow(handleWindow, SW_SHOW);
+
+	gfx = new Graphics(handleWindow);
 }
 
 const char* Window::GetWindowName()
@@ -99,7 +101,9 @@ void Window::SetTitle(const std::string& text)
 
 Window::~Window()
 {
+	delete gfx;
 	DestroyWindow(handleWindow);
+
 }
 
 //create pointer to instance of the window into win API, so they will be handled by custom function

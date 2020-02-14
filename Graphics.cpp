@@ -14,31 +14,35 @@ Graphics::Graphics(HWND wnd)
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	swapChainDesc.BufferDesc = displayModeDesc;
 	swapChainDesc.SampleDesc.Count = 1u;
-	swapChainDesc.SampleDesc.Quality = 1u;
+	swapChainDesc.SampleDesc.Quality = 0u;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = DXGI_SWAP_EFFECT_SEQUENTIAL;
+	swapChainDesc.BufferCount = 1u; //DXGI_SWAP_EFFECT_SEQUENTIAL try to see if this throws error
 	swapChainDesc.OutputWindow = wnd;
-	swapChainDesc.Windowed = FALSE;
-
-	gfx_pDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)(&idxgi_Device));
-	idxgi_Device->GetParent(__uuidof(IDXGIAdapter), (void**)(&idxgi_Adapter));
-	idxgi_Adapter->GetParent(__uuidof(IDXGIFactory), (void**)(&idxgi_Factory));
-
-	idxgi_Factory->CreateSwapChain((IUnknown*)gfx_pDevice.GetAddressOf(), &swapChainDesc, &gfx_SwapChain);
-
-
-	D3D11CreateDeviceAndSwapChain(NULL,
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
+	swapChainDesc.Flags = 0;
+	
+	D3D11CreateDeviceAndSwapChain(
+		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
-		d3dFeatureLevels,
-		7u,
+		nullptr, //d3dFeatureLevels
+		0u, //related to d3dFeatureLevels
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
-		&gfx_SwapChain,
-		&gfx_pDevice,
-		NULL, //TODO make sure that DX 11.1 feature level is being enabled.
-		&gfx_pDeviceContext);
+		&pgfx_SwapChain,
+		&pgfx_pDevice,
+		&featureLevel, //TODO make sure that DX 11.1 feature level is being enabled.
+		&pgfx_pDeviceContext);
 
+	pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer);
+
+	pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView);
+	//const float colors[4]{ 0.5f, 0.5f, 0.2f };
+	//pgfx_pDeviceContext->ClearRenderTargetView(pgfx_RenderTargetView.Get(), colors);
+
+
+	
 		
 }

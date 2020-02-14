@@ -21,6 +21,10 @@ int App::Go()
 			return *ecode;
 		}
 		CalculateFrameStats();
+		wnd.gfx->pgfx_SwapChain->Present(1u, 0u);
+		wnd.gfx->pgfx_pDeviceContext->ClearRenderTargetView(wnd.gfx->pgfx_RenderTargetView.Get(), colors);
+		//pgfx_pDeviceContext->ClearRenderTargetView(pgfx_RenderTargetView.Get(), colors);
+
 	}
 	return 0;
 }

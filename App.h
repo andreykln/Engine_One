@@ -12,6 +12,7 @@ public:
 private:
 	Window wnd;
 	Timer timer;
+	const float colors[4]{ 0.5f, 0.5f, 0.2f };
 
 };
 
