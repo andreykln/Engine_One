@@ -28,7 +28,9 @@ public:
 
 
 	Graphics(HWND wnd);
-
+public:
+	void EndFrame();
+	void ClearBuffer(float red, float green, float blue) noexcept;
 
 private:
 	D3D_FEATURE_LEVEL featureLevel{};

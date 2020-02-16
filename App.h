@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "Timer.h"
+#include <cmath>
 #include <sstream>
 class App
 {
@@ -9,10 +10,11 @@ public:
 	int Go();
 	void SendTextToTitle();
 	void CalculateFrameStats();
+	void DoFrame();
 private:
 	Window wnd;
 	Timer timer;
-	const float colors[4]{ 0.5f, 0.5f, 0.2f };
+	float colors[4]{};
 
 };
 

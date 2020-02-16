@@ -99,6 +99,11 @@ void Window::SetTitle(const std::string& text)
 	}
 }
 
+Graphics& Window::GetGraphics()
+{
+	return *gfx;
+}
+
 Window::~Window()
 {
 	delete gfx;

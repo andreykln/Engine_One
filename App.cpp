@@ -12,18 +12,15 @@ App::App()
 int App::Go()
 {
 	timer.Reset();
+
 	while (true)
 	{
-		Sleep(1);
-		timer.Tick();
+		//Sleep(1);
 		if (const auto ecode = Window::ProcessMessages())
 		{
 			return *ecode;
 		}
-		CalculateFrameStats();
-		wnd.gfx->pgfx_SwapChain->Present(1u, 0u);
-		wnd.gfx->pgfx_pDeviceContext->ClearRenderTargetView(wnd.gfx->pgfx_RenderTargetView.Get(), colors);
-		//pgfx_pDeviceContext->ClearRenderTargetView(pgfx_RenderTargetView.Get(), colors);
+		DoFrame();
 
 	}
 	return 0;
@@ -42,19 +39,32 @@ void App::CalculateFrameStats()
 {
 	static int frameCount = 0;
 	static float timeElapsed = 0.0f;
-
 	frameCount++;
-	if (timer.TotalTime() - timeElapsed >= 1.0f)
+
+	if ((timer.TotalTime() - timeElapsed) >= 1.0f)
 	{
 		float fps = static_cast<float>(frameCount);
 		float ms_per_frame = 1000.0f / fps;
 		std::ostringstream oss;
 		oss << "D3D. FPS:" << fps
-			<< "; Frame Time: " << ms_per_frame
-			<< "; Total time " << timer.TotalTime();
+			<< "; Frame Time: " << ms_per_frame;
 		wnd.SetTitle(oss.str().c_str());
+		frameCount = 0;
+		timeElapsed += 1.0f;
 	}
 
 
+}
+
+
+
+void App::DoFrame()
+{
+	const float c = (cos(timer.TotalTime()));
+	timer.Tick();
+
+	CalculateFrameStats();
+	wnd.GetGraphics().EndFrame();
+	wnd.GetGraphics().ClearBuffer(c, c * 0.2f, c * 0.4f);
 }
 

@@ -6,6 +6,7 @@ Timer::Timer()
 	__int64 countPerSecond = {};
 	QueryPerformanceFrequency((LARGE_INTEGER*)(&countPerSecond));
 	secondsPerCount = 1.0 / static_cast<double>(countPerSecond);
+	
 }
 
 float Timer::TotalTime() const 
@@ -14,8 +15,20 @@ float Timer::TotalTime() const
 	return t;
 }
 
+float Timer::DeltaTime() const
+{
+	return static_cast<float>(deltaTime);
+}
+
 void Timer::Tick() 
 {
+
+	if (stopped)
+	{
+		deltaTime = 0.0;
+		return;
+	}
+
 	__int64 t_currentTime = {};
 	QueryPerformanceCounter((LARGE_INTEGER*)(&t_currentTime)); //TODO figure out why this throws error if I pass by value
 	currentTime = t_currentTime;

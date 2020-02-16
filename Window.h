@@ -8,6 +8,7 @@
 #define ThrowWin32LastCustomException() Window::Win32Exception(__LINE__,__FILE__, GetLastError())
 #define ThrowWin32CustomException(hr) Window::Win32Exception(__LINE__, __FILE__, hr)
 
+
 class Window
 {
 public:
@@ -47,6 +48,7 @@ public:
 	const char* GetWindowName();
 	static std::optional<int> ProcessMessages();
 	void SetTitle(const std::string& text);
+	Graphics& GetGraphics();
 	~Window();
 
 public:
