@@ -27,21 +27,19 @@ Graphics::Graphics(HWND wnd)
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
-		nullptr, //d3dFeatureLevels
-		0u, //related to d3dFeatureLevels
+		d3dFeatureLevels, //d3dFeatureLevels
+		featureLevelNum, //related to d3dFeatureLevels
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
 		&pgfx_SwapChain,
 		&pgfx_pDevice,
-		&featureLevel, //TODO make sure that DX 11.1 feature level is being enabled.
+		&featureLevelIsSupported, //TODO make sure that DX 11.1 feature level is being enabled.
 		&pgfx_pDeviceContext);
-
 	pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer);
 
 	pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView);
-	//const float colors[4]{ 0.5f, 0.5f, 0.2f };
-	//pgfx_pDeviceContext->ClearRenderTargetView(pgfx_RenderTargetView.Get(), colors);
 
+	auto x = pgfx_pDevice->GetFeatureLevel();
 
 	
 		

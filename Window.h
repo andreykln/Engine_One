@@ -50,16 +50,15 @@ public:
 	void SetTitle(const std::string& text);
 	Graphics& GetGraphics();
 	~Window();
-
 public:
 	Keyboard kbd;
 	Mouse mouse;
-	Graphics* gfx = nullptr;
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	HWND handleWindow;
+	Graphics* gfx = nullptr;
 	const char* windowName = {};
 	int width = 0;
 	int height = 0;
