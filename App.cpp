@@ -23,10 +23,17 @@ int App::Go()
 }
 
 
-void App::SendTextToTitle()
+void App::DebugTextToTitle()
 {
 	std::ostringstream oss;
-	oss << "Test string";
+	if (wnd.mouse.IsInWindow())
+	{
+		oss << "In Window";
+	}
+	else if (!wnd.mouse.IsInWindow())
+	{
+		oss << "Not In window";
+	}
 	wnd.SetTitle(oss.str().c_str());
 }
 
@@ -54,7 +61,8 @@ void App::DoFrame()
 {
 	const float c = (cos(timer.TotalTime()));
 	timer.Tick();
-	CalculateFrameStats();
+	//CalculateFrameStats();
+	DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(c, c * 0.2f, c * 0.4f);
 }

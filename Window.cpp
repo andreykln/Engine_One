@@ -7,7 +7,7 @@ Window::WindowClass::WindowClass()
 {
 	WNDCLASSEX windowclass = {};
 	windowclass.cbSize = sizeof(windowclass);
-	windowclass.style = CS_OWNDC | CS_VREDRAW;
+	windowclass.style = CS_OWNDC;
 	windowclass.lpfnWndProc = HandleMsgSetup;
 	windowclass.cbClsExtra = 0u;
 	windowclass.cbWndExtra = 0u;
@@ -43,14 +43,15 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 	: windowName(in_windowName), width(in_width), height(in_height)
 {
 	RECT rectangle;
-	rectangle.left = 0;
-	rectangle.right = width;
-	rectangle.top = 0;
-	rectangle.bottom = height;
-	if (AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
+	rectangle.left = 100;
+	rectangle.right = width + rectangle.left;
+	rectangle.top = 100;
+	rectangle.bottom = height+rectangle.top;
+	if (AdjustWindowRect(&rectangle, WS_ICONIC | WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw ThrowWin32LastCustomException();
 	}
+
 
 	handleWindow = CreateWindowEx(
 	0u, WindowClass::GetClassName(), //test here
@@ -145,8 +146,6 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	const char* char_text = "charkey pressed";
-	const char* syskey_text = "syskey pressed";
 	switch (msg)
 	{
 
@@ -158,11 +157,9 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		if (!(lParam & 0x40000000) || kbd.IsAutoRepeatEnabled())
 		{
 			kbd.OnKeyPressed(unsigned char(wParam));
-			SetWindowTextA(hWnd, syskey_text);
 		}
 		break;
 	case WM_CHAR:
-		SetWindowTextA(hWnd, char_text);
 		break;
 
 	/// MOUSE MESSAGES

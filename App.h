@@ -8,7 +8,7 @@ class App
 public:
 	App();
 	int Go();
-	void SendTextToTitle();
+	void DebugTextToTitle();
 	void CalculateFrameStats();
 	void DoFrame();
 private:

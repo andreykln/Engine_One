@@ -3,8 +3,8 @@
 Graphics::Graphics(HWND wnd)
 {
 	DXGI_MODE_DESC displayModeDesc;
-	displayModeDesc.Height = 0;
-	displayModeDesc.Width = 0;
+	displayModeDesc.Height = 600;
+	displayModeDesc.Width = 800;
 	displayModeDesc.RefreshRate.Numerator = 0;
 	displayModeDesc.RefreshRate.Denominator = 0;
 	displayModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -27,19 +27,18 @@ Graphics::Graphics(HWND wnd)
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
-		d3dFeatureLevels, //d3dFeatureLevels
-		featureLevelNum, //related to d3dFeatureLevels
+		d3dFeatureLevels, 
+		featureLevelNum, 
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
 		&pgfx_SwapChain,
 		&pgfx_pDevice,
-		&featureLevelIsSupported, //TODO make sure that DX 11.1 feature level is being enabled.
+		&featureLevelIsSupported, 
 		&pgfx_pDeviceContext);
 	pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer);
 
 	pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView);
 
-	auto x = pgfx_pDevice->GetFeatureLevel();
 
 	
 		
