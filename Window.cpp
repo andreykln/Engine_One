@@ -5,26 +5,28 @@ Window::WindowClass Window::WindowClass::wndClass;
 Window::WindowClass::WindowClass()
 	: hWindowInstance(GetModuleHandle(nullptr))
 {
-	WNDCLASSEX windowclass = {};
+	WNDCLASSEXA windowclass{};
 	windowclass.cbSize = sizeof(windowclass);
 	windowclass.style = CS_OWNDC;
 	windowclass.lpfnWndProc = HandleMsgSetup;
-	windowclass.cbClsExtra = 0u;
-	windowclass.cbWndExtra = 0u;
+	windowclass.cbClsExtra = 0;
+	windowclass.cbWndExtra = 0;
 	windowclass.hInstance = GetInstance();
-	windowclass.hIcon = NULL;
-	windowclass.hCursor = NULL;
-	windowclass.hbrBackground = NULL;
-	windowclass.lpszMenuName = NULL;
+	windowclass.hIcon = nullptr;
+	windowclass.hCursor = nullptr;
+	windowclass.hbrBackground = nullptr;
+	windowclass.lpszMenuName = nullptr;
 	windowclass.lpszClassName = GetClassName();
-	windowclass.hIconSm = NULL;
+	windowclass.hIconSm = nullptr;
 	RegisterClassEx(&windowclass);
+
 }
 
 const char* Window::WindowClass::GetClassName()
 {
 	return class_name;
 }
+
 
 HINSTANCE Window::WindowClass::GetInstance()
 {
@@ -47,18 +49,19 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 	rectangle.right = width + rectangle.left;
 	rectangle.top = 100;
 	rectangle.bottom = height+rectangle.top;
-	if (AdjustWindowRect(&rectangle, WS_ICONIC | WS_BORDER | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
+	if (AdjustWindowRect(&rectangle, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw ThrowWin32LastCustomException();
 	}
 
 
-	handleWindow = CreateWindowEx(
-	0u, WindowClass::GetClassName(), //test here
+
+	handleWindow = CreateWindow(
+		WindowClass::GetClassName(), //test here
 		GetWindowName(),
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		wndPositionX, wndPositionY,
-		rectangle.right - rectangle.left, rectangle.bottom - rectangle.top,
+		 WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		rectangle.right - rectangle.left , rectangle.bottom - rectangle.top,
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
 		this); // that was nullptr and giving error
@@ -160,6 +163,10 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_CHAR:
+		break;
+
+	case WM_KILLFOCUS:
+		kbd.ClearState();
 		break;
 
 	/// MOUSE MESSAGES

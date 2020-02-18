@@ -26,7 +26,8 @@ public:
 	};
 
 private:
-	class WindowClass
+
+	 	class WindowClass
 	{
 	public:
 		WindowClass();
@@ -60,8 +61,8 @@ private:
 	HWND handleWindow;
 	Graphics* gfx = nullptr;
 	const char* windowName = {};
-	int width = 0;
-	int height = 0;
+	int width;
+	int height;
 	unsigned int wndPositionX = 600;
 	unsigned int wndPositionY = 300;
 

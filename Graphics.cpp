@@ -2,17 +2,14 @@
 
 Graphics::Graphics(HWND wnd)
 {
-	DXGI_MODE_DESC displayModeDesc;
-	displayModeDesc.Height = 600;
-	displayModeDesc.Width = 800;
-	displayModeDesc.RefreshRate.Numerator = 0;
-	displayModeDesc.RefreshRate.Denominator = 0;
-	displayModeDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	displayModeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	displayModeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-	swapChainDesc.BufferDesc = displayModeDesc;
+	DXGI_SWAP_CHAIN_DESC swapChainDesc{ 0 };
+	swapChainDesc.BufferDesc.Width = 0;
+	swapChainDesc.BufferDesc.Height = 0;
+	swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+	swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	swapChainDesc.SampleDesc.Count = 1u;
 	swapChainDesc.SampleDesc.Quality = 0u;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -35,6 +32,7 @@ Graphics::Graphics(HWND wnd)
 		&pgfx_pDevice,
 		&featureLevelIsSupported, 
 		&pgfx_pDeviceContext);
+
 	pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer);
 
 	pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView);

@@ -57,6 +57,7 @@ public:
 	void EnableAutoRepeat() noexcept;
 	void DisableAutoRepeate() noexcept;
 	bool IsAutoRepeatEnabled() const noexcept;
+	void ClearState() noexcept;
 	template<typename T> void TrimBuffer(std::queue<T>& queue) noexcept;
 private:
 	static constexpr unsigned int nKeys = 256u;

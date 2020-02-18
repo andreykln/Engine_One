@@ -1,12 +1,4 @@
-#include "WindowsEdited.h"
-#include <stdlib.h>
-#include <string.h>
-#include <tchar.h>
-#include <sstream>
-#include <string>
-
 #include "App.h"
-#include "Window.h"
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,

@@ -95,6 +95,11 @@ bool Keyboard::IsAutoRepeatEnabled() const noexcept
 	return k_AutoRepeatEnabled;
 }
 
+void Keyboard::ClearState() noexcept
+{
+	k_KeyStates.reset();
+}
+
 template<typename T>
 void Keyboard::TrimBuffer(std::queue<T>& queue) noexcept
 {
