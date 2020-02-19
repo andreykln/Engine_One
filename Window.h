@@ -30,16 +30,17 @@ private:
 	 	class WindowClass
 	{
 	public:
-		WindowClass();
-		WindowClass(const WindowClass&) = delete;
-		WindowClass& operator=(const WindowClass&) = delete;
 		static const char* GetClassName();
 		static HINSTANCE GetInstance();
 	private:
+		WindowClass();
+		WindowClass(const WindowClass&) = delete;
+		WindowClass& operator=(const WindowClass&) = delete;
+		~WindowClass();
+
 		static constexpr const char* class_name = "Engine window";
 		HINSTANCE hWindowInstance;
 		static WindowClass wndClass;
-		~WindowClass();
 	};
 
 public:
@@ -55,9 +56,11 @@ public:
 	Keyboard kbd;
 	Mouse mouse;
 private:
-	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
+	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
+	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
+
+
 	HWND handleWindow;
 	Graphics* gfx = nullptr;
 	const char* windowName = {};

@@ -1,4 +1,17 @@
+#define MSGF_SLEEPMSG 0x5300
+
 #include "Window.h"
+
+const char* Window::WindowClass::GetClassName()
+{
+	return class_name;
+}
+
+
+HINSTANCE Window::WindowClass::GetInstance()
+{
+	return wndClass.hWindowInstance;
+}
 
 Window::WindowClass Window::WindowClass::wndClass;
 // ======  WINDOW CLASS
@@ -22,17 +35,6 @@ Window::WindowClass::WindowClass()
 
 }
 
-const char* Window::WindowClass::GetClassName()
-{
-	return class_name;
-}
-
-
-HINSTANCE Window::WindowClass::GetInstance()
-{
-	return wndClass.hWindowInstance;
-}
-
 Window::WindowClass::~WindowClass()
 {
 	UnregisterClass(class_name, GetInstance());
@@ -44,6 +46,7 @@ Window::WindowClass::~WindowClass()
 Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in_height)
 	: windowName(in_windowName), width(in_width), height(in_height)
 {
+
 	RECT rectangle;
 	rectangle.left = 100;
 	rectangle.right = width + rectangle.left;
@@ -116,7 +119,7 @@ Window::~Window()
 }
 
 //create pointer to instance of the window into win API, so they will be handled by custom function
-LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 
 	//lParam and wPara,- message parameters, long ptr and unsigned int ptr respectively
@@ -139,7 +142,7 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	//ptr to window class
 	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
@@ -147,7 +150,7 @@ LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 }
 
-LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	switch (msg)
 	{
@@ -243,11 +246,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		mouse.OnWheelDelta(pt.x, pt.y, delta);
 
 	}
-
-	default:
-		DefWindowProc(hWnd, msg, wParam, lParam);
 	}
-	
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
