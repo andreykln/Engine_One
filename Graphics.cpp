@@ -36,10 +36,6 @@ Graphics::Graphics(HWND wnd)
 	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
 
 	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView));
-
-
-	
-		
 }
 
 void Graphics::EndFrame()

@@ -14,6 +14,32 @@ public:
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
+	void TestDrawing()
+	{
+		struct Vertex
+		{
+			float x;
+			float y;
+		};
+		const Vertex cubeCoord[]
+		{
+			{-1.0f, -1.0f},
+			{ 1.0f, -1.0f},
+			{-1.0f,  1.0f},
+			{ 1.0f,  1.0f}
+		};
+		
+		D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
+		{
+			"Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u
+		};
+
+		ID3D11Buffer* pVertexBuffer;
+		UINT stride = sizeof(Vertex);
+
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, NULL);
+	}
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
@@ -23,7 +49,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 
 	D3D_FEATURE_LEVEL featureLevelIsSupported;
-	//D3D_FEATURE_LEVEL featureLevel{};
 	UINT featureLevelNum = 7;
 	D3D_FEATURE_LEVEL d3dFeatureLevels [7]
 	{
