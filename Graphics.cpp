@@ -19,7 +19,7 @@ Graphics::Graphics(HWND wnd)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	swapChainDesc.Flags = 0;
 	
-	D3D11CreateDeviceAndSwapChain(
+	DX::ThrowIfFailed(D3D11CreateDeviceAndSwapChain(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
@@ -31,11 +31,11 @@ Graphics::Graphics(HWND wnd)
 		&pgfx_SwapChain,
 		&pgfx_pDevice,
 		&featureLevelIsSupported, 
-		&pgfx_pDeviceContext);
+		&pgfx_pDeviceContext));
 
-	pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer);
+	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
 
-	pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView);
+	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView));
 
 
 	
@@ -44,7 +44,7 @@ Graphics::Graphics(HWND wnd)
 
 void Graphics::EndFrame()
 {
-	pgfx_SwapChain->Present(1u, 0u);
+	DX::ThrowIfFailed(pgfx_SwapChain->Present(1u, 0u));
 	pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(),NULL);
 
 }

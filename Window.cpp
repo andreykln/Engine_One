@@ -59,7 +59,7 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 
 
 
-	handleWindow = CreateWindow(
+	handleWindow = CreateWindowEx(0u,
 		WindowClass::GetClassName(), //test here
 		GetWindowName(),
 		 WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
@@ -67,7 +67,7 @@ Window::Window(const char* in_windowName, unsigned int in_width, unsigned int in
 		rectangle.right - rectangle.left , rectangle.bottom - rectangle.top,
 		nullptr, nullptr,
 		WindowClass::GetInstance(),
-		this); // that was nullptr and giving error
+		this);
 
 	if (handleWindow == nullptr)
 	{

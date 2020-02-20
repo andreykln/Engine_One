@@ -59,10 +59,10 @@ void App::CalculateFrameStats()
 
 void App::DoFrame()
 {
-	const float c = (cos(timer.TotalTime()));
+	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	//CalculateFrameStats();
-	DebugTextToTitle();
+	CalculateFrameStats();
+	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(c, c * 0.2f, c * 0.4f);
 }

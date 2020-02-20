@@ -21,9 +21,9 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
-	D3D_FEATURE_LEVEL featureLevelIsSupported;
 
-	D3D_FEATURE_LEVEL featureLevel{};
+	D3D_FEATURE_LEVEL featureLevelIsSupported;
+	//D3D_FEATURE_LEVEL featureLevel{};
 	UINT featureLevelNum = 7;
 	D3D_FEATURE_LEVEL d3dFeatureLevels [7]
 	{

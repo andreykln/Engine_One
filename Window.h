@@ -66,8 +66,8 @@ private:
 	const char* windowName = {};
 	int width;
 	int height;
-	unsigned int wndPositionX = 600;
-	unsigned int wndPositionY = 300;
+	unsigned int wndPositionX = 800;
+	unsigned int wndPositionY = 700;
 
 
 };
