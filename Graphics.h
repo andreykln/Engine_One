@@ -11,6 +11,7 @@
 class Graphics
 {
 public:
+	
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
@@ -18,27 +19,42 @@ public:
 	{
 		struct Vertex
 		{
-			float x;
-			float y;
+			DirectX::XMFLOAT3 Pos;
+			DirectX::XMFLOAT3 Color;
 		};
 		const Vertex cubeCoord[]
 		{
-			{-1.0f, -1.0f},
-			{ 1.0f, -1.0f},
-			{-1.0f,  1.0f},
-			{ 1.0f,  1.0f}
+			DirectX::XMFLOAT3 {-1.0f, -1.0f, 0.0f},
+			DirectX::XMFLOAT3 {1.0f, 0.0f, 0.0f},
+			DirectX::XMFLOAT3 {1.0f, -1.0f, 0.0f},
+			DirectX::XMFLOAT3 {0.0f, 1.0f, 0.0f},
+			DirectX::XMFLOAT3 {0.0f, 1.0f, 0.0f},
+			DirectX::XMFLOAT3 {0.0f, 0.0f, 1.0f},
 		};
-		
+		D3D11_BUFFER_DESC bufferDesc;
+		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		bufferDesc.ByteWidth = sizeof(Vertex) * 3;
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bufferDesc.CPUAccessFlags = 0;
+		bufferDesc.MiscFlags = 0;
+		// Fill in the sub resource data.
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = cubeCoord;
+		initData.SysMemPitch = 0;
+		initData.SysMemSlicePitch = 0;
+		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
+
+		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.GetAddressOf()));
+
 		D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
 		{
 			"Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u
 		};
 
-		ID3D11Buffer* pVertexBuffer;
 		UINT stride = sizeof(Vertex);
-
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, NULL);
+		UINT offset = 0;
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
 	}
 
 private:
