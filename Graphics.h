@@ -19,23 +19,23 @@ public:
 	{
 		struct Vertex
 		{
-			DirectX::XMFLOAT3 Pos;
+			DirectX::XMFLOAT4 Pos;
 			DirectX::XMFLOAT4 Color;
 		};
 		const Vertex cubeCoord[]
 		{
-			DirectX::XMFLOAT3 {-1.0f, -1.0f, 0.0f},
-			DirectX::XMFLOAT4 {1.0f, 0.0f, 0.0f,1.0f},
-			DirectX::XMFLOAT3 {1.0f, -1.0f, 0.0f},
-			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f,1.0f},
-			DirectX::XMFLOAT3 {0.0f, 1.0f, 0.0f},
+			DirectX::XMFLOAT4 {-1.0f, -1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT4 {1.0f, 0.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT4 {1.0f, -1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f, 1.0f},
 			DirectX::XMFLOAT4 {0.0f, 0.0f, 1.0f,1.0f},
 		};
 
 		ID3D11InputLayout* pInputLayout;
 		const D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
 		{
-			{"Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			{"Position", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
 			{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
@@ -100,7 +100,7 @@ public:
 	
 
 
-		pgfx_pDeviceContext->DrawIndexed()
+		pgfx_pDeviceContext->DrawIndexed(3u, 0, 0);
 
 
 	}
