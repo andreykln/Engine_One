@@ -40,7 +40,8 @@ public:
 			{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
 		};
-		pgfx_pDevice->CreateInputLayout(inputElemDesc, 2u, , , &pInputLayout);
+
+
 
 		D3D11_BUFFER_DESC bufferDesc;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -56,7 +57,17 @@ public:
 		initData.SysMemSlicePitch = 0;
 		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
 
+
+		ID3D11VertexShader* pVertexShader;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.GetAddressOf()));
+		ID3DBlob* pBlob = {};
+		D3DReadFileToBlob((LPCWSTR)"VertexShader.hlsl", &pBlob);
+		pgfx_pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr,&pVertexShader);
+
+		pgfx_pDevice->CreateInputLayout(inputElemDesc, 2u,pBlob->GetBufferPointer() ,sizeof(pBlob), &pInputLayout);
+
+
+
 
 		const UINT indices[3]
 		{
@@ -89,7 +100,7 @@ public:
 	
 
 
-
+		pgfx_pDeviceContext->DrawIndexed()
 
 
 	}
