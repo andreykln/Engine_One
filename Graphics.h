@@ -19,16 +19,16 @@ public:
 	{
 		struct Vertex
 		{
-			DirectX::XMFLOAT4 Pos;
+			DirectX::XMFLOAT3 Pos;
 			DirectX::XMFLOAT4 Color;
 		};
 		const Vertex cubeCoord[]
 		{
-			DirectX::XMFLOAT4 {-1.0f, -1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT3 {-1.0f, -1.0f, 0.0f},
 			DirectX::XMFLOAT4 {1.0f, 0.0f, 0.0f, 1.0f},
-			DirectX::XMFLOAT4 {1.0f, -1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT3 {1.0f, -1.0f, 0.0f},
 			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f, 1.0f},
-			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f, 1.0f},
+			DirectX::XMFLOAT3 {0.0f, 1.0f, 0.0f},
 			DirectX::XMFLOAT4 {0.0f, 0.0f, 1.0f,1.0f},
 		};
 
@@ -56,13 +56,19 @@ public:
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
-
-
-		ID3D11VertexShader* pVertexShader;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.GetAddressOf()));
+
+
+		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 		ID3DBlob* pBlob = {};
-		D3DReadFileToBlob((LPCWSTR)"VertexShader.hlsl", &pBlob);
-		pgfx_pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr,&pVertexShader);
+		DX::ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &pBlob));
+		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader));
+		pgfx_pDeviceContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
+		DX::ThrowIfFailed(D3DReadFileToBlob(L"PixelShader.cso", &pBlob));
+		DX::ThrowIfFailed(pgfx_pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, 0u));
+		pgfx_pDeviceContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 
 		pgfx_pDevice->CreateInputLayout(inputElemDesc, 2u,pBlob->GetBufferPointer() ,sizeof(pBlob), &pInputLayout);
 
