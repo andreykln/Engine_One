@@ -12,12 +12,12 @@
 
 struct VertexOut
 {
-    float3 col : Color;
+    float3 col : Color; 
 
-    float4 Position : SV_Position;
+    float4 Position : SV_Position; //TODO this order matters
 
 };
-
+                                        //float3 here but why? CREATES AEERORS
 VertexOut main(float2 pos : Position, float3 col : Color)
 {
     VertexOut vout;
@@ -25,7 +25,7 @@ VertexOut main(float2 pos : Position, float3 col : Color)
     
     //vout.Position = float4(vin.Position.x, vin.Position.y, 0.0f, 1.0f);
     //vout.Position = mul(float4(vin.Position, 1.0f), WorldViewProj);
-    vout.col = col;
+    vout.col = col; //why do we need from 4 to 3
 	return vout;
 }
 
