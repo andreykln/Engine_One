@@ -19,94 +19,104 @@ public:
 	{
 		struct Vertex
 		{
-			DirectX::XMFLOAT3 Pos;
-			DirectX::XMFLOAT4 Color;
+			DirectX::XMFLOAT2 pos;
+			DirectX::XMFLOAT4 color;
 		};
 		const Vertex cubeCoord[]
 		{
-			DirectX::XMFLOAT3 {-1.0f, -1.0f, 0.0f},
-			DirectX::XMFLOAT4 {1.0f, 0.0f, 0.0f, 1.0f},
-			DirectX::XMFLOAT3 {1.0f, -1.0f, 0.0f},
-			DirectX::XMFLOAT4 {0.0f, 1.0f, 0.0f, 1.0f},
-			DirectX::XMFLOAT3 {0.0f, 1.0f, 0.0f},
-			DirectX::XMFLOAT4 {0.0f, 0.0f, 1.0f,1.0f},
+			{DirectX::XMFLOAT2(-0.5f, -0.5f),	DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f)} ,
+			{DirectX::XMFLOAT2(0.5f, -0.5f),	DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f)} ,
+			{DirectX::XMFLOAT2(0.0f, 0.5f),		DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 0.0f)} ,
 		};
-
-		ID3D11InputLayout* pInputLayout;
-		const D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
-		{
-			{"Position", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u}
-		};
-
-
 
 		D3D11_BUFFER_DESC bufferDesc;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.ByteWidth = sizeof(Vertex) * 6;
+		bufferDesc.ByteWidth = sizeof(cubeCoord);//TODO which one
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
-		bufferDesc.StructureByteStride = 0u;
+		bufferDesc.StructureByteStride = sizeof(Vertex); //TODO should not be empty
 		// Fill in the sub resource data.
 		D3D11_SUBRESOURCE_DATA initData;
 		initData.pSysMem = cubeCoord;
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
-		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.GetAddressOf()));
+		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, &pVertexBuffer)); //TODO pVertexBuffer not the address of
+		const UINT stride = sizeof(Vertex);
+		const UINT offset = 0;
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset); //TODO getadressof here
 
 
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-		ID3DBlob* pBlob = {};
-		DX::ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &pBlob));
-		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pVertexShader));
+		Microsoft::WRL::ComPtr<ID3DBlob>pVertexShaderBlob;
+		DX::ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &pVertexShaderBlob));
+		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), nullptr, &pVertexShader));
 		pgfx_pDeviceContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
-		DX::ThrowIfFailed(D3DReadFileToBlob(L"PixelShader.cso", &pBlob));
-		DX::ThrowIfFailed(pgfx_pDevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, 0u));
+		Microsoft::WRL::ComPtr<ID3DBlob> pPixelShaderBlob;
+
+		DX::ThrowIfFailed(D3DReadFileToBlob(L"PixelShader.cso", &pPixelShaderBlob)); //TODO what is the difference between GetBuffersize and Sizeof
+		DX::ThrowIfFailed(pgfx_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), nullptr, &pPixelShader));
 		pgfx_pDeviceContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 
-		pgfx_pDevice->CreateInputLayout(inputElemDesc, 2u,pBlob->GetBufferPointer() ,sizeof(pBlob), &pInputLayout);
+
+		Microsoft::WRL::ComPtr< ID3D11InputLayout> pInputLayout;
+		const D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
+		{
+			{"Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u},
+			{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u}
+		};
+
+		DX::ThrowIfFailed(pgfx_pDevice->CreateInputLayout(inputElemDesc,
+			(UINT)std::size(inputElemDesc), pVertexShaderBlob->GetBufferPointer(), 
+			pVertexShaderBlob->GetBufferSize(), &pInputLayout));
+
+		pgfx_pDeviceContext->IASetInputLayout(pInputLayout.Get());
 
 
 
 
 		const UINT indices[3]
 		{
-			0,1,2
+			0,2,1
 		};
 
 		D3D11_BUFFER_DESC indicesBuffDesc;
 		indicesBuffDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		indicesBuffDesc.ByteWidth = sizeof(UINT) * 3;
+		indicesBuffDesc.ByteWidth = sizeof(indices);
 		indicesBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indicesBuffDesc.CPUAccessFlags = 0u;
 		indicesBuffDesc.MiscFlags = 0u;
-		indicesBuffDesc.StructureByteStride = 0u;
+		indicesBuffDesc.StructureByteStride = sizeof(UINT) * 3;
 		D3D11_SUBRESOURCE_DATA indicesInitData;
 		indicesInitData.pSysMem = indices;
 		indicesInitData.SysMemPitch = 0u;
 		indicesInitData.SysMemSlicePitch = 0u;
-		ID3D11Buffer* pIndicesBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> pIndicesBuffer;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&indicesBuffDesc, &indicesInitData, &pIndicesBuffer));
-		pgfx_pDeviceContext->IASetIndexBuffer(pIndicesBuffer, DXGI_FORMAT_R32_UINT, 0u);
+		pgfx_pDeviceContext->IASetIndexBuffer(pIndicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 		
 
-		const UINT stride = sizeof(Vertex);
-		const UINT offset = 0;
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
-
-	
+		pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
+		pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), nullptr);
 		
-	
+		//settings for "coordinate system"
+		D3D11_VIEWPORT vp;
+		vp.Width = 800;
+		vp.Height = 600;
+		vp.MinDepth = 0;
+		vp.MaxDepth = 1;
+		vp.TopLeftX = 0;
+		vp.TopLeftY = 0;
+		pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 
 
-		pgfx_pDeviceContext->DrawIndexed(3u, 0, 0);
+		pgfx_pDeviceContext->DrawIndexed((UINT)std::size(indices), 0, 0);
 
 
 	}
