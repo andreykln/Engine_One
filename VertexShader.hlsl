@@ -1,9 +1,10 @@
 
 struct VertexOut
 {
+    float3 col : Color;
     float4 Position : SV_Position; //TODO this order matters
 
-    float3 col : Color; 
+    
 };
                                      
 VertexOut main(float2 pos : Position, float3 col : Color)

@@ -3,7 +3,7 @@
 
 
 
-float4 main(float4 pos : Position, float3 col : Color) : SV_TARGET
+float4 main(float3 col : Color) : SV_TARGET
 {
     return float4(col, 1.0f);
 }
