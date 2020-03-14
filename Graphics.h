@@ -3,7 +3,9 @@
 #include <wrl.h>
 #include <vector>
 #include "dxgidebug.h"
+#include "DirectXMath.h"
 #include "directxmath.h"
+#include "directxcolors.h"
 #include <d3dcompiler.h>
 #include "CustomException.h"
 
@@ -18,16 +20,55 @@ public:
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void TestDrawing()
 	{
+		DirectX::XMFLOAT4X4 mWorld;
+		DirectX::XMFLOAT4X4 mView;
+		DirectX::XMFLOAT4X4 mProj;
+		DirectX::XMStoreFloat4x4(&mWorld, DirectX::XMMatrixIdentity());
+		DirectX::XMStoreFloat4x4(&mView, DirectX::XMMatrixIdentity());
+		DirectX::XMStoreFloat4x4(&mProj, DirectX::XMMatrixIdentity());
+
+		// constants for World Matrix
+		const float g_Theta = 1.5f * DirectX::XM_PI;
+		const float g_Phi = 0.25f * DirectX::XM_PI;
+		const float g_Radius = 5.0f;
+		//convert SPherical to Cartesian coordinates
+		float x = g_Radius * sinf(g_Phi) * cosf(g_Theta);
+		float y = g_Radius * cosf(g_Phi);
+		float z = g_Radius * sinf(g_Phi) * sinf(g_Theta);
+		//Build the view matrix
+		DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
+		DirectX::XMVECTOR target = DirectX::XMVectorZero();
+		DirectX::XMVECTOR up_vector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up_vector);
+		DirectX::XMStoreFloat4x4(&mView, V);
+
+		DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&mWorld);
+		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&mView);
+		DirectX::XMMATRIX projection = DirectX::XMLoadFloat4x4(&mProj);
+		DirectX::XMMATRIX worldViewProjection = world * view * projection;
+		DirectX::XMMatrixTranspose(worldViewProjection);
+		DirectX::XMFLOAT4X4 WVP;
+		DirectX::XMStoreFloat4x4(&WVP, worldViewProjection);
+
+
 		struct Vertex
 		{
-			DirectX::XMFLOAT2 pos;
-			DirectX::XMFLOAT3 color;
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMFLOAT4 color;
 		};
 		const Vertex cubeCoord[]
 		{
-			{DirectX::XMFLOAT2(-0.5f, -0.5f),	DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f)} ,
-			{DirectX::XMFLOAT2(0.5f, -0.5f),	DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)} ,
-			{DirectX::XMFLOAT2(0.0f, 0.5f),		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)} ,
+			{DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::AliceBlue)} ,
+			{DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+
+			{DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+
+			{DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+
 		};
 		
 		D3D11_BUFFER_DESC bufferDesc;
@@ -83,9 +124,20 @@ public:
 
 
 
-		const UINT indices[3]
+		const UINT indices[]
 		{
-			0,2,1
+			//front
+			0,2,1, 0,3,2,
+			//back
+			7,5,6, 6,5,4,
+			//right side
+			1,2,7, 2,5,7,
+			//left side
+			6,3,0, 6,4,3,
+			//up
+			2,4,5, 3,4,2,
+			//down
+			1,7,6, 1,6,0
 		};
 
 		D3D11_BUFFER_DESC indicesBuffDesc;
