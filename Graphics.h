@@ -7,7 +7,6 @@
 #include <d3dcompiler.h>
 #include "CustomException.h"
 
-
 class Graphics
 {
 public:
@@ -28,14 +27,14 @@ public:
 			{DirectX::XMFLOAT2(0.5f, -0.5f),	DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)} ,
 			{DirectX::XMFLOAT2(0.0f, 0.5f),		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f)} ,
 		};
-
+		
 		D3D11_BUFFER_DESC bufferDesc;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		bufferDesc.ByteWidth = sizeof(cubeCoord);//TODO which one
+		bufferDesc.ByteWidth = sizeof(cubeCoord);//size of the structure
 		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
 		bufferDesc.MiscFlags = 0;
-		bufferDesc.StructureByteStride = sizeof(Vertex); //TODO should not be empty
+		bufferDesc.StructureByteStride = sizeof(Vertex); //size of the each element in the structure
 		// Fill in the sub resource data.
 		D3D11_SUBRESOURCE_DATA initData;
 		initData.pSysMem = cubeCoord;
@@ -51,7 +50,9 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 		Microsoft::WRL::ComPtr<ID3DBlob>pVertexShaderBlob;
 		DX::ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &pVertexShaderBlob));
-		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), nullptr, &pVertexShader));
+		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader( pVertexShaderBlob->GetBufferPointer(),
+															pVertexShaderBlob->GetBufferSize(),
+															nullptr, &pVertexShader));
 		pgfx_pDeviceContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
@@ -105,6 +106,8 @@ public:
 		
 		pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), nullptr);
 		
+		
+
 		//settings for "coordinate system"
 		D3D11_VIEWPORT vp;
 		vp.Width = 800;
