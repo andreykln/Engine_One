@@ -77,4 +77,7 @@
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader.dgsl" />
+  </ItemGroup>
 </Project>

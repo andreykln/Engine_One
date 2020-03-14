@@ -10,7 +10,9 @@
 class Graphics
 {
 public:
+	//TODO  put all of your render state group objects in a static class
 	
+
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
