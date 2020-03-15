@@ -61,10 +61,10 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	wnd.GetGraphics().TestDrawing();
+	wnd.GetGraphics().TestDrawing(timer.TotalTime());
 	CalculateFrameStats();
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
-	wnd.GetGraphics().ClearBuffer(c * 0.2f, c * 0.2f, c * 0.2f);
+	wnd.GetGraphics().ClearBuffer(c * 0.2f, c * 0.2f, c * 0.5f);
 }
 

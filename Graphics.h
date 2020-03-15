@@ -18,54 +18,66 @@ public:
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void TestDrawing()
+	void TestDrawing(float angle)
 	{
-		DirectX::XMFLOAT4X4 mWorld;
-		DirectX::XMFLOAT4X4 mView;
-		DirectX::XMFLOAT4X4 mProj;
-		DirectX::XMStoreFloat4x4(&mWorld, DirectX::XMMatrixIdentity());
-		DirectX::XMStoreFloat4x4(&mView, DirectX::XMMatrixIdentity());
-		DirectX::XMStoreFloat4x4(&mProj, DirectX::XMMatrixIdentity());
+		
+// 		DirectX::XMFLOAT4X4 mWorld;
+// 		DirectX::XMFLOAT4X4 mView;
+// 		DirectX::XMFLOAT4X4 mProj;
+// 		DirectX::XMStoreFloat4x4(&mWorld, DirectX::XMMatrixIdentity());
+// 		DirectX::XMStoreFloat4x4(&mView, DirectX::XMMatrixIdentity());
+// 		DirectX::XMStoreFloat4x4(&mProj, DirectX::XMMatrixIdentity());
+// 
+// 		// constants for World Matrix
+// 		const float g_Theta = 1.5f * DirectX::XM_PI;
+// 		const float g_Phi = 0.25f * DirectX::XM_PI;
+// 		const float g_Radius = 5.0f;
+// 		//convert SPherical to Cartesian coordinates
+// 		float x = g_Radius * sinf(g_Phi) * cosf(g_Theta);
+// 		float y = g_Radius * cosf(g_Phi);
+// 		float z = g_Radius * sinf(g_Phi) * sinf(g_Theta);
+// 		//Build the view matrix
+// 		DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
+// 		DirectX::XMVECTOR target = DirectX::XMVectorZero();
+// 		DirectX::XMVECTOR up_vector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+// 		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up_vector);
+// 		DirectX::XMStoreFloat4x4(&mView, V);
+// 
+// 		DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&mWorld);
+// 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&mView);
+// 		DirectX::XMMATRIX projection = DirectX::XMLoadFloat4x4(&mProj);
+// 		DirectX::XMMATRIX worldViewProjection = world * view * projection;
+// 		DirectX::XMMatrixTranspose(worldViewProjection);
+// 		DirectX::XMFLOAT4X4 WVP;
+// 		DirectX::XMStoreFloat4x4(&WVP, worldViewProjection);
+		const float FOV = DirectX::XM_PI / 4.0f;
+		const float screenAspect = float(800.0f) / float(600.0f);
+		DirectX::XMMATRIX projectionMatrix;
+		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle)*
+			DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f) *
+			DirectX::XMMatrixPerspectiveFovLH(FOV,screenAspect, 0.1f, 100.0f));
+		
+		//DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
 
-		// constants for World Matrix
-		const float g_Theta = 1.5f * DirectX::XM_PI;
-		const float g_Phi = 0.25f * DirectX::XM_PI;
-		const float g_Radius = 5.0f;
-		//convert SPherical to Cartesian coordinates
-		float x = g_Radius * sinf(g_Phi) * cosf(g_Theta);
-		float y = g_Radius * cosf(g_Phi);
-		float z = g_Radius * sinf(g_Phi) * sinf(g_Theta);
-		//Build the view matrix
-		DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
-		DirectX::XMVECTOR target = DirectX::XMVectorZero();
-		DirectX::XMVECTOR up_vector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up_vector);
-		DirectX::XMStoreFloat4x4(&mView, V);
 
-		DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&mWorld);
-		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&mView);
-		DirectX::XMMATRIX projection = DirectX::XMLoadFloat4x4(&mProj);
-		DirectX::XMMATRIX worldViewProjection = world * view * projection;
-		DirectX::XMMatrixTranspose(worldViewProjection);
-		DirectX::XMFLOAT4X4 WVP;
-		DirectX::XMStoreFloat4x4(&WVP, worldViewProjection);
 
-		struct vs_ConstantBuffer 
-		{
+
+// 		struct vs_ConstantBuffer 
+// 		{
 			DirectX::XMFLOAT4X4 vs_WorldViewProjection;
-		};
-		vs_ConstantBuffer worldMatrix;
-		worldMatrix.vs_WorldViewProjection = WVP;
+		/*};*/
+		//vs_ConstantBuffer worldMatrix;
+		DirectX::XMStoreFloat4x4(&vs_WorldViewProjection, projectionMatrix);
 
 		D3D11_BUFFER_DESC constBufDesc;
 		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		constBufDesc.ByteWidth = sizeof(worldMatrix);
+		constBufDesc.ByteWidth = sizeof(vs_WorldViewProjection);
 		constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
 		constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		constBufDesc.StructureByteStride = sizeof(vs_ConstantBuffer);
+		constBufDesc.StructureByteStride = sizeof(DirectX::XMFLOAT4X4);
 		constBufDesc.MiscFlags = 0u;
 		D3D11_SUBRESOURCE_DATA constBufInitData;
-		constBufInitData.pSysMem = &worldMatrix;
+		constBufInitData.pSysMem = &vs_WorldViewProjection;
 		constBufInitData.SysMemPitch = 0;
 		constBufInitData.SysMemSlicePitch = 0;
 
