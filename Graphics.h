@@ -50,6 +50,29 @@ public:
 		DirectX::XMFLOAT4X4 WVP;
 		DirectX::XMStoreFloat4x4(&WVP, worldViewProjection);
 
+		struct vs_ConstantBuffer 
+		{
+			DirectX::XMFLOAT4X4 vs_WorldViewProjection;
+		};
+		vs_ConstantBuffer worldMatrix;
+		worldMatrix.vs_WorldViewProjection = WVP;
+
+		D3D11_BUFFER_DESC constBufDesc;
+		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		constBufDesc.ByteWidth = sizeof(worldMatrix);
+		constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+		constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		constBufDesc.StructureByteStride = sizeof(vs_ConstantBuffer);
+		constBufDesc.MiscFlags = 0u;
+		D3D11_SUBRESOURCE_DATA constBufInitData;
+		constBufInitData.pSysMem = &worldMatrix;
+		constBufInitData.SysMemPitch = 0;
+		constBufInitData.SysMemSlicePitch = 0;
+
+		Microsoft::WRL::ComPtr<ID3D11Buffer> pConstBuffer;
+
+		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, pConstBuffer.ReleaseAndGetAddressOf()));
+		pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, pConstBuffer.GetAddressOf());
 
 		struct Vertex
 		{
