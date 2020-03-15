@@ -21,35 +21,6 @@ public:
 	void TestDrawing(float angle)
 	{
 		
-// 		DirectX::XMFLOAT4X4 mWorld;
-// 		DirectX::XMFLOAT4X4 mView;
-// 		DirectX::XMFLOAT4X4 mProj;
-// 		DirectX::XMStoreFloat4x4(&mWorld, DirectX::XMMatrixIdentity());
-// 		DirectX::XMStoreFloat4x4(&mView, DirectX::XMMatrixIdentity());
-// 		DirectX::XMStoreFloat4x4(&mProj, DirectX::XMMatrixIdentity());
-// 
-// 		// constants for World Matrix
-// 		const float g_Theta = 1.5f * DirectX::XM_PI;
-// 		const float g_Phi = 0.25f * DirectX::XM_PI;
-// 		const float g_Radius = 5.0f;
-// 		//convert SPherical to Cartesian coordinates
-// 		float x = g_Radius * sinf(g_Phi) * cosf(g_Theta);
-// 		float y = g_Radius * cosf(g_Phi);
-// 		float z = g_Radius * sinf(g_Phi) * sinf(g_Theta);
-// 		//Build the view matrix
-// 		DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
-// 		DirectX::XMVECTOR target = DirectX::XMVectorZero();
-// 		DirectX::XMVECTOR up_vector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-// 		DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up_vector);
-// 		DirectX::XMStoreFloat4x4(&mView, V);
-// 
-// 		DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&mWorld);
-// 		DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(&mView);
-// 		DirectX::XMMATRIX projection = DirectX::XMLoadFloat4x4(&mProj);
-// 		DirectX::XMMATRIX worldViewProjection = world * view * projection;
-// 		DirectX::XMMatrixTranspose(worldViewProjection);
-// 		DirectX::XMFLOAT4X4 WVP;
-// 		DirectX::XMStoreFloat4x4(&WVP, worldViewProjection);
 		const float FOV = DirectX::XM_PI / 4.0f;
 		const float screenAspect = float(800.0f) / float(600.0f);
 		DirectX::XMMATRIX projectionMatrix;
@@ -57,16 +28,7 @@ public:
 			DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f) *
 			DirectX::XMMatrixPerspectiveFovLH(FOV,screenAspect, 0.1f, 100.0f));
 		
-		//DirectX::XMMATRIX worldMatrix = DirectX::XMMatrixIdentity();
-
-
-
-
-// 		struct vs_ConstantBuffer 
-// 		{
-			DirectX::XMFLOAT4X4 vs_WorldViewProjection;
-		/*};*/
-		//vs_ConstantBuffer worldMatrix;
+		DirectX::XMFLOAT4X4 vs_WorldViewProjection;
 		DirectX::XMStoreFloat4x4(&vs_WorldViewProjection, projectionMatrix);
 
 		D3D11_BUFFER_DESC constBufDesc;
@@ -93,19 +55,22 @@ public:
 		};
 		const Vertex cubeCoord[]
 		{
-			{DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+
+
+			{DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
 			{DirectX::XMFLOAT3(0.5f, -0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::AliceBlue)} ,
-			{DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::Beige)} ,
 
-			{DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
-			{DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
-			{DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(-0.5f, 0.5f, -0.5f),		DirectX::XMFLOAT4(DirectX::Colors::Cyan)} ,
+			{DirectX::XMFLOAT3(-0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::Honeydew)} ,
+			{DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::LightGray)} ,
 
-			{DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
-			{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::BurlyWood)} ,
+			{DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::OliveDrab)} ,
+			{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::WhiteSmoke)} ,
 
 		};
-		
+		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
+
 		D3D11_BUFFER_DESC bufferDesc;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		bufferDesc.ByteWidth = sizeof(cubeCoord);//size of the structure
@@ -118,11 +83,10 @@ public:
 		initData.pSysMem = cubeCoord;
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
-		Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;
-		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, &pVertexBuffer)); //TODO pVertexBuffer not the address of
 		const UINT stride = sizeof(Vertex);
 		const UINT offset = 0;
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset); //TODO getadressof here
+		//DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.ReleaseAndGetAddressOf())); //TODO HOW TIS THIS OPTIONAL
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset); 
 
 
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
@@ -140,15 +104,15 @@ public:
 		DX::ThrowIfFailed(pgfx_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), nullptr, &pPixelShader));
 		pgfx_pDeviceContext->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 
-
 		Microsoft::WRL::ComPtr< ID3D11InputLayout> pInputLayout;
 		const D3D11_INPUT_ELEMENT_DESC inputElemDesc[] =
 		{
-			{"Position", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
 			{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
 		};
+
 
 		DX::ThrowIfFailed(pgfx_pDevice->CreateInputLayout(inputElemDesc,
 			(UINT)std::size(inputElemDesc), pVertexShaderBlob->GetBufferPointer(), 
@@ -159,8 +123,9 @@ public:
 
 
 
-		const UINT indices[]
+		const unsigned short  indices[]
 		{
+
 			//front
 			0,2,1, 0,3,2,
 			//back
@@ -176,19 +141,19 @@ public:
 		};
 
 		D3D11_BUFFER_DESC indicesBuffDesc;
-		indicesBuffDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		indicesBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 		indicesBuffDesc.ByteWidth = sizeof(indices);
 		indicesBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indicesBuffDesc.CPUAccessFlags = 0u;
 		indicesBuffDesc.MiscFlags = 0u;
-		indicesBuffDesc.StructureByteStride = sizeof(UINT) * 3;
+		indicesBuffDesc.StructureByteStride = sizeof(unsigned short);
 		D3D11_SUBRESOURCE_DATA indicesInitData;
 		indicesInitData.pSysMem = indices;
 		indicesInitData.SysMemPitch = 0u;
 		indicesInitData.SysMemSlicePitch = 0u;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> pIndicesBuffer;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&indicesBuffDesc, &indicesInitData, &pIndicesBuffer));
-		pgfx_pDeviceContext->IASetIndexBuffer(pIndicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
+		pgfx_pDeviceContext->IASetIndexBuffer(pIndicesBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 		
 
 		pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -197,7 +162,6 @@ public:
 		
 		
 
-		//settings for "coordinate system"
 		D3D11_VIEWPORT vp;
 		vp.Width = 800;
 		vp.Height = 600;
