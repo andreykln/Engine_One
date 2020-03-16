@@ -18,14 +18,16 @@ public:
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void TestDrawing(float angle)
+	void TestDrawing(float angle, float zoom)
 	{
 		
+
 		const float FOV = DirectX::XM_PI / 4.0f;
 		const float screenAspect = float(800.0f) / float(600.0f);
 		DirectX::XMMATRIX projectionMatrix;
 		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle)*
-			DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f) *
+			DirectX::XMMatrixRotationZ(angle) *
+			DirectX::XMMatrixTranslation(0.0f, 0.0f, zoom) *
 			DirectX::XMMatrixPerspectiveFovLH(FOV,screenAspect, 0.1f, 100.0f));
 		
 		DirectX::XMFLOAT4X4 vs_WorldViewProjection;
@@ -85,7 +87,7 @@ public:
 		initData.SysMemSlicePitch = 0;
 		const UINT stride = sizeof(Vertex);
 		const UINT offset = 0;
-		//DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.ReleaseAndGetAddressOf())); //TODO HOW TIS THIS OPTIONAL
+		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.ReleaseAndGetAddressOf()));
 		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset); 
 
 

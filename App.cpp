@@ -1,6 +1,6 @@
 #include "App.h"
 
-static int count = 0;
+//static int count = 0;
 
 App::App()
 	: wnd("Output Window", 800, 600)
@@ -25,16 +25,38 @@ int App::Go()
 
 void App::DebugTextToTitle()
 {
-	std::ostringstream oss;
-	if (wnd.mouse.IsInWindow())
+
+
+}
+
+void App::ScrollWheelCounter()
+{
+	while (!wnd.mouse.IsEmpty())
 	{
-		oss << "In Window";
+		const Mouse::Event e = wnd.mouse.Read();
+		switch (e.GetType())
+		{
+			case Mouse::Event::Type::MWheelUp:
+			{
+				count += 0.1f;
+				if (count > 8.0f)
+				{
+					count = 8.0f;
+				}
+			}
+			break;
+
+			case Mouse::Event::Type::MWheelDown:
+			{
+				count -= 0.1f;
+				if (count < 1.0f)
+				{
+					count = 1.0f;
+				}
+			}
+			break;
+		}
 	}
-	else if (!wnd.mouse.IsInWindow())
-	{
-		oss << "Not In window";
-	}
-	wnd.SetTitle(oss.str().c_str());
 }
 
 void App::CalculateFrameStats()
@@ -61,8 +83,13 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	wnd.GetGraphics().TestDrawing(timer.TotalTime());
+	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), count);
+
+	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 4.0);
+
 	CalculateFrameStats();
+	ScrollWheelCounter();
+
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(c * 0.2f, c * 0.2f, c * 0.5f);

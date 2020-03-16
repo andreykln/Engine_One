@@ -30,35 +30,35 @@ public:
 		Event(Type in_type, const Mouse& parent)
 			: type(in_type), x(parent.x), y(parent.y),
 			leftIsPressed(parent.leftIsPressed), rightIsPressed(parent.rightIsPressed), middleIsPressed(parent.middleIsPressed) {}
-		Type GetType()
+		Type GetType() const
 		{
 			return type;
 		}
-		bool IsValid()
+		bool IsValid() const
 		{
 			return type != Type::Invalid;
 		}
-		bool IsRightPressed()
+		bool IsRightPressed() const
 		{
 			return type == Type::RPress;
 		}
-		bool IsLeftPressed()
+		bool IsLeftPressed() const 
 		{
 			return type == Type::LPress;
 		}
-		bool IsMiddlePressed()
+		bool IsMiddlePressed() const
 		{
 			return type == Type::MPress;
 		}
-		int GetPosX()
+		int GetPosX() const
 		{
 			return x;
 		}
-		int GetPosY()
+		int GetPosY() const
 		{
 			return y;
 		}
-		std::pair<int, int> GetPosition()
+		std::pair<int, int> GetPosition() const
 		{
 			return { x,y };
 		}
