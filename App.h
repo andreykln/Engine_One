@@ -19,7 +19,8 @@ private:
 	Window wnd;
 	Timer timer;
 	float colors[4]{};
-	float count = 4.0f;
+	float zoom_count = 4.0f;
+	const float zoom_step = 0.01f;
 
 };
 

@@ -39,20 +39,20 @@ void App::ScrollWheelCounter()
 		{
 			case Mouse::Event::Type::MWheelUp:
 			{
-				count += 0.1f;
-				if (count > 8.0f)
+				zoom_count += zoom_step;
+				if (zoom_count > 8.0f)
 				{
-					count = 8.0f;
+					zoom_count = 8.0f;
 				}
 			}
 			break;
 
 			case Mouse::Event::Type::MWheelDown:
 			{
-				count -= 0.1f;
-				if (count < 1.0f)
+				zoom_count -= zoom_step;
+				if (zoom_count < 1.0f)
 				{
-					count = 1.0f;
+					zoom_count = 1.0f;
 				}
 			}
 			break;
@@ -85,7 +85,7 @@ void App::DoFrame()
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 4.0);
-	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), count);
+	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), zoom_count);
 
 
 	CalculateFrameStats();

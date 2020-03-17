@@ -1,7 +1,7 @@
 #include "App.h"
 
-const short resolution_width = 1280;
-const short resolution_height = 720;
+static const short resolution_width{ 1280 };
+static const short resolution_height{ 720 };
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,

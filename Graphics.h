@@ -162,18 +162,9 @@ public:
 
 		pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
-		pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), nullptr);
+		//pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), nullptr);
 		
 		
-
-		D3D11_VIEWPORT vp;
-		vp.Width = resolution_width;
-		vp.Height = resolution_height;
-		vp.MinDepth = 0;
-		vp.MaxDepth = 1;
-		vp.TopLeftX = 0;
-		vp.TopLeftY = 0;
-		pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 
 
 		pgfx_pDeviceContext->DrawIndexed((UINT)std::size(indices), 0, 0);
@@ -182,13 +173,17 @@ public:
 	}
 
 private:
+	D3D11_VIEWPORT vp;
+
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
 
-	D3D_FEATURE_LEVEL featureLevelIsSupported;
+	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
 	UINT featureLevelNum = 7;
 	const D3D_FEATURE_LEVEL d3dFeatureLevels [7]
 	{
