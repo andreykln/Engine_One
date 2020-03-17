@@ -3,8 +3,9 @@
 //static int count = 0;
 
 App::App()
-	: wnd("Output Window", 800, 600)
+	: wnd("Output Window", resolution_width, resolution_height)
 {
+	
 }
 
 
@@ -25,7 +26,7 @@ int App::Go()
 
 void App::DebugTextToTitle()
 {
-
+	
 
 }
 
@@ -83,9 +84,9 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
+	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 4.0);
 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), count);
 
-	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 4.0);
 
 	CalculateFrameStats();
 	ScrollWheelCounter();

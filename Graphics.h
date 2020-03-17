@@ -9,13 +9,15 @@
 #include <d3dcompiler.h>
 #include "CustomException.h"
 
+extern const short resolution_width;
+extern const short resolution_height;
+
 class Graphics
 {
 public:
 	//TODO  put all of your render state group objects in a static class
-	
-
 	Graphics(HWND wnd);
+	
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void TestDrawing(float angle, float zoom)
@@ -23,7 +25,7 @@ public:
 		
 
 		const float FOV = DirectX::XM_PI / 4.0f;
-		const float screenAspect = float(800.0f) / float(600.0f);
+		const float screenAspect = float(resolution_width) / float(resolution_height);
 		DirectX::XMMATRIX projectionMatrix;
 		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle)*
 			DirectX::XMMatrixRotationZ(angle) *
@@ -165,8 +167,8 @@ public:
 		
 
 		D3D11_VIEWPORT vp;
-		vp.Width = 800;
-		vp.Height = 600;
+		vp.Width = resolution_width;
+		vp.Height = resolution_height;
 		vp.MinDepth = 0;
 		vp.MaxDepth = 1;
 		vp.TopLeftX = 0;
@@ -198,5 +200,7 @@ private:
 		D3D_FEATURE_LEVEL_9_2,
 		D3D_FEATURE_LEVEL_9_1,
 	};
+
+
 };
 

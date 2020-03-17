@@ -42,7 +42,7 @@ private:
 		HINSTANCE hWindowInstance;
 		static WindowClass wndClass;
 	};
-
+	
 public:
 	Window(const char* in_windowName, unsigned int in_width, unsigned int in_height);
 	Window& operator=(const Window&) = delete;
@@ -64,10 +64,10 @@ private:
 	HWND handleWindow;
 	Graphics* gfx = nullptr;
 	const char* windowName = {};
-	int width;
-	int height;
-	unsigned int wndPositionX = 800;
-	unsigned int wndPositionY = 700;
+	const int width;
+	const int height;
+	unsigned int wndPositionX = 1200;
+	unsigned int wndPositionY = 900;
 
 
 };

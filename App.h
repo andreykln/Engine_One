@@ -3,6 +3,9 @@
 #include "Timer.h"
 #include <cmath>
 #include <sstream>
+extern const short resolution_width;
+extern const short resolution_height;
+
 class App
 {
 public:
