@@ -39,20 +39,20 @@ void App::ScrollWheelCounter()
 		{
 			case Mouse::Event::Type::MWheelUp:
 			{
-				zoom_count += zoom_step;
-				if (zoom_count > 8.0f)
+				axis_z += camera_move_step;
+				if (axis_z > 8.0f)
 				{
-					zoom_count = 8.0f;
+					axis_z = 8.0f;
 				}
 			}
 			break;
 
 			case Mouse::Event::Type::MWheelDown:
 			{
-				zoom_count -= zoom_step;
-				if (zoom_count < 1.0f)
+				axis_z -= camera_move_step;
+				if (axis_z < 1.0f)
 				{
-					zoom_count = 1.0f;
+					axis_z = 1.0f;
 				}
 			}
 			break;
@@ -80,15 +80,51 @@ void App::CalculateFrameStats()
 
 
 
+void App::CameraMove()
+{
+	const auto charPress = wnd.kbd.ReadChar();
+
+
+
+	switch (charPress)
+	{
+	case  'a': case 'A':
+	{
+		axis_x += camera_move_step;
+	}
+	break;
+	case 'd': case 'D':
+	{
+		axis_x -= camera_move_step;
+	}
+	break;
+	case 'w': case 'W':
+	{
+		axis_y += camera_move_step;
+	}
+	break;
+	case 's': case 'S':
+	{
+		axis_y -= camera_move_step;
+	}
+	break;
+
+
+	}
+
+
+}
+
 void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 4.0);
-	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), zoom_count);
+	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
+	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
 
 
 	CalculateFrameStats();
+	CameraMove();
 	ScrollWheelCounter();
 
 	//DebugTextToTitle();

@@ -20,7 +20,7 @@ public:
 	
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void TestDrawing(float angle, float zoom)
+	void TestDrawing(float angle, float axis_x, float axis_y, float axis_z)
 	{
 		
 
@@ -29,7 +29,7 @@ public:
 		DirectX::XMMATRIX projectionMatrix;
 		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle)*
 			DirectX::XMMatrixRotationZ(angle) *
-			DirectX::XMMatrixTranslation(0.0f, 0.0f, zoom) *
+			DirectX::XMMatrixTranslation(-axis_x, -axis_y, axis_z) *
 			DirectX::XMMatrixPerspectiveFovLH(FOV,screenAspect, 0.1f, 100.0f));
 		
 		DirectX::XMFLOAT4X4 vs_WorldViewProjection;

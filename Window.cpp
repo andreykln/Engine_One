@@ -166,6 +166,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		}
 		break;
 	case WM_CHAR:
+		kbd.OnCharPressed(unsigned char(wParam));
 		break;
 
 	case WM_KILLFOCUS:

@@ -36,7 +36,7 @@ Keyboard::Event Keyboard::ReadKey() noexcept
 {
 	if (!k_keyEventBuffer.empty())
 	{
-		Keyboard::Event e = k_keyEventBuffer.front(); // I was returning only this
+		Keyboard::Event e = k_keyEventBuffer.front(); 
 		k_keyEventBuffer.pop();
 		return e;
 	}
