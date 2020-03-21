@@ -1,6 +1,5 @@
 #include "App.h"
 
-//static int count = 0;
 
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
