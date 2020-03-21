@@ -20,8 +20,7 @@ private:
 	Window wnd;
 	Timer timer;
 	float colors[4]{};
-// 	float zoom_count = 4.0f;
-	const float camera_move_step = 0.01f;
+	const float camera_move_step = 0.05f;
 
 	float axis_x = 0.0f;
 	float axis_y = 0.0f;
