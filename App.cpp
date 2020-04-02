@@ -8,6 +8,7 @@ App::App()
 	{
 		cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics()));
 	}
+
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 

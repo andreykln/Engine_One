@@ -1,11 +1,11 @@
 #include "IndexBuffer.h"
 
-IndexBuffer::IndexBuffer(Graphics& gfx, std::vector<unsigned short> indices)
+IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices)
 	: count(static_cast<UINT>(indices.size()))
 {
 	D3D11_BUFFER_DESC indicesBuffDesc;
 	indicesBuffDesc.Usage = D3D11_USAGE_DEFAULT;
-	indicesBuffDesc.ByteWidth = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+	indicesBuffDesc.ByteWidth = static_cast<UINT>(sizeof(unsigned short) * count);
 	indicesBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indicesBuffDesc.CPUAccessFlags = 0u;
 	indicesBuffDesc.MiscFlags = 0u;

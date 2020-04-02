@@ -1,6 +1,6 @@
 #include "TransformConstantBuffer.h"
 
-TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Shape& in_parent) noexcept
+TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const Shape& in_parent)
 	: parent(in_parent), pVertexConstBuffer(gfx)
 {
 }

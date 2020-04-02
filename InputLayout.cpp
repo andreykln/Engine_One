@@ -1,6 +1,6 @@
 #include "InputLayout.h"
 
-InputLayout::InputLayout(Graphics& gfx, ID3DBlob* pVertexBlobByteCode, std::vector<D3D11_INPUT_ELEMENT_DESC> inputElement)
+InputLayout::InputLayout(Graphics& gfx, ID3DBlob* pVertexBlobByteCode,const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElement)
 {
 	DX::ThrowIfFailed(GetDevice(gfx)->CreateInputLayout(
 		inputElement.data(),

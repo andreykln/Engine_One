@@ -58,8 +58,8 @@ public:
 template <typename C>
 class PixelConstantBuffer : public ConstantBuffer<C>
 {
-	using ConstantBuffer<C>::ConstantBuffer;
 	using ConstantBuffer<C>::pConstBuffer;
+	using ConstantBuffer<C>::ConstantBuffer;
 public:
 	using Bindable::GetContext;
 	void Bind(Graphics& gfx) noexcept override
