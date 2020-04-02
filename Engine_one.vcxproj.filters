@@ -16,6 +16,18 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{2dec86e4-62b7-40f8-ad95-50bbda1684de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Bindable">
+      <UniqueIdentifier>{e8f71723-d98c-4fbe-b3ce-b96d3f8aa7d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Bindable">
+      <UniqueIdentifier>{e8a00c09-7f25-4bda-857a-e6fd3c709d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawable">
+      <UniqueIdentifier>{6ef0dec1-c9a7-4f9b-8081-6b3fe6b54796}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawable">
+      <UniqueIdentifier>{235e1c2b-a253-4bb4-86ff-c6bcf7b989e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -42,6 +54,39 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Topology.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformConstantBuffer.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -67,6 +112,42 @@
     </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableBase.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

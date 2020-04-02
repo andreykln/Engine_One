@@ -17,7 +17,6 @@ class Graphics
 public:
 	//TODO  put all of your render state group objects in a static class
 	Graphics(HWND wnd);
-	
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void TestDrawing(float angle, float axis_x, float axis_y, float axis_z)
@@ -171,18 +170,20 @@ public:
 
 
 	}
-
-private:
-	D3D11_VIEWPORT vp;
-
+	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
+	DirectX::XMMATRIX GetProjection() const noexcept;
+	void DrawIndexed(UINT count) const noexcept;
+public:
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
+private:
+	DirectX::XMMATRIX projection;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
-
+	D3D11_VIEWPORT vp;
 	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
 	UINT featureLevelNum = 7;
 	const D3D_FEATURE_LEVEL d3dFeatureLevels [7]
@@ -195,7 +196,6 @@ private:
 		D3D_FEATURE_LEVEL_9_2,
 		D3D_FEATURE_LEVEL_9_1,
 	};
-
 
 };
 

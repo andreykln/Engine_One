@@ -1,6 +1,8 @@
 #pragma once
 #include "Window.h"
 #include "Timer.h"
+#include "Cube.h"
+#include <vector>
 #include <cmath>
 #include <sstream>
 extern const short resolution_width;
@@ -16,7 +18,13 @@ public:
 	void CalculateFrameStats();
 	void CameraMove();
 	void DoFrame();
+	void TwoTestCubes() noexcept;
+	DirectX::XMMATRIX CalculateProjection() noexcept;
 private:
+	const float FOV = DirectX::XM_PI / 4.0f;
+	const float screenAspect = float(resolution_width) / float(resolution_height);
+	DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixIdentity();
+	std::vector<std::unique_ptr<Cube>> cubes;
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

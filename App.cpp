@@ -4,7 +4,11 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	
+	for (size_t i = 0; i < 1; i++)
+	{
+		cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics()));
+	}
+	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
 
@@ -118,16 +122,33 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
-	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
 
+	for (auto& b : cubes)
+	{
+		b->BindAndDraw(wnd.GetGraphics());
+	}
 
 	CalculateFrameStats();
-	CameraMove();
-	ScrollWheelCounter();
+	//CameraMove();
+	//ScrollWheelCounter();
 
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(c * 0.2f, c * 0.2f, c * 0.5f);
+}
+
+void App::TwoTestCubes() noexcept
+{
+	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
+	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
+
+}
+
+DirectX::XMMATRIX App::CalculateProjection() noexcept
+{
+	
+	return		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f) *
+		DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f);
+
 }
 

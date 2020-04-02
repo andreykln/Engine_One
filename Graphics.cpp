@@ -94,3 +94,18 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 	pgfx_pDeviceContext->ClearDepthStencilView(pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
+void Graphics::SetProjection(DirectX::XMMATRIX in_projection) noexcept
+{
+	projection = in_projection;
+}
+
+void Graphics::DrawIndexed(UINT count) const noexcept
+{
+	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
+}
+
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept
+{
+	return projection;
+}
+
