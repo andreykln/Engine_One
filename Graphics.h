@@ -19,18 +19,47 @@ public:
 	Graphics(HWND wnd);
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
+	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
+	DirectX::XMMATRIX GetProjection() const noexcept;
+	void DrawIndexed(UINT count) const noexcept;
+public:
+	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
+private:
+
+	DirectX::XMMATRIX projection;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
+	D3D11_VIEWPORT vp;
+	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
+	UINT featureLevelNum = 7;
+	const D3D_FEATURE_LEVEL d3dFeatureLevels [7]
+	{
+		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1,
+		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_2,
+		D3D_FEATURE_LEVEL_9_1,
+	};
+
+public:/*
 	void TestDrawing(float angle, float axis_x, float axis_y, float axis_z)
 	{
-		
+
 
 		const float FOV = DirectX::XM_PI / 4.0f;
 		const float screenAspect = float(resolution_width) / float(resolution_height);
 		DirectX::XMMATRIX projectionMatrix;
-		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle)*
+		projectionMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixRotationX(angle) *
 			DirectX::XMMatrixRotationZ(angle) *
 			DirectX::XMMatrixTranslation(-axis_x, -axis_y, axis_z) *
-			DirectX::XMMatrixPerspectiveFovLH(FOV,screenAspect, 0.1f, 100.0f));
-		
+			DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f));
+
 		DirectX::XMFLOAT4X4 vs_WorldViewProjection;
 		DirectX::XMStoreFloat4x4(&vs_WorldViewProjection, projectionMatrix);
 
@@ -89,15 +118,15 @@ public:
 		const UINT stride = sizeof(Vertex);
 		const UINT offset = 0;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.ReleaseAndGetAddressOf()));
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset); 
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 
 
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
 		Microsoft::WRL::ComPtr<ID3DBlob>pVertexShaderBlob;
 		DX::ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &pVertexShaderBlob));
-		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader( pVertexShaderBlob->GetBufferPointer(),
-															pVertexShaderBlob->GetBufferSize(),
-															nullptr, &pVertexShader));
+		DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
+			pVertexShaderBlob->GetBufferSize(),
+			nullptr, &pVertexShader));
 		pgfx_pDeviceContext->VSSetShader(pVertexShader.Get(), nullptr, 0u);
 
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> pPixelShader;
@@ -118,7 +147,7 @@ public:
 
 
 		DX::ThrowIfFailed(pgfx_pDevice->CreateInputLayout(inputElemDesc,
-			(UINT)std::size(inputElemDesc), pVertexShaderBlob->GetBufferPointer(), 
+			(UINT)std::size(inputElemDesc), pVertexShaderBlob->GetBufferPointer(),
 			pVertexShaderBlob->GetBufferSize(), &pInputLayout));
 
 		pgfx_pDeviceContext->IASetInputLayout(pInputLayout.Get());
@@ -157,45 +186,19 @@ public:
 		Microsoft::WRL::ComPtr<ID3D11Buffer> pIndicesBuffer;
 		DX::ThrowIfFailed(pgfx_pDevice->CreateBuffer(&indicesBuffDesc, &indicesInitData, &pIndicesBuffer));
 		pgfx_pDeviceContext->IASetIndexBuffer(pIndicesBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
-		
+
 
 		pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		
+
 		//pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), nullptr);
-		
-		
+
+
 
 
 		pgfx_pDeviceContext->DrawIndexed((UINT)std::size(indices), 0, 0);
 
 
 	}
-	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
-	void DrawIndexed(UINT count) const noexcept;
-public:
-	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
-private:
-	DirectX::XMMATRIX projection;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
-	D3D11_VIEWPORT vp;
-	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
-	UINT featureLevelNum = 7;
-	const D3D_FEATURE_LEVEL d3dFeatureLevels [7]
-	{
-		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0,
-		D3D_FEATURE_LEVEL_9_3,
-		D3D_FEATURE_LEVEL_9_2,
-		D3D_FEATURE_LEVEL_9_1,
-	};
-
+	*/
 };
 

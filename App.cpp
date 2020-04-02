@@ -127,7 +127,6 @@ void App::DoFrame()
 	{
 		b->BindAndDraw(wnd.GetGraphics());
 	}
-
 	CalculateFrameStats();
 	//CameraMove();
 	//ScrollWheelCounter();
@@ -139,8 +138,8 @@ void App::DoFrame()
 
 void App::TwoTestCubes() noexcept
 {
-	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
-	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
+// 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
+// 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
 
 }
 

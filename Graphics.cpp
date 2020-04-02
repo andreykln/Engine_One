@@ -75,8 +75,13 @@ Graphics::Graphics(HWND wnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
+	ID3D11Debug* debugDevice;
+	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
+	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+
 	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
 	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView));
+
 }
 
 void Graphics::EndFrame()
