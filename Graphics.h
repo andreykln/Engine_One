@@ -23,20 +23,25 @@ public:
 	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
+#ifdef MY_DEBUG
+	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);
+#endif
+
 public:
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
-private:
+public:
 #ifdef MY_DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 #endif
-
+private:
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDSState;
 	D3D11_VIEWPORT vp;
 	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
 	UINT featureLevelNum = 7;

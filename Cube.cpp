@@ -21,7 +21,6 @@ Cube::Cube(Graphics& gfx)
 		{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::WhiteSmoke)}
 	};
 	AddBind(std::make_unique<VertexBuffer>(gfx, cubeCoord));
-
 	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
 	auto pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(std::move(pVertexShader));

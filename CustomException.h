@@ -31,6 +31,7 @@ namespace DX
 			throw com_exception(hr);
 		}
 	}
+
 }
 class CustomException : public std::exception
 {
@@ -38,9 +39,9 @@ public:
 	CustomException(int in_line, const char* file);
 	const char* what() const override;
 	unsigned int GetLine() const;
-	virtual std::string GetFile() const; //std::string???
+	virtual std::string GetFile() const; 
 	virtual const char* GetType() const;
-	std::string GetOriginString() const; // const char?
+	std::string GetOriginString() const; 
 
 protected:
 	mutable std::string whatBuffer;

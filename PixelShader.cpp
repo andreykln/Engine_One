@@ -9,9 +9,17 @@ PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
 		pPixelShaderBlob->GetBufferSize(),
 		nullptr,
 		pPixelShader.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	if (GetDebug(gfx) != nullptr)
+	{
+		gfx.SetDebugName(pPixelShader.Get(), path.c_str());
+	}
+#endif
+
 }
 
 void PixelShader::Bind(Graphics& gfx) noexcept
 {
 	GetContext(gfx)->PSSetShader(pPixelShader.Get(), nullptr, numOfClassInstances);
 }
+

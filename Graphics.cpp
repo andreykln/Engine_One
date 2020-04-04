@@ -1,5 +1,5 @@
 #include "Graphics.h"
-
+#include "D3Dcommon.h"
 Graphics::Graphics(HWND wnd)
 {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{ 0 };
@@ -39,10 +39,6 @@ Graphics::Graphics(HWND wnd)
 		pgfx_pDeviceContext.ReleaseAndGetAddressOf()));
 #ifdef MY_DEBUG
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
-	if (debugDevice != nullptr) 
-	{
-		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	}
 #endif
 
 	// DEPTH BUFFER
@@ -51,7 +47,6 @@ Graphics::Graphics(HWND wnd)
 	depth_description.DepthEnable = TRUE;
 	depth_description.DepthFunc = D3D11_COMPARISON_LESS;
 	depth_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDSState;
 	pgfx_pDevice->CreateDepthStencilState(&depth_description, pDSState.ReleaseAndGetAddressOf());
 	pgfx_pDeviceContext->OMSetDepthStencilState(pDSState.Get(), 1u);
 
@@ -68,12 +63,6 @@ Graphics::Graphics(HWND wnd)
 	descDepthTexture.CPUAccessFlags = 0;
 	descDepthTexture.MiscFlags = 0;
 	DX::ThrowIfFailed(pgfx_pDevice->CreateTexture2D(&descDepthTexture, 0u, pgfx_TextureDepthStencil.ReleaseAndGetAddressOf()));
-#ifdef MY_DEBUG
-	if (debugDevice != nullptr)
-	{
-		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	}
-#endif
 
 	//create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
@@ -82,15 +71,9 @@ Graphics::Graphics(HWND wnd)
 	descDSV.Texture2D.MipSlice = 0u;
 
 	DX::ThrowIfFailed(pgfx_pDevice->CreateDepthStencilView(
-								pgfx_TextureDepthStencil.Get(),
-								&descDSV,
-								pgfx_DepthStencilView.ReleaseAndGetAddressOf()));
-#ifdef MY_DEBUG
-	if (debugDevice != nullptr)
-	{
-		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	}
-#endif
+															pgfx_TextureDepthStencil.Get(),
+															&descDSV,
+															pgfx_DepthStencilView.ReleaseAndGetAddressOf()));
 
 	//viewport
 	vp.Width = resolution_width;
@@ -118,6 +101,13 @@ Graphics::Graphics(HWND wnd)
 
 Graphics::~Graphics()
 {
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	}
+#endif
+
 	debugDevice->Release();
 	debugDevice = nullptr;
 }
@@ -146,6 +136,21 @@ void Graphics::DrawIndexed(UINT count) const noexcept
 {
 	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
 }
+#ifdef MY_DEBUG
+void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
+{
+	if (child != nullptr)
+	{
+		//convert wstring to const char*
+		char* c_sName = new char[name.length()+1];
+		c_sName[name.size()] = '\0';
+		WideCharToMultiByte(CP_ACP, 0u, name.c_str(), -1, c_sName, (UINT)name.length(), NULL, NULL);
+
+		child->SetPrivateData(WKPDID_D3DDebugObjectName, static_cast<UINT>(name.size()) - 1, c_sName);
+		delete[] c_sName;
+	}
+}
+#endif
 
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 {
