@@ -123,7 +123,7 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-
+// 	TwoTestCubes();
 	for (auto& b : cubes)
 	{
 		b->BindAndDraw(wnd.GetGraphics());
@@ -139,8 +139,8 @@ void App::DoFrame()
 
 void App::TwoTestCubes() noexcept
 {
-// 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
-// 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
+	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
+	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
 
 }
 

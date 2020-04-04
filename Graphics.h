@@ -8,7 +8,7 @@
 #include "directxcolors.h"
 #include <d3dcompiler.h>
 #include "CustomException.h"
-
+#define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
 
@@ -17,6 +17,7 @@ class Graphics
 public:
 	//TODO  put all of your render state group objects in a static class
 	Graphics(HWND wnd);
+	~Graphics();
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
 	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
@@ -26,8 +27,11 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
 private:
+#ifdef MY_DEBUG
+	ID3D11Debug* debugDevice = nullptr;
+#endif
 
-	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
@@ -47,7 +51,7 @@ private:
 		D3D_FEATURE_LEVEL_9_1,
 	};
 
-public:/*
+public:
 	void TestDrawing(float angle, float axis_x, float axis_y, float axis_z)
 	{
 
@@ -199,6 +203,6 @@ public:/*
 
 
 	}
-	*/
+	
 };
 

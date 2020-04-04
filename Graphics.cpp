@@ -23,15 +23,27 @@ Graphics::Graphics(HWND wnd)
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
+#ifdef MY_DEBUG
 		D3D11_CREATE_DEVICE_DEBUG,
+#endif
+#ifndef MY_DEBUG
+		0u,
+#endif // !MY_DEBUG
 		d3dFeatureLevels, 
 		featureLevelNum, 
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
-		&pgfx_SwapChain,
-		&pgfx_pDevice,
+		pgfx_SwapChain.ReleaseAndGetAddressOf(),
+		pgfx_pDevice.ReleaseAndGetAddressOf(),
 		&featureLevelIsSupported, 
-		&pgfx_pDeviceContext));
+		pgfx_pDeviceContext.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
+	if (debugDevice != nullptr) 
+	{
+		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	}
+#endif
 
 	// DEPTH BUFFER
 	D3D11_DEPTH_STENCIL_DESC depth_description = {};
@@ -56,6 +68,12 @@ Graphics::Graphics(HWND wnd)
 	descDepthTexture.CPUAccessFlags = 0;
 	descDepthTexture.MiscFlags = 0;
 	DX::ThrowIfFailed(pgfx_pDevice->CreateTexture2D(&descDepthTexture, 0u, pgfx_TextureDepthStencil.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	}
+#endif
 
 	//create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
@@ -67,7 +85,14 @@ Graphics::Graphics(HWND wnd)
 								pgfx_TextureDepthStencil.Get(),
 								&descDSV,
 								pgfx_DepthStencilView.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	}
+#endif
 
+	//viewport
 	vp.Width = resolution_width;
 	vp.Height = resolution_height;
 	vp.MinDepth = 0;
@@ -75,19 +100,32 @@ Graphics::Graphics(HWND wnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
-	ID3D11Debug* debugDevice;
-	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
-	debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+#ifdef MY_DEBUG
+	ID3D11InfoQueue* infoQueue = nullptr;
+	pgfx_pDevice->QueryInterface(__uuidof(ID3D11InfoQueue), reinterpret_cast<void**>(&infoQueue));
+	if (infoQueue)
+	{
+		infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, FALSE);
+		infoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
+		infoQueue->Release();
+		infoQueue = nullptr;
+	}
 
+#endif
 	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
-	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, &pgfx_RenderTargetView));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, pgfx_RenderTargetView.ReleaseAndGetAddressOf()));
+}
 
+Graphics::~Graphics()
+{
+	debugDevice->Release();
+	debugDevice = nullptr;
 }
 
 void Graphics::EndFrame()
 {
 	DX::ThrowIfFailed(pgfx_SwapChain->Present(1u, 0u));
-	pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(),pgfx_DepthStencilView.Get());
+	pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), pgfx_DepthStencilView.Get());
 	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 }
 
