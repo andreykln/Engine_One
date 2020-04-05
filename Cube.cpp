@@ -20,7 +20,7 @@ Cube::Cube(Graphics& gfx)
 		{DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::OliveDrab)},
 		{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::WhiteSmoke)}
 	};
-	AddBind(std::make_unique<VertexBuffer>(gfx, cubeCoord));
+	AddBind(std::make_unique<VertexBuffer>(gfx, cubeCoord, L"Cube coordinates"));
 	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
 	auto pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(std::move(pVertexShader));
@@ -32,7 +32,7 @@ Cube::Cube(Graphics& gfx)
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc));
+	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
 	AddBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
 
 	const std::vector<unsigned short> indices
@@ -50,7 +50,7 @@ Cube::Cube(Graphics& gfx)
 		//down
 		1,7,6, 1,6,0
 	};
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices, L"CubeIndBuff"));
 	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 }

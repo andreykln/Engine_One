@@ -4,7 +4,7 @@ class VertexBuffer : public Bindable
 {
 public:
 	template <typename T>
-	VertexBuffer(Graphics& gfx, const std::vector<T>& vertices)
+	VertexBuffer(Graphics& gfx, const std::vector<T>& vertices, const std::wstring& name = std::wstring())
 		: stride(sizeof(T))
 	{ //define it here, so Visual studio won't complain about header file stop
 		D3D11_BUFFER_DESC bufferDesc;
@@ -19,6 +19,14 @@ public:
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 		DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&bufferDesc, &initData, pVertexBuffer.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+		if (name != std::wstring())
+		{
+			gfx.SetDebugName(pVertexBuffer.Get(), name.c_str());
+		}
+#endif
+
+
 	}
 	void Bind(Graphics& gfx) noexcept override;
 private:

@@ -8,6 +8,12 @@ VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
 		pVertexShaderBlob->GetBufferSize(),
 		nullptr,
 		pVertexShader.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	if (path != std::wstring())
+	{
+		gfx.SetDebugName(pVertexShader.Get(), path.c_str());
+	}
+#endif
 }
 
 void VertexShader::Bind(Graphics& gfx) noexcept

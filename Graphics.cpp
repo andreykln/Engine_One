@@ -106,10 +106,10 @@ Graphics::~Graphics()
 	{
 		debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 	}
-#endif
-
 	debugDevice->Release();
 	debugDevice = nullptr;
+#endif
+
 }
 
 void Graphics::EndFrame()

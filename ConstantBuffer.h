@@ -12,7 +12,7 @@ public:
 		std::memcpy(mapped_subresource.pData, &data, sizeof(data));
 		GetContext(gfx)->Unmap(pConstBuffer.Get(), 0u);
 	}
-	ConstantBuffer(Graphics& gfx, const C& data)
+	ConstantBuffer(Graphics& gfx, const C& data, const std::wstring& name = std::wstring())
 	{
 		D3D11_BUFFER_DESC constBufDesc;
 		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -26,8 +26,14 @@ public:
 		constBufInitData.SysMemPitch = 0;
 		constBufInitData.SysMemSlicePitch = 0;
 		DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&constBufDesc, &constBufInitData, pConstBuffer.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+		if (name != std::wstring())
+		{
+			gfx.SetDebugName(pConstBuffer.Get(), name.c_str());
+		}
+#endif
 	}
-	ConstantBuffer(Graphics& gfx)
+	ConstantBuffer(Graphics& gfx, const std::wstring& name = std::wstring())
 	{
 		D3D11_BUFFER_DESC constBufDesc;
 		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -37,6 +43,12 @@ public:
 		constBufDesc.StructureByteStride = 0u;
 		constBufDesc.MiscFlags = 0u;
 		DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&constBufDesc, nullptr, pConstBuffer.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+		if (name != std::wstring())
+		{
+			gfx.SetDebugName(pConstBuffer.Get(), name.c_str());
+		}
+#endif
 	}
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstBuffer;

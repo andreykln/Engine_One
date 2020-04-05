@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 
-IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices)
+IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indices, const std::wstring& name)
 	: count(static_cast<UINT>(indices.size()))
 {
 	D3D11_BUFFER_DESC indicesBuffDesc;
@@ -15,6 +15,12 @@ IndexBuffer::IndexBuffer(Graphics& gfx, const std::vector<unsigned short>& indic
 	indicesInitData.SysMemPitch = 0u;
 	indicesInitData.SysMemSlicePitch = 0u;
 	DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&indicesBuffDesc, &indicesInitData, pIndicesBuffer.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	if (name != std::wstring())
+	{
+		gfx.SetDebugName(pIndicesBuffer.Get(), name.c_str());
+	}
+#endif
 }
 
 UINT IndexBuffer::GetCount() const noexcept
