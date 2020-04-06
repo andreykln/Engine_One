@@ -127,6 +127,7 @@ void App::DoFrame()
 	for (auto& b : cubes)
 	{
 		b->BindAndDraw(wnd.GetGraphics());
+		b->Update(timer.TotalTime() * 0.5f);
 	}
 	CalculateFrameStats();
 	//CameraMove();

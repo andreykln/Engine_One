@@ -8,5 +8,8 @@ public:
 	Cube(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
+
+private:
+	float x = 0.0f;
 };
 

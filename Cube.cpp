@@ -57,10 +57,12 @@ Cube::Cube(Graphics& gfx)
 
 DirectX::XMMATRIX Cube::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixIdentity();
+	return DirectX::XMMatrixRotationRollPitchYaw(x, x, x) * DirectX::XMMatrixTranslation(0.0f, 0.7f, 0.0f);
+// 	DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi)*
+// 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
 }
 
 void Cube::Update(float dt) noexcept
 {
-
+	x = dt;
 }
