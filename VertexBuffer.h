@@ -25,8 +25,6 @@ public:
 			gfx.SetDebugName(pVertexBuffer.Get(), name.c_str());
 		}
 #endif
-
-
 	}
 	void Bind(Graphics& gfx) noexcept override;
 private:

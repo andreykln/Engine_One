@@ -39,6 +39,7 @@ Graphics::Graphics(HWND wnd)
 		pgfx_pDeviceContext.ReleaseAndGetAddressOf()));
 #ifdef MY_DEBUG
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
+	SetDeviceDebugName(pgfx_pDeviceContext.Get(), L"DeviceContextCreation.");
 #endif
 
 	// DEPTH BUFFER
@@ -48,6 +49,9 @@ Graphics::Graphics(HWND wnd)
 	depth_description.DepthFunc = D3D11_COMPARISON_LESS;
 	depth_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	pgfx_pDevice->CreateDepthStencilState(&depth_description, pDSState.ReleaseAndGetAddressOf());
+#ifdef MY_DEBUG
+	SetDeviceDebugName(pDSState.Get(), L"DepthStencilState.");
+#endif
 	pgfx_pDeviceContext->OMSetDepthStencilState(pDSState.Get(), 1u);
 
 	D3D11_TEXTURE2D_DESC descDepthTexture;
@@ -63,6 +67,9 @@ Graphics::Graphics(HWND wnd)
 	descDepthTexture.CPUAccessFlags = 0;
 	descDepthTexture.MiscFlags = 0;
 	DX::ThrowIfFailed(pgfx_pDevice->CreateTexture2D(&descDepthTexture, 0u, pgfx_TextureDepthStencil.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	SetDeviceDebugName(pgfx_TextureDepthStencil.Get(), L"Text2DDepthStentcil.");
+#endif
 
 	//create view of depth stencil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
@@ -74,6 +81,9 @@ Graphics::Graphics(HWND wnd)
 															pgfx_TextureDepthStencil.Get(),
 															&descDSV,
 															pgfx_DepthStencilView.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	SetDeviceDebugName(pgfx_DepthStencilView.Get(), L"DepthStencilView.");
+#endif
 
 	//viewport
 	vp.Width = resolution_width;
@@ -97,6 +107,9 @@ Graphics::Graphics(HWND wnd)
 #endif
 	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
 	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, pgfx_RenderTargetView.ReleaseAndGetAddressOf()));
+#ifdef MY_DEBUG
+	SetDeviceDebugName(pgfx_RenderTargetView.Get(), L"CreateRenderTargetView.");
+#endif
 }
 
 Graphics::~Graphics()
@@ -142,7 +155,7 @@ void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 	if (child != nullptr)
 	{
 		//convert wstring to const char*
-		char* c_sName = new char[name.length()+1];
+		char* c_sName = new char[name.length()+2];
 		c_sName[name.size()] = '\0';
 		WideCharToMultiByte(CP_ACP, 0u, name.c_str(), -1, c_sName, (UINT)name.length(), NULL, NULL);
 
@@ -150,6 +163,12 @@ void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 		delete[] c_sName;
 	}
 }
+
+void Graphics::SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& name)
+{
+	SetDebugName(child, name);
+}
+
 #endif
 
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept
