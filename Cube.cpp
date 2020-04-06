@@ -1,6 +1,7 @@
 #include "Cube.h"
 
-Cube::Cube(Graphics& gfx)
+Cube::Cube(Graphics& gfx, float& in_x, float& in_y, float& in_z)
+	: x(in_x), y(in_y), z(in_z)
 {
 	struct Vertex
 	{
@@ -57,12 +58,13 @@ Cube::Cube(Graphics& gfx)
 
 DirectX::XMMATRIX Cube::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixRotationRollPitchYaw(x, x, x) * DirectX::XMMatrixTranslation(0.0f, 0.7f, 0.0f);
-// 	DirectX::XMMatrixRotationRollPitchYaw(theta, phi, chi)*
-// 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+	return DirectX::XMMatrixRotationRollPitchYaw(alpha, alpha, alpha) *
+		   DirectX::XMMatrixTranslation(x, y, z) * 
+		   DirectX::XMMatrixTranslation(0.0f, 0.0f, alpha * 2.0f);
 }
 
 void Cube::Update(float dt) noexcept
 {
-	x = dt;
+	alpha = dt;
+
 }
