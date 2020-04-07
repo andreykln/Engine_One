@@ -166,7 +166,6 @@
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
-    <ClCompile Include="TopologyTEST.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -188,7 +187,6 @@
     <ClInclude Include="Shape.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
-    <ClInclude Include="TopologyTEST.h" />
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
