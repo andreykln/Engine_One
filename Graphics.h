@@ -4,11 +4,10 @@
 #include <vector>
 #include "dxgidebug.h"
 #include "DirectXMath.h"
-#include "directxmath.h"
 #include "directxcolors.h"
-#include <d3dcompiler.h>
 #include "CustomException.h"
-#define MY_DEBUG
+#include <d3dcompiler.h>
+// #define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
 
@@ -62,8 +61,6 @@ private:
 public:
 	void TestDrawing(float angle, float axis_x, float axis_y, float axis_z)
 	{
-
-
 		const float FOV = DirectX::XM_PI / 4.0f;
 		const float screenAspect = float(resolution_width) / float(resolution_height);
 		DirectX::XMMATRIX projectionMatrix;
@@ -163,9 +160,6 @@ public:
 			pVertexShaderBlob->GetBufferSize(), &pInputLayout));
 
 		pgfx_pDeviceContext->IASetInputLayout(pInputLayout.Get());
-
-
-
 
 		const unsigned short  indices[]
 		{

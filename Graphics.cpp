@@ -1,5 +1,5 @@
 #include "Graphics.h"
-#include "D3Dcommon.h"
+// #include "D3Dcommon.h"
 Graphics::Graphics(HWND wnd)
 {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{ 0 };

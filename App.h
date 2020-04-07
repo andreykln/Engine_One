@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <sstream>
+
 extern const short resolution_width;
 extern const short resolution_height;
 
@@ -12,13 +13,14 @@ class App
 {
 public:
 	App();
+	void DoFrame();
 	int Go();
 	void DebugTextToTitle();
 	void ScrollWheelCounter();
 	void CalculateFrameStats();
 	void CameraMove();
-	void DoFrame();
 	void TwoTestCubes() noexcept;
+	void GenerateCubeGrid(size_t dimension, std::vector<std::unique_ptr<Cube>>& cubes);
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
 	//Axis step generation
@@ -36,8 +38,8 @@ private:
 	float colors[4]{};
 	const float camera_move_step = 0.05f;
 
-	const float axis_x = 0.0f;
-	const float axis_y = 0.0f;
+	const float axis_x = -10.0f;
+	const float axis_y = 10.0f;
 	const float axis_z = 5.0f;
 
 // 	const float axis_x = -15.0f;
