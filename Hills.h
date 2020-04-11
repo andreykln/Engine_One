@@ -18,7 +18,7 @@ private:
 	UINT m{};
 	UINT n{};
 	float GetHeight(float x, float z) const;
-
+	float alpha{};
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 };

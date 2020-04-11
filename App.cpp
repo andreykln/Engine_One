@@ -18,19 +18,12 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	// 	TwoTestCubes();
-// 	for (auto& b : cubes)
-// 	{
-// 		b->BindAndDraw(wnd.GetGraphics());
-// 		b->Update(timer.TotalTime() * 0.5f);
-// 	}
 	for (auto& h : hills)
 	{
 		h->BindAndDraw(wnd.GetGraphics());
+		h->Update(timer.TotalTime() * 20);
 	}
 	CalculateFrameStats();
-	//CameraMove();
-	//ScrollWheelCounter();
 
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
@@ -100,7 +93,7 @@ void App::CalculateFrameStats()
 		float ms_per_frame = 1000.0f / fps;
 		std::ostringstream oss;
 		oss << "D3D. FPS:" << fps
-			<< "; Frame Time: " << ms_per_frame << " NumOfObj: " << cubes.size();
+			<< "; Frame Time: " << ms_per_frame;
 		wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;

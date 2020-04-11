@@ -13,13 +13,13 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 	std::vector<Vertex_l> vertices(grid.Vertices.size());
-
+	
 	for (size_t i = 0; i < grid.Vertices.size(); ++i) 
 	{
 		DirectX::XMFLOAT3 p = grid.Vertices[i].Position;
 		p.y = GetHeight(p.x, p.z);
 		vertices[i].pos = p;
-		//color based on height
+		//color is based on height
 		if (p.y < -10.0f)
 		{
 			vertices[i].color = DirectX::XMFLOAT4(1.0f, 0.96f, 0.62f, 1.0f);
@@ -41,6 +41,7 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 			vertices[i].color = DirectX::XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 		}
 	}
+
 	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"Hills landscape"));
 	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
 	auto pVertexShaderBlob = pVertexShader->GetByteCode();
@@ -64,12 +65,15 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 
 DirectX::XMMATRIX Hills::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixIdentity();
+// 	return DirectX::XMMatrixRotationY(alpha);
+	return DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) * //0.0f, -35.0f, 90.0f
+		DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(alpha)) * 
+		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
 }
 
 void Hills::Update(float dt) noexcept
 {
-
+	alpha = dt;
 }
 
 void Hills::SetWidth(float in_width) noexcept
