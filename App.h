@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "Cube.h"
+#include "Hills.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -33,6 +34,7 @@ private:
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 	DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixIdentity();
 	std::vector<std::unique_ptr<Cube>> cubes;
+	std::vector<std::unique_ptr<Hills>> hills;
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

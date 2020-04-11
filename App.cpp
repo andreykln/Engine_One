@@ -4,7 +4,13 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	GenerateCubeGrid(27, cubes);
+	const float depth = 160.0f;
+	const float width = 160.0f;
+	const UINT m = 50;
+	const UINT n = 50;
+	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
+
+	//GenerateCubeGrid(4, cubes);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -13,12 +19,15 @@ void App::DoFrame()
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	// 	TwoTestCubes();
-	for (auto& b : cubes)
+// 	for (auto& b : cubes)
+// 	{
+// 		b->BindAndDraw(wnd.GetGraphics());
+// 		b->Update(timer.TotalTime() * 0.5f);
+// 	}
+	for (auto& h : hills)
 	{
-		b->BindAndDraw(wnd.GetGraphics());
-		b->Update(timer.TotalTime() * 0.5f);
+		h->BindAndDraw(wnd.GetGraphics());
 	}
-
 	CalculateFrameStats();
 	//CameraMove();
 	//ScrollWheelCounter();

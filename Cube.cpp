@@ -22,7 +22,7 @@ Cube::Cube(Graphics& gfx, float& in_x, float& in_y, float& in_z)
 		{DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f),		DirectX::XMFLOAT4(DirectX::Colors::WhiteSmoke)}
 	};
 	AddBind(std::make_unique<VertexBuffer>(gfx, cubeCoord, L"Cube coordinates"));
-	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"VertexShader.cso");
+	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
 	auto pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(std::move(pVertexShader));
 
@@ -34,9 +34,9 @@ Cube::Cube(Graphics& gfx, float& in_x, float& in_y, float& in_z)
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
-	AddBind(std::make_unique<PixelShader>(gfx, L"PixelShader.cso"));
+	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
 
-	const std::vector<unsigned short> indices
+	const std::vector<UINT> indices
 	{
 		//front
 		0,2,1, 0,3,2,
