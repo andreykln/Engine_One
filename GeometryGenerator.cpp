@@ -13,8 +13,6 @@ void GeometryGenerator::CreateGrid(float width, float depth, UINT m, UINT n, Mes
 	float dx = width / (n - 1);
 	float dz = depth / (m - 1);
 
-// 	float du = 1.0f / (n - 1);
-// 	float dv = 1.0f / (m - 1);
 	meshData.Vertices.resize(vertexCount);
 	for (UINT i = 0; i < m; ++i)
 	{

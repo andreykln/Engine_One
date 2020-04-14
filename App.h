@@ -22,9 +22,10 @@ public:
 	void CameraMove();
 	void TwoTestCubes() noexcept;
 	void GenerateCubeGrid(size_t dimension, std::vector<std::unique_ptr<Cube>>& cubes);
+	void Terrain();
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
-	//Axis step generation
+	//Axis step generation for cubes
 	float X_Generate(size_t& i, float& current_X_Axis);
 	float Y_Generate(size_t& j, float& current_Y_Axis);
 	float Z_Generate(size_t& k, float& current_Z_Axis);

@@ -22,7 +22,7 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 		//color is based on height
 		if (p.y < -10.0f)
 		{
-			vertices[i].color = DirectX::XMFLOAT4(1.0f, 0.96f, 0.62f, 1.0f);
+			vertices[i].color = DirectX::XMFLOAT4(0.2f, 0.35f, 0.92f, 1.0f);
 		}
 		else if (p.y < 5.0f)
 		{
@@ -65,9 +65,7 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 
 DirectX::XMMATRIX Hills::GetTransform() const noexcept
 {
-// 	return DirectX::XMMatrixRotationY(alpha);
-	return DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) * //0.0f, -35.0f, 90.0f
-		DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(alpha)) * 
+	return DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
 }
 

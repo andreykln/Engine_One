@@ -4,13 +4,6 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	const float depth = 160.0f;
-	const float width = 160.0f;
-	const UINT m = 50;
-	const UINT n = 50;
-	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
-
-	//GenerateCubeGrid(4, cubes);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -173,6 +166,15 @@ void App::GenerateCubeGrid(size_t dimension, std::vector<std::unique_ptr<Cube>>&
 		}
 	}
 
+}
+
+void App::Terrain()
+{
+	const float depth = 160.0f;
+	const float width = 160.0f;
+	const UINT m = 50;
+	const UINT n = 50;
+	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
