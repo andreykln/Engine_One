@@ -8,24 +8,16 @@ Cylinder::Cylinder(Graphics& gfx, float in_x)
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
 	};
-	cylinderParts.CreateCylinder(0.8f, 0.5, 1.0f, 6u, 8u, mesh);
+	cylinderParts.CreateCylinder(0.5f, 0.5f, 1.0f, 20u, 20u, mesh);
 	std::vector<Vertex_C> vertices(mesh.vertices.size());
-	DirectX::XMFLOAT4 col{ 0.1f, 0.1f, 0.1, 1.0f };
+	DirectX::XMFLOAT4 col{ 0.5f, 0.8f, 0.2, 1.0f };
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
 		vertices[i].pos = p;
 		vertices[i].color = col;
-		col.x += 0.1;
-		col.y += 0.1;
-		col.z += 0.1;
-		if (col.x == 0.9)
-		{
-			col.x = 0.1;
-			col.y = 0.1;
-			col.z = 0.1;
-		}
+
 	}
 
 	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"Cylinder"));

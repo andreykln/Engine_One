@@ -49,9 +49,7 @@ void GeometryGenerator::CreateCylinder(float bottomRadius, float topRadius, floa
 	float stackHeight = height / stackCount;
 	//Amount to increment radius as we move up each stack
 	float radiusStep = (topRadius - bottomRadius) / stackCount;
-
 	UINT ringCount = stackCount + 1;
-
 	//compute vertices for each stack ring starting at the bottom and moving up
 	for (UINT i = 0; i < ringCount; ++i)
 	{
@@ -63,10 +61,8 @@ void GeometryGenerator::CreateCylinder(float bottomRadius, float topRadius, floa
 		for (UINT j = 0; j <= sliceCount ; ++j)
 		{
 			Vertex vertex;
-
 			float c = cosf(j * dTheta);
 			float s = sinf(j * dTheta);
-
 			vertex.position = DirectX::XMFLOAT3(r * c, y, r * s);
 			vertex.TexC.x = (float)j / sliceCount;
 			vertex.TexC.y = 1.0f - (float)i / stackCount;
@@ -144,24 +140,22 @@ void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius,
 		float v = z / height + 0.5f;
 
 		meshData.vertices.push_back(Vertex(x,y,z, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, u, v));
-
-		//Cap center vertex
-		meshData.vertices.push_back(
-			Vertex(0.0f, y, 0.0f,
-				0.0f, 1.0f, 0.0f,
-				1.0f, 0.0f, 0.0f,
-				0.5f, 0.5f));
-
-		// Index of center vertex.
-		UINT centerIndex = (UINT)meshData.vertices.size() - 1;
-		for (UINT i = 0; i < sliceCount; ++i)
-		{
-			meshData.indices.push_back(centerIndex);
-			meshData.indices.push_back(baseIndex + i + 1);
-			meshData.indices.push_back(baseIndex + i);
-		}
 	}
+	//Cap center vertex
+	meshData.vertices.push_back(
+		Vertex(0.0f, y, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			0.5f, 0.5f));
 
+	// Index of center vertex.
+	UINT centerIndex = (UINT)meshData.vertices.size() - 1;
+	for (UINT i = 0; i < sliceCount; ++i)
+	{
+		meshData.indices.push_back(centerIndex);
+		meshData.indices.push_back(baseIndex + i + 1);
+		meshData.indices.push_back(baseIndex + i);
+	}
 }
 
 void GeometryGenerator::BuildCylinderBottomCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData)
@@ -187,22 +181,21 @@ void GeometryGenerator::BuildCylinderBottomCap(float bottomRadius, float topRadi
 				0.0f, 1.0f,
 				0.0f, 0.0f,
 				u, v));
+	}
+	//Cap center vertex
+	meshData.vertices.push_back(
+		Vertex(0.0f, y, 0.0f,
+			0.0f, -1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			0.5f, 0.5f));
 
-		//Cap center vertex
-		meshData.vertices.push_back(
-			Vertex(0.0f, y, 0.0f,
-				0.0f, -1.0f, 0.0f,
-				1.0f, 0.0f, 0.0f,
-				0.5f, 0.5f));
-
-		// Index of center vertex.
-		UINT centerIndex = (UINT)meshData.vertices.size() - 1;
-		for (UINT i = 0; i < sliceCount; ++i)
-		{
-			meshData.indices.push_back(centerIndex);
-			meshData.indices.push_back(baseIndex + i);
-			meshData.indices.push_back(baseIndex + i + 1);
-		}
+	// Index of center vertex.
+	UINT centerIndex = (UINT)meshData.vertices.size() - 1;
+	for (UINT i = 0; i < sliceCount; ++i)
+	{
+		meshData.indices.push_back(centerIndex);
+		meshData.indices.push_back(baseIndex + i);
+		meshData.indices.push_back(baseIndex + i + 1);
 	}
 }
 

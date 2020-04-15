@@ -4,12 +4,6 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	float a = 0.5f;
-
-
-	//Terrain();
-// 	cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics(), a, a, a));
-
 	cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(),0.0f));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
