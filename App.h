@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Cube.h"
 #include "Hills.h"
+#include "Sphere.h"
 #include "Cylinder.h"
 #include <vector>
 #include <cmath>
@@ -38,6 +39,7 @@ private:
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Hills>> hills;
 	std::vector<std::unique_ptr<Cylinder>> cylinder;
+	std::vector<std::unique_ptr<Sphere>> sphere;
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

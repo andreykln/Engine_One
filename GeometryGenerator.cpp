@@ -40,6 +40,112 @@ void GeometryGenerator::CreateGrid(float width, float depth, UINT m, UINT n, Mes
 	}
 }
 
+void GeometryGenerator::CreateSphere(float radius, UINT sliceCount, UINT stackCount, MeshData& meshData)
+{
+	meshData.vertices.clear();
+	meshData.indices.clear();
+	// Compute the vertices stating at the top pole and moving down the stacks.
+	// Poles: note that there will be texture coordinate distortion as there is
+	// not a unique point on the texture map to assign to the pole when mapping
+	// a rectangular texture onto a sphere.
+	Vertex topVertex(0.0f, +radius, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	Vertex bottomVertex(0.0f, -radius, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+
+	meshData.vertices.push_back(topVertex);
+
+	float phiStep = DirectX::XM_PI / stackCount;
+	float thetaStep = 2.0f * DirectX::XM_PI / sliceCount;
+	// Compute vertices for each stack ring (do not count the poles as rings).
+	for (UINT i = 1; i <= stackCount - 1; ++i)
+	{
+		float phi = i * phiStep;
+
+		// Vertices of ring.
+		for (UINT j = 0; j <= sliceCount; ++j)
+		{
+			float theta = j * thetaStep;
+
+			Vertex v;
+
+			// spherical to Cartesian
+			v.position.x = radius * sinf(phi) * cosf(theta);
+			v.position.y = radius * cosf(phi);
+			v.position.z = radius * sinf(phi) * sinf(theta);
+
+			// Partial derivative of P with respect to theta
+			v.tangentU.x = -radius * sinf(phi) * sinf(theta);
+			v.tangentU.y = 0.0f;
+			v.tangentU.z = +radius * sinf(phi) * cosf(theta);
+
+			DirectX::XMVECTOR T = DirectX::XMLoadFloat3(&v.tangentU);
+			DirectX::XMStoreFloat3(&v.tangentU, DirectX::XMVector3Normalize(T));
+
+			DirectX::XMVECTOR p = DirectX::XMLoadFloat3(&v.position);
+			DirectX::XMStoreFloat3(&v.normal, DirectX::XMVector3Normalize(p));
+
+			v.TexC.x = theta / DirectX::XM_2PI;
+			v.TexC.y = phi / DirectX::XM_PI;
+
+			meshData.vertices.push_back(v);
+		}
+	}
+
+	meshData.vertices.push_back(bottomVertex);
+
+	//
+	// Compute indices for top stack.  The top stack was written first to the vertex buffer
+	// and connects the top pole to the first ring.
+	//
+
+	for (UINT i = 1; i <= sliceCount; ++i)
+	{
+		meshData.indices.push_back(0);
+		meshData.indices.push_back(i + 1);
+		meshData.indices.push_back(i);
+	}
+
+	//
+	// Compute indices for inner stacks (not connected to poles).
+	//
+
+	// Offset the indices to the index of the first vertex in the first ring.
+	// This is just skipping the top pole vertex.
+	UINT baseIndex = 1;
+	UINT ringVertexCount = sliceCount + 1;
+	for (UINT i = 0; i < stackCount - 2; ++i)
+	{
+		for (UINT j = 0; j < sliceCount; ++j)
+		{
+			meshData.indices.push_back(baseIndex + i * ringVertexCount + j);
+			meshData.indices.push_back(baseIndex + i * ringVertexCount + j + 1);
+			meshData.indices.push_back(baseIndex + (i + 1) * ringVertexCount + j);
+			
+			meshData.indices.push_back(baseIndex + (i + 1) * ringVertexCount + j);
+			meshData.indices.push_back(baseIndex + i * ringVertexCount + j + 1);
+			meshData.indices.push_back(baseIndex + (i + 1) * ringVertexCount + j + 1);
+		}
+	}
+
+	//
+	// Compute indices for bottom stack.  The bottom stack was written last to the vertex buffer
+	// and connects the bottom pole to the bottom ring.
+	//
+
+	// South pole vertex was added last.
+	UINT southPoleIndex = (UINT)meshData.vertices.size() - 1;
+
+	// Offset the indices to the index of the first vertex in the last ring.
+	baseIndex = southPoleIndex - ringVertexCount;
+
+	for (UINT i = 0; i < sliceCount; ++i)
+	{
+		meshData.indices.push_back(southPoleIndex);
+		meshData.indices.push_back(baseIndex + i);
+		meshData.indices.push_back(baseIndex + i + 1);
+	}
+
+}
+
 void GeometryGenerator::CreateCylinder(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData)
 {
 	meshData.vertices.clear();

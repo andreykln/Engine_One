@@ -4,7 +4,9 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(),0.0f));
+	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.0f));
+
+// 	cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(),0.0f));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -12,10 +14,10 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	for (auto& h : cylinder)
+	for (auto& h : sphere)
 	{
 		h->BindAndDraw(wnd.GetGraphics());
-		h->Update(timer.TotalTime() * 0.5);
+		h->Update(timer.TotalTime() * 0.5f);
 	}
 // 	for (auto& h : cubes)
 // 	{
