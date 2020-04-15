@@ -159,6 +159,7 @@
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="GeoSphere.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Hills.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="CustomException.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="GeoSphere.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Hills.h" />
     <ClInclude Include="IndexBuffer.h" />

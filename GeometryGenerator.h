@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <vector>
+#include <algorithm>
 #include "d3d11.h"
 
 class GeometryGenerator
@@ -34,11 +35,14 @@ public:
 	};
 
 	void CreateGrid(float width, float depth, UINT m, UINT n, MeshData& meshData);
+	void CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData);
 	void CreateSphere(float radius, UINT sliceCount, UINT stackCount, MeshData& meshData);
 	void CreateCylinder(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
 private:
 	void BuildCylinderTopCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
 	void BuildCylinderBottomCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
+	void Subdivide(MeshData& meshData);
+	float PolarAngleFromXY(float x, float y);
 
 };	
 	
