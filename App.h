@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Cube.h"
 #include "Hills.h"
+#include "Cylinder.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -36,6 +37,7 @@ private:
 	DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixIdentity();
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Hills>> hills;
+	std::vector<std::unique_ptr<Cylinder>> cylinder;
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

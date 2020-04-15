@@ -4,6 +4,13 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
+	float a = 0.5f;
+
+
+	//Terrain();
+// 	cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics(), a, a, a));
+
+	cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(),0.0f));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -11,11 +18,16 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	for (auto& h : hills)
+	for (auto& h : cylinder)
 	{
 		h->BindAndDraw(wnd.GetGraphics());
-		h->Update(timer.TotalTime() * 20);
+		h->Update(timer.TotalTime() * 0.5);
 	}
+// 	for (auto& h : cubes)
+// 	{
+// 		h->BindAndDraw(wnd.GetGraphics());
+// 		h->Update(timer.TotalTime() * 0.5);
+// 	}
 	CalculateFrameStats();
 
 	//DebugTextToTitle();

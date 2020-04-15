@@ -156,6 +156,7 @@
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CustomException.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CustomException.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Hills.h" />

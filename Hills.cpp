@@ -12,11 +12,11 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 
 
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
-	std::vector<Vertex_l> vertices(grid.Vertices.size());
+	std::vector<Vertex_l> vertices(grid.vertices.size());
 	
-	for (size_t i = 0; i < grid.Vertices.size(); ++i) 
+	for (size_t i = 0; i < grid.vertices.size(); ++i) 
 	{
-		DirectX::XMFLOAT3 p = grid.Vertices[i].Position;
+		DirectX::XMFLOAT3 p = grid.vertices[i].position;
 		p.y = GetHeight(p.x, p.z);
 		vertices[i].pos = p;
 		//color is based on height
@@ -56,7 +56,7 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
 	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
 
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, grid.Indices, L"HillsIndBuff"));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, grid.indices, L"HillsIndBuff"));
 	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
