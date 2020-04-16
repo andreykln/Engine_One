@@ -4,7 +4,8 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.0f));
+	//geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.0f));
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.25f, 0.25f, 0.25f));
 
 	//sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.0f));
 
@@ -16,16 +17,11 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	for (auto& h : geoSphere)
+	for (auto& h : box)
 	{
 		h->BindAndDraw(wnd.GetGraphics());
 		h->Update(timer.TotalTime() * 0.5f);
 	}
-// 	for (auto& h : cubes)
-// 	{
-// 		h->BindAndDraw(wnd.GetGraphics());
-// 		h->Update(timer.TotalTime() * 0.5);
-// 	}
 	CalculateFrameStats();
 
 	//DebugTextToTitle();

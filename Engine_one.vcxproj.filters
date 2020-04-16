@@ -108,6 +108,15 @@
     <ClCompile Include="GeoSphere.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="ShapesDemo.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -184,6 +193,15 @@
     </ClInclude>
     <ClInclude Include="GeoSphere.h">
       <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapesDemo.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

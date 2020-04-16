@@ -39,6 +39,45 @@ void GeometryGenerator::CreateGrid(float width, float depth, UINT m, UINT n, Mes
 	}
 }
 
+void GeometryGenerator::CreateBox(float width, float depth, float height, MeshData& meshData)
+{
+	meshData.vertices.clear();
+	meshData.indices.clear();
+	std::vector<DirectX::XMFLOAT3> cubeCoord
+	{
+		{DirectX::XMFLOAT3(-width, -height, -depth)},
+		{DirectX::XMFLOAT3(width, -height, -depth)},
+		{DirectX::XMFLOAT3(width, height, -depth)},
+
+		{DirectX::XMFLOAT3(-width, height, -depth)},
+		{DirectX::XMFLOAT3(-width, height, depth)},
+		{DirectX::XMFLOAT3(width, height, depth)},
+
+		{DirectX::XMFLOAT3(-width, -height, depth)},
+		{DirectX::XMFLOAT3(width, -height, depth)}
+	};
+	meshData.indices = 
+	{
+		//front
+		0,2,1, 0,3,2,
+		//back
+		7,5,6, 6,5,4,
+		//right side
+		1,2,7, 2,5,7,
+		//left side
+		6,3,0, 6,4,3,
+		//up
+		2,4,5, 3,4,2,
+		//down
+		1,7,6, 1,6,0
+	};
+	meshData.vertices.resize(cubeCoord.size());
+	for (size_t i = 0; i < cubeCoord.size(); i++)
+	{
+		meshData.vertices[i].position =  cubeCoord[i];
+	}
+}
+
 void GeometryGenerator::CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData)
 {
 	using namespace DirectX; //for multiplying XMVector by a scalar
@@ -396,9 +435,9 @@ void GeometryGenerator::Subdivide(MeshData& meshData)
 	UINT numTris = (unsigned long)inputCopy.indices.size() / 3;
 	for (UINT i = 0; i < numTris; ++i)
 	{
-		Vertex v0 = inputCopy.vertices[inputCopy.indices[(long)i * 3 + 0]];
-		Vertex v1 = inputCopy.vertices[inputCopy.indices[(long)i * 3 + 1]];
-		Vertex v2 = inputCopy.vertices[inputCopy.indices[(long)i * 3 + 2]];
+		Vertex v0 = inputCopy.vertices[inputCopy.indices[(long long)i * 3u + 0]];
+		Vertex v1 = inputCopy.vertices[inputCopy.indices[(long long)i * 3u + 1]];
+		Vertex v2 = inputCopy.vertices[inputCopy.indices[(long long)i * 3u + 2]];
 
 		//
 		// Generate the midpoints.
@@ -452,7 +491,6 @@ void GeometryGenerator::Subdivide(MeshData& meshData)
 		meshData.indices.push_back(i * 6 + 4);
 	}
 }
-
 
 float GeometryGenerator::PolarAngleFromXY(float x, float y)
 {

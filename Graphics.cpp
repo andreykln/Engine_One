@@ -122,7 +122,6 @@ Graphics::~Graphics()
 	debugDevice->Release();
 	debugDevice = nullptr;
 #endif
-
 }
 
 void Graphics::EndFrame()

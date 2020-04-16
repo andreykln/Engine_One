@@ -3,6 +3,9 @@
 Cube::Cube(Graphics& gfx, float& in_x, float& in_y, float& in_z)
 	: x(in_x), y(in_y), z(in_z)
 {
+
+
+
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 pos;
