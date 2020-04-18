@@ -8,10 +8,9 @@ class Box : public Shape
 public:
 	Box(Graphics& gfx, float width, float height, float depth);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
+	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 	float GetAlpha();
 private:
-	std::vector<DirectX::XMMATRIX> matrixArray;
 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
 	float alpha{};
 	GeometryGenerator::MeshData mesh;

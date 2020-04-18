@@ -1,7 +1,7 @@
 #include "GeoSphere.h"
 
-GeoSphere::GeoSphere(Graphics& gfx, float in_x)
-	: alpha(in_x)
+GeoSphere::GeoSphere(Graphics& gfx, float in_x, DirectX::XMMATRIX in_MatrixStartPosition)
+	: alpha(in_x), m_Translation(in_MatrixStartPosition)
 {
 	struct Vertex_G
 	{
@@ -38,11 +38,13 @@ GeoSphere::GeoSphere(Graphics& gfx, float in_x)
 
 DirectX::XMMATRIX GeoSphere::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixRotationX(alpha) *
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+	return m_Matrix * m_Translation * 
+		m_Centered;
 }
 
-void GeoSphere::Update(float dt) noexcept
+DirectX::XMMATRIX GeoSphere::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
 {
 	alpha = dt;
+	m_Matrix *= in_matrix;
+	return m_Matrix;
 }

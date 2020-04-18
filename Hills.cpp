@@ -69,9 +69,10 @@ DirectX::XMMATRIX Hills::GetTransform() const noexcept
 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
 }
 
-void Hills::Update(float dt) noexcept
+DirectX::XMMATRIX Hills::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
 {
 	alpha = dt;
+	return in_matrix;
 }
 
 void Hills::SetWidth(float in_width) noexcept

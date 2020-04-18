@@ -42,7 +42,8 @@ DirectX::XMMATRIX Sphere::GetTransform() const noexcept
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
-void Sphere::Update(float dt) noexcept
+DirectX::XMMATRIX Sphere::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
 {
 	alpha = dt;
+	return in_matrix;
 }

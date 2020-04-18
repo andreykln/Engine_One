@@ -121,7 +121,7 @@ DirectX::XMMATRIX ShapesDemo::GetTransform() const noexcept
 	return DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
-void ShapesDemo::Update(float dt) noexcept
+DirectX::XMMATRIX ShapesDemo::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
 {
-
+	return in_matrix;
 }

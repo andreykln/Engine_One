@@ -7,7 +7,7 @@ class ShapesDemo : public Shape
 public:
 	ShapesDemo(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
+	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 private:
 	GeometryGenerator::MeshData box;
 	GeometryGenerator::MeshData grid;

@@ -4,8 +4,10 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
+
 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f));
-	
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.3f, 0.5f, 0.2f));
+	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.3f, DirectX::XMMatrixTranslation(0.6f, 0.0f,0.0f)));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -14,11 +16,20 @@ void App::DoFrame()
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	
-	for (auto& h : box)
-	{
-		h->BindAndDraw(wnd.GetGraphics());
-		h->Update(timer.TotalTime() * 0.5f);
-	}
+	
+	box[0]->BindAndDraw(wnd.GetGraphics());
+	box[0]->Update(0.5f, DirectX::XMMatrixIdentity());
+	box[1]->BindAndDraw(wnd.GetGraphics());
+	box[1]->Update(0.5f, DirectX::XMMatrixRotationX(timer.DeltaTime()));
+	geoSphere[0]->BindAndDraw(wnd.GetGraphics());
+	geoSphere[0]->Update(0.0f, DirectX::XMMatrixRotationX(timer.DeltaTime() * 0.3f));
+
+
+// 	for (auto& h : box)
+// 	{
+// 		h->BindAndDraw(wnd.GetGraphics());
+// 		h->Update(0.5f, DirectX::XMMatrixRotationX(timer.DeltaTime()));
+// 	}
 	CalculateFrameStats();
 
 	//DebugTextToTitle();
