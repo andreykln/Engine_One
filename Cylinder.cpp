@@ -1,5 +1,4 @@
 #include "Cylinder.h"
-
 Cylinder::Cylinder(Graphics& gfx, float in_x)
 	: alpha(in_x)
 {

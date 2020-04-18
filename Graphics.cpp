@@ -41,6 +41,29 @@ Graphics::Graphics(HWND wnd)
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
 	SetDeviceDebugName(pgfx_pDeviceContext.Get(), L"DeviceContextCreation.");
 #endif
+	//
+	// RASTERIZER STATE TEST/////////////////////// TODO see if you can set it differently for each object
+	////////
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> pgfx_RasterState;
+	D3D11_RASTERIZER_DESC rasterDesc;
+	rasterDesc.AntialiasedLineEnable = FALSE;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.FrontCounterClockwise = FALSE;
+	rasterDesc.DepthBias = 0u;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterDesc.DepthClipEnable = TRUE;
+	rasterDesc.ScissorEnable = FALSE;
+	rasterDesc.MultisampleEnable = FALSE;
+
+	DX::ThrowIfFailed(pgfx_pDevice->CreateRasterizerState(&rasterDesc, pgfx_RasterState.ReleaseAndGetAddressOf()));
+	pgfx_pDeviceContext->RSSetState(pgfx_RasterState.Get());
+
+
+	//
+	// RASTERIZER STATE END //////////////////////////
+	//
 
 	// DEPTH BUFFER
 	D3D11_DEPTH_STENCIL_DESC depth_description = {};

@@ -4,12 +4,8 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	//geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.0f));
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.25f, 0.25f, 0.25f));
-
-	//sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.0f));
-
-// 	cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(),0.0f));
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f));
+	
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -17,6 +13,7 @@ void App::DoFrame()
 {
 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
+	
 	for (auto& h : box)
 	{
 		h->BindAndDraw(wnd.GetGraphics());

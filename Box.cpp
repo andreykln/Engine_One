@@ -4,8 +4,6 @@
 
 Box::Box(Graphics& gfx, float width, float height, float depth)
 {
-
-
 	struct Vertex_B
 	{
 		DirectX::XMFLOAT3 pos;
@@ -43,11 +41,19 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixRotationX(alpha) *
+	return 
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
+
+
+
 
 void Box::Update(float dt) noexcept
 {
 	alpha = dt;
+}
+
+float Box::GetAlpha()
+{
+	return alpha;
 }
