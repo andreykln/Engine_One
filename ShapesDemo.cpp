@@ -7,19 +7,20 @@ ShapesDemo::ShapesDemo(Graphics& gfx)
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
 	};
-	DirectX::XMFLOAT4X4 sSphereWorld[10];
-	DirectX::XMFLOAT4X4 sCylWorld[10];
-	DirectX::XMFLOAT4X4 sBoxWorld;
-	DirectX::XMFLOAT4X4 sGridWorld;
 
-	DirectX::XMFLOAT4X4 sCenterSphere;
+// 	DirectX::XMFLOAT4X4 sSphereWorld[10];
+// 	DirectX::XMFLOAT4X4 sCylWorld[10];
+// 	DirectX::XMFLOAT4X4 sBoxWorld;
+// 	DirectX::XMFLOAT4X4 sGridWorld;
+// 	DirectX::XMFLOAT4X4 sCenterSphere;
+
 	DirectX::XMMATRIX I = DirectX::XMMatrixIdentity();
 
 	DirectX::XMStoreFloat4x4(&sGridWorld, I);
 	DirectX::XMMATRIX boxScale = DirectX::XMMatrixScaling(2.0f, 1.0f, 2.0f);
 	DirectX::XMMATRIX boxOffset = DirectX::XMMatrixTranslation(0.0f, 0.5f, 0.0f); //TODO z might be 4.0f
-
 	DirectX::XMStoreFloat4x4(&sBoxWorld, DirectX::XMMatrixMultiply(boxScale, boxOffset));
+
 	DirectX::XMMATRIX centerSphereScale = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
 	DirectX::XMMATRIX centerSphereOffset = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);
 	DirectX::XMStoreFloat4x4(&sCenterSphere, DirectX::XMMatrixMultiply(centerSphereScale, centerSphereOffset));
@@ -40,7 +41,7 @@ ShapesDemo::ShapesDemo(Graphics& gfx)
 			DirectX::XMMatrixTranslation(5.0f, 3.5f, -10.0f + i * 5.0f));
 	}
 
-	
+	GetSphereWorld(sSphereWorld);
 	generator.CreateBox(1.0f, 1.0f, 1.0f, box);
 	generator.CreateGrid(20.0f, 30.0f, 60, 40, grid);
 	generator.CreateSphere(0.5f, 20, 20, sphere);
@@ -91,17 +92,17 @@ ShapesDemo::ShapesDemo(Graphics& gfx)
 	}
 	for (size_t i = 0; i < grid.vertices.size(); i++, k++)
 	{
-		vertices[k].pos = grid.vertices[k].position;
+		vertices[k].pos = grid.vertices[i].position;
 		vertices[k].color = black;
 	}
 	for (size_t i = 0; i < sphere.vertices.size(); i++, k++)
 	{
-		vertices[k].pos = sphere.vertices[k].position;
+		vertices[k].pos = sphere.vertices[i].position;
 		vertices[k].color = black;
 	}
 	for (size_t i = 0; i < cylinder.vertices.size(); i++, k++)
 	{
-		vertices[k].pos = cylinder.vertices[k].position;
+		vertices[k].pos = cylinder.vertices[i].position;
 		vertices[k].color = black;
 	}
 	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"ShapesDemo"));
@@ -110,8 +111,23 @@ ShapesDemo::ShapesDemo(Graphics& gfx)
 	indices.insert(indices.end(), grid.indices.begin(), grid.indices.end());
 	indices.insert(indices.end(), sphere.indices.begin(), sphere.indices.end());
 	indices.insert(indices.end(), cylinder.indices.begin(), cylinder.indices.end());
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices, L"BoxIndexBuffer"));
+	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices, L"ShapesDemoIndexBuffer"));
 
+	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"Shapes"));
+	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
+	auto pVertexShaderBlob = pVertexShader->GetByteCode();
+	AddBind(std::move(pVertexShader));
+	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
+	{
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u}
+	};
+	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
+	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
+	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
 
 }
@@ -124,4 +140,12 @@ DirectX::XMMATRIX ShapesDemo::GetTransform() const noexcept
 DirectX::XMMATRIX ShapesDemo::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
 {
 	return in_matrix;
+}
+
+void ShapesDemo::GetSphereWorld(DirectX::XMFLOAT4X4 source[10])
+{
+	for (size_t i = 0; i < 10; i++)
+	{
+		m_SphereWorld[i] = DirectX::XMLoadFloat4x4(&source[i]);
+	}
 }
