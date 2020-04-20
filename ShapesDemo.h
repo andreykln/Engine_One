@@ -5,22 +5,33 @@
 class ShapesDemo : public Shape
 {
 public:
+	ShapesDemo() = delete;
+	ShapesDemo (ShapesDemo&) = delete;
+	ShapesDemo& operator=(const ShapesDemo&) = delete;
 	ShapesDemo(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 
-	void GetSphereWorld(DirectX::XMFLOAT4X4 source[10]);
-	DirectX::XMMATRIX GetCylinderWorld(DirectX::XMFLOAT4X4& source);
-	DirectX::XMMATRIX GetBoxWorld(DirectX::XMFLOAT4X4& source);
-	DirectX::XMMATRIX GetGridWorld(DirectX::XMFLOAT4X4& source);
-	DirectX::XMMATRIX GetCenterSphere(DirectX::XMFLOAT4X4& source);
+	void SetSphereWorld(DirectX::XMFLOAT4X4 source[10]);
+	void SetCylinderWorld(DirectX::XMFLOAT4X4 source[10]);
+	void SetBoxWorld(DirectX::XMFLOAT4X4& source);
+	void SetGridWorld(DirectX::XMFLOAT4X4& source);
+	void SetCenterSphere(DirectX::XMFLOAT4X4& source);
 private:
 	DirectX::XMFLOAT4X4 sSphereWorld[10];
 	DirectX::XMMATRIX m_SphereWorld[10];
+
 	DirectX::XMFLOAT4X4 sCylWorld[10];
+	DirectX::XMMATRIX m_CylWorld[10];
+
 	DirectX::XMFLOAT4X4 sBoxWorld;
+	DirectX::XMMATRIX m_BoxWorld;
+
 	DirectX::XMFLOAT4X4 sGridWorld;
+	DirectX::XMMATRIX m_GridWorld;
+
 	DirectX::XMFLOAT4X4 sCenterSphere;
+	DirectX::XMMATRIX m_CenterSphere;
 
 	GeometryGenerator::MeshData box;
 	GeometryGenerator::MeshData grid;

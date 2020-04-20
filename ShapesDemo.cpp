@@ -41,7 +41,12 @@ ShapesDemo::ShapesDemo(Graphics& gfx)
 			DirectX::XMMatrixTranslation(5.0f, 3.5f, -10.0f + i * 5.0f));
 	}
 
-	GetSphereWorld(sSphereWorld);
+	SetSphereWorld(sSphereWorld);
+	SetCylinderWorld(sCylWorld);
+	SetBoxWorld(sBoxWorld);
+	SetGridWorld(sGridWorld);
+	SetCenterSphere(sCenterSphere);
+
 	generator.CreateBox(1.0f, 1.0f, 1.0f, box);
 	generator.CreateGrid(20.0f, 30.0f, 60, 40, grid);
 	generator.CreateSphere(0.5f, 20, 20, sphere);
@@ -142,10 +147,33 @@ DirectX::XMMATRIX ShapesDemo::Update(float dt, DirectX::XMMATRIX in_matrix) noex
 	return in_matrix;
 }
 
-void ShapesDemo::GetSphereWorld(DirectX::XMFLOAT4X4 source[10])
+void ShapesDemo::SetSphereWorld(DirectX::XMFLOAT4X4 source[10])
 {
 	for (size_t i = 0; i < 10; i++)
 	{
 		m_SphereWorld[i] = DirectX::XMLoadFloat4x4(&source[i]);
 	}
+}
+
+void ShapesDemo::SetCylinderWorld(DirectX::XMFLOAT4X4 source[10])
+{
+	for (size_t i = 0; i < 10; i++)
+	{
+		m_CylWorld[i] = DirectX::XMLoadFloat4x4(&source[i]);
+	}
+}
+
+void ShapesDemo::SetBoxWorld(DirectX::XMFLOAT4X4& source)
+{
+	m_BoxWorld = DirectX::XMLoadFloat4x4(&source);
+}
+
+void ShapesDemo::SetGridWorld(DirectX::XMFLOAT4X4& source)
+{
+	m_GridWorld = DirectX::XMLoadFloat4x4(&source);
+}
+
+void ShapesDemo::SetCenterSphere(DirectX::XMFLOAT4X4& source)
+{
+	m_CenterSphere = DirectX::XMLoadFloat4x4(&source);
 }
