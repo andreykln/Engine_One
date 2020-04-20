@@ -12,17 +12,26 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 
+	DirectX::XMMATRIX* GetSphereWorldArray() const noexcept;
+	DirectX::XMMATRIX* GetCylinderWorldArray() const noexcept;
+	DirectX::XMMATRIX GetBoxWorld() const noexcept;
+	DirectX::XMMATRIX GetGridWorld() const noexcept;
+	DirectX::XMMATRIX GetCenterSphere() const noexcept;
+private:
 	void SetSphereWorld(DirectX::XMFLOAT4X4 source[10]);
 	void SetCylinderWorld(DirectX::XMFLOAT4X4 source[10]);
 	void SetBoxWorld(DirectX::XMFLOAT4X4& source);
 	void SetGridWorld(DirectX::XMFLOAT4X4& source);
 	void SetCenterSphere(DirectX::XMFLOAT4X4& source);
-private:
+
 	DirectX::XMFLOAT4X4 sSphereWorld[10];
 	DirectX::XMMATRIX m_SphereWorld[10];
+	DirectX::XMMATRIX* pm_SphereWorld = nullptr;
 
 	DirectX::XMFLOAT4X4 sCylWorld[10];
 	DirectX::XMMATRIX m_CylWorld[10];
+	DirectX::XMMATRIX* pm_CylinderWorld = nullptr;
+
 
 	DirectX::XMFLOAT4X4 sBoxWorld;
 	DirectX::XMMATRIX m_BoxWorld;

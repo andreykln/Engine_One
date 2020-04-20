@@ -34,6 +34,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
 	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, mesh.indices, L"BoxIndexBuffer"));
 	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
 	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
 

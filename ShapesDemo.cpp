@@ -147,12 +147,38 @@ DirectX::XMMATRIX ShapesDemo::Update(float dt, DirectX::XMMATRIX in_matrix) noex
 	return in_matrix;
 }
 
+DirectX::XMMATRIX* ShapesDemo::GetSphereWorldArray() const noexcept
+{
+	return pm_SphereWorld;
+}
+
+DirectX::XMMATRIX* ShapesDemo::GetCylinderWorldArray() const noexcept
+{
+	return pm_CylinderWorld;
+}
+
+DirectX::XMMATRIX ShapesDemo::GetBoxWorld() const noexcept
+{
+	return m_BoxWorld;
+}
+
+DirectX::XMMATRIX ShapesDemo::GetGridWorld() const noexcept
+{
+	return m_GridWorld;
+}
+
+DirectX::XMMATRIX ShapesDemo::GetCenterSphere() const noexcept
+{
+	return m_CenterSphere;
+}
+
 void ShapesDemo::SetSphereWorld(DirectX::XMFLOAT4X4 source[10])
 {
 	for (size_t i = 0; i < 10; i++)
 	{
 		m_SphereWorld[i] = DirectX::XMLoadFloat4x4(&source[i]);
 	}
+	pm_SphereWorld = m_SphereWorld;
 }
 
 void ShapesDemo::SetCylinderWorld(DirectX::XMFLOAT4X4 source[10])
@@ -161,6 +187,7 @@ void ShapesDemo::SetCylinderWorld(DirectX::XMFLOAT4X4 source[10])
 	{
 		m_CylWorld[i] = DirectX::XMLoadFloat4x4(&source[i]);
 	}
+	pm_CylinderWorld = m_CylWorld;
 }
 
 void ShapesDemo::SetBoxWorld(DirectX::XMFLOAT4X4& source)
