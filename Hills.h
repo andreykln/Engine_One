@@ -7,7 +7,7 @@ class Hills : public Shape
 public:
 	Hills(Graphics& gfx, const float& in_width, const float& in_depth, const UINT& in_m, const UINT& in_n);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
-	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
+// 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 	void SetWidth(float in_width) noexcept;
 	void SetDepth(float in_depth) noexcept;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;

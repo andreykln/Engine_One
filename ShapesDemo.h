@@ -10,7 +10,7 @@ public:
 	ShapesDemo& operator=(const ShapesDemo&) = delete;
 	ShapesDemo(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
-	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
+// 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 
 	DirectX::XMMATRIX* GetSphereWorldArray() const noexcept;
 	DirectX::XMMATRIX* GetCylinderWorldArray() const noexcept;

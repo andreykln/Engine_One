@@ -38,7 +38,7 @@ public:
 private:
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-	DirectX::XMMATRIX transformationMatrix = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX transformationMatrix = DirectX::XMMatrixIdentity() ;
 	std::vector<std::unique_ptr<Cube>> cubes;
 	std::vector<std::unique_ptr<Hills>> hills;
 	std::vector<std::unique_ptr<Cylinder>> cylinder;

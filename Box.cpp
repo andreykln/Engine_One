@@ -42,17 +42,17 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept
 {
-	return m_Matrix * 
+	return Shape::m_Matrix *
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
 
-DirectX::XMMATRIX Box::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-{
-	alpha = dt;
-	m_Matrix *= in_matrix;
-	return m_Matrix;
-}
+// DirectX::XMMATRIX Box::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
+// {
+// 	alpha = dt;
+// 	m_Matrix *= in_matrix;
+// 	return m_Matrix;
+// }
 
 float Box::GetAlpha()
 {

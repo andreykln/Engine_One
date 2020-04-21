@@ -46,8 +46,8 @@ DirectX::XMMATRIX Cylinder::GetTransform() const noexcept
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
-DirectX::XMMATRIX Cylinder::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-{
-	alpha = dt;
-	return in_matrix;
-}
+// DirectX::XMMATRIX Cylinder::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
+// {
+// 	alpha = dt;
+// 	return in_matrix;
+// }

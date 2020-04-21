@@ -7,7 +7,7 @@ class Cube : public Shape
 public:
 	Cube(Graphics& gfx, float& in_x, float& in_y, float& in_z);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
-	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
+// 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
 
 private:
 	//rotation

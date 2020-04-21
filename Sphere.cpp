@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
-Sphere::Sphere(Graphics& gfx, float in_x)
-	: alpha(in_x)
+Sphere::Sphere(Graphics& gfx, float in_x, DirectX::XMMATRIX in_MatrixStartPosition)
+	: alpha(in_x), m_Translation(in_MatrixStartPosition)
 {
 	struct Vertex_S
 	{
@@ -38,12 +38,15 @@ Sphere::Sphere(Graphics& gfx, float in_x)
 
 DirectX::XMMATRIX Sphere::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixRotationX(alpha) * 
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+
+	return Shape::m_Matrix * m_Translation *
+		m_Centered;
+// 	return DirectX::XMMatrixRotationX(alpha) * 
+// 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
-DirectX::XMMATRIX Sphere::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-{
-	alpha = dt;
-	return in_matrix;
-}
+// DirectX::XMMATRIX Sphere::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
+// {
+// 	alpha = dt;
+// 	return in_matrix;
+// }

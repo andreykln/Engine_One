@@ -6,9 +6,10 @@ App::App()
 {
 // 	d_shapesDemo.push_back(std::make_unique<ShapesDemo>(wnd.GetGraphics()));
 	
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f));
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.3f, 0.5f, 0.2f));
-	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.3f, DirectX::XMMatrixTranslation(0.6f, 0.0f, -1.8f)));
+// 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f));
+// 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.3f, 0.5f, 0.2f));
+	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.3f));
+// 	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.3f, DirectX::XMMatrixScaling(0.5f, 0.3f, 0.0f) * DirectX::XMMatrixTranslation(0.6f, 0.0f, -1.8f)));
 
 
 	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -20,12 +21,15 @@ void App::DoFrame()
 	timer.Tick();
 	
 	
-	box[0]->BindAndDraw(wnd.GetGraphics());
-	box[0]->Update(0.5f, DirectX::XMMatrixIdentity());
-	box[1]->BindAndDraw(wnd.GetGraphics());
-	box[1]->Update(0.5f, DirectX::XMMatrixRotationX(timer.DeltaTime()));
+// 	box[0]->BindAndDraw(wnd.GetGraphics());
+// 	box[0]->Update(0.5f, DirectX::XMMatrixRotationY(-timer.DeltaTime()));
+// 	box[1]->BindAndDraw(wnd.GetGraphics());
+// 	box[1]->Update(0.5f,  DirectX::XMMatrixRotationX(timer.DeltaTime()));
+// 	sphere[0]->BindAndDraw(wnd.GetGraphics());
+// 	sphere[0]->Update(0.0f, DirectX::XMMatrixRotationX(timer.DeltaTime() * 1.3f));
 	geoSphere[0]->BindAndDraw(wnd.GetGraphics());
-	geoSphere[0]->Update(0.0f, DirectX::XMMatrixRotationX(timer.DeltaTime() * 0.3f));
+	geoSphere[0]->SetMatrix(DirectX::XMMatrixRotationX(geoSphere[0]->alpha) * DirectX::XMMatrixTranslation(0.4f, 0.0f,0.0f));
+	geoSphere[0]->Update(timer.TotalTime());
 
 
 // 	for (auto& h : d_shapesDemo)

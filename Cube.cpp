@@ -65,8 +65,8 @@ DirectX::XMMATRIX Cube::GetTransform() const noexcept
 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 }
 
-DirectX::XMMATRIX Cube::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-{
-	alpha = dt;
-	return in_matrix;
-}
+// DirectX::XMMATRIX Cube::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
+// {
+// 	alpha = dt;
+// 	return in_matrix;
+// }
