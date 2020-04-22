@@ -17,7 +17,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	for (size_t i = 0; i < grid.vertices.size(); ++i) 
 	{
 		DirectX::XMFLOAT3 p = grid.vertices[i].position;
-		p.y = GetHeight(p.x, p.z);
+// 		p.y = GetHeight(p.x, p.z);
 		vertices[i].pos = p;
 		//color is based on height
 		if (p.y < -10.0f)

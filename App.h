@@ -35,14 +35,16 @@ public:
 private:
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-	std::vector<std::unique_ptr<Hills>> hills;
+	std::vector<std::unique_ptr<Hills>> grid;
 	std::vector<std::unique_ptr<Cylinder>> cylinder;
 	std::vector<std::unique_ptr<Sphere>> sphere;
 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
-
+	ShapesDemo shapes;
 	DirectX::XMMATRIX newMatrix = DirectX::XMMatrixTranslation(-0.4f, 0.0f, 0.0f);
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.7f, 0.0f, 0.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixRotationRollPitchYaw(-0.2f, 0.4f, 0.0f) * 
+		DirectX::XMMatrixTranslation(0.0f, -0.1f, 8.0f);
+	//DirectX::XMMATRIX grid_offset = DirectX::XMMatrixTranslation(0.0f, -0.1f, 4.0f);
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

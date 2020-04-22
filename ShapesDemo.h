@@ -2,21 +2,17 @@
 #include "Shape.h"
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
-class ShapesDemo : public Shape
+class ShapesDemo 
 {
 public:
-	ShapesDemo() = delete;
 	ShapesDemo (ShapesDemo&) = delete;
 	ShapesDemo& operator=(const ShapesDemo&) = delete;
-	ShapesDemo(Graphics& gfx);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-// 	DirectX::XMMATRIX Update(float dt, DirectX::XMMATRIX in_matrix) noexcept override;
-
+	ShapesDemo();
 	DirectX::XMMATRIX* GetSphereWorldArray() const noexcept;
 	DirectX::XMMATRIX* GetCylinderWorldArray() const noexcept;
-	DirectX::XMMATRIX GetBoxWorld() const noexcept;
-	DirectX::XMMATRIX GetGridWorld() const noexcept;
-	DirectX::XMMATRIX GetCenterSphere() const noexcept;
+	DirectX::XMMATRIX Get_m_BoxWorld() const noexcept;
+	DirectX::XMMATRIX Get_m_GridWorld() const noexcept;
+	DirectX::XMMATRIX Get_m_CenterSphere() const noexcept;
 private:
 	void SetSphereWorld(DirectX::XMFLOAT4X4 source[10]);
 	void SetCylinderWorld(DirectX::XMFLOAT4X4 source[10]);

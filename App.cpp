@@ -3,8 +3,9 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 160.0f, 160.0f, 50, 50));
-
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f));
+	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.5f, 20, 20));
+	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 20.0f, 20.0f, 60, 40));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -13,8 +14,17 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	hills[0]->BindAndDraw(wnd.GetGraphics());
-	hills[0]->Update(timer.TotalTime());
+
+	box[0]->SetMatrix(shapes.Get_m_BoxWorld() * offset);
+	box[0]->BindAndDraw(wnd.GetGraphics());
+
+	sphere[0]->SetMatrix(shapes.Get_m_CenterSphere() * offset);
+	sphere[0]->BindAndDraw(wnd.GetGraphics());
+
+	grid[0]->SetMatrix(shapes.Get_m_GridWorld() * offset);
+	grid[0]->BindAndDraw(wnd.GetGraphics());
+
+
 
 	CalculateFrameStats();
 
@@ -171,7 +181,7 @@ void App::Terrain()
 	const float width = 160.0f;
 	const UINT m = 50;
 	const UINT n = 50;
-	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
+	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept

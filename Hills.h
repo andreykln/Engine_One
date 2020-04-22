@@ -20,9 +20,12 @@ private:
 	float GetHeight(float x, float z) const;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
-// 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
-	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
-		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
+
+	//fir sin terrain
+// 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
+// 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30)); //for terrain
+
+
 public:
 	float alpha{};
 
