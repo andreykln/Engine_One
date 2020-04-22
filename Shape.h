@@ -17,9 +17,14 @@ public:
 	void AddBind(std::unique_ptr<Bindable> in_bind);
 	void AddIndexBuffer(std::unique_ptr<IndexBuffer> in_bind);
 	void BindAndDraw(Graphics& gfx) const noexcept;
+	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 private:
 	std::vector<std::unique_ptr<Bindable>> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;
+public:
+	float alpha{};
+	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 
 
 };

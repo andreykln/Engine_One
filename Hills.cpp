@@ -1,7 +1,7 @@
 #include "Hills.h"
 #include <cmath>
 
-Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const UINT& in_m, const UINT& in_n)
+Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n)
 	: width(in_width), depth(in_depth), m(in_m), n(in_n)
 {
 	struct Vertex_l

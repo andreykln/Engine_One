@@ -3,10 +3,7 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	
-	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics()));
-	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.4f, 20u, 20u));
-
+	hills.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 160.0f, 160.0f, 50, 50));
 
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -16,12 +13,8 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	geoSphere[0]->SetMatrix(DirectX::XMMatrixRotationX(geoSphere[0]->alpha) * newMatrix);
-	geoSphere[0]->BindAndDraw(wnd.GetGraphics());
-	geoSphere[0]->Update(timer.TotalTime());
-
-	
-	sphere[0]->BindAndDraw(wnd.GetGraphics());
+	hills[0]->BindAndDraw(wnd.GetGraphics());
+	hills[0]->Update(timer.TotalTime());
 
 	CalculateFrameStats();
 

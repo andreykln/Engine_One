@@ -1,5 +1,11 @@
 #include "Shape.h"
 class GeoSphere;
+
+void Shape::Update(float dt) noexcept
+{
+	alpha = dt;
+}
+
 void Shape::AddBind(std::unique_ptr<Bindable> in_bind)
 {
 	assert("Use AddIndexBuffer for binding IndexBuffer" && typeid(*in_bind) != typeid(IndexBuffer));
@@ -20,4 +26,9 @@ void Shape::BindAndDraw(Graphics& gfx) const noexcept
 		b->Bind(gfx);
 	}
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
+}
+
+void Shape::SetMatrix(DirectX::XMMATRIX in_matrix) noexcept
+{
+	m_Matrix = in_matrix;
 }

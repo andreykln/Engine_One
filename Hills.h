@@ -5,7 +5,7 @@
 class Hills : public Shape
 {
 public:
-	Hills(Graphics& gfx, const float& in_width, const float& in_depth, const UINT& in_m, const UINT& in_n);
+	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void SetWidth(float in_width) noexcept;
@@ -18,13 +18,13 @@ private:
 	UINT m{};
 	UINT n{};
 	float GetHeight(float x, float z) const;
-	float alpha{};
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
-	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+// 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
-
+public:
+	float alpha{};
 
 };
 

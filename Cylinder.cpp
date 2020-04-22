@@ -1,15 +1,15 @@
 #include "Cylinder.h"
-Cylinder::Cylinder(Graphics& gfx, float in_x)
-	: alpha(in_x)
+Cylinder::Cylinder(Graphics& gfx,
+	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count )
 {
 	struct Vertex_C
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
 	};
-	cylinderParts.CreateCylinder(0.5f, 0.5f, 1.0f, 20u, 20u, mesh);
+	cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
 	std::vector<Vertex_C> vertices(mesh.vertices.size());
-	DirectX::XMFLOAT4 col{ 0.5f, 0.8f, 0.2f, 1.0f };
+	DirectX::XMFLOAT4 col{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{

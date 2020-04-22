@@ -37,7 +37,6 @@ Sphere::Sphere(Graphics& gfx, float radius, UINT sliceCount, UINT stackCount)
 
 DirectX::XMMATRIX Sphere::GetTransform() const noexcept
 {
-
 	return m_Matrix * m_Centered;
 }
 

@@ -5,15 +5,13 @@
 class Cylinder : public Shape
 {
 public:
-	Cylinder(Graphics& gfx, float in_x);
+	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 private:
-	float alpha{};
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
-	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
-	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
-
+public:
+	float alpha{};
 };
 

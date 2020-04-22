@@ -28,11 +28,11 @@
     <Filter Include="Source Files\Drawable">
       <UniqueIdentifier>{235e1c2b-a253-4bb4-86ff-c6bcf7b989e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Utility">
-      <UniqueIdentifier>{224df3b4-d2b8-4d8e-953c-2a840e0968e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{eaef2933-9976-44e1-bc22-41be61f890eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawable\Utility">
+      <UniqueIdentifier>{224df3b4-d2b8-4d8e-953c-2a840e0968e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -174,7 +174,7 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
-      <Filter>Header Files\Utility</Filter>
+      <Filter>Header Files\Drawable\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Hills.h">
       <Filter>Header Files\Drawable</Filter>
@@ -195,7 +195,7 @@
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.h">
-      <Filter>Header Files\Utility</Filter>
+      <Filter>Header Files\Drawable\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

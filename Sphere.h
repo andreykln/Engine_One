@@ -10,12 +10,9 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 private:
-	float alpha{};
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
-	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
-	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
-
-
+public:
+	float alpha{};
 };
 

@@ -40,12 +40,8 @@ DirectX::XMMATRIX GeoSphere::GetTransform() const noexcept
 {
 	return m_Matrix * m_Centered;
 }
+
 void GeoSphere::Update(float dt) noexcept
 {
 	alpha = dt;
-}
-
-void GeoSphere::SetMatrix(DirectX::XMMATRIX in_matrix) noexcept
-{
-	m_Matrix = in_matrix;
 }

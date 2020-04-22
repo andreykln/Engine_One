@@ -40,9 +40,9 @@ private:
 	std::vector<std::unique_ptr<Sphere>> sphere;
 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
-	std::vector<std::unique_ptr<ShapesDemo>> d_shapesDemo;
 
 	DirectX::XMMATRIX newMatrix = DirectX::XMMatrixTranslation(-0.4f, 0.0f, 0.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.7f, 0.0f, 0.0f);
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

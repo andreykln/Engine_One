@@ -45,13 +45,7 @@ DirectX::XMMATRIX Box::GetTransform() const noexcept
 	return m_Matrix * m_Centered;
 }
 
-
 void Box::Update(float dt) noexcept
 {
 	alpha = dt;
-}
-
-float Box::GetAlpha()
-{
-	return alpha;
 }
