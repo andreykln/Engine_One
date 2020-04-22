@@ -42,12 +42,10 @@ Cylinder::Cylinder(Graphics& gfx, float in_x)
 
 DirectX::XMMATRIX Cylinder::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixRotationX(alpha) * 
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+	return m_Matrix * m_Centered;
 }
 
-// DirectX::XMMATRIX Cylinder::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-// {
-// 	alpha = dt;
-// 	return in_matrix;
-// }
+void Cylinder::Update(float dt) noexcept
+{
+	alpha = dt;
+}

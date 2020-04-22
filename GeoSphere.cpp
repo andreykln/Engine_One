@@ -1,7 +1,7 @@
 #include "GeoSphere.h"
+#include "App.h"
 
-GeoSphere::GeoSphere(Graphics& gfx, float in_x)
-	: alpha(in_x)
+GeoSphere::GeoSphere(Graphics& gfx)
 {
 	struct Vertex_G
 	{

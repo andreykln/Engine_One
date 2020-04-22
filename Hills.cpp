@@ -65,16 +65,14 @@ Hills::Hills(Graphics& gfx, const float& in_width, const float& in_depth, const 
 
 DirectX::XMMATRIX Hills::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
-		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30));
+	return m_Matrix * m_Centered;;
 }
 
-// DirectX::XMMATRIX Hills::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-// {
-// 	alpha = dt;
-// 	return in_matrix;
-// }
-// 
+void Hills::Update(float dt) noexcept
+{
+	alpha = dt;
+}
+
 void Hills::SetWidth(float in_width) noexcept
 {
 	width = in_width;

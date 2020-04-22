@@ -155,7 +155,6 @@
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
-    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CustomException.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Entry.cpp" />
@@ -185,7 +184,6 @@
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="ConstantBuffer.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="CustomException.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="GeometryGenerator.h" />

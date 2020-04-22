@@ -1,14 +1,13 @@
 #include "Sphere.h"
 
-Sphere::Sphere(Graphics& gfx, float in_x, DirectX::XMMATRIX in_MatrixStartPosition)
-	: alpha(in_x), m_Translation(in_MatrixStartPosition)
+Sphere::Sphere(Graphics& gfx, float radius, UINT sliceCount, UINT stackCount)
 {
 	struct Vertex_S
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
 	};
-	sphere.CreateSphere(0.75f, 20u, 10u, mesh);
+	sphere.CreateSphere(radius, sliceCount, stackCount, mesh);
 	std::vector<Vertex_S> vertices(mesh.vertices.size());
 	DirectX::XMFLOAT4 col{ 0.5f, 0.6f, 0.2f, 1.0f };
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
@@ -39,14 +38,10 @@ Sphere::Sphere(Graphics& gfx, float in_x, DirectX::XMMATRIX in_MatrixStartPositi
 DirectX::XMMATRIX Sphere::GetTransform() const noexcept
 {
 
-	return Shape::m_Matrix * m_Translation *
-		m_Centered;
-// 	return DirectX::XMMatrixRotationX(alpha) * 
-// 		DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+	return m_Matrix * m_Centered;
 }
 
-// DirectX::XMMATRIX Sphere::Update(float dt, DirectX::XMMATRIX in_matrix) noexcept
-// {
-// 	alpha = dt;
-// 	return in_matrix;
-// }
+void Sphere::Update(float dt) noexcept
+{
+	alpha = dt;
+}

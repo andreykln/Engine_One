@@ -1,15 +1,11 @@
 #include "App.h"
 
-
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-// 	d_shapesDemo.push_back(std::make_unique<ShapesDemo>(wnd.GetGraphics()));
 	
-// 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f));
-// 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.3f, 0.5f, 0.2f));
-	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.3f));
-// 	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.3f, DirectX::XMMatrixScaling(0.5f, 0.3f, 0.0f) * DirectX::XMMatrixTranslation(0.6f, 0.0f, -1.8f)));
+	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics()));
+	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.4f, 20u, 20u));
 
 
 	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -19,24 +15,14 @@ void App::DoFrame()
 {
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	
-	
-// 	box[0]->BindAndDraw(wnd.GetGraphics());
-// 	box[0]->Update(0.5f, DirectX::XMMatrixRotationY(-timer.DeltaTime()));
-// 	box[1]->BindAndDraw(wnd.GetGraphics());
-// 	box[1]->Update(0.5f,  DirectX::XMMatrixRotationX(timer.DeltaTime()));
-// 	sphere[0]->BindAndDraw(wnd.GetGraphics());
-// 	sphere[0]->Update(0.0f, DirectX::XMMatrixRotationX(timer.DeltaTime() * 1.3f));
+
+	geoSphere[0]->SetMatrix(DirectX::XMMatrixRotationX(geoSphere[0]->alpha) * newMatrix);
 	geoSphere[0]->BindAndDraw(wnd.GetGraphics());
-	geoSphere[0]->SetMatrix(DirectX::XMMatrixRotationX(geoSphere[0]->alpha) * DirectX::XMMatrixTranslation(0.4f, 0.0f,0.0f));
 	geoSphere[0]->Update(timer.TotalTime());
 
+	
+	sphere[0]->BindAndDraw(wnd.GetGraphics());
 
-// 	for (auto& h : d_shapesDemo)
-// 	{
-// 		h->BindAndDraw(wnd.GetGraphics());
-// // 		h->Update(0.5f, DirectX::XMMatrixRotationX(timer.DeltaTime()));
-// 	}
 	CalculateFrameStats();
 
 	//DebugTextToTitle();
@@ -61,9 +47,6 @@ int App::Go()
 
 void App::DebugTextToTitle()
 {
-	std::ostringstream oss;
-	oss << cubes.size();
-	wnd.SetTitle(oss.str().c_str());
 }
 
 void App::ScrollWheelCounter()
@@ -160,7 +143,7 @@ void App::TwoTestCubes() noexcept
 
 }
 
-void App::GenerateCubeGrid(size_t dimension, std::vector<std::unique_ptr<Cube>>& cubes)
+void App::GenerateCubeGrid(size_t dimension)
 {
 	float current_X_Axis = axis_x;
 	float current_Y_Axis = axis_y;
@@ -174,7 +157,7 @@ void App::GenerateCubeGrid(size_t dimension, std::vector<std::unique_ptr<Cube>>&
 			for (size_t k = 0; k < dimension; k++)
 			{
 				float z = Z_Generate(k, current_Z_Axis);
-				cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics(), x, y, z));
+// 				cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics(), x, y, z));
 				if (k == (dimension - 1))
 				{
 					current_Z_Axis = axis_z;
