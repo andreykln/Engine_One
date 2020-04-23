@@ -3,7 +3,8 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	ShapesDemoCreateShapes();
+	txtModel.push_back(std::make_unique<LoadModelFromTXT>(wnd.GetGraphics(), L"models/skull.txt"));
+
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -12,7 +13,13 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	ShapesDemoDrawShapes();
+	for (auto& x : txtModel)
+	{
+		x->SetMatrix(DirectX::XMMatrixRotationY(txtModel[0]->alpha) * offset);
+		x->Update(timer.TotalTime());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+
 
 	CalculateFrameStats();
 

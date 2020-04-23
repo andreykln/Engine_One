@@ -7,6 +7,7 @@
 #include "GeoSphere.h"
 #include "Sphere.h"
 #include "Cylinder.h"
+#include "LoadModelFromTXT.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -39,9 +40,11 @@ private:
 	std::vector<std::unique_ptr<Sphere>> sphere;
 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
+	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
+
 	ShapesDemo shapes;
 
-	DirectX::XMMATRIX newMatrix = DirectX::XMMatrixTranslation(-0.4f, 0.0f, 0.0f);
+	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();

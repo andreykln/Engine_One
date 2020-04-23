@@ -114,6 +114,9 @@
     <ClCompile Include="MathHelper.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="LoadModelFromTXT.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="MathHelper.h">
       <Filter>Header Files\Drawable\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadModelFromTXT.h">
+      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
