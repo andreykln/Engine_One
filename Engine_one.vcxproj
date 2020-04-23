@@ -176,7 +176,9 @@
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexBufferDynamic.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="Waves.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -205,7 +207,9 @@
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexBufferDynamic.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="Waves.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsEdited.h" />
   </ItemGroup>
