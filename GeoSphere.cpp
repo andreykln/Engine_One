@@ -1,14 +1,14 @@
 #include "GeoSphere.h"
 #include "App.h"
 
-GeoSphere::GeoSphere(Graphics& gfx)
+GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 {
 	struct Vertex_G
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
 	};
-	sphere.CreateGeosphere(0.75f, 4, mesh);
+	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
 	std::vector<Vertex_G> vertices(mesh.vertices.size());
 	DirectX::XMFLOAT4 col{ 0.5f, 0.6f, 0.2f, 1.0f };
 	for (UINT i = 0; i < mesh.vertices.size(); i++)

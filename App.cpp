@@ -3,20 +3,7 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f));
-	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.5f, 20, 20));
-	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 20.0f, 20.0f, 60, 40));
-
-	for (int i = 0; i < 10; i++)
-	{
-		cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
-	}
-
-
-
-	
-
-
+	ShapesDemoCreateShapes();
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -25,23 +12,7 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-
-	box[0]->SetMatrix(shapes.Get_m_BoxWorld() * offset);
-	box[0]->BindAndDraw(wnd.GetGraphics());
-
-	sphere[0]->SetMatrix(shapes.Get_m_CenterSphere() * offset);
-	sphere[0]->BindAndDraw(wnd.GetGraphics());
-
-	grid[0]->SetMatrix(shapes.Get_m_GridWorld() * offset);
-	grid[0]->BindAndDraw(wnd.GetGraphics());
-
-	for (auto& x : cylinder)
-	{
-		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * offset);
-		x->BindAndDraw(wnd.GetGraphics());
-	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
-
+	ShapesDemoDrawShapes();
 
 	CalculateFrameStats();
 
@@ -121,36 +92,7 @@ void App::CalculateFrameStats()
 
 void App::CameraMove()
 {
-// 	const auto charPress = wnd.kbd.ReadChar();
-// 
-// 
-// 
-// 	switch (charPress)
-// 	{
-// 	case  'a': case 'A':
-// 	{
-// 		axis_x += camera_move_step;
-// 	}
-// 	break;
-// 	case 'd': case 'D':
-// 	{
-// 		axis_x -= camera_move_step;
-// 	}
-// 	break;
-// 	case 'w': case 'W':
-// 	{
-// 		axis_y += camera_move_step;
-// 	}
-// 	break;
-// 	case 's': case 'S':
-// 	{
-// 		axis_y -= camera_move_step;
-// 	}
-// 	break;
-// 
-// 
-// 	}
-// 
+
 
 }
 
@@ -160,37 +102,9 @@ void App::TwoTestCubes() noexcept
 {
 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
-
 }
 
-void App::GenerateCubeGrid(size_t dimension)
-{
-	float current_X_Axis = axis_x;
-	float current_Y_Axis = axis_y;
-	float current_Z_Axis = axis_z;
-	for (size_t i = 0; i < dimension; i++)
-	{
-		float x = X_Generate(i, current_X_Axis);
-		for (size_t j = 0; j < dimension; j++)
-		{
-			float y = Y_Generate(j, current_Y_Axis);
-			for (size_t k = 0; k < dimension; k++)
-			{
-				float z = Z_Generate(k, current_Z_Axis);
-// 				cubes.push_back(std::make_unique<Cube>(wnd.GetGraphics(), x, y, z));
-				if (k == (dimension - 1))
-				{
-					current_Z_Axis = axis_z;
-				}
-			}
-			if (j == (dimension - 1))
-			{
-				current_Y_Axis = axis_y;
-			}
-		}
-	}
 
-}
 
 void App::Terrain()
 {
@@ -235,4 +149,47 @@ float App::Z_Generate(size_t& k, float& current_Z_Axis)
 		return current_Z_Axis;
 	}
 	return axis_z;
+}
+
+void App::ShapesDemoCreateShapes()
+{
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f));
+	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.5f, 20, 20));
+	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45));
+
+	for (int i = 0; i < 10; i++)
+	{
+		cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
+	}
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.5f, 2u));
+	}
+}
+
+void App::ShapesDemoDrawShapes()
+{
+	box[0]->SetMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
+	box[0]->BindAndDraw(wnd.GetGraphics());
+
+	sphere[0]->SetMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
+	sphere[0]->BindAndDraw(wnd.GetGraphics());
+
+	grid[0]->SetMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
+	grid[0]->BindAndDraw(wnd.GetGraphics());
+
+	for (auto& x : cylinder)
+	{
+		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSphere)
+	{
+		x->SetMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
 }

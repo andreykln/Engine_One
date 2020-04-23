@@ -6,7 +6,7 @@
 class GeoSphere : public Shape
 {
 public:
-	GeoSphere(Graphics& gfx);
+	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 private:

@@ -24,7 +24,6 @@ public:
 	void CalculateFrameStats();
 	void CameraMove();
 	void TwoTestCubes() noexcept;
-	void GenerateCubeGrid(size_t dimension);
 	void Terrain();
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
@@ -33,9 +32,6 @@ public:
 	float Y_Generate(size_t& j, float& current_Y_Axis);
 	float Z_Generate(size_t& k, float& current_Z_Axis);
 private:
-	DirectX::XMMATRIX testMatrArr[10];
-
-
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 	std::vector<std::unique_ptr<Hills>> grid;
@@ -44,10 +40,11 @@ private:
 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
 	ShapesDemo shapes;
+
 	DirectX::XMMATRIX newMatrix = DirectX::XMMatrixTranslation(-0.4f, 0.0f, 0.0f);
-	DirectX::XMMATRIX offset = DirectX::XMMatrixRotationRollPitchYaw(-0.2f, 0.4f, 0.0f) * 
-		DirectX::XMMatrixTranslation(0.0f, -0.1f, 8.0f);
-	//DirectX::XMMATRIX grid_offset = DirectX::XMMatrixTranslation(0.0f, -0.1f, 4.0f);
+
+	void ShapesDemoCreateShapes();
+	void ShapesDemoDrawShapes();
 	Window wnd;
 	Timer timer;
 	float colors[4]{};
@@ -56,10 +53,5 @@ private:
 	const float axis_x = -10.0f;
 	const float axis_y = 10.0f;
 	const float axis_z = 5.0f;
-
-// 	const float axis_x = -15.0f;
-// 	const float axis_y = 15.0f;
-// 	const float axis_z = 0.0f;
-
 };
 
