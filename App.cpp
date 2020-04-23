@@ -3,9 +3,20 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f));
+	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f));
 	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.5f, 20, 20));
 	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 20.0f, 20.0f, 60, 40));
+
+	for (int i = 0; i < 10; i++)
+	{
+		cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
+	}
+
+
+
+	
+
+
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -24,6 +35,12 @@ void App::DoFrame()
 	grid[0]->SetMatrix(shapes.Get_m_GridWorld() * offset);
 	grid[0]->BindAndDraw(wnd.GetGraphics());
 
+	for (auto& x : cylinder)
+	{
+		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * offset);
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
 
 	CalculateFrameStats();

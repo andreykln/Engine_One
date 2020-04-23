@@ -2,6 +2,7 @@
 #include "Shape.h"
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
+#include <array>
 class ShapesDemo 
 {
 public:
@@ -9,7 +10,7 @@ public:
 	ShapesDemo& operator=(const ShapesDemo&) = delete;
 	ShapesDemo();
 	DirectX::XMMATRIX* GetSphereWorldArray() const noexcept;
-	DirectX::XMMATRIX* GetCylinderWorldArray() const noexcept;
+	DirectX::XMMATRIX*& GetCylinderWorldArray()noexcept;
 	DirectX::XMMATRIX Get_m_BoxWorld() const noexcept;
 	DirectX::XMMATRIX Get_m_GridWorld() const noexcept;
 	DirectX::XMMATRIX Get_m_CenterSphere() const noexcept;

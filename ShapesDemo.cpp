@@ -142,7 +142,8 @@ DirectX::XMMATRIX* ShapesDemo::GetSphereWorldArray() const noexcept
 	return pm_SphereWorld;
 }
 
-DirectX::XMMATRIX* ShapesDemo::GetCylinderWorldArray() const noexcept
+//for pointer arithmetics
+DirectX::XMMATRIX*& ShapesDemo::GetCylinderWorldArray() noexcept
 {
 	return pm_CylinderWorld;
 }

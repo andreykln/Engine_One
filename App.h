@@ -33,6 +33,9 @@ public:
 	float Y_Generate(size_t& j, float& current_Y_Axis);
 	float Z_Generate(size_t& k, float& current_Z_Axis);
 private:
+	DirectX::XMMATRIX testMatrArr[10];
+
+
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 	std::vector<std::unique_ptr<Hills>> grid;
