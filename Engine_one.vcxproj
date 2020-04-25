@@ -179,6 +179,7 @@
     <ClCompile Include="VertexBufferDynamic.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Waves.cpp" />
+    <ClCompile Include="WaveSurface.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +211,7 @@
     <ClInclude Include="VertexBufferDynamic.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Waves.h" />
+    <ClInclude Include="WaveSurface.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsEdited.h" />
   </ItemGroup>

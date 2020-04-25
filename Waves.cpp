@@ -34,6 +34,11 @@ UINT Waves::GetTriangleCount() const
 	return triangleCount;
 }
 
+float Waves::GetTimeStep() const
+{
+	return timeStep;
+}
+
 void Waves::Init(UINT m, UINT n, float dx, float dt, float speed, float damping)
 {
 	numRows = m;
@@ -55,8 +60,8 @@ void Waves::Init(UINT m, UINT n, float dx, float dt, float speed, float damping)
 	delete[] prevSolution;
 	delete[] currSolution;
 
-	prevSolution = new DirectX::XMFLOAT3[m * n];
-	currSolution = new DirectX::XMFLOAT3[m * n];
+	prevSolution = new DirectX::XMFLOAT3[(long long)m * n];
+	currSolution = new DirectX::XMFLOAT3[(long long)m * n];
 
 	// Generate grid vertices in system memory.
 
@@ -73,4 +78,63 @@ void Waves::Init(UINT m, UINT n, float dx, float dt, float speed, float damping)
 			currSolution[i * n + j] = DirectX::XMFLOAT3(x, 0.0f, z);
 		}
 	}
+}
+
+void Waves::UpdateSolution(float dt)
+{
+	static float t = 0;
+
+	// Accumulate time.
+	t += dt;
+
+	// Only update the simulation at the specified time step.
+	if (t >= timeStep)
+	{
+		// Only update interior points; we use zero boundary conditions.
+		for (DWORD i = 1; i < numRows - 1; ++i)
+		{
+			for (DWORD j = 1; j < numColumns - 1; ++j)
+			{
+				// After this update we will be discarding the old previous
+				// buffer, so overwrite that buffer with the new update.
+				// Note how we can do this inplace (read/write to same element) 
+				// because we won't need prev_ij again and the assignment happens last.
+
+				// Note j indexes x and i indexes z: h(x_j, z_i, t_k)
+				// Moreover, our +z axis goes "down"; this is just to 
+				// keep consistent with our row indices going down.
+
+				prevSolution[i * numColumns + j].y =
+					K1 * prevSolution[i * numColumns + j].y +
+					K2 * currSolution[i * numColumns + j].y +
+					K3 * (currSolution[(i + 1) * numColumns + j].y +
+						currSolution[(i - 1) * numColumns + j].y +
+						currSolution[i * numColumns + j + 1].y +
+						currSolution[i * numColumns + j - 1].y);
+			}
+		}
+
+		// We just overwrote the previous buffer with the new data, so
+		// this data needs to become the current solution and the old
+		// current solution becomes the new previous solution.
+		std::swap(prevSolution, currSolution);
+
+		t = 0.0f; // reset time
+	}
+}
+
+void Waves::Disturb(UINT i, UINT j, float magnitude)
+{
+	// Don't disturb boundaries.
+	assert(i > 1 && i < numRows - 2);
+	assert(j > 1 && j < numColumns - 2);
+
+	float halfMag = 0.5f * magnitude;
+
+	// Disturb the ij'th vertex height and its neighbors.
+	currSolution[i * numColumns + j].y += magnitude;
+	currSolution[i * numColumns + j + 1].y += halfMag;
+	currSolution[i * numColumns + j - 1].y += halfMag;
+	currSolution[(i + 1) * numColumns + j].y += halfMag;
+	currSolution[(i - 1) * numColumns + j].y += halfMag;
 }
