@@ -2,6 +2,9 @@
 #include "Shape.h"
 #include "Waves.h"
 #include "BindableBase.h"
+#include "MathHelper.h"
+
+
 class WaveSurface : public Shape
 {
 public:

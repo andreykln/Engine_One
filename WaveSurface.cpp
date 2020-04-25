@@ -23,6 +23,11 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 	{
 		t_base += 0.25;
 
-		unsigned long i = 5 + 
+		unsigned long i = 5 + MathHelper::RandomInt() % 190;
+		unsigned long j = 5 + MathHelper::RandomInt() % 190;
+		float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
+
+		wave.Disturb(i, j, magnitute);
 	}
+	wave.UpdateSolution(dt);
 }
