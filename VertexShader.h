@@ -9,6 +9,6 @@ public:
 private:
 	UINT numOfClassInstances{};
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVertexShader;
-	Microsoft::WRL::ComPtr<ID3DBlob>pVertexShaderBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> pVertexShaderBlob;
 };
 

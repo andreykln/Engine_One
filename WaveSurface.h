@@ -3,18 +3,33 @@
 #include "Waves.h"
 #include "BindableBase.h"
 #include "MathHelper.h"
+#include "GeometryGenerator.h"
 
 
 class WaveSurface : public Shape
 {
 public:
-	WaveSurface(Graphics& gfx, float radius, UINT numSubdivisions);
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 Pos;
+		DirectX::XMFLOAT4 Color;
+	};
+	WaveSurface(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
 public:
 	float alpha{};
 private:
+	std::vector<Vertex> vertices;
 	Waves wave;
+	std::unique_ptr<VertexBufferDynamic, std::default_delete<VertexBufferDynamic>> pDynamicVB;
+	ID3D11Buffer* pCopyDynamicVB;
+
+
+
+	GeometryGenerator::MeshData mesh;
+	GeometryGenerator sphere;
+
 };
 

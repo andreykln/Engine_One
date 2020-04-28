@@ -8,6 +8,8 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "LoadModelFromTXT.h"
+
+#include "WaveSurface.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -41,6 +43,7 @@ private:
 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
+	std::vector<std::unique_ptr<WaveSurface>> wave;
 
 	ShapesDemo shapes;
 

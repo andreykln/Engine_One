@@ -3,9 +3,12 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	txtModel.push_back(std::make_unique<LoadModelFromTXT>(wnd.GetGraphics(), L"models/skull.txt"));
-
+	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 1.23f, 5u));
+	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
 	wnd.GetGraphics().SetProjection(CalculateProjection());
+
+
+
 }
 
 void App::DoFrame()
@@ -13,9 +16,15 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	for (auto& x : txtModel)
+	for (auto& x : wave)
 	{
-		x->SetMatrix(DirectX::XMMatrixRotationY(txtModel[0]->alpha) * offset);
+		x->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+
+	for (auto& x : geoSphere)
+	{
+		x->SetMatrix(DirectX::XMMatrixRotationY(geoSphere[0]->alpha) * offset);
 		x->Update(timer.TotalTime());
 		x->BindAndDraw(wnd.GetGraphics());
 	}
