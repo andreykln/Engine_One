@@ -8,11 +8,11 @@ float MathHelper::RandomFloatWithinRange(float from, float to)
 	return dis(gen);
 }
 
-int MathHelper::RandomInt()
+int MathHelper::RandomIntWithingRange(int from, int to)
 {
 	static std::random_device device;
 	static std::mt19937 gen(device());
-	static std::uniform_int_distribution<int> dis(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+	static std::uniform_int_distribution<int> dis(from, to);
 	return dis(gen);
 }
 

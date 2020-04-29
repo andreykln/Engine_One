@@ -3,12 +3,8 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 1.23f, 5u));
 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
 	wnd.GetGraphics().SetProjection(CalculateProjection());
-
-
-
 }
 
 void App::DoFrame()
@@ -19,16 +15,9 @@ void App::DoFrame()
 	for (auto& x : wave)
 	{
 		x->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+		x->SetMatrix(offset);
 		x->BindAndDraw(wnd.GetGraphics());
 	}
-
-	for (auto& x : geoSphere)
-	{
-		x->SetMatrix(DirectX::XMMatrixRotationY(geoSphere[0]->alpha) * offset);
-		x->Update(timer.TotalTime());
-		x->BindAndDraw(wnd.GetGraphics());
-	}
-
 
 	CalculateFrameStats();
 

@@ -70,28 +70,20 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 	if ((totalTime - t_base) >= 0.25f)
 	{
 		t_base += 0.25;
-		unsigned long i = 5 + rand() % 190;
-		unsigned long j = 5 + rand() % 190;
-
-// 		unsigned long i = 5 + MathHelper::RandomInt() % 190; //figure out that does it wants
-// 		unsigned long j = 5 + MathHelper::RandomInt() % 190;
+		unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % 190;
+		unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % 190;
 		float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
-
 		wave.Disturb(i, j, magnitute);
 	}
 	wave.UpdateSolution(dt);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDynamicVB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-
-
 	Vertex* v = reinterpret_cast<Vertex*>(mappedData.pData);
 	for (UINT i = 0; i < vertices.size(); ++i)
 	{
-// 		vertices[i].Pos = wave[i]; TODO WILL THIS WORK??
-
 		v[i].Pos = wave[i];
-		v[i].Color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		v[i].Color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.4f, 1.0f);
 	}
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDynamicVB, 0u);
 }
