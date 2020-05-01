@@ -37,15 +37,15 @@ public:
 private:
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-	std::vector<std::unique_ptr<Hills>> grid;
-	std::vector<std::unique_ptr<Cylinder>> cylinder;
-	std::vector<std::unique_ptr<Sphere>> sphere;
-	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
+// 	std::vector<std::unique_ptr<Hills>> grid;
+// 	std::vector<std::unique_ptr<Cylinder>> cylinder;
+// 	std::vector<std::unique_ptr<Sphere>> sphere;
+// 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
 	std::vector<std::unique_ptr<Box>> box;
-	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
-	std::vector<std::unique_ptr<WaveSurface>> wave;
+// 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
+// 	std::vector<std::unique_ptr<WaveSurface>> wave;
 
-	ShapesDemo shapes;
+// 	ShapesDemo shapes;
 
 	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
 

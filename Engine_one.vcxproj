@@ -156,22 +156,40 @@
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="CustomException.cpp" />
-    <ClCompile Include="Cylinder.cpp" />
+    <ClCompile Include="Cylinder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="GeoSphere.cpp" />
+    <ClCompile Include="GeoSphere.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Hills.cpp" />
+    <ClCompile Include="Hills.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="LoadModelFromTXT.cpp" />
+    <ClCompile Include="LoadModelFromTXT.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Shape.cpp" />
-    <ClCompile Include="ShapesDemo.cpp" />
-    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="ShapesDemo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
@@ -179,7 +197,10 @@
     <ClCompile Include="VertexBufferDynamic.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Waves.cpp" />
-    <ClCompile Include="WaveSurface.cpp" />
+    <ClCompile Include="WaveSurface.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,21 +210,39 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="CustomException.h" />
-    <ClInclude Include="Cylinder.h" />
+    <ClInclude Include="Cylinder.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="GeoSphere.h" />
+    <ClInclude Include="GeoSphere.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Hills.h" />
+    <ClInclude Include="Hills.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="LoadModelFromTXT.h" />
+    <ClInclude Include="LoadModelFromTXT.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Shape.h" />
-    <ClInclude Include="ShapesDemo.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="ShapesDemo.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformConstantBuffer.h" />
@@ -211,7 +250,10 @@
     <ClInclude Include="VertexBufferDynamic.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Waves.h" />
-    <ClInclude Include="WaveSurface.h" />
+    <ClInclude Include="WaveSurface.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowsEdited.h" />
   </ItemGroup>
