@@ -23,7 +23,7 @@ public:
 private:
 	std::vector<Vertex> vertices;
 	Waves wave;
-	std::unique_ptr<VertexBufferDynamic, std::default_delete<VertexBufferDynamic>> pDynamicVB;
+	VertexBufferDynamic* pDynamicVB;
 	ID3D11Buffer* pCopyDynamicVB;
 
 

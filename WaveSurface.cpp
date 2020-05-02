@@ -2,18 +2,18 @@
 
 WaveSurface::WaveSurface(Graphics& gfx)
 {
-	
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
 	vertices.resize(wave.GetVertexCount());
-	pDynamicVB = std::make_unique<VertexBufferDynamic>(gfx, vertices, L"Waves");
+
+	pDynamicVB = new VertexBufferDynamic(gfx, vertices, L"Waves");
 	pCopyDynamicVB = pDynamicVB->Get_p_DynamicVertexBuffer();
-	AddBind(std::move(pDynamicVB));
+	AddBind(pDynamicVB);
 
+	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
+	AddBind(pVertexShader);
 
-	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
-	auto pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(std::move(pVertexShader));
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -21,11 +21,15 @@ WaveSurface::WaveSurface(Graphics& gfx)
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
-	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
 
-	std::vector<UINT> indices(3 * wave.GetTriangleCount()); // 3 indices per face
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	AddBind(pInputLayout);
 
+
+	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	AddBind(pPixelShader);
+
+	std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face
 // Iterate over each quad.
 	UINT m = wave.GetRowCount();
 	UINT n = wave.GetColumnCount();
@@ -46,11 +50,15 @@ WaveSurface::WaveSurface(Graphics& gfx)
 		}
 	}
 
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices, L"GeoSphereIndexBuffer"));
-	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"GeoSphereIndexBuffer");
+	AddIndexBuffer(pIndexBuffer);
 
+	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	AddBind(pTopology);
+
+	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
+	AddBind(pTransformConstBuff);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept

@@ -46,6 +46,8 @@ private:
 	Sphere* pSphere = nullptr;
 	Hills* pHills = nullptr;
 	LoadModelFromTXT* pTXTModel = nullptr;
+	WaveSurface* pWaves = nullptr;
+
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;
 	ShapesDemo shapes;

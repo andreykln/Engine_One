@@ -6,8 +6,8 @@ App::App()
 {
 // 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
 // 	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
-
-	ShapesDemoCreateShapes();
+	pWaves = new WaveSurface(wnd.GetGraphics());
+// 	ShapesDemoCreateShapes();
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -20,15 +20,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-// 	for (auto& x : wave)
-// 	{
-// 		x->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 		x->SetMatrix(offset);
-// 		x->BindAndDraw(wnd.GetGraphics());
-// 	}
-	ShapesDemoDrawShapes();
-// 	pTXTModel->BindAndDraw(wnd.GetGraphics());
-// 	pTXTModel->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+	
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->SetMatrix(offsetForHills);
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	
 	CalculateFrameStats();
 
 	//DebugTextToTitle();
