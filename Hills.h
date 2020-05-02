@@ -5,7 +5,7 @@
 class Hills : public Shape
 {
 public:
-	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n);
+	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, bool isFlat);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void SetWidth(float in_width) noexcept;
@@ -13,6 +13,7 @@ public:
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 private:
+	bool flatSurface = false;
 	float width{};
 	float depth{};
 	UINT m{};

@@ -5,14 +5,14 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 // 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
-	pBox = new Box(wnd.GetGraphics(), 0.23f, 0.5f, 0.3f);
+// 	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
+
+	ShapesDemoCreateShapes();
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
 App::~App()
 {
-	pBox->DeleteObject();
-	delete pBox;
 }
 
 void App::DoFrame()
@@ -26,9 +26,9 @@ void App::DoFrame()
 // 		x->SetMatrix(offset);
 // 		x->BindAndDraw(wnd.GetGraphics());
 // 	}
-
-	pBox->BindAndDraw(wnd.GetGraphics());
-
+	ShapesDemoDrawShapes();
+// 	pTXTModel->BindAndDraw(wnd.GetGraphics());
+// 	pTXTModel->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
 	CalculateFrameStats();
 
 	//DebugTextToTitle();
@@ -121,14 +121,6 @@ void App::TwoTestCubes() noexcept
 
 
 
-void App::Terrain()
-{
-// 	const float depth = 160.0f;
-// 	const float width = 160.0f;
-// 	const UINT m = 50;
-// 	const UINT n = 50;
-// 	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), depth, width, m, n));
-}
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {
@@ -168,43 +160,42 @@ float App::Z_Generate(size_t& k, float& current_Z_Axis)
 
 void App::ShapesDemoCreateShapes()
 {
-// 	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f));
-// 	sphere.push_back(std::make_unique<Sphere>(wnd.GetGraphics(), 0.5f, 20, 20));
-// 	grid.push_back(std::make_unique<Hills>(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45));
-// 
-// 	for (int i = 0; i < 10; i++)
-// 	{
-// 		cylinder.push_back(std::make_unique<Cylinder>(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
-// 	}
-// 
-// 	for (size_t i = 0; i < 10; i++)
-// 	{
-// 		geoSphere.push_back(std::make_unique<GeoSphere>(wnd.GetGraphics(), 0.5f, 2u));
-// 	}
+	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f);
+	pSphere = new Sphere(wnd.GetGraphics(), 0.5f, 20, 20);
+	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
+	for (int i = 0; i < 10; i++)
+	{
+		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
+	}
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u));
+	}
 }
 
 void App::ShapesDemoDrawShapes()
 {
-// 	box[0]->SetMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
-// 	box[0]->BindAndDraw(wnd.GetGraphics());
-// 
-// 	sphere[0]->SetMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-// 	sphere[0]->BindAndDraw(wnd.GetGraphics());
-// 
-// 	grid[0]->SetMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
-// 	grid[0]->BindAndDraw(wnd.GetGraphics());
-// 
-// 	for (auto& x : cylinder)
-// 	{
-// 		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
-// 		x->BindAndDraw(wnd.GetGraphics());
-// 	}
-// 	shapes.GetCylinderWorldArray() -= 10; //reset array position
-// 
-// 	for (auto& x : geoSphere)
-// 	{
-// 		x->SetMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
-// 		x->BindAndDraw(wnd.GetGraphics());
-// 	}
-// 	shapes.GetSphereWorldArray() -= 10; //reset array position
+	pBox->SetMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
+	pBox->BindAndDraw(wnd.GetGraphics());
+
+	pSphere->SetMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
+	pSphere->BindAndDraw(wnd.GetGraphics());
+
+	pHills->SetMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
+	pHills->BindAndDraw(wnd.GetGraphics());
+
+	for (auto& x : cylinders)
+	{
+		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		x->SetMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
 }

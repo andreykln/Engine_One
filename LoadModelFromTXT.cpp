@@ -15,7 +15,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	file >> ignore >> vertices;
 	file >> ignore >> triangles;
 	file >> ignore >> ignore >> ignore >> ignore;
-	float nx, ny, nz; //for ignoring normals for now
+	float nx, ny, nz; //ignoring normals for now
 	std::vector<Vertices> verticesFromTXT(vertices);
 	DirectX::XMFLOAT4 black(0.0f, 0.0f, 0.0f, 1.0f);
 	for (size_t i = 0; i < vertices; i++)
@@ -34,10 +34,14 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	}
 	file.close();
 
-	AddBind(std::make_unique<VertexBuffer>(gfx, verticesFromTXT, L"TXTFile"));
-	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
-	auto pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(std::move(pVertexShader));
+
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
+	AddBind(pVertexBuffer);
+
+	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
+	AddBind(pVertexShader);
+
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -45,12 +49,22 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
-	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, indices, L"TXTIndexBuffer"));
-	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
 
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	AddBind(pInputLayout);
+
+
+	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	AddBind(pPixelShader);
+
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
+	AddIndexBuffer(pIndexBuffer);
+
+	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	AddBind(pTopology);
+
+	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
+	AddBind(pTransformConstBuff);
 }
 
 DirectX::XMMATRIX LoadModelFromTXT::GetTransform() const noexcept

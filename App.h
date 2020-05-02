@@ -28,7 +28,6 @@ public:
 	void CalculateFrameStats();
 	void CameraMove();
 	void TwoTestCubes() noexcept;
-	void Terrain();
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
 	//Axis step generation for cubes
@@ -38,17 +37,20 @@ public:
 private:
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-// 	std::vector<std::unique_ptr<Hills>> grid;
-// 	std::vector<std::unique_ptr<Cylinder>> cylinder;
-// 	std::vector<std::unique_ptr<Sphere>> sphere;
-// 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
-// 	std::vector<Box*> box;
+
 	Box* pBox = nullptr;
+	Cylinder* pCylinder = nullptr;
+	std::vector<Cylinder*> cylinders;
+	GeoSphere* pGeoSphere = nullptr;
+	std::vector<GeoSphere*> geoSpheres;
+	Sphere* pSphere = nullptr;
+	Hills* pHills = nullptr;
+	LoadModelFromTXT* pTXTModel = nullptr;
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;
-// 	ShapesDemo shapes;
+	ShapesDemo shapes;
 
-	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
+	DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();

@@ -1,8 +1,8 @@
 #include "Hills.h"
 #include <cmath>
 
-Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n)
-	: width(in_width), depth(in_depth), m(in_m), n(in_n)
+Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, bool isFlat)
+	: width(in_width), depth(in_depth), m(in_m), n(in_n), flatSurface(isFlat)
 {
 	struct Vertex_l
 	{
@@ -17,7 +17,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	for (size_t i = 0; i < grid.vertices.size(); ++i) 
 	{
 		DirectX::XMFLOAT3 p = grid.vertices[i].position;
-		p.y = GetHeight(p.x, p.z);
+		if (!flatSurface)
+		{
+			p.y = GetHeight(p.x, p.z);
+		}
 		vertices[i].pos = p;
 		//color is based on height
 		if (p.y < -10.0f)
@@ -42,10 +45,13 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		}
 	}
 
-	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"Hills landscape"));
-	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
-	auto pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(std::move(pVertexShader));
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
+	AddBind(pVertexBuffer);
+
+	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
+	AddBind(pVertexShader);
+
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -53,12 +59,22 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
-	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
 
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, grid.indices, L"HillsIndBuff"));
-	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	AddBind(pInputLayout);
+
+
+	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	AddBind(pPixelShader);
+
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
+	AddIndexBuffer(pIndexBuffer);
+
+	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	AddBind(pTopology);
+
+	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
+	AddBind(pTransformConstBuff);
 
 }
 

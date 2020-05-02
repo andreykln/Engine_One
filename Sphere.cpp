@@ -17,10 +17,13 @@ Sphere::Sphere(Graphics& gfx, float radius, UINT sliceCount, UINT stackCount)
 		vertices[i].color = col;
 	}
 
-	AddBind(std::make_unique<VertexBuffer>(gfx, vertices, L"Sphere"));
-	auto pVertexShader = std::make_unique<VertexShader>(gfx, L"CubeVS.cso");
-	auto pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(std::move(pVertexShader));
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Sphere");
+	AddBind(pVertexBuffer);
+
+	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
+	AddBind(pVertexShader);
+
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -28,11 +31,22 @@ Sphere::Sphere(Graphics& gfx, float radius, UINT sliceCount, UINT stackCount)
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	AddBind(std::make_unique<InputLayout>(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor"));
-	AddBind(std::make_unique<PixelShader>(gfx, L"CubePS.cso"));
-	AddIndexBuffer(std::make_unique<IndexBuffer>(gfx, mesh.indices, L"SphereIndexBuffer"));
-	AddBind(std::make_unique<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	AddBind(std::make_unique<TransformConstantBuffer>(gfx, *this));
+
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	AddBind(pInputLayout);
+
+
+	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	AddBind(pPixelShader);
+
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"SphereIndexBuffer");
+	AddIndexBuffer(pIndexBuffer);
+
+	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	AddBind(pTopology);
+
+	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
+	AddBind(pTransformConstBuff);
 }
 
 DirectX::XMMATRIX Sphere::GetTransform() const noexcept
