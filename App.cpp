@@ -7,6 +7,7 @@ App::App()
 // 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
 // 	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
 	pWaves = new WaveSurface(wnd.GetGraphics());
+	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
 // 	ShapesDemoCreateShapes();
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -25,6 +26,9 @@ void App::DoFrame()
 	pWaves->SetMatrix(offsetForHills);
 	pWaves->BindAndDraw(wnd.GetGraphics());
 	
+	pGeoSphere->BindAndDraw(wnd.GetGraphics());
+
+
 	CalculateFrameStats();
 
 	//DebugTextToTitle();

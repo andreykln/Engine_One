@@ -9,3 +9,5 @@
 #include "ConstantBuffer.h"
 #include "TransformConstantBuffer.h"
 #include "VertexBufferDynamic.h"
+#include "Rasterizer.h"
+#include "RasterizerState.h"

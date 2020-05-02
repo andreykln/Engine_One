@@ -59,6 +59,11 @@ WaveSurface::WaveSurface(Graphics& gfx)
 
 	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
 	AddBind(pTransformConstBuff);
+
+
+	RasterizerState state;
+	Rasterizer* pRaster = new Rasterizer(gfx, state.Wireframe());
+	AddBind(pRaster);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
