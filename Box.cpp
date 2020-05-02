@@ -25,7 +25,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(pVertexShader); //std::move(pVertexShader
+	AddBind(pVertexShader); 
 
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{

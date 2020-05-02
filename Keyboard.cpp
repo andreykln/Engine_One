@@ -20,9 +20,7 @@ void Keyboard::OnCharPressed(unsigned char keycode) noexcept
 	TrimBuffer(k_Charbuffer);
 }
 
-
-
-bool Keyboard::KeyIsPressed(unsigned char keycode) const noexcept
+bool Keyboard::KeyIsPressed(unsigned char keycode) noexcept
 {
 	return k_KeyStates[keycode];
 }

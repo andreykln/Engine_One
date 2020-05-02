@@ -46,7 +46,7 @@ public:
 	void OnKeyPressed(unsigned char keycode) noexcept;
 	void OnKeyReleased(unsigned char keycode) noexcept;
 	void OnCharPressed(unsigned char keycode) noexcept;
-	bool KeyIsPressed(unsigned char keycode) const noexcept;
+	bool KeyIsPressed(unsigned char keycode) noexcept;
 	bool KeyQueueIsEmpty() const noexcept;
 	Keyboard::Event ReadKey() noexcept;
 	void ClearKeyQueue() noexcept;
@@ -62,6 +62,7 @@ public:
 private:
 	static constexpr unsigned int nKeys = 256u;
 	static constexpr unsigned int k_Buffersize = 16u;
+	bool k_KeyActivated = false;
 	bool k_AutoRepeatEnabled = false;
 	std::bitset<nKeys> k_KeyStates;
 	std::queue<Event> k_keyEventBuffer;

@@ -1,11 +1,18 @@
 #include "App.h"
 
+
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 // 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
-	box.push_back(new Box(wnd.GetGraphics(), 0.23f, 0.5f, 0.3f));
+	pBox = new Box(wnd.GetGraphics(), 0.23f, 0.5f, 0.3f);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
+}
+
+App::~App()
+{
+	pBox->DeleteObject();
+	delete pBox;
 }
 
 void App::DoFrame()
@@ -20,13 +27,7 @@ void App::DoFrame()
 // 		x->BindAndDraw(wnd.GetGraphics());
 // 	}
 
-	for (auto& x : box)
-	{
-		x->SetMatrix(DirectX::XMMatrixRotationX(timer.TotalTime()));
-		x->BindAndDraw(wnd.GetGraphics());
-	}
-
-
+	pBox->BindAndDraw(wnd.GetGraphics());
 
 	CalculateFrameStats();
 

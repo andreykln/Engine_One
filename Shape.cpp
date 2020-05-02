@@ -28,6 +28,14 @@ void Shape::BindAndDraw(Graphics& gfx) const noexcept
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
+void Shape::DeleteObject() const noexcept
+{
+	for (auto& b : binds)
+	{
+		delete b;
+	}
+}
+
 void Shape::SetMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;

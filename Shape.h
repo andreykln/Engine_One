@@ -17,6 +17,7 @@ public:
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);
 	void BindAndDraw(Graphics& gfx) const noexcept;
+	void DeleteObject() const noexcept;
 	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 private:
 	std::vector<Bindable*> binds;

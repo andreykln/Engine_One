@@ -20,6 +20,7 @@ class App
 {
 public:
 	App();
+	~App();
 	void DoFrame();
 	int Go();
 	void DebugTextToTitle();
@@ -41,10 +42,10 @@ private:
 // 	std::vector<std::unique_ptr<Cylinder>> cylinder;
 // 	std::vector<std::unique_ptr<Sphere>> sphere;
 // 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
-	std::vector<Box*> box;
+// 	std::vector<Box*> box;
+	Box* pBox = nullptr;
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;
-
 // 	ShapesDemo shapes;
 
 	DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
