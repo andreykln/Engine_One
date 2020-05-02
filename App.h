@@ -41,7 +41,7 @@ private:
 // 	std::vector<std::unique_ptr<Cylinder>> cylinder;
 // 	std::vector<std::unique_ptr<Sphere>> sphere;
 // 	std::vector<std::unique_ptr<GeoSphere>> geoSphere;
-	std::vector<std::unique_ptr<Box>> box;
+	std::vector<Box*> box;
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;
 

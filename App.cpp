@@ -4,7 +4,7 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 // 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
-	box.push_back(std::make_unique<Box>(wnd.GetGraphics(), 0.23f, 0.5f, 0.3f));
+	box.push_back(new Box(wnd.GetGraphics(), 0.23f, 0.5f, 0.3f));
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -22,7 +22,7 @@ void App::DoFrame()
 
 	for (auto& x : box)
 	{
-		x->SetMatrix(DirectX::XMMatrixRotationX(timer.TotalTime()) * offset);
+		x->SetMatrix(DirectX::XMMatrixRotationX(timer.TotalTime()));
 		x->BindAndDraw(wnd.GetGraphics());
 	}
 

@@ -14,12 +14,12 @@ public:
 	virtual ~Shape() = default;
 	virtual DirectX::XMMATRIX GetTransform() const noexcept = 0;
 	virtual void Update(float dt) noexcept = 0;
-	void AddBind(std::unique_ptr<Bindable> in_bind);
-	void AddIndexBuffer(std::unique_ptr<IndexBuffer> in_bind);
+	void AddBind(Bindable* in_bind);
+	void AddIndexBuffer(IndexBuffer* in_bind);
 	void BindAndDraw(Graphics& gfx) const noexcept;
 	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 private:
-	std::vector<std::unique_ptr<Bindable>> binds;
+	std::vector<Bindable*> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;
 public:
 	float alpha{};

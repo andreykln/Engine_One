@@ -6,16 +6,16 @@ void Shape::Update(float dt) noexcept
 	alpha = dt;
 }
 
-void Shape::AddBind(std::unique_ptr<Bindable> in_bind)
+void Shape::AddBind(Bindable* in_bind)
 {
 	assert("Use AddIndexBuffer for binding IndexBuffer" && typeid(*in_bind) != typeid(IndexBuffer));
 	binds.push_back(std::move(in_bind));
 }
 
-void Shape::AddIndexBuffer(std::unique_ptr<IndexBuffer> in_bind)
+void Shape::AddIndexBuffer(IndexBuffer* in_bind)
 {
 	assert("IndexBuffer already bound" && pIndexBuffer == nullptr);
-	pIndexBuffer = in_bind.get();
+	pIndexBuffer = in_bind;
 	binds.push_back(std::move(in_bind));
 }
 
