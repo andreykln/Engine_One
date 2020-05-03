@@ -4,6 +4,7 @@
 #include "Hills.h"
 #include "Box.h"
 #include "ShapesDemo.h"
+#include "Pyramid.h"
 #include "GeoSphere.h"
 #include "Sphere.h"
 #include "Cylinder.h"
@@ -47,6 +48,8 @@ private:
 	Hills* pHills = nullptr;
 	LoadModelFromTXT* pTXTModel = nullptr;
 	WaveSurface* pWaves = nullptr;
+	Pyramid* pPyramid = nullptr;
+
 
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;

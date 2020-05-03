@@ -4,11 +4,9 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-// 	wave.push_back(std::make_unique<WaveSurface>(wnd.GetGraphics()) );
-// 	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
-	pWaves = new WaveSurface(wnd.GetGraphics());
-	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
-// 	ShapesDemoCreateShapes();
+
+	pBox = new Box(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f);
+	pPyramid = new Pyramid(wnd.GetGraphics(), 1.0f, 2.0f);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,19 +19,17 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->SetMatrix(offsetForHills);
-	pWaves->BindAndDraw(wnd.GetGraphics());
-	
-	pGeoSphere->BindAndDraw(wnd.GetGraphics());
-
+// 	TwoTestCubes();
+	pPyramid->BindAndDraw(wnd.GetGraphics());
+	pPyramid->Update(timer.TotalTime());
+	pPyramid->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+// 	pBox->BindAndDraw(wnd.GetGraphics());
 
 	CalculateFrameStats();
 
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
-	wnd.GetGraphics().ClearBuffer(0.5f, 0.7f, 0.7f);
+	wnd.GetGraphics().ClearBuffer(0.1f, 0.1f, 0.1f);
 }
 
 int App::Go()
@@ -116,7 +112,7 @@ void App::CameraMove()
 void App::TwoTestCubes() noexcept
 {
 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
-	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
+// 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
 }
 
 

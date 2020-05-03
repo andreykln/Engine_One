@@ -7,6 +7,10 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	struct Vertex_B
 	{
 		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 tangent;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 tex0;
+		DirectX::XMFLOAT2 tex1;
 		DirectX::XMFLOAT4 color;
 	};
 	box.CreateBox(width, height, depth, mesh);
@@ -27,11 +31,14 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader); 
 
+	
+	const UINT offset = sizeof(DirectX::XMFLOAT3) * 3 + sizeof(DirectX::XMFLOAT2) * 2;
+
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, offset,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
@@ -50,6 +57,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
 	AddBind(pTransformConstBuff);
+
+	RasterizerState state;
+	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());
+	AddBind(pRasterState);
+
 }
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept

@@ -36,6 +36,7 @@ public:
 
 	void CreateGrid(float width, float depth, UINT m, UINT n, MeshData& meshData);
 	void CreateBox(float width, float depth, float height, MeshData& meshData);
+	void CreatePyramid(float bottom_side, float height, MeshData& meshData);
 	void CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData);
 	void CreateSphere(float radius, UINT sliceCount, UINT stackCount, MeshData& meshData);
 	void CreateCylinder(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);

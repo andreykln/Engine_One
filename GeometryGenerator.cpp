@@ -78,6 +78,49 @@ void GeometryGenerator::CreateBox(float width, float depth, float height, MeshDa
 	}
 }
 
+void GeometryGenerator::CreatePyramid(float bottom_side, float height, MeshData& meshData)
+{
+	using namespace DirectX;
+	meshData.vertices.clear();
+	meshData.indices.clear();
+	float halfHeight = height / 2.0f;
+	float halfSide = bottom_side / 2;
+
+// 	DirectX::XMFLOAT3 zero_toFirstCoord = {-halfSide, -halfHeight , -halfSide };
+// 	DirectX::XMFLOAT3 zero_toOppositeCoord = {halfSide, -halfHeight , halfSide };
+// 	DirectX::XMFLOAT3 top = (zero_toFirstCoord.x + zero_toOppositeCoord.x,
+// 		zero_toFirstCoord.y + zero_toOppositeCoord.y,
+// 		zero_toFirstCoord.z + zero_toOppositeCoord.z);
+	std::vector<DirectX::XMFLOAT3> pyramidCoord
+	{
+		{DirectX::XMFLOAT3(-halfSide, -halfHeight, -halfSide)},
+		{DirectX::XMFLOAT3(-halfSide, -halfHeight, +halfSide)},
+
+		{DirectX::XMFLOAT3(halfSide, -halfHeight, -halfSide)},
+		{DirectX::XMFLOAT3(halfSide, -halfHeight, +halfSide)},
+
+		{DirectX::XMFLOAT3(0.0f, halfHeight, 0.0f)}, //top
+	};
+	meshData.indices =
+	{
+		//bottom
+		0,2,1, 2,3,1,
+		//front
+		0,4,2,
+		//right side
+		2,4,3,
+		//left side
+		1,4,0,
+		//back
+		3,4,1
+	};
+	meshData.vertices.resize(pyramidCoord.size());
+	for (size_t i = 0; i < pyramidCoord.size(); i++)
+	{
+		meshData.vertices[i].position = pyramidCoord[i];
+	}
+}
+
 void GeometryGenerator::CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData)
 {
 	using namespace DirectX; //for multiplying XMVector by a scalar
