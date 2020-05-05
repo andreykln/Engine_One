@@ -5,7 +5,6 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	struct Vertex_P
 	{
 		DirectX::XMFLOAT3 position;
-		float time;
 		DirectX::XMFLOAT4 color;
 	};
 	pyramid.CreatePyramid(bottom_side, height, mesh);
@@ -20,7 +19,6 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 		vertices[i].color = green;
 		else 
 		vertices[i].color = red;
-		vertices[i].time = alpha;
 	}
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Pyramid");
 	AddBind(pVB);
