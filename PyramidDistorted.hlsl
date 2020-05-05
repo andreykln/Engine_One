@@ -2,6 +2,7 @@
 cbuffer world
 {
     float4x4 transform;
+    float time;
 };
 
 struct VertexOut
@@ -12,7 +13,7 @@ struct VertexOut
     
 };
                                      
-VertexOut main(float3 pos : Position, float time : Time ,float4 col : Color)
+VertexOut main(float3 pos : Position, float4 col : Color)
 {
     VertexOut vout;
     pos.xy += 0.5f * sin(pos.x) * sin(3.0f * time);

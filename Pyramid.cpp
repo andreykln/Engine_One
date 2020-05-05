@@ -33,11 +33,10 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Time", 0u, DXGI_FORMAT_R32_FLOAT,0u ,D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
+
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
@@ -54,6 +53,7 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 
 	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
 	AddBind(pTransformConstBuff);
+
 
 	RasterizerState state;
 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
@@ -74,4 +74,9 @@ DirectX::XMMATRIX Pyramid::GetTransform() const noexcept
 void Pyramid::Update(float dt) noexcept
 {
 	alpha = dt;
+}
+
+float Pyramid::GetAlpha() const noexcept
+{
+	return alpha;
 }
