@@ -1,18 +1,10 @@
 #include "Box.h"
 #include "MathHelper.h"
+
 #define RANDFLOAT float(rand()) / 1.0f
 
 Box::Box(Graphics& gfx, float width, float height, float depth)
 {
-	struct Vertex_B
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT3 tangent;
-		DirectX::XMFLOAT3 normal;
-		DirectX::XMFLOAT2 tex0;
-		DirectX::XMFLOAT2 tex1;
-		DirectX::XMFLOAT4 color;
-	};
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_B> vertices(mesh.vertices.size());
 	DirectX::XMFLOAT4 col{ 0.2f, 0.3f, 0.6f, 1.0f };
@@ -21,9 +13,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
 		vertices[i].pos = p;
-		vertices[i].color = col;
+// 		vertices[i].color = col;
 	}
-
+	ColorBoxWithRainbow(vertices);
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
 
@@ -72,4 +64,19 @@ DirectX::XMMATRIX Box::GetTransform() const noexcept
 void Box::Update(float dt) noexcept
 {
 	alpha = dt;
+}
+
+void Box::ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept
+{
+	vertices[0].color = { 1.0f, 0.0f, 0.0f, 1.0f };
+	vertices[1].color = { 0.0f, 1.0f, 0.0f, 1.0f };
+	vertices[2].color = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+	vertices[3].color = { 1.0f, 0.0f, 0.0f, 1.0f };
+	vertices[4].color = { 0.0f, 1.0f, 0.0f, 1.0f };
+	vertices[5].color = { 0.0f, 0.0f, 1.0f, 1.0f };
+
+	vertices[6].color = { 0.5f, 0.0f, 0.5f, 1.0f };
+	vertices[7].color = { 0.0f, 0.5f, 0.3f, 1.0f };
+
 }

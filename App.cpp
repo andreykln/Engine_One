@@ -5,7 +5,6 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	pBox = new Box(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f);
-	pPyramid = new Pyramid(wnd.GetGraphics(), 1.0f, 2.0f);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -19,9 +18,6 @@ void App::DoFrame()
 	timer.Tick();
 
 // 	TwoTestCubes();
-	pPyramid->BindAndDraw(wnd.GetGraphics());
-	pPyramid->Update(timer.TotalTime());
-	pPyramid->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
 
 
 	pBox->BindAndDraw(wnd.GetGraphics());
