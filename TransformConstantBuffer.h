@@ -3,19 +3,19 @@
 #include "Shape.h"
 
 
-struct ConstBuf
+struct VS_Constant_Buffer
 {
-	DirectX::XMMATRIX matrix;
-	float time;
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	float time = 0.0f;
 };
 class TransformConstantBuffer : public Bindable
 {
 public:
 	TransformConstantBuffer(Graphics& gfx, const Shape& in_parent);
-// 	TransformConstantBuffer(Graphics& gfx, float in_time, const Shape& in_parent);
 	void Bind(Graphics& gfx) noexcept override;
 private:
-	VertexConstantBuffer<ConstBuf> pVertexConstBuffer;
+	VS_Constant_Buffer constBuff;
+	VertexConstantBuffer<VS_Constant_Buffer> pVertexConstBuffer;
 	const Shape& parent;
 	float c_time{};
 

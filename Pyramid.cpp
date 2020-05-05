@@ -58,12 +58,6 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	RasterizerState state;
 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 	AddBind(pRasterState);
-
-
-
-
-
-
 }
 
 DirectX::XMMATRIX Pyramid::GetTransform() const noexcept
@@ -74,9 +68,4 @@ DirectX::XMMATRIX Pyramid::GetTransform() const noexcept
 void Pyramid::Update(float dt) noexcept
 {
 	alpha = dt;
-}
-
-float Pyramid::GetAlpha() const noexcept
-{
-	return alpha;
 }

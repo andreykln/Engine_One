@@ -1,6 +1,12 @@
 #include "Shape.h"
 class GeoSphere;
 
+
+float Shape::GetAlpha() const
+{
+	return alpha;
+}
+
 void Shape::Update(float dt) noexcept
 {
 	alpha = dt;

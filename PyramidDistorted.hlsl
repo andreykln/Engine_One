@@ -8,9 +8,7 @@ cbuffer world
 struct VertexOut
 {
     float4 col : Color;
-    float4 Position : SV_Position; //TODO this order matters
-
-    
+    float4 Position : SV_Position; //this order matters
 };
                                      
 VertexOut main(float3 pos : Position, float4 col : Color)

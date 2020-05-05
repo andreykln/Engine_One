@@ -13,7 +13,7 @@ public:
 	Shape(const Shape&) = delete;
 	virtual ~Shape() = default;
 	virtual DirectX::XMMATRIX GetTransform() const noexcept = 0;
-	virtual float GetAlpha() const noexcept = 0;
+	float GetAlpha() const;
 	virtual void Update(float dt) noexcept = 0;
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);

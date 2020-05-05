@@ -60,3 +60,4 @@ void GeoSphere::Update(float dt) noexcept
 {
 	alpha = dt;
 }
+

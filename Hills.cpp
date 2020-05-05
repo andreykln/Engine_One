@@ -109,6 +109,7 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 	n = in_vertDepth;
 }
 
+
 float Hills::GetHeight(float x, float z) const
 {
 	return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f * z));
