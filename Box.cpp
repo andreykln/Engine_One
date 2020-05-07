@@ -8,7 +8,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_B> vertices(mesh.vertices.size());
 	DirectX::XMFLOAT4 col{ 0.2f, 0.3f, 0.6f, 1.0f };
-	vertices[0].color = col;
+// 	vertices[0].color = col;
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
@@ -16,6 +16,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 		vertices[i].color = col;
 	}
 	ColorBoxWithRainbow(vertices);
+
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
 
@@ -30,13 +31,12 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, offset,
+		{"Color", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, offset, 
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
-
 
 	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
 	AddBind(pPixelShader);
@@ -51,7 +51,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	AddBind(pTransformConstBuff);
 
 	RasterizerState state;
-	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());
+	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 	AddBind(pRasterState);
 
 }
@@ -64,19 +64,20 @@ DirectX::XMMATRIX Box::GetTransform() const noexcept
 void Box::Update(float dt) noexcept
 {
 	alpha = dt;
+	
 }
 
 void Box::ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept
 {
-	vertices[0].color = { 1.0f, 0.0f, 0.0f, 1.0f };
-	vertices[1].color = { 0.0f, 1.0f, 0.0f, 1.0f };
-	vertices[2].color = { 0.0f, 0.0f, 1.0f, 1.0f };
-
-	vertices[3].color = { 1.0f, 0.0f, 0.0f, 1.0f };
-	vertices[4].color = { 0.0f, 1.0f, 0.0f, 1.0f };
-	vertices[5].color = { 0.0f, 0.0f, 1.0f, 1.0f };
-
-	vertices[6].color = { 0.5f, 0.0f, 0.5f, 1.0f };
-	vertices[7].color = { 0.0f, 0.5f, 0.3f, 1.0f };
+	vertices[0].color = { 255u, 0u, 255u, 255u};
+	vertices[1].color = { 255u, 255u, 255u, 255u };
+	vertices[2].color = { 0u, 0u, 255u, 255u };
+									 
+	vertices[3].color = { 255u, 0u, 0u, 255u };
+	vertices[4].color = { 0u, 255u, 255u, 255u };
+	vertices[5].color = { 0u, 0u, 255u, 255u };
+									  
+	vertices[6].color = { 255u, 255u, 0u, 255u };
+	vertices[7].color = { 0u, 0u, 255u, 255u };
 
 }

@@ -3,6 +3,7 @@
 #include "Shape.h"
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
+#include "directxpackedvector.h" //for XMCOLOR
 class Box : public Shape
 {
 public:
@@ -17,11 +18,13 @@ private:
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT2 tex0;
 		DirectX::XMFLOAT2 tex1;
-		DirectX::XMFLOAT4 color;
+		DirectX::PackedVector::XMCOLOR color;
 	};
+	Vertex_B test;
 	void ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
+
 public:
 	float alpha{};
 };
