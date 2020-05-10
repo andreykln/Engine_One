@@ -29,6 +29,8 @@ public:
 	void CalculateFrameStats();
 	void CameraMove();
 	void TwoTestCubes() noexcept;
+	void DrawHillsWithWaves();
+	void CreateHillsWithWaves();
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
 	//Axis step generation for cubes
@@ -55,7 +57,8 @@ private:
 	std::vector<std::unique_ptr<WaveSurface>> wave;
 	ShapesDemo shapes;
 
-	DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
+	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.f, -4.0f, 10.0f);
+	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 0.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();

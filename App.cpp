@@ -9,10 +9,10 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	pWaves = new WaveSurface(wnd.GetGraphics());
-
-	pBox = new Box(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f);
-	wnd.GetGraphics().SetProjection(CalculateProjection());
+	CreateHillsWithWaves();
+// 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+// 	pWaves = new WaveSurface(wnd.GetGraphics());
+ 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
 App::~App()
@@ -24,16 +24,15 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-// 	TwoTestCubes();
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->BindAndDraw(wnd.GetGraphics());
-	
-	pBox->BindAndDraw(wnd.GetGraphics());
-	pBox->Update(timer.TotalTime());
-	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+// 	pHills->BindAndDraw(wnd.GetGraphics());
+// 	pHills->SetMatrix(offsetForHills);
+// 	pWaves->BindAndDraw(wnd.GetGraphics());
+// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+// 	pWaves->SetMatrix(offsetForWavesWithHills);
+	DrawHillsWithWaves();
+
 
 	CalculateFrameStats();
-
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.1f, 0.1f, 0.1f);
@@ -124,6 +123,21 @@ void App::TwoTestCubes() noexcept
 
 
 
+
+void App::DrawHillsWithWaves()
+{
+	pHills->BindAndDraw(wnd.GetGraphics());
+	pHills->SetMatrix(offsetForHills);
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->SetMatrix(offsetForWavesWithHills);
+}
+
+void App::CreateHillsWithWaves()
+{
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+	pWaves = new WaveSurface(wnd.GetGraphics());
+}
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {

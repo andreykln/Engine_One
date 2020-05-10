@@ -44,21 +44,21 @@ Graphics::Graphics(HWND wnd)
 	//
 	// RASTERIZER STATE TEST/////////////////////// This can work as a default state if needed
 	////////
-// 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> pgfx_RasterState;
-// 	D3D11_RASTERIZER_DESC rasterDesc;
-// 	rasterDesc.AntialiasedLineEnable = FALSE;
-// 	rasterDesc.CullMode = D3D11_CULL_BACK;
-// 	rasterDesc.FrontCounterClockwise = FALSE;
-// 	rasterDesc.DepthBias = 0u;
-// 	rasterDesc.SlopeScaledDepthBias = 0.0f;
-// 	rasterDesc.DepthBiasClamp = 0.0f;
-// 	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
-// 	rasterDesc.DepthClipEnable = TRUE;
-// 	rasterDesc.ScissorEnable = FALSE;
-// 	rasterDesc.MultisampleEnable = FALSE;
-// 
-// 	DX::ThrowIfFailed(pgfx_pDevice->CreateRasterizerState(&rasterDesc, pgfx_RasterState.ReleaseAndGetAddressOf()));
-// 	pgfx_pDeviceContext->RSSetState(pgfx_RasterState.Get());
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> pgfx_RasterState;
+	D3D11_RASTERIZER_DESC rasterDesc;
+	rasterDesc.AntialiasedLineEnable = FALSE;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.FrontCounterClockwise = FALSE;
+	rasterDesc.DepthBias = 0u;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.DepthClipEnable = TRUE;
+	rasterDesc.ScissorEnable = FALSE;
+	rasterDesc.MultisampleEnable = FALSE;
+
+	DX::ThrowIfFailed(pgfx_pDevice->CreateRasterizerState(&rasterDesc, pgfx_RasterState.ReleaseAndGetAddressOf()));
+	pgfx_pDeviceContext->RSSetState(pgfx_RasterState.Get());
 // 
 // 
 	//
