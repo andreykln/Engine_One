@@ -19,7 +19,7 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
 public:
-	float alpha{};
+//	float alpha{};
 private:
 	std::vector<Vertex> vertices;
 	Waves wave;

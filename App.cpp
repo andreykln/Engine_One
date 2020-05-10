@@ -1,9 +1,16 @@
+
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 #include "App.h"
 
 
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
+	pWaves = new WaveSurface(wnd.GetGraphics());
+
 	pBox = new Box(wnd.GetGraphics(), 0.5f, 0.5f, 0.5f);
 	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -18,8 +25,9 @@ void App::DoFrame()
 	timer.Tick();
 
 // 	TwoTestCubes();
-
-
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	
 	pBox->BindAndDraw(wnd.GetGraphics());
 	pBox->Update(timer.TotalTime());
 	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
@@ -182,8 +190,9 @@ void App::ShapesDemoDrawShapes()
 
 	for (auto& x : cylinders)
 	{
-		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
+		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ /** DirectX::XMMatrixRotationY(timer.TotalTime())*/ * shapes.GetCameraOffset());
 		x->BindAndDraw(wnd.GetGraphics());
+// 		x->SetMatrix();
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 

@@ -11,7 +11,7 @@ public:
 	void Update(float dt) noexcept override;
 
 public:
-	float alpha{};
+//	float alpha{};
 
 
 };

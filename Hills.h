@@ -28,7 +28,7 @@ private:
 
 
 public:
-	float alpha{};
+//	float alpha{};
 
 };
 

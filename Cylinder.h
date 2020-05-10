@@ -12,6 +12,6 @@ private:
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
 public:
-	float alpha{};
+	//float alpha{};
 };
 

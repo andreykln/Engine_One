@@ -13,6 +13,6 @@ private:
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
 public:
-	float alpha{};
+//	float alpha{};
 };
 

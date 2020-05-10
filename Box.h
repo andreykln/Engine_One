@@ -26,6 +26,6 @@ private:
 	GeometryGenerator box;
 
 public:
-	float alpha{};
+//	float alpha{};
 };
 
