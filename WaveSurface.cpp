@@ -57,13 +57,16 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
-	AddBind(pTransformConstBuff);
+
+	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
+		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection());
+	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
+	AddBind(pVCB);
 
 
-// 	RasterizerState state;
-// 	Rasterizer* pRaster = new Rasterizer(gfx, state.Wireframe());
-// 	AddBind(pRaster);
+	RasterizerState state;
+	Rasterizer* pRaster = new Rasterizer(gfx, state.Wireframe());
+	AddBind(pRaster);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
@@ -99,4 +102,15 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 		v[i].Color = DirectX::XMFLOAT4(0.0f, 0.0f, 0.4f, 1.0f);
 	}
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDynamicVB, 0u);
+}
+
+void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+
+	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
+	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
+
 }

@@ -130,6 +130,7 @@ void App::DrawHillsWithWaves()
 // 	pHills->SetMatrix(offsetForHills);
 	pWaves->BindAndDraw(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pWaves->SetMatrix(offsetForWavesWithHills);
 }
 

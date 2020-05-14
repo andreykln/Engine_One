@@ -18,15 +18,15 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
+	void UpdateVertexConstantBuffer(Graphics& gfx);
 public:
 //	float alpha{};
 private:
 	std::vector<Vertex> vertices;
 	Waves wave;
-	VertexBufferDynamic* pDynamicVB;
-	ID3D11Buffer* pCopyDynamicVB;
-
-
+	VertexBufferDynamic* pDynamicVB = nullptr;
+	ID3D11Buffer* pCopyDynamicVB = nullptr;
+	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;

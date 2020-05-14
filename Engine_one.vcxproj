@@ -206,6 +206,7 @@
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexBufferDynamic.cpp" />
+    <ClCompile Include="VertexConstantBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Waves.cpp" />
     <ClCompile Include="WaveSurface.cpp">
@@ -271,6 +272,7 @@
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexBufferDynamic.h" />
+    <ClInclude Include="VertexConstantBuffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Waves.h" />
     <ClInclude Include="WaveSurface.h">

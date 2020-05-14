@@ -11,3 +11,4 @@
 #include "VertexBufferDynamic.h"
 #include "Rasterizer.h"
 #include "RasterizerState.h"
+#include "VertexConstantBuffer.h"

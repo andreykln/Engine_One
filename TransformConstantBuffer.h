@@ -15,7 +15,7 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 private:
 	VS_Constant_Buffer constBuff;
-	VertexConstantBuffer<VS_Constant_Buffer> pVertexConstBuffer;
+	BindVertexConstantBuffer<VS_Constant_Buffer> pVertexConstBuffer;
 	const Shape& parent;
 	float c_time{};
 
