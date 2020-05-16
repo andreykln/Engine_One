@@ -9,7 +9,7 @@ public:
 	LoadModelFromTXT(Graphics& gfx, const std::wstring& path);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
-
+	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 public:
 //	float alpha{};
 

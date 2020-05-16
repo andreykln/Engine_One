@@ -64,9 +64,6 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pVCB);
 
 
-	RasterizerState state;
-	Rasterizer* pRaster = new Rasterizer(gfx, state.Wireframe());
-	AddBind(pRaster);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept

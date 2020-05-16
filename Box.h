@@ -10,6 +10,7 @@ public:
 	Box(Graphics& gfx, float width, float height, float depth);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
+	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
 	struct Vertex_B
 	{

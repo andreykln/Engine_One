@@ -47,8 +47,10 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
-	AddBind(pTransformConstBuff);
+	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
+		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection());
+	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
+	AddBind(pVCB);
 }
 
 DirectX::XMMATRIX GeoSphere::GetTransform() const noexcept
@@ -59,5 +61,15 @@ DirectX::XMMATRIX GeoSphere::GetTransform() const noexcept
 void GeoSphere::Update(float dt) noexcept
 {
 	alpha = dt;
+}
+
+void GeoSphere::UpdateVertexConstantBuffer(Graphics& gfx)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+
+	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
+	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }
 

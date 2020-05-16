@@ -12,15 +12,6 @@ public:
 private :
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator pyramid;
-	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
-
-
-	struct ConstantBufferTime
-	{
-		DirectX::XMMATRIX matrix;
-		float time;
-	};
-
 
 };
 

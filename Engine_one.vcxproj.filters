@@ -242,6 +242,9 @@
     <ClInclude Include="VertexConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="ConstantBufferTypes.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubePS.hlsl">

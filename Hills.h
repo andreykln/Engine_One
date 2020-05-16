@@ -12,6 +12,7 @@ public:
 	void SetDepth(float in_depth) noexcept;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
+	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
 	bool flatSurface = false;
 	float width{};

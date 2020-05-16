@@ -24,7 +24,8 @@ public:
 private:
 	std::vector<Bindable*> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;
-public:
+protected:
+	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 	float alpha{};
 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);

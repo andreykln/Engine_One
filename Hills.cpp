@@ -73,8 +73,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
-	AddBind(pTransformConstBuff);
+	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
+		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection());
+	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
+	AddBind(pVCB);
 
 }
 
@@ -109,6 +111,16 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 	n = in_vertDepth;
 }
 
+
+void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+
+	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
+	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
+}
 
 float Hills::GetHeight(float x, float z) const
 {

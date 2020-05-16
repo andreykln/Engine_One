@@ -9,6 +9,7 @@ public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
+	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
