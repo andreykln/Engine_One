@@ -245,6 +245,9 @@
     <ClInclude Include="ConstantBufferTypes.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubePS.hlsl">
@@ -256,5 +259,10 @@
     <FxCompile Include="PyramidDistorted.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightHelper.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

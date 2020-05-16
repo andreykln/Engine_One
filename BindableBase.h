@@ -6,7 +6,7 @@
 #include "InputLayout.h"
 #include "IndexBuffer.h"
 #include "Topology.h"
-#include "ConstantBuffer.h"
+//#include "ConstantBuffer.h"
 #include "TransformConstantBuffer.h"
 #include "VertexBufferDynamic.h"
 #include "Rasterizer.h"
