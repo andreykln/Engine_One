@@ -50,7 +50,7 @@ private:
 // 	Hills* pHills = nullptr;
 // 	LoadModelFromTXT* pTXTModel = nullptr;
 	WaveSurface* pWaves = nullptr;
-// 	Pyramid* pPyramid = nullptr;
+	Pyramid* pPyramid = nullptr;
 
 
 // 	std::vector<std::unique_ptr<LoadModelFromTXT>> txtModel;

@@ -20,6 +20,7 @@ public:
 	void BindAndDraw(Graphics& gfx) const noexcept;
 	void DeleteObject() const noexcept;
 	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
+	virtual void UpdateVertexConstantBuffer(Graphics& gfx) = 0;
 private:
 	std::vector<Bindable*> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;

@@ -10,8 +10,7 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	CreateHillsWithWaves();
-// 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
-// 	pWaves = new WaveSurface(wnd.GetGraphics());
+	pPyramid = new Pyramid(wnd.GetGraphics(), 0.9f, 2.0f);
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -24,18 +23,18 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 	pHills->SetMatrix(offsetForHills);
-// 	pWaves->BindAndDraw(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 	pWaves->SetMatrix(offsetForWavesWithHills);
-	DrawHillsWithWaves();
+
+	pPyramid->BindAndDraw(wnd.GetGraphics());
+
+	pPyramid->Update(timer.TotalTime());
+	pPyramid->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+	pPyramid->UpdateVertexConstantBuffer(wnd.GetGraphics());
 
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
-	wnd.GetGraphics().ClearBuffer(0.1f, 0.1f, 0.1f);
+	wnd.GetGraphics().ClearBuffer(0.3f, 0.3f, 0.3f);
 }
 
 int App::Go()

@@ -5,13 +5,6 @@ template <typename C>
 class VertexConstantBuffer : public Bindable
 {
 public:
-	void Update(Graphics& gfx, const C& data)
-	{
-		D3D11_MAPPED_SUBRESOURCE mapped_subresource;
-		DX::ThrowIfFailed(GetContext(gfx)->Map(pConstBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mapped_subresource));
-		std::memcpy(mapped_subresource.pData, &data, sizeof(data));
-		GetContext(gfx)->Unmap(pConstBuffer.Get(), 0u);
-	}
 	VertexConstantBuffer(Graphics& gfx, const C& data)
 	{
 		D3D11_BUFFER_DESC constBufDesc;
@@ -30,7 +23,6 @@ public:
 	void Bind(Graphics& gfx) noexcept override
 	{
 		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstBuffer.GetAddressOf());
-// 		pConstBuffer.Update(gfx, C& data);
 	}
 	ID3D11Buffer* GetVertexConstantBuffer()
 	{

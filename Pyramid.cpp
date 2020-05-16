@@ -20,6 +20,7 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 		else 
 		vertices[i].color = red;
 	}
+
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Pyramid");
 	AddBind(pVB);
 
@@ -49,9 +50,12 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	TransformConstantBuffer* pTransformConstBuff = new TransformConstantBuffer(gfx, *this);
-	AddBind(pTransformConstBuff);
 
+	ConstantBufferTime constBuff;
+	VertexConstantBuffer<ConstantBufferTime>* pVCB =
+		new VertexConstantBuffer<ConstantBufferTime>(gfx, constBuff);
+	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
+	AddBind(pVCB);
 
 	RasterizerState state;
 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
@@ -66,4 +70,14 @@ DirectX::XMMATRIX Pyramid::GetTransform() const noexcept
 void Pyramid::Update(float dt) noexcept
 {
 	alpha = dt;
+}
+
+void Pyramid::UpdateVertexConstantBuffer(Graphics& gfx)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	ConstantBufferTime* constBuff = reinterpret_cast<ConstantBufferTime*>(mappedData.pData);
+	constBuff->matrix = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	constBuff->time = GetAlpha();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }

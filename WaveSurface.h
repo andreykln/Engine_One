@@ -18,7 +18,7 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
-	void UpdateVertexConstantBuffer(Graphics& gfx);
+	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 public:
 //	float alpha{};
 private:
