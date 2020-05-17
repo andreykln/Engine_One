@@ -10,7 +10,8 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 
-	pHills = new Hills(wnd.GetGraphics(), 160.f, 160.f, 50u, 50u, false);
+	pPyramid = new Pyramid(wnd.GetGraphics(), 1.5f, 2.0f);
+
 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -24,7 +25,14 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	DrawHillsWithWaves();
+	pPyramid->BindAndDraw(wnd.GetGraphics());
+	pPyramid->Update(timer.TotalTime());
+	pPyramid->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pPyramid->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+
+
+
+// 	DrawHillsWithWaves();
 
 // 	pHills->BindAndDraw(wnd.GetGraphics());
 // 	pHills->SetMatrix(offsetForHills);

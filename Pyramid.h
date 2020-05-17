@@ -12,6 +12,12 @@ public:
 private :
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator pyramid;
+	ID3D11Buffer* pCopyMatrixConstBuffer = nullptr;
+	ID3D11Buffer* pCopyTimeConstBuffer = nullptr;
 
+	struct ConstantBMatrix
+	{
+		DirectX::XMMATRIX matrix;
+	};
 };
 

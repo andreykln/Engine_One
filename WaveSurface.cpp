@@ -59,7 +59,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 
 
 	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
-		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection());
+		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection(), 0u, 1u);
 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCB);
 

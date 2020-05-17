@@ -50,12 +50,12 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-
 	ConstantBufferTime constBuff;
 	VertexConstantBuffer<ConstantBufferTime>* pVCB =
-		new VertexConstantBuffer<ConstantBufferTime>(gfx, constBuff);
+		new VertexConstantBuffer<ConstantBufferTime>(gfx, constBuff, 0u, 1u);
 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCB);
+
 
 	RasterizerState state;
 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
@@ -80,4 +80,5 @@ void Pyramid::UpdateVertexConstantBuffer(Graphics& gfx)
 	constBuff->matrix = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	constBuff->time = GetAlpha();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
+
 }

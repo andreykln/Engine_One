@@ -5,7 +5,8 @@ template <typename C>
 class VertexConstantBuffer : public Bindable
 {
 public:
-	VertexConstantBuffer(Graphics& gfx, const C& data)
+	VertexConstantBuffer(Graphics& gfx, const C& data, UINT in_startSlot, UINT in_numBuffers)
+		: numBuffers(in_numBuffers), startSlot(in_startSlot)
 	{
 		D3D11_BUFFER_DESC constBufDesc;
 		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -18,17 +19,20 @@ public:
 		constBufInitData.pSysMem = &data;
 		constBufInitData.SysMemPitch = 0;
 		constBufInitData.SysMemSlicePitch = 0;
-		DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&constBufDesc, &constBufInitData, pConstBuffer.ReleaseAndGetAddressOf()));
+		DX::ThrowIfFailed(GetDevice(gfx)->CreateBuffer(&constBufDesc, &constBufInitData,
+			pConstBuffer.ReleaseAndGetAddressOf()));
 	}
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->VSSetConstantBuffers(0u, 1u, pConstBuffer.GetAddressOf());
+		GetContext(gfx)->VSSetConstantBuffers(startSlot, numBuffers, pConstBuffer.GetAddressOf());
 	}
 	ID3D11Buffer* GetVertexConstantBuffer()
 	{
 		return pConstBuffer.Get();
 	}
 private:
+	UINT numBuffers{1};
+	UINT startSlot{0};
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstBuffer;
 };
 
