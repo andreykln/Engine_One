@@ -9,6 +9,7 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "LoadModelFromTXT.h"
+#include "BoxAndCylinder.h"
 
 #include "WaveSurface.h"
 #include <vector>
@@ -41,25 +42,27 @@ private:
 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 
-	Box* pBox = nullptr;
-	Cylinder* pCylinder = nullptr;
- 	std::vector<Cylinder*> cylinders;
-	GeoSphere* pGeoSphere = nullptr;
- 	std::vector<GeoSphere*> geoSpheres;
-	Sphere* pSphere = nullptr;
- 	Hills* pHills = nullptr;
-	LoadModelFromTXT* pTXTModel = nullptr;
-	WaveSurface* pWaves = nullptr;
-	Pyramid* pPyramid = nullptr;
+	BoxAndCylinder* boxandCyl = nullptr;
 
-
-	std::vector<std::unique_ptr<WaveSurface>> wave;
-	ShapesDemo shapes;
+// 	Box* pBox = nullptr;
+// 	Cylinder* pCylinder = nullptr;
+//  	std::vector<Cylinder*> cylinders;
+// 	GeoSphere* pGeoSphere = nullptr;
+//  	std::vector<GeoSphere*> geoSpheres;
+// 	Sphere* pSphere = nullptr;
+//  	Hills* pHills = nullptr;
+// 	LoadModelFromTXT* pTXTModel = nullptr;
+// 	WaveSurface* pWaves = nullptr;
+// 	Pyramid* pPyramid = nullptr;
+// 
+// 
+// 	std::vector<std::unique_ptr<WaveSurface>> wave;
+// 	ShapesDemo shapes;
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
 	const DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
-
+	const DirectX::XMMATRIX offsettest = DirectX::XMMatrixTranslation(-0.6f, 0.0f, 0.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();

@@ -20,7 +20,7 @@ void Shape::AddBind(Bindable* in_bind)
 
 void Shape::AddIndexBuffer(IndexBuffer* in_bind)
 {
-	assert("IndexBuffer already bound" && pIndexBuffer == nullptr);
+ 	assert("IndexBuffer already bound" && pIndexBuffer == nullptr);
 	pIndexBuffer = in_bind;
 	binds.push_back(std::move(in_bind));
 }
@@ -32,6 +32,16 @@ void Shape::BindAndDraw(Graphics& gfx) const noexcept
 		b->Bind(gfx);
 	}
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
+}
+
+void Shape::BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept
+{
+	for (auto& b : binds)
+	{
+		b->Bind(gfx);
+	}
+	gfx.DrawIndexedTwo(count, startIndexLocation, baseVertexLocation);
+
 }
 
 void Shape::DeleteObject() const noexcept

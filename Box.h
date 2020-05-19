@@ -21,7 +21,6 @@ private:
 		DirectX::XMFLOAT2 tex1;
 		DirectX::PackedVector::XMCOLOR color;
 	};
-	Vertex_B test;
 	void ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;

@@ -18,6 +18,7 @@ public:
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);
 	void BindAndDraw(Graphics& gfx) const noexcept;
+	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
 	void DeleteObject() const noexcept;
 	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 	virtual void UpdateVertexConstantBuffer(Graphics& gfx) = 0;

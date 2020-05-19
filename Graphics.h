@@ -7,7 +7,7 @@
 #include "directxcolors.h"
 #include "CustomException.h"
 #include <d3dcompiler.h>
-// #define MY_DEBUG
+#define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
 
@@ -22,6 +22,7 @@ public:
 	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
+	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);

@@ -52,6 +52,8 @@ public:
 	}
 	void Bind(Graphics& gfx) noexcept override;
 private:
+	UINT startSlot{};
+	UINT numBuffers{};
 	UINT offset{};
 	UINT stride{};
 	Microsoft::WRL::ComPtr <ID3D11Buffer> pVertexBuffer;

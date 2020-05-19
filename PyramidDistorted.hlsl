@@ -1,5 +1,5 @@
 
-cbuffer world
+cbuffer world : register(b0)
 {
     float4x4 transform;
     float time;

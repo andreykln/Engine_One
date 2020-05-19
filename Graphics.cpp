@@ -52,7 +52,7 @@ Graphics::Graphics(HWND wnd)
 	rasterDesc.DepthBias = 0u;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 	rasterDesc.DepthBiasClamp = 0.0f;
-	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
 	rasterDesc.DepthClipEnable = TRUE;
 	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.MultisampleEnable = FALSE;
@@ -171,6 +171,14 @@ void Graphics::DrawIndexed(UINT count) const noexcept
 {
 	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
 }
+
+void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept
+{
+	pgfx_pDeviceContext->DrawIndexed(count, StartIndexLocation, BaseVertexLocation);
+// 	pgfx_pDeviceContext->DrawIndexed(36u, 0u,0u);
+
+}
+
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 {
