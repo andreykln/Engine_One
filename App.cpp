@@ -5,12 +5,15 @@
 
 #include "App.h"
 
-
+INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
+	
+
+
 	boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
-// 	CreateHillsWithWaves();
+ 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -23,16 +26,7 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	boxandCyl->SetMatrix(DirectX::XMMatrixRotationX(timer.TotalTime()));
-	boxandCyl->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	boxandCyl->BindAndDrawSeveral(wnd.GetGraphics(),
-		boxandCyl->GetBoxNumIndices(), 0u, 0u);
-
-	boxandCyl->SetMatrix(DirectX::XMMatrixRotationX(-timer.TotalTime()) * offsettest);
-	boxandCyl->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	boxandCyl->BindAndDrawSeveral(wnd.GetGraphics(),
-		boxandCyl->GetCylinderNumIndices(), boxandCyl->GetBoxNumIndices(), boxandCyl->GetBoxNumVertices());
-
+	DrawHillsWithWaves();
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
@@ -128,19 +122,19 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-// 	pWaves->BindAndDraw(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pWaves->SetMatrix(offsetForWavesWithHills);
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 	pHills->SetMatrix(offsetForHillsWithWaves);
-// 	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pWaves->SetMatrix(offsetForWavesWithHills);
+	pHills->BindAndDraw(wnd.GetGraphics());
+	pHills->SetMatrix(offsetForHillsWithWaves);
+	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
 }
 
 void App::CreateHillsWithWaves()
 {
-// 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
-// 	pWaves = new WaveSurface(wnd.GetGraphics());
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+	pWaves = new WaveSurface(wnd.GetGraphics());
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept

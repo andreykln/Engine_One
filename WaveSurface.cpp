@@ -51,7 +51,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	}
 
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"GeoSphereIndexBuffer");
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"WaveSurfaceIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

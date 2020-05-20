@@ -8,6 +8,7 @@
 #include "GeoSphere.h"
 #include "Sphere.h"
 #include "Cylinder.h"
+#include "HillsAndWaves.h"
 #include "LoadModelFromTXT.h"
 #include "BoxAndCylinder.h"
 
@@ -50,9 +51,9 @@ private:
 // 	GeoSphere* pGeoSphere = nullptr;
 //  	std::vector<GeoSphere*> geoSpheres;
 // 	Sphere* pSphere = nullptr;
-//  	Hills* pHills = nullptr;
+  	Hills* pHills = nullptr;
 // 	LoadModelFromTXT* pTXTModel = nullptr;
-// 	WaveSurface* pWaves = nullptr;
+ 	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;
 // 
 // 

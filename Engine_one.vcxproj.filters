@@ -138,6 +138,9 @@
     <ClCompile Include="BoxAndCylinder.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="HillsAndWaves.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -252,6 +255,9 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="BoxAndCylinder.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="HillsAndWaves.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>

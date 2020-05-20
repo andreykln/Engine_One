@@ -29,7 +29,7 @@ private:
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 
 	GeometryGenerator::MeshData mesh;
-	GeometryGenerator sphere;
+	//GeometryGenerator sphere;
 
 };
 

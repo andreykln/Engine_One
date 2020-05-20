@@ -52,7 +52,7 @@ Graphics::Graphics(HWND wnd)
 	rasterDesc.DepthBias = 0u;
 	rasterDesc.SlopeScaledDepthBias = 0.0f;
 	rasterDesc.DepthBiasClamp = 0.0f;
-	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.DepthClipEnable = TRUE;
 	rasterDesc.ScissorEnable = FALSE;
 	rasterDesc.MultisampleEnable = FALSE;
