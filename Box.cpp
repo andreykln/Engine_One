@@ -61,7 +61,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept
 {
-	return m_Matrix * m_Centered;
+	return m_Matrix /** m_Centered*/;
 }
 
 void Box::Update(float dt) noexcept
@@ -76,7 +76,7 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 
 	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
-	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	*mat = DirectX::XMMatrixTranspose(gfx.GetProjection() * GetTransform());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }
 

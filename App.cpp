@@ -34,6 +34,8 @@ void App::DoFrame()
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
+	UpdateCameraScene(timer.TotalTime());
+
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.3f, 0.3f, 0.3f);
 }
@@ -143,7 +145,7 @@ void App::CreateHillsWithWaves()
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {
-	return 	DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f);
+	return 	   DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f) * mCamera;
 }
 
 
@@ -218,4 +220,21 @@ void App::ShapesDemoDrawShapes()
 // 		x->BindAndDraw(wnd.GetGraphics());
 // 	}
 // 	shapes.GetSphereWorldArray() -= 10; //reset array position
+}
+
+void App::UpdateCameraScene(float dt)
+{
+	// Convert Spherical to Cartesian coordinates.
+	float x = wnd.mRadius * sinf(wnd.mPhi) * cosf(wnd.mTheta);
+	float z = wnd.mRadius * sinf(wnd.mPhi) * sinf(wnd.mTheta);
+	float y = wnd.mRadius * cosf(wnd.mPhi);
+
+	// Build the view matrix.
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
+	DirectX::XMVECTOR target = DirectX::XMVectorZero();
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up);
+	DirectX::XMStoreFloat4x4(&mCamStore, V);
+	mCamera = DirectX::XMLoadFloat4x4(&mCamStore);
 }

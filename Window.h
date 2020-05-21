@@ -55,6 +55,9 @@ public:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	float mPhi{0.1f};
+	float mTheta{0.1f};
+	float mRadius{0.1f};
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;

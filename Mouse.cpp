@@ -61,13 +61,39 @@ void Mouse::Clear() noexcept
 	eventBuffer = std::queue<Event>();
 }
 
-void Mouse::OnMouseMove(int newx, int newy) noexcept
+void Mouse::OnMouseMove(WPARAM btnState, int newx, int newy, float Theta, float Phi, float Radius) noexcept
 {
+	if ((btnState & MK_LBUTTON) != 0)
+	{
+		// Make each pixel correspond to a quarter of a degree.
+		float dx = DirectX::XMConvertToRadians(0.25f * static_cast<float>(newx - x));
+		float dy = DirectX::XMConvertToRadians(0.25f * static_cast<float>(newy - y));
+
+		// Update angles based on input to orbit camera around box.
+		Theta += dx;
+		Phi += dy;
+
+		// Restrict the angle mPhi.
+		Phi = MathHelper::Clamp(Phi, 0.1f, DirectX::XM_PI - 0.1f);
+	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		// Make each pixel correspond to 0.005 unit in the scene.
+		float dx = 0.005f * static_cast<float>(newx - x);
+		float dy = 0.005f * static_cast<float>(newy - y);
+
+		// Update the camera radius based on input.
+		Radius += dx - dy;
+
+		// Restrict the radius.
+		Radius = MathHelper::Clamp(Radius, 3.0f, 15.0f);
+	}
 	x = newx;
 	y = newy;
 	eventBuffer.push(Mouse::Event(Mouse::Event::Type::Move, *this));
 	TrimBuffer();
 }
+
 
 void Mouse::OnMouseEnter() noexcept
 {

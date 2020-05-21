@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include "WindowsEdited.h"
+#include "MathHelper.h"
 //#include "Window.h"
 class Window;
 class Mouse
@@ -88,7 +89,7 @@ public:
 	bool IsEmpty() const noexcept;
 	void Clear() noexcept;
 private:
-	void OnMouseMove(int newx, int newy) noexcept;
+	void OnMouseMove(WPARAM btnState, int newx, int newy, float Theta, float Phi, float Radius) noexcept;
 	void OnMouseEnter() noexcept;
 	void OnMouseLeave() noexcept;
 	void OnLeftPress(int x, int y) noexcept;

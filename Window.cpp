@@ -180,7 +180,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		//in client region => log move, enter and capture mouse
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
-			mouse.OnMouseMove(pt.x, pt.y);
+			mouse.OnMouseMove(wParam, pt.x, pt.y, mTheta, mPhi, mRadius);
 			if (!mouse.IsInWindow())
 			{
 				SetCapture(hWnd);
@@ -191,7 +191,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		{
 			if (wParam & (MK_LBUTTON | MK_RBUTTON))
 			{
-				mouse.OnMouseMove(pt.x, pt.y);
+				mouse.OnMouseMove(wParam, pt.x, pt.y, mTheta, mPhi, mRadius);
 			}
 			else //button up
 			{
