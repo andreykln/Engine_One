@@ -45,7 +45,7 @@ private:
 
 	BoxAndCylinder* boxandCyl = nullptr;
 
-// 	Box* pBox = nullptr;
+ 	Box* pBox = nullptr;
 // 	Cylinder* pCylinder = nullptr;
 //  	std::vector<Cylinder*> cylinders;
 // 	GeoSphere* pGeoSphere = nullptr;

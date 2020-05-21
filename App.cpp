@@ -9,11 +9,11 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	
+	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 
 
 	boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
- 	CreateHillsWithWaves();
+//  	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -26,7 +26,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
+	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDraw(wnd.GetGraphics());
+
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
