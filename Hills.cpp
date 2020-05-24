@@ -32,6 +32,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	wavesMat.diffuse = DirectX::XMFLOAT4(0.137f, 0.42f, 0.556f, 1.0f);
 	wavesMat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 96.0f);
 
+	perFrameConstBuff.gDirLight = dirLight;
+	perFrameConstBuff.gEyePosW = { 0.0f, 0.0f, 0.0f };
+	perFrameConstBuff.gPointLight = pointLight;
+	perFrameConstBuff.gSpotLight = spotLight;
+
+	perObjectConstBuff.gMaterial = landMat;
 
 	struct Vertex_l
 	{
@@ -52,34 +58,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		}
 		vertices[i].pos = p;
 		vertices[i].normal = GetHillNormal(p.x, p.z);
-
-		//color is based on height
-// 		if (p.y < -10.0f)
-// 		{
-// 			vertices[i].color = DirectX::XMFLOAT4(0.2f, 0.35f, 0.92f, 1.0f);
-// 		}
-// 		else if (p.y < 5.0f)
-// 		{
-// 			vertices[i].color = DirectX::XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
-// 		}
-// 		else if (p.y < 12.0f)
-// 		{
-// 			vertices[i].color = DirectX::XMFLOAT4(0.1f, 0.48f, 0.19f, 1.0f);
-// 		}
-// 		else if (p.y < 20.0f)
-// 		{
-// 			vertices[i].color = DirectX::XMFLOAT4(0.45f, 0.39f, 0.34f, 1.0f);
-// 		}
-// 		else
-// 		{
-// 			vertices[i].color = DirectX::XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
-// 		}
 	}
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"HillsLightVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -95,7 +79,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"HillsLightPS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
@@ -104,10 +88,16 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
-		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection(), 0u, 1u);
-	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
-	AddBind(pVCB);
+
+
+
+	VertexConstantBuffer<PerFrame>* pPerFrameCB =
+		new VertexConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 0u, 1u);
+	AddBind(pPerFrameCB);
+
+	VertexConstantBuffer<PerObject>* pPerObject =
+		new VertexConstantBuffer<PerObject>(gfx, perObjectConstBuff, 1u, 0u);
+	AddBind(pPerObject);
 
 }
 

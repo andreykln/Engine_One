@@ -81,12 +81,13 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 }
 
 
+
 void ComputePointLight (Material mat, PointLight L,
                         float3 position, float3 normal,
                         float3 toEye,
                         out float4 ambient,
                         out float4 diffuse,
-                        out float3 specular)
+                        out float4 specular)
 {
     ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
     diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);

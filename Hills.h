@@ -19,6 +19,26 @@ public:
 	void SetEyePosition(DirectX::XMFLOAT3 in_Eye) noexcept;
 	float GetAlpha() const noexcept;
 private:
+	struct PerFrame
+	{
+		PerFrame() { ZeroMemory(this, sizeof(this)); }
+		DirectionalLight gDirLight;
+		PointLight gPointLight;
+		SpotLight gSpotLight;
+		DirectX::XMFLOAT3 gEyePosW;
+		float padding;
+	};
+	PerFrame perFrameConstBuff;
+	struct PerObject
+	{
+		PerObject() { ZeroMemory(this, sizeof(this)); }
+		DirectX::XMFLOAT4X4 gWorld;
+		DirectX::XMFLOAT4X4 gWorldInvTranspose;
+		DirectX::XMFLOAT4X4 gWorldViewProj;
+		Material gMaterial;
+	};
+
+	PerObject perObjectConstBuff;
 	bool flatSurface = false;
 	float width{};
 	float depth{};

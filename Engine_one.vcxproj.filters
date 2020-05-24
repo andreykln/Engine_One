@@ -271,6 +271,12 @@
     <FxCompile Include="PyramidDistorted.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="HillsLightVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="HillsLightPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

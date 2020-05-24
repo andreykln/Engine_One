@@ -154,7 +154,7 @@ void App::DrawHillsWithWaves()
 
 void App::CreateHillsWithWaves()
 {
-// 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+ 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 }
 
