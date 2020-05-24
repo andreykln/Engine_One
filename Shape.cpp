@@ -52,7 +52,7 @@ void Shape::DeleteObject() const noexcept
 	}
 }
 
-void Shape::SetMatrix(DirectX::XMMATRIX in_matrix) noexcept
+void Shape::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;
 }

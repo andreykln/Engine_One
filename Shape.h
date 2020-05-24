@@ -20,7 +20,8 @@ public:
 	void BindAndDraw(Graphics& gfx) const noexcept;
 	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
 	void DeleteObject() const noexcept;
-	void SetMatrix(DirectX::XMMATRIX in_matrix) noexcept;
+	//can be used for rotation around world axis
+	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 	virtual void UpdateVertexConstantBuffer(Graphics& gfx) = 0;
 private:
 	std::vector<Bindable*> binds;

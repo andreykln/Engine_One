@@ -71,7 +71,8 @@ private:
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
-	void UpdateCameraScene(DirectX::XMMATRIX in_matrix);
+	//for movement around object's matrix
+	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	DirectX::XMMATRIX mCamera;
 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
 	Window wnd;
