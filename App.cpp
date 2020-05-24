@@ -27,14 +27,14 @@ void App::DoFrame()
 	timer.Tick();
 
 // 	DrawHillsWithWaves();
-	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+ 	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDraw(wnd.GetGraphics());
 
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
-	//UpdateCameraScene();
+	UpdateCameraScene();
 
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.3f, 0.3f, 0.3f);
@@ -145,7 +145,19 @@ void App::CreateHillsWithWaves()
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {
-	return  DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f)/** mCamera*/;
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
+
+	DirectX::XMVECTOR target = DirectX::XMVectorZero();
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up);
+// 	DirectX::XMStoreFloat4x4(&mCamStore, V);
+// 	mCamera = DirectX::XMLoadFloat4x4(&mCamStore);
+
+
+// 	return  V * DirectX::XMMatrixPerspectiveFovLH((FOV / 360.0f) * DirectX::XM_2PI, screenAspect, 0.1f, 100.0f) /** mCamera*/;
+	return   V * DirectX::XMMatrixPerspectiveFovLH((FOV / 360.0f) * DirectX::XM_2PI, screenAspect, 0.1f, 100.0f);
+
 }
 
 
@@ -225,12 +237,14 @@ void App::ShapesDemoDrawShapes()
 void App::UpdateCameraScene()
 {
 	// Convert Spherical to Cartesian coordinates.
-	float x = wnd.mRadius * sinf(wnd.mPhi) * cosf(wnd.mTheta);
-	float z = wnd.mRadius * sinf(wnd.mPhi) * sinf(wnd.mTheta);
-	float y = wnd.mRadius * cosf(wnd.mPhi);
+	float x = wnd.GetRadius() * sinf(wnd.GetPhi()) * cosf(wnd.GetTheta());
+	float z = wnd.GetRadius() * sinf(wnd.GetPhi()) * sinf(wnd.GetTheta());
+	float y = wnd.GetRadius() * cosf(wnd.GetPhi());
 
 	// Build the view matrix.
-	DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
+// 	DirectX::XMVECTOR pos = DirectX::XMVectorSet(x, y, z, 1.0f);
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0.0f, -4.0f, -2.0f, 0.0f);
+
 	DirectX::XMVECTOR target = DirectX::XMVectorZero();
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 

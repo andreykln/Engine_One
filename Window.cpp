@@ -111,6 +111,21 @@ Graphics& Window::GetGraphics()
 	return *gfx;
 }
 
+float Window::GetPhi() const noexcept
+{
+	return mPhi;
+}
+
+float Window::GetTheta() const noexcept
+{
+	return mTheta;
+}
+
+float Window::GetRadius() const noexcept
+{
+	return mRadius;
+}
+
 Window::~Window()
 {
 	delete gfx;

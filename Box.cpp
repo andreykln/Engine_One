@@ -77,6 +77,8 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
 	*mat = DirectX::XMMatrixTranspose( GetTransform() * gfx.GetProjection());
+	//*mat = DirectX::XMMatrixTranspose(gfx.GetProjection() * GetTransform());
+
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }
 

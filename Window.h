@@ -51,13 +51,16 @@ public:
 	static std::optional<int> ProcessMessages();
 	void SetTitle(const std::string& text);
 	Graphics& GetGraphics();
+	float GetPhi() const noexcept;
+	float GetTheta() const noexcept;
+	float GetRadius() const noexcept;
 	~Window();
 public:
 	Keyboard kbd;
 	Mouse mouse;
-	float mPhi{0.1f};
-	float mTheta{0.1f};
-	float mRadius{0.1f};
+	float mPhi{0.25f * DirectX::XM_PI};
+	float mTheta{1.5f * DirectX::XM_PI };
+	float mRadius{5.0f};
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
