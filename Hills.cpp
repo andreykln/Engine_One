@@ -156,6 +156,7 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 
 void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 {
+	using namespace DirectX;
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 
@@ -168,8 +169,13 @@ void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 	pointLight.position.z = 70.0f * sinf(0.2f * GetAlpha());
 	pointLight.position.y = MathHelper::Max(GetHeight(pointLight.position.x, pointLight.position.z), -3.0f) + 10.0f;
 
-// 	spotLight.position = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(target - pos))
+ 	spotLight.position = eyePos;
+	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(target - pos));
+}
+
+void Hills::SetEyePosition(DirectX::XMFLOAT3 in_Eye) noexcept
+{
+	eyePos = in_Eye;
 }
 
 float Hills::GetAlpha() const noexcept

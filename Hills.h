@@ -16,6 +16,7 @@ public:
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	void SetEyePosition(DirectX::XMFLOAT3 in_Eye) noexcept;
 	float GetAlpha() const noexcept;
 private:
 	bool flatSurface = false;
@@ -24,6 +25,10 @@ private:
 	UINT m{};
 	UINT n{};
 	float GetHeight(float x, float z) const;
+	DirectX::XMFLOAT3 eyePos = {0.0f, 0.0f, 0.0f};
+	DirectX::XMVECTOR pos;
+	DirectX::XMVECTOR target;
+
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 	DirectionalLight dirLight;

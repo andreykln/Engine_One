@@ -146,7 +146,7 @@ void App::DrawHillsWithWaves()
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(offsetForWavesWithHills);
 // 
-	pHills->BindAndDraw(wnd.GetGraphics());
+// 	pHills->BindAndDraw(wnd.GetGraphics());
 // 	pHills->SetCameraMatrix(mCamera);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
 // 	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
