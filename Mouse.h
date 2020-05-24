@@ -89,7 +89,7 @@ public:
 	bool IsEmpty() const noexcept;
 	void Clear() noexcept;
 private:
-	void OnMouseMove(WPARAM btnState, int newx, int newy, float Theta, float Phi, float Radius) noexcept;
+	void OnMouseMove(WPARAM btnState, int newx, int newy, float& Theta, float& Phi, float& Radius) noexcept;
 	void OnMouseEnter() noexcept;
 	void OnMouseLeave() noexcept;
 	void OnLeftPress(int x, int y) noexcept;

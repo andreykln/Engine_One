@@ -42,12 +42,14 @@ public:
 private:
 // 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float FOV = 90.0f;
+	DirectX::FXMVECTOR AxisVector{0.0f, 5.0f, 0.0f, 0.0f};
 
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 
 	BoxAndCylinder* boxandCyl = nullptr;
 
  	Box* pBox = nullptr;
+	Box* pBox1 = nullptr;
 // 	Cylinder* pCylinder = nullptr;
 //  	std::vector<Cylinder*> cylinders;
 // 	GeoSphere* pGeoSphere = nullptr;

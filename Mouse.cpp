@@ -61,7 +61,7 @@ void Mouse::Clear() noexcept
 	eventBuffer = std::queue<Event>();
 }
 
-void Mouse::OnMouseMove(WPARAM btnState, int newx, int newy, float Theta, float Phi, float Radius) noexcept
+void Mouse::OnMouseMove(WPARAM btnState, int newx, int newy, float& Theta, float& Phi, float& Radius) noexcept
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{

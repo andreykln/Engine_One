@@ -195,7 +195,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		//in client region => log move, enter and capture mouse
 		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 		{
-			mouse.OnMouseMove(wParam, pt.x, pt.y, mTheta + 0.001f, mPhi, mRadius);
+			mouse.OnMouseMove(wParam, pt.x, pt.y, mTheta, mPhi, mRadius);
 			if (!mouse.IsInWindow())
 			{
 				SetCapture(hWnd);

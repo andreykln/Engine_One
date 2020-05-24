@@ -29,7 +29,7 @@ protected:
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 	float alpha{};
 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
- 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 4.0f);
+ 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, -12.0f);
 // 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixIdentity();
 
 

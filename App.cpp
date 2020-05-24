@@ -10,7 +10,7 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
-
+	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 
 	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
 //  	CreateHillsWithWaves();
@@ -27,11 +27,20 @@ void App::DoFrame()
 	timer.Tick();
 
 
-	UpdateCameraScene();
+ 	UpdateCameraScene();
 // 	DrawHillsWithWaves();
- 	pBox->SetMatrix(DirectX::XMMatrixRotationY(timer.TotalTime()));
+ 	pBox->SetMatrix(mCamera 
+// 		* DirectX::XMMatrixRotationRollPitchYaw(0.0f, timer.TotalTime(),0.0f)
+	);
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDraw(wnd.GetGraphics());
+
+	pBox1->SetMatrix(mCamera
+		* DirectX::XMMatrixRotationRollPitchYaw(0.0f, -timer.TotalTime(), 0.0f)
+	);
+	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox1->BindAndDraw(wnd.GetGraphics());
+
 
 
 	CalculateFrameStats();
@@ -59,7 +68,8 @@ int App::Go()
 void App::DebugTextToTitle()
 {
 	std::ostringstream oss;
-	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY() << " Theta: " << wnd.GetTheta();
+	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY() << " Theta: " << wnd.GetTheta() <<
+		 " Radius: " << wnd.GetRadius() << " Phi: " << wnd.GetPhi();
 	wnd.SetTitle(oss.str().c_str());
 }
 
@@ -160,7 +170,7 @@ DirectX::XMMATRIX App::CalculateProjection() noexcept
 
 	UpdateCameraScene();
 // 	return  V * DirectX::XMMatrixPerspectiveFovLH((FOV / 360.0f) * DirectX::XM_2PI, screenAspect, 0.1f, 100.0f) /** mCamera*/;
-	return   mCamera * DirectX::XMMatrixPerspectiveFovLH((FOV / 360.0f) * DirectX::XM_2PI, screenAspect, 0.1f, 100.0f);
+	return   mCamera * DirectX::XMMatrixPerspectiveFovLH(((FOV / 360.0f) * DirectX::XM_2PI) * 0.75f, screenAspect, 0.1f, 100.0f);
 
 }
 
@@ -246,16 +256,16 @@ void App::UpdateCameraScene()
 	float upDirection = wnd.GetRadius() * cosf(wnd.GetPhi());
 	// Build the view matrix.
 	DirectX::XMVECTOR pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
-// 	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0.0f, 0.0f, -2.0f, 0.0f);
+// 	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0.0f, 0.0f, -12.0f, 0.0f);
 
 	DirectX::XMVECTOR target = DirectX::XMVectorZero();
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 // 	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up);
-	DirectX::XMMATRIX V = DirectX::XMMatrixLookAtLH(pos, target, up);
+	mCamera = DirectX::XMMatrixRotationRollPitchYaw(0.0f, timer.TotalTime(), 0.0f)* DirectX::XMMatrixLookAtLH(pos, target, up);
 
 // 	DirectX::XMStoreFloat4x4(&mCamStore, V);
 // 	mCamera = DirectX::XMLoadFloat4x4(&mCamStore);
-	mCamera = V;
+// 	mCamera = V;
 
 }
