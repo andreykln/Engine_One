@@ -60,7 +60,7 @@ public:
 	Mouse mouse;
 	float mPhi{0.25f * DirectX::XM_PI};
 	float mTheta{1.5f * DirectX::XM_PI };
-	float mRadius{5.0f};
+	float mRadius{10.0f};
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)noexcept;
