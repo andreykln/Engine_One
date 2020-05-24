@@ -71,9 +71,9 @@ private:
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
-	void UpdateCameraScene();
-	DirectX::XMFLOAT4X4 mCamStore;
+	void UpdateCameraScene(DirectX::XMMATRIX in_matrix);
 	DirectX::XMMATRIX mCamera;
+	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
 	Window wnd;
 	Timer timer;
 	float colors[4]{};
