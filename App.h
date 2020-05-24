@@ -67,7 +67,7 @@ private:
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
-	void UpdateCameraScene(float dt);
+	void UpdateCameraScene();
 	DirectX::XMFLOAT4X4 mCamStore;
 	DirectX::XMMATRIX mCamera;
 	Window wnd;

@@ -12,7 +12,7 @@ App::App()
 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 
 
-	boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
+	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
 //  	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -34,7 +34,7 @@ void App::DoFrame()
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
-	UpdateCameraScene(timer.TotalTime());
+	//UpdateCameraScene();
 
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.3f, 0.3f, 0.3f);
@@ -145,7 +145,7 @@ void App::CreateHillsWithWaves()
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {
-	return 	   DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f) * mCamera;
+	return  DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 0.1f, 100.0f)/** mCamera*/;
 }
 
 
@@ -222,7 +222,7 @@ void App::ShapesDemoDrawShapes()
 // 	shapes.GetSphereWorldArray() -= 10; //reset array position
 }
 
-void App::UpdateCameraScene(float dt)
+void App::UpdateCameraScene()
 {
 	// Convert Spherical to Cartesian coordinates.
 	float x = wnd.mRadius * sinf(wnd.mPhi) * cosf(wnd.mTheta);
