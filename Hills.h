@@ -16,7 +16,8 @@ public:
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
-	void SetEyePosition(DirectX::XMFLOAT3 in_Eye) noexcept;
+	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target,
+		DirectX::XMMATRIX& world );
 	float GetAlpha() const noexcept;
 private:
 	struct PerFrame
@@ -37,17 +38,17 @@ private:
 		DirectX::XMFLOAT4X4 gWorldViewProj;
 		Material gMaterial;
 	};
-
 	PerObject perObjectConstBuff;
+
 	bool flatSurface = false;
 	float width{};
 	float depth{};
 	UINT m{};
 	UINT n{};
 	float GetHeight(float x, float z) const;
-	DirectX::XMFLOAT3 eyePos = {0.0f, 0.0f, 0.0f};
-	DirectX::XMVECTOR pos;
-	DirectX::XMVECTOR target;
+
+	ID3D11Buffer* pCopyVCBPerFrame = nullptr;
+	ID3D11Buffer* pCopyVCBPerObject = nullptr;
 
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;

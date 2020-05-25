@@ -66,15 +66,21 @@ private:
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
-	const DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
+	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 	const DirectX::XMMATRIX offsettest = DirectX::XMMatrixTranslation(-0.6f, 0.0f, 0.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
 	//for movement around object's matrix
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
+	DirectX::XMFLOAT3 wEyePosition;
 	DirectX::XMMATRIX mCamera;
 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
+
+	DirectX::XMVECTOR pos;
+	DirectX::XMVECTOR target;
+	DirectX::XMVECTOR up;
+
 	Window wnd;
 	Timer timer;
 	float colors[4]{};

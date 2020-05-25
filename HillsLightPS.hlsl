@@ -5,6 +5,7 @@ cbuffer cbPerFrame : register(b0)
     PointLight gPointLight;
     SpotLight gSpotLight;
     float3 gEyePosW;
+    float padding;
 };
 
 cbuffer cbPerObject : register(b1)

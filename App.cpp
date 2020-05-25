@@ -146,10 +146,12 @@ void App::DrawHillsWithWaves()
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(offsetForWavesWithHills);
 // 
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 	pHills->SetCameraMatrix(mCamera);
+	pHills->SetCameraMatrix(mCamera);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
-// 	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target, offsetForHillsWithWaves);
+	pHills->BindAndDraw(wnd.GetGraphics());
+	SetObjectMatrix(offsetForHillsWithWaves);
+
 }
 
 void App::CreateHillsWithWaves()
@@ -246,10 +248,11 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 	float focusPosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * sinf(wnd.GetTheta());
 	float upDirection = wnd.GetRadius() * cosf(wnd.GetPhi());
 	// Build the view matrix.
-	DirectX::XMVECTOR pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
+	wEyePosition = {eyePosition, focusPosition, upDirection};
+	pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
 
-	DirectX::XMVECTOR target = DirectX::XMVectorZero();
-	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	target = DirectX::XMVectorZero();
+	up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	mCamera = in_matrix * DirectX::XMMatrixLookAtLH(pos, target, up);
 
