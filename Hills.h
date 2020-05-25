@@ -33,9 +33,9 @@ private:
 	struct PerObject
 	{
 		PerObject() { ZeroMemory(this, sizeof(this)); }
-		DirectX::XMFLOAT4X4 gWorld;
-		DirectX::XMFLOAT4X4 gWorldInvTranspose;
-		DirectX::XMFLOAT4X4 gWorldViewProj;
+		DirectX::XMMATRIX gWorld;
+		DirectX::XMMATRIX gWorldInvTranspose;
+		DirectX::XMMATRIX gWorldViewProj;
 		Material gMaterial;
 	};
 	PerObject perObjectConstBuff;

@@ -144,10 +144,11 @@ void App::DrawHillsWithWaves()
 	pWaves->BindAndDraw(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	SetObjectMatrix(offsetForWavesWithHills);
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
 // 
 	pHills->SetCameraMatrix(mCamera);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
+	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target, offsetForHillsWithWaves);
 	pHills->BindAndDraw(wnd.GetGraphics());
 	SetObjectMatrix(offsetForHillsWithWaves);

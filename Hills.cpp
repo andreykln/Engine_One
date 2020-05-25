@@ -97,7 +97,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pPerFrameCB);
 
 	VertexConstantBuffer<PerObject>* pPerObject =
-		new VertexConstantBuffer<PerObject>(gfx, perObjectConstBuff, 1u, 0u);
+		new VertexConstantBuffer<PerObject>(gfx, perObjectConstBuff, 1u, 1u);
 	pCopyVCBPerObject = pPerObject->GetVertexConstantBuffer();
 	AddBind(pPerObject);
 
@@ -164,20 +164,21 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	DirectX::XMVECTOR& target, DirectX::XMMATRIX& world)
 {
  	using namespace DirectX;
-
+	// Circle light over the land surface.
 	pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());
 	pointLight.position.z = 70.0f * std::sinf(0.2f * GetAlpha());
 	pointLight.position.y = MathHelper::Max(GetHeight(pointLight.position.x, pointLight.position.z), -3.0f) + 10.0f;
-
+	// The spotlight takes on the camera position and is aimed in the
+// same direction the camera is looking.  
 	spotLight.position = eyePosition;
 	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(target - pos));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerObject* object = reinterpret_cast<PerObject*>(mappedData.pData);
-	DirectX::XMStoreFloat4x4(&object->gWorld, world);
-	DirectX::XMStoreFloat4x4(&object->gWorldInvTranspose, MathHelper::InverseTranspose(world));
-	DirectX::XMStoreFloat4x4(&object->gWorldViewProj, DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection()));
+	object->gWorld = world;
+	object->gWorldInvTranspose = MathHelper::InverseTranspose(world);
+	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
 
@@ -190,11 +191,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrame, 0u);
-
-
-
-
-
 
 }
 
