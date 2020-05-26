@@ -182,7 +182,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
 
-
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrame, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerFrame* frame = reinterpret_cast<PerFrame*>(mappedData.pData);
 	frame->gPointLight.position.x = pointLight.position.x;

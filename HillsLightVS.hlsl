@@ -1,21 +1,20 @@
 #include "LightHelper.hlsli"
-
-cbuffer cbPerFrame : register(b0)
+/*cbuffer cbPerFrame : register(b0)
 {
     DirectionalLight gDirLight;
     PointLight gPointLight;
     SpotLight gSpotLight;
     float3 gEyePosW;
     float padding;
-};
+};*/
 
-cbuffer cbPerObject : register(b1)
+/*cbuffer cbPerObject : register(b1)
 {
     float4x4 gWorld;
     float4x4 gWorldInvTranspose;
     float4x4 gWorldViewProj;
     Material gMaterial;
-};
+};*/
 
 struct VertexIn
 {
