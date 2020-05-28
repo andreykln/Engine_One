@@ -8,14 +8,14 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	dirLight.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	dirLight.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-
+	dirLight.padding = 0.0f;
 	//point light .position will change every frame
 	pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
 	pointLight.range = 25.0f;
-
+	pointLight.padding = 0.0f;
 	//position and direction will change every frame
 	spotLight.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	spotLight.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
@@ -23,11 +23,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	spotLight.attenuation = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 	spotLight.spot = 96.0f;
 	spotLight.range = 10000.0f;
-
+	spotLight.padding = 0.0f;
 	landMat.ambient = DirectX::XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
 	landMat.diffuse = DirectX::XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
 	landMat.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
-
+	
 	wavesMat.ambient = DirectX::XMFLOAT4(0.137f, 0.42f, 0.556f, 1.0f);
 	wavesMat.diffuse = DirectX::XMFLOAT4(0.137f, 0.42f, 0.556f, 1.0f);
 	wavesMat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 96.0f);
@@ -36,9 +36,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	perFrameConstBuff.gEyePosW = { 0.0f, 0.0f, 0.0f };
 	perFrameConstBuff.gPointLight = pointLight;
 	perFrameConstBuff.gSpotLight = spotLight;
-
+	
 	perObjectConstBuff.gMaterial = landMat;
-
+	perFrameConstBuff.padding = 0.0f;
 	struct Vertex_l
 	{
 		DirectX::XMFLOAT3 pos;
@@ -166,7 +166,7 @@ void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 
 void Hills::UpdateConstantBuffers(Graphics& gfx,
 	DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos,
-	DirectX::XMVECTOR& target, DirectX::XMMATRIX& world)
+	DirectX::XMVECTOR& target, DirectX::XMMATRIX world)
 {
  	using namespace DirectX;
 	// Circle light over the land surface.
@@ -181,15 +181,15 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerObject* object = reinterpret_cast<PerObject*>(mappedData.pData);
-	object->gWorld = world;
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(world);
+	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
-	object1->gWorld = world;
-	object1->gWorldInvTranspose = MathHelper::InverseTranspose(world);
+	object1->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object1->gWorldInvTranspose = MathHelper::InverseTranspose(object1->gWorld);
 	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 

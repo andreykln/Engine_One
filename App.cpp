@@ -149,7 +149,7 @@ void App::DrawHillsWithWaves()
 	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
 	pHills->Update(timer.TotalTime());
-	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target, offsetForHillsWithWaves);
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target, offsetForHillsWithWaves); //offsetForHillsWithWaves
 	pHills->BindAndDraw(wnd.GetGraphics());
 	SetObjectMatrix(offsetForHillsWithWaves);
 

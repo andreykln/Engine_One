@@ -17,7 +17,7 @@ public:
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target,
-		DirectX::XMMATRIX& world );
+		DirectX::XMMATRIX world );
 	float GetAlpha() const noexcept;
 private:
 	struct PerFrame
