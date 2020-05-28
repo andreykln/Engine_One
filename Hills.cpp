@@ -99,8 +99,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBPerFrame = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
-	PixelShaderConstantBuffer<PerFrame>* pPerFrameCBPS =
-		new PixelShaderConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 1u, 1u);
+	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
+		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
 	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCBPS);
 
@@ -186,6 +186,12 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
+	object1->gWorld = world;
+	object1->gWorldInvTranspose = MathHelper::InverseTranspose(world);
+	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrame, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerFrame* frame = reinterpret_cast<PerFrame*>(mappedData.pData);
@@ -194,14 +200,10 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	frame->gPointLight.position.z = pointLight.position.z;
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
+	
+	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrame, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
-	object1->gWorld = world;
-	object1->gWorldInvTranspose = MathHelper::InverseTranspose(world);
-	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 
 
 

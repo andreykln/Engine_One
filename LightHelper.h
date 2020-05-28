@@ -10,7 +10,7 @@ struct DirectionalLight
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT4 specular;
 	DirectX::XMFLOAT3 direction;
-	float padding; // for arrays
+	float padding{}; // for arrays
 };
 
 struct PointLight
@@ -23,11 +23,11 @@ struct PointLight
 
 	//for packing into 4D vector
 	DirectX::XMFLOAT3 position;
-	float range;
+	float range{};
 
 	//vector (A0, A1, A1, padding)
 	DirectX::XMFLOAT3 attenuation; //how light intensity falls of with distance
-	float padding; //for arrays
+	float padding{}; //for arrays
 };
 
 struct SpotLight
@@ -47,7 +47,7 @@ struct SpotLight
 
 	//vector (A0, A1, A1, padding)
 	DirectX::XMFLOAT3 attenuation; //how light intensity falls of with distance
-	float padding; //for arrays
+	float padding{}; //for arrays
 };
 
 struct Material

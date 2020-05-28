@@ -39,6 +39,7 @@ private:
 		Material gMaterial;
 	};
 	PerObject perObjectConstBuff;
+	PerObject perObjectPSConstBuff;
 
 	bool flatSurface = false;
 	float width{};

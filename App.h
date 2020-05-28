@@ -40,6 +40,7 @@ public:
 	float Y_Generate(size_t& j, float& current_Y_Axis);
 	float Z_Generate(size_t& k, float& current_Z_Axis);
 private:
+
 // 	const float FOV = DirectX::XM_PI / 4.0f;
 	const float FOV = 90.0f;
 	DirectX::FXMVECTOR AxisVector{0.0f, 5.0f, 0.0f, 0.0f};
