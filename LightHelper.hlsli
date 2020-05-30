@@ -203,8 +203,8 @@ cbuffer cbPerFrame : register(b1)
     PointLight gPointLight;
     SpotLight gSpotLight;
     float3 gEyePosW;
-    Material gMaterial;
     float padding;
+    Material gMaterial;
 };
 
 

@@ -27,8 +27,8 @@ private:
 		PointLight gPointLight;
 		SpotLight gSpotLight;
 		DirectX::XMFLOAT3 gEyePosW;
-		Material gMaterial;
 		float padding{};
+		Material gMaterial;
 	};
 	PerFrame perFrameConstBuff;
 

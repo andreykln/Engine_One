@@ -208,7 +208,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	frame->gPointLight.position.z = pointLight.position.z;
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
-	
+// 	frame->gEyePosW = eyePosition;
 	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
 
