@@ -94,6 +94,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBPerObject = pPerObject->GetVertexConstantBuffer();
 	AddBind(pPerObject);
 
+
+	//ID3D11Buffer* psCBuffers[] = { perFrameConstBuff, perObjectPSConstBuff };
+
 	PixelShaderConstantBuffer<PerFrame>* pPerFrameCB =
 		new PixelShaderConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 0u, 1u);
 	pCopyVCBPerFrame = pPerFrameCB->GetPixelShaderConstantBuffer();
@@ -186,14 +189,14 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
 	object1->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object1->gWorldInvTranspose = MathHelper::InverseTranspose(object1->gWorld);
 	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrame, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	PerFrame* frame = reinterpret_cast<PerFrame*>(mappedData.pData);
 	frame->gPointLight.position.x = pointLight.position.x;
 	frame->gPointLight.position.y = pointLight.position.y;
