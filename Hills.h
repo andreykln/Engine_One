@@ -27,16 +27,18 @@ private:
 		PointLight gPointLight;
 		SpotLight gSpotLight;
 		DirectX::XMFLOAT3 gEyePosW;
+		Material gMaterial;
 		float padding{};
 	};
 	PerFrame perFrameConstBuff;
+
+
 	struct PerObject
 	{
 		PerObject() { ZeroMemory(this, sizeof(this)); }
 		DirectX::XMMATRIX gWorld;
 		DirectX::XMMATRIX gWorldInvTranspose;
 		DirectX::XMMATRIX gWorldViewProj;
-		Material gMaterial;
 	};
 	PerObject perObjectConstBuff;
 	PerObject perObjectPSConstBuff;
@@ -48,8 +50,8 @@ private:
 	UINT n{};
 	float GetHeight(float x, float z) const;
 
-	ID3D11Buffer* pCopyVCBPerFrame = nullptr;
-	ID3D11Buffer* pCopyVCBPerFrameMatrices = nullptr;
+	ID3D11Buffer* pCopyPCBPerFrame = nullptr;
+// 	ID3D11Buffer* pCopyVCBPerFrameMatrices = nullptr;
 	ID3D11Buffer* pCopyVCBPerObject = nullptr;
 
 	GeometryGenerator::MeshData grid;

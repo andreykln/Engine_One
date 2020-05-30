@@ -37,7 +37,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	perFrameConstBuff.gPointLight = pointLight;
 	perFrameConstBuff.gSpotLight = spotLight;
 	
-	perObjectConstBuff.gMaterial = landMat;
+	perFrameConstBuff.gMaterial = landMat;
 	perFrameConstBuff.padding = 0.0f;
 	struct Vertex_l
 	{
@@ -98,16 +98,21 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	//ID3D11Buffer* psCBuffers[] = { perFrameConstBuff, perObjectPSConstBuff };
 
 	PixelShaderConstantBuffer<PerFrame>* pPerFrameCB =
-		new PixelShaderConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 0u, 1u);
-	pCopyVCBPerFrame = pPerFrameCB->GetPixelShaderConstantBuffer();
+		new PixelShaderConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 1u, 1u);
+	pCopyPCBPerFrame = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
-	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
-		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
-	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
-	AddBind(pPerFrameCBPS);
+	//trying to copy the same pointer to PS from VS so I can reuse one buffer??
+// 	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
+// 		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
+// 	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
+// 	AddBind(pPerFrameCBPS);
 
 
+// 	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
+// 		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
+// 	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
+// 	AddBind(pPerFrameCBPS);
 
 }
 
@@ -156,13 +161,13 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 
 void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-	using namespace DirectX;
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-
-	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
-	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
+// 	using namespace DirectX;
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 
+// 	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
+// 	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 
 
 }
@@ -189,14 +194,14 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
-	object1->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object1->gWorldInvTranspose = MathHelper::InverseTranspose(object1->gWorld);
-	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
+// 	object1->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object1->gWorldInvTranspose = MathHelper::InverseTranspose(object1->gWorld);
+// 	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	PerFrame* frame = reinterpret_cast<PerFrame*>(mappedData.pData);
 	frame->gPointLight.position.x = pointLight.position.x;
 	frame->gPointLight.position.y = pointLight.position.y;
@@ -205,7 +210,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	frame->gSpotLight.direction = spotLight.direction;
 	
 	
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrame, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
 
 
 

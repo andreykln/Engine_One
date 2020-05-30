@@ -189,19 +189,29 @@ void ComputeSpotLight (Material mat, SpotLight L,
 
 }
 
+
+cbuffer cbPerObjectVS : register(b0)
+{
+    float4x4 gWorld;
+    float4x4 gWorldInvTranspose;
+    float4x4 gWorldViewProj;
+};
+
 cbuffer cbPerFrame : register(b1)
 {
     DirectionalLight gDirLight;
     PointLight gPointLight;
     SpotLight gSpotLight;
     float3 gEyePosW;
+    Material gMaterial;
     float padding;
 };
 
-cbuffer cbPerObject : register(b0)
+
+/*cbuffer cbPerObjectPS : register(b1)
 {
-    float4x4 gWorld;
-    float4x4 gWorldInvTranspose;
-    float4x4 gWorldViewProj;
-    Material gMaterial;
-};
+    float4x4 gWorldPS;
+    float4x4 gWorldInvTransposePS;
+    float4x4 gWorldViewProjPS;
+    Material gMaterialPS;
+};*/
