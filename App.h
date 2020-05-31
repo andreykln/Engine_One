@@ -75,6 +75,7 @@ private:
 	//for movement around object's matrix
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	DirectX::XMFLOAT3 wEyePosition;
+
 	DirectX::XMMATRIX mCamera;
 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
 

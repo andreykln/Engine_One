@@ -10,6 +10,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	dirLight.padding = 0.0f;
 	//point light .position will change every frame
+
 	pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
@@ -155,7 +156,7 @@ void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 
 void Hills::UpdateConstantBuffers(Graphics& gfx,
 	DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos,
-	DirectX::XMVECTOR& target, DirectX::XMMATRIX world)
+	DirectX::XMVECTOR& target)
 {
  	using namespace DirectX;
 	// Circle light over the land surface.
@@ -167,14 +168,16 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	spotLight.position = eyePosition;
 	DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
 	DirectX::XMVECTOR test_target = {60.0f,	-70.0f,	70.0f, 1.0f};
-	//DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(test_target - pos));
-	DirectX::XMVECTOR test_manual_target = { 0.659014559f, -0.686303115f, 0.686303115f};
-	DirectX::XMStoreFloat3(&spotLight.direction, (test_manual_target));
+	DirectX::XMVECTOR flashLightvector = -DirectX::XMVector3Normalize(target - pos);
+	//to move light a bit up
+	flashLightvector.m128_f32[0] += 0.2f;
+	flashLightvector.m128_f32[2] += 0.03f;
+
+	DirectX::XMStoreFloat3(&spotLight.direction, flashLightvector);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerObject* object = reinterpret_cast<PerObject*>(mappedData.pData);
-	//DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection())
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection() );
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
@@ -189,12 +192,9 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
- 	//frame->gEyePosW = eyePosition;
+  	//frame->gEyePosW = eye;
 	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
-
-
-
 
 }
 
