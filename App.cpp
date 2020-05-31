@@ -140,11 +140,11 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-	pWaves->SetCameraMatrix(mCamera);
-	pWaves->BindAndDraw(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pWaves->SetCameraMatrix(mCamera);
+// 	pWaves->BindAndDraw(wnd.GetGraphics());
+// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 // 
 	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
 // 	SetObjectMatrix(offsetForHillsWithWaves);

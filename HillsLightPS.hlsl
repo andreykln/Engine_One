@@ -1,33 +1,5 @@
 #include "LightHelper.hlsli"
-/*cbuffer cbPerFrame : register(b0)
-{
-    DirectionalLight gDirLight;
-    PointLight gPointLight;
-    SpotLight gSpotLight;
-    float3 gEyePosW;
-    float padding;
-};*/
 
-/*cbuffer cbPerObject : register(b1)
-{
-    float4x4 gWorld;
-    float4x4 gWorldInvTranspose;
-    float4x4 gWorldViewProj;
-    Material gMaterial;
-};*/
-
-struct VertexIn
-{
-    float3 pos : Position;
-    float3 normal : Normal;
-};
-
-struct VertexOut
-{
-    float4 PosH : SV_Position;
-    float3 PosW : Position;
-    float3 NormalW : Normal;
-};
 
 
 float4 main(VertexOut pin) : SV_TARGET
@@ -50,7 +22,6 @@ float4 main(VertexOut pin) : SV_TARGET
     diffuse += D;
     spec += S;
 
-    
     ComputePointLight(gMaterial, gPointLight, pin.PosW, pin.NormalW, toEyeW, A, D, S);
     ambient += A;
     diffuse += D;
@@ -60,7 +31,6 @@ float4 main(VertexOut pin) : SV_TARGET
     ambient += A;
     diffuse += D;
     spec += S;
-	   
     float4 litColor = ambient + diffuse + spec;
 
 	// Common to take alpha from diffuse material.

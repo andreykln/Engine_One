@@ -14,6 +14,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
+
+
 	pointLight.range = 25.0f;
 	pointLight.padding = 0.0f;
 	//position and direction will change every frame
@@ -95,24 +97,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pPerObject);
 
 
-	//ID3D11Buffer* psCBuffers[] = { perFrameConstBuff, perObjectPSConstBuff };
-
 	PixelShaderConstantBuffer<PerFrame>* pPerFrameCB =
 		new PixelShaderConstantBuffer<PerFrame>(gfx, perFrameConstBuff, 1u, 1u);
 	pCopyPCBPerFrame = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
-	//trying to copy the same pointer to PS from VS so I can reuse one buffer??
-// 	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
-// 		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
-// 	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
-// 	AddBind(pPerFrameCBPS);
-
-
-// 	PixelShaderConstantBuffer<PerObject>* pPerFrameCBPS =
-// 		new PixelShaderConstantBuffer<PerObject>(gfx, perObjectPSConstBuff, 1u, 1u);
-// 	pCopyVCBPerFrameMatrices = pPerFrameCBPS->GetPixelShaderConstantBuffer();
-// 	AddBind(pPerFrameCBPS);
 
 }
 
@@ -161,14 +150,6 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 
 void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-// 	using namespace DirectX;
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 
-// 	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
-// 	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
-
 
 }
 
@@ -184,31 +165,31 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	// The spotlight takes on the camera position and is aimed in the
 // same direction the camera is looking.  
 	spotLight.position = eyePosition;
-	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(target - pos));
+	DirectX::XMVECTOR test_target = { 70.0f * std::cosf(0.2f * GetAlpha()) ,
+	-70.0f * std::cosf(0.2f * GetAlpha()) ,
+	70.0f * std::cosf(0.2f * GetAlpha()) ,
+	1.0f};
+	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(test_target - pos));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	PerObject* object = reinterpret_cast<PerObject*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	//DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection())
+	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection() );
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
-
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerFrameMatrices, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	PerObject* object1 = reinterpret_cast<PerObject*>(mappedData.pData);
-// 	object1->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object1->gWorldInvTranspose = MathHelper::InverseTranspose(object1->gWorld);
-// 	object1->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerFrameMatrices, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	PerFrame* frame = reinterpret_cast<PerFrame*>(mappedData.pData);
 	frame->gPointLight.position.x = pointLight.position.x;
 	frame->gPointLight.position.y = pointLight.position.y;
 	frame->gPointLight.position.z = pointLight.position.z;
+
+
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
-// 	frame->gEyePosW = eyePosition;
+ 	frame->gEyePosW = eyePosition;
 	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
 

@@ -147,7 +147,7 @@ void ComputeSpotLight (Material mat, SpotLight L,
     //vector from the surface to the light
     float3 lightVec = L.position - pos;
     
-    //distance from the source of light
+    //distance from the surface of light
     float d = length(lightVec);
     
     //range test
@@ -208,10 +208,15 @@ cbuffer cbPerFrame : register(b1)
 };
 
 
-/*cbuffer cbPerObjectPS : register(b1)
+struct VertexIn
 {
-    float4x4 gWorldPS;
-    float4x4 gWorldInvTransposePS;
-    float4x4 gWorldViewProjPS;
-    Material gMaterialPS;
-};*/
+    float3 pos : Position;
+    float3 normal : Normal;
+};
+
+struct VertexOut
+{
+    float4 PosH : SV_Position;
+    float3 PosW : Position;
+    float3 NormalW : Normal;
+};
