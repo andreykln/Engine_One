@@ -166,11 +166,10 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 // same direction the camera is looking.  
 	spotLight.position = eyePosition;
 	DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
-	DirectX::XMVECTOR test_target = { 70.0f  ,
-	-70.0f,
-	70.0f,
-	1.0f};
-	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(test_target - pos));
+	DirectX::XMVECTOR test_target = {60.0f,	-70.0f,	70.0f, 1.0f};
+	//DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(test_target - pos));
+	DirectX::XMVECTOR test_manual_target = { 0.659014559f, -0.686303115f, 0.686303115f};
+	DirectX::XMStoreFloat3(&spotLight.direction, (test_manual_target));
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
