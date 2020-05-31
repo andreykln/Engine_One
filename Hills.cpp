@@ -165,9 +165,10 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	// The spotlight takes on the camera position and is aimed in the
 // same direction the camera is looking.  
 	spotLight.position = eyePosition;
-	DirectX::XMVECTOR test_target = { 70.0f * std::cosf(0.2f * GetAlpha()) ,
-	-70.0f * std::cosf(0.2f * GetAlpha()) ,
-	70.0f * std::cosf(0.2f * GetAlpha()) ,
+	DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
+	DirectX::XMVECTOR test_target = { 70.0f  ,
+	-70.0f,
+	70.0f,
 	1.0f};
 	DirectX::XMStoreFloat3(&spotLight.direction, DirectX::XMVector3Normalize(test_target - pos));
 
@@ -189,7 +190,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 
 	frame->gSpotLight.position = spotLight.position;
 	frame->gSpotLight.direction = spotLight.direction;
- 	frame->gEyePosW = eyePosition;
+ 	//frame->gEyePosW = eyePosition;
 	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
 

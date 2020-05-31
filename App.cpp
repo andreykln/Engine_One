@@ -45,7 +45,7 @@ void App::DoFrame()
 	DebugTextToTitle();
 
 	wnd.GetGraphics().EndFrame();
-	wnd.GetGraphics().ClearBuffer(0.3f, 0.3f, 0.3f);
+	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 }
 
 int App::Go()
