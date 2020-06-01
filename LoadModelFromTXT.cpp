@@ -5,24 +5,35 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	struct Vertices
 	{
 		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT3 normal;
 	};
 	UINT vertices = 0;
 	UINT triangles = 0;
+
+
+
+	constBuffPerFrame.skullMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	constBuffPerFrame.skullMaterial.diffuse = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	constBuffPerFrame.skullMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+
+	constBuffPerFrame.dirLight.ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constBuffPerFrame.dirLight.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constBuffPerFrame.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constBuffPerFrame.dirLight.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 
 	std::fstream file(path);
 	std::string ignore;
 	file >> ignore >> vertices;
 	file >> ignore >> triangles;
 	file >> ignore >> ignore >> ignore >> ignore;
-	float nx, ny, nz; //ignoring normals for now
+
 	std::vector<Vertices> verticesFromTXT(vertices);
+
 	DirectX::XMFLOAT4 black(0.0f, 0.0f, 0.0f, 1.0f);
 	for (size_t i = 0; i < vertices; i++)
 	{
-		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z;
-		verticesFromTXT[i].color = black;
-		file >> nx >> ny >> nz;
+		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
+			verticesFromTXT[i].normal.x  >> verticesFromTXT[i].normal.y  >> verticesFromTXT[i].normal.z;
 	}
 	file >> ignore >> ignore >> ignore;
 	UINT indexCount = 3 * triangles;
@@ -38,7 +49,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"SkullVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -46,7 +57,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
@@ -54,7 +65,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"SkullPS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
@@ -63,10 +74,16 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
-		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection(), 0u, 1u);
-	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
-	AddBind(pVCB);
+	VertexConstantBuffer<CBPerObject>* pVCBPerObject =
+		new VertexConstantBuffer<CBPerObject>(gfx, constBuffPerObject, 0u, 1u);
+	pCopyVCBPerObject = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+	AddBind(pVCBPerObject);
+
+	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 1u, 1u);
+	pCopyPCBPerFrame = pPSCBPerFrame->GetPixelShaderConstantBuffer();
+	AddBind(pPSCBPerFrame);
+
 }
 
 DirectX::XMMATRIX LoadModelFromTXT::GetTransform() const noexcept
@@ -82,11 +99,13 @@ void LoadModelFromTXT::Update(float dt) noexcept
 void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 
-	DirectX::XMMATRIX* mat = reinterpret_cast<DirectX::XMMATRIX*>(mappedData.pData);
-	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
+	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
+	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
 }
 
 void LoadModelFromTXT::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept

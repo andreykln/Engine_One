@@ -11,8 +11,29 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
-public:
-//	float alpha{};
+
+	//CB structures
+	struct CBPerFrame
+	{
+		CBPerFrame() { ZeroMemory(this, sizeof(this)); }
+		DirectionalLight dirLight;
+		DirectX::XMFLOAT3 cbEyePosition;
+		float padding{};
+		Material skullMaterial;
+	};
+	CBPerFrame constBuffPerFrame;
+	struct CBPerObject
+	{
+		CBPerObject() { ZeroMemory(this, sizeof(this)); }
+		DirectX::XMMATRIX gWorld;
+		DirectX::XMMATRIX gWorldInvTranspose;
+		DirectX::XMMATRIX gWorldViewProj;
+	};
+	CBPerObject constBuffPerObject;
+
+private:
+	ID3D11Buffer* pCopyPCBPerFrame = nullptr;
+	ID3D11Buffer* pCopyVCBPerObject = nullptr;
 
 
 };

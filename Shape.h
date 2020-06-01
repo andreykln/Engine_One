@@ -1,6 +1,8 @@
 #pragma once
 #include "Bindable.h"
+#include "LightHelper.h"
 #include "IndexBuffer.h"
+#include "MathHelper.h"
 #include <memory>
 #include <typeinfo>
 #include <cassert>
