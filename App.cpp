@@ -9,9 +9,9 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-// 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
+ 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 // 	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
-
+	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
 	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
  	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -26,12 +26,12 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-
+	//DrawHillsWithWaves();
 //  	SetObjectMatrix(DirectX::XMMatrixRotationRollPitchYaw(0.0f, timer.TotalTime(), 0.0f));
-	DrawHillsWithWaves();
-//  	pBox->SetCameraMatrix(mCamera);
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->BindAndDraw(wnd.GetGraphics());
+	pTXTModel->SetCameraMatrix(mCamera);
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pTXTModel->BindAndDraw(wnd.GetGraphics());
 
 
 // 	SetObjectMatrix(DirectX::XMMatrixRotationRollPitchYaw(0.0f, -timer.TotalTime(), 0.0f));

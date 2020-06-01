@@ -10,6 +10,7 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 public:
 //	float alpha{};
 

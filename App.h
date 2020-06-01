@@ -57,7 +57,7 @@ private:
 //  	std::vector<GeoSphere*> geoSpheres;
 // 	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
-// 	LoadModelFromTXT* pTXTModel = nullptr;
+ 	LoadModelFromTXT* pTXTModel = nullptr;
  	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;
 // 

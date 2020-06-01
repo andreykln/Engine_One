@@ -88,3 +88,8 @@ void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 	*mat = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }
+
+void LoadModelFromTXT::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
+{
+	m_Matrix = in_matrix;
+}
