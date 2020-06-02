@@ -20,7 +20,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader); 
 
@@ -38,7 +38,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer");

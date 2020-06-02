@@ -27,7 +27,7 @@ BoxAndCylinder::BoxAndCylinder(Graphics& gfx)
 	VertexBuffer* pVB = new VertexBuffer(gfx, verticesBox, L"CylinderAndBox.");
 	AddBind(pVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shader\\Vertex\\CubeVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -43,7 +43,7 @@ BoxAndCylinder::BoxAndCylinder(Graphics& gfx)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 	AddBind(pPixelShader);
 
 

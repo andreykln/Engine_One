@@ -49,7 +49,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"SkullVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\SkullVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -65,7 +65,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"SkullPS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\SkullPS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");

@@ -10,7 +10,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	pCopyDynamicVB = pDynamicVB->Get_p_DynamicVertexBuffer();
 	AddBind(pDynamicVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -26,7 +26,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 	AddBind(pPixelShader);
 
 	std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face

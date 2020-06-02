@@ -66,7 +66,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"HillsLightVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\HillsLightVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -82,7 +82,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"HillsLightPS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\HillsLightPS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");

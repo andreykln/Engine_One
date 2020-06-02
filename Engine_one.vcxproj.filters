@@ -34,6 +34,12 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{224df3b4-d2b8-4d8e-953c-2a840e0968e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Vertex">
+      <UniqueIdentifier>{61415604-2aa1-4998-a32d-3603b80f0107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Pixel">
+      <UniqueIdentifier>{7932eff0-5b25-408a-a064-6652521fbaa1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -268,26 +274,26 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="CubePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="CubeVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="PyramidDistorted.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="HillsLightVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="HillsLightPS.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="SkullVS.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="CubePS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="HillsLightPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="SkullPS.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="PyramidDistortedVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

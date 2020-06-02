@@ -22,7 +22,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"GeoSphere");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"CubeVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -38,7 +38,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"GeoSphereIndexBuffer");

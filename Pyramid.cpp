@@ -24,7 +24,7 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Pyramid");
 	AddBind(pVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"PyramidDistorted.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\PyramidDistortedVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -41,7 +41,7 @@ Pyramid::Pyramid(Graphics& gfx, float bottom_side, float height)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"CubePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"PyramidIndexBuffer");
