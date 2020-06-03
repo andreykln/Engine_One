@@ -12,5 +12,4 @@
 #include "Rasterizer.h"
 #include "RasterizerState.h"
 #include "VertexConstantBuffer.h"
-#include "ConstantBufferTypes.h"
 #include "PixelShaderConstantBuffer.h"

@@ -19,5 +19,11 @@ private :
 	{
 		DirectX::XMMATRIX matrix;
 	};
+
+	struct ConstantBufferTime
+	{
+		DirectX::XMMATRIX matrix;
+		float time;
+	};
 };
 
