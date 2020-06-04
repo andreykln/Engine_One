@@ -85,12 +85,20 @@ float4 main(VertexOut pin) : SV_TARGET
     float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
-    float4 A, D, S;
-    ComputeDirectionalLight(skullMaterial, directLight[0], pin.NormalW, toEye, A, D, S);
+    [unroll]
+    for (int i = 0; i < 3; ++i)
+    {
+        float4 A, D, S;
+        ComputeDirectionalLight(skullMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
+        ambient += A;
+        diffuse += D;
+        specular += S;
+    }
     
-    ambient  += A;
-    diffuse  += D;
-    specular += S;
+    
+  
+    
+  
     
     float4 litColor = ambient + diffuse + specular;
     
