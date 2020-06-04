@@ -18,7 +18,7 @@ public:
 		CBPerFrame() { ZeroMemory(this, sizeof(this)); }
 		DirectionalLight dirLight[3];
 		DirectX::XMFLOAT3 cbEyePosition;
-		float padding{};
+		int numLights{};
 		Material skullMaterial;
 	};
 	CBPerFrame constBuffPerFrame;

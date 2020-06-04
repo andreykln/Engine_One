@@ -32,11 +32,11 @@ void App::DoFrame()
 	pTXTModel->BindAndDraw(wnd.GetGraphics());
 // 
 
- 
+	
 
 
 	CalculateFrameStats();
-	DebugTextToTitle();
+	//DebugTextToTitle();
 
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);

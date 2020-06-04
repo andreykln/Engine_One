@@ -50,7 +50,7 @@ cbuffer CBPerFrame : register (b1)
 {
     DirectionalLight directLight[3];
     float3 eyePosition;
-    float padding;
+    int padding;
     Material skullMaterial;
 };
 
@@ -86,7 +86,7 @@ float4 main(VertexOut pin) : SV_TARGET
     float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
     [unroll]
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < padding; ++i)
     {
         float4 A, D, S;
         ComputeDirectionalLight(skullMaterial, directLight[i], pin.NormalW, toEye, A, D, S);

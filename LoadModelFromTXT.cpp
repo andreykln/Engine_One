@@ -110,12 +110,27 @@ void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-
 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numLights = 1;
+
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numLights = 2;
+
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numLights = 3;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
+
 }
 
 void LoadModelFromTXT::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
