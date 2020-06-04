@@ -254,9 +254,6 @@
     <ClInclude Include="PixelShaderConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="Utility\GeometryGenerator.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\Waves.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -264,6 +261,9 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
