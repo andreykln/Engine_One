@@ -16,7 +16,7 @@ public:
 	struct CBPerFrame
 	{
 		CBPerFrame() { ZeroMemory(this, sizeof(this)); }
-		DirectionalLight dirLight;
+		DirectionalLight dirLight[3];
 		DirectX::XMFLOAT3 cbEyePosition;
 		float padding{};
 		Material skullMaterial;
