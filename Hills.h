@@ -29,7 +29,7 @@ private:
 		float padding{};
 		Material gMaterial;
 	};
-	PerFrame perFrameConstBuff;
+	PerFrame constLights;
 
 
 	struct PerObject
@@ -39,20 +39,20 @@ private:
 		DirectX::XMMATRIX gWorldInvTranspose;
 		DirectX::XMMATRIX gWorldViewProj;
 	};
-	PerObject perObjectConstBuff;
-	PerObject perObjectPSConstBuff;
+	PerObject constMatrices;
 
-	bool flatSurface = false;
+	bool flatSurface = true;
 	float width{};
 	float depth{};
 	UINT m{};
 	UINT n{};
 	float GetHeight(float x, float z) const;
 
-	ID3D11Buffer* pCopyPCBPerFrame = nullptr;
-// 	ID3D11Buffer* pCopyVCBPerFrameMatrices = nullptr;
-	ID3D11Buffer* pCopyVCBPerObject = nullptr;
+	ID3D11Buffer* pCopyPCBLightsHills = nullptr;
+	ID3D11Buffer* pCopyVCBMatricesHills = nullptr;
 
+
+	ID3DBlob* pVertexShaderBlob = nullptr;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 	DirectionalLight dirLight;

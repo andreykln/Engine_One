@@ -12,8 +12,9 @@ App::App()
  	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 // 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20u, 20u);
+
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, true);
 	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
- 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -32,14 +33,27 @@ void App::DoFrame()
 // 	pSkull->BindAndDraw(wnd.GetGraphics());
 
 
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
-	pBox1->SetCameraMatrix(mCamera);
-	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pBox1->BindAndDraw(wnd.GetGraphics());
-	
-	pCylinder->SetCameraMatrix(mCamera);
-	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pCylinder->BindAndDraw(wnd.GetGraphics());
+	//SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pBox1->SetCameraMatrix(mCamera);
+// 	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pBox1->BindAndDraw(wnd.GetGraphics());
+// 	
+// 	pCylinder->SetCameraMatrix(mCamera);
+// 	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pCylinder->BindAndDraw(wnd.GetGraphics());
+
+	pHills->SetCameraMatrix(mCamera );
+	pHills->Update(timer.TotalTime());
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target); //offsetForHillsWithWaves
+	pHills->BindAndDraw(wnd.GetGraphics());
+	SetObjectMatrix(offsetForHillsWithWaves);
+
+
+
+
+// 	pHills->SetCameraMatrix(mCamera);
+// 	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pHills->BindAndDraw(wnd.GetGraphics());
 
 
 
