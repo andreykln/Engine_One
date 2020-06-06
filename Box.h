@@ -21,13 +21,13 @@ private:
 		DirectX::XMFLOAT2 tex1;
 		DirectX::PackedVector::XMCOLOR color;
 	};
-	void ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
 	CBPerFrame constLights;
 	CBPerObject constMatrices;
 
-public:
-//	float alpha{};
+private:
+	ID3D11Buffer* pCopyPCBLightsBox = nullptr;
+	ID3D11Buffer* pCopyVCBMatricesBox = nullptr;
 };
 

@@ -59,7 +59,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\SkullVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -75,7 +75,7 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\SkullPS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightPS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
@@ -86,12 +86,12 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 
 	VertexConstantBuffer<CBPerObject>* pVCBPerObject =
 		new VertexConstantBuffer<CBPerObject>(gfx, constBuffPerObject, 0u, 1u);
-	pCopyVCBPerObject = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
 		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 1u, 1u);
-	pCopyPCBPerFrame = pPSCBPerFrame->GetPixelShaderConstantBuffer();
+	pCopyPCBLightsSkull = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
 }
@@ -109,14 +109,14 @@ void LoadModelFromTXT::Update(float dt) noexcept
 void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBPerObject, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBPerObject, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 
 	if (GetAsyncKeyState('0') & 0x8000)
@@ -129,7 +129,7 @@ void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numLights = 3;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBPerFrame, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
 }
 

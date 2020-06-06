@@ -16,8 +16,8 @@ public:
 	CBPerObject constBuffPerObject;
 
 private:
-	ID3D11Buffer* pCopyPCBPerFrame = nullptr;
-	ID3D11Buffer* pCopyVCBPerObject = nullptr;
+	ID3D11Buffer* pCopyPCBLightsSkull = nullptr;
+	ID3D11Buffer* pCopyVCBMatricesSkull = nullptr;
 
 
 };
