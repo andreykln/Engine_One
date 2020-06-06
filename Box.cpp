@@ -15,6 +15,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 		vertices[i].pos = p;
  		vertices[i].normal = n;
 	}
+// 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+// 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+// 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
 
 
 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);

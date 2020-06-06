@@ -10,8 +10,19 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
+	struct Vertex_C
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+	};
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
+	CBPerFrame constLights;
+	CBPerObject constMatrices;
+
+	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
+	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
+
 
 };
 
