@@ -9,7 +9,7 @@
 #include "Sphere.h"
 #include "Cylinder.h"
 #include "HillsAndWaves.h"
-#include "LoadModelFromTXT.h"
+#include "Skull.h"
 #include "BoxAndCylinder.h"
 
 #include "WaveSurface.h"
@@ -57,7 +57,7 @@ private:
 //  	std::vector<GeoSphere*> geoSpheres;
 // 	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
- 	LoadModelFromTXT* pTXTModel = nullptr;
+ 	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;
 // 

@@ -11,7 +11,7 @@ App::App()
 {
 //  	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
  	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
-	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
+	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
  	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -26,10 +26,10 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
  
-	pTXTModel->SetCameraMatrix(mCamera);
+	pSkull->SetCameraMatrix(mCamera);
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pTXTModel->BindAndDraw(wnd.GetGraphics());
+	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pSkull->BindAndDraw(wnd.GetGraphics());
  
 	pBox1->SetCameraMatrix(mCamera);
 	SetObjectMatrix(DirectX::XMMatrixIdentity());

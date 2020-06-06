@@ -1,6 +1,6 @@
-#include "LoadModelFromTXT.h"
+#include "Skull.h"
 
-LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
+Skull::Skull(Graphics& gfx, const std::wstring& path)
 {
 	struct Vertices
 	{
@@ -95,17 +95,17 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 
 }
 
-DirectX::XMMATRIX LoadModelFromTXT::GetTransform() const noexcept
+DirectX::XMMATRIX Skull::GetTransform() const noexcept
 {
 	return m_Matrix * m_Centered;
 }
 
-void LoadModelFromTXT::Update(float dt) noexcept
+void Skull::Update(float dt) noexcept
 {
 	alpha = dt;
 }
 
-void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
+void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
@@ -132,7 +132,7 @@ void LoadModelFromTXT::UpdateVertexConstantBuffer(Graphics& gfx)
 
 }
 
-void LoadModelFromTXT::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
+void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;
 }
