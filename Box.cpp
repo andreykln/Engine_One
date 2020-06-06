@@ -53,9 +53,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	AddBind(pVCB);
 
 
-	RasterizerState state;
-	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
-	AddBind(pRasterState);
+// 	RasterizerState state;
+// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
+// 	AddBind(pRasterState);
 
 }
 

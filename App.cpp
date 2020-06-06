@@ -10,7 +10,7 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 //  	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
-// 	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
+ 	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
 	pTXTModel = new LoadModelFromTXT(wnd.GetGraphics(), L"models\\skull.txt");
 	//boxandCyl = new BoxAndCylinder(wnd.GetGraphics());
  	CreateHillsWithWaves();
@@ -26,12 +26,15 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	pTXTModel->SetCameraMatrix(mCamera);
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
-	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pTXTModel->BindAndDraw(wnd.GetGraphics());
+// 	pTXTModel->SetCameraMatrix(mCamera);
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pTXTModel->BindAndDraw(wnd.GetGraphics());
 // 
-
+	pBox1->SetCameraMatrix(mCamera);
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox1->BindAndDraw(wnd.GetGraphics());
 	
 
 
