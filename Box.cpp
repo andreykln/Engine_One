@@ -16,15 +16,10 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
  		vertices[i].normal = n;
 	}
 
-	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.0f, 0.8f, 0.0f, 1.0f);
-	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.0f, 0.8f, 0.0f, 16.0f);
 
-
-
-// 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
-// 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
-// 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
+	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
+	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
 
 	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -49,14 +44,14 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	AddBind(pVertexShader); 
 
 	
-	const UINT offset = sizeof(DirectX::XMFLOAT3) * 3 + sizeof(DirectX::XMFLOAT2) * 2;
+ 	const UINT offset = sizeof(DirectX::XMFLOAT3);
 
 
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, offset, 
+		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 

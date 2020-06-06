@@ -15,11 +15,10 @@ private:
 	struct Vertex_B
 	{
 		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT3 tangent;
+// 		DirectX::XMFLOAT3 tangent;
 		DirectX::XMFLOAT3 normal;
-		DirectX::XMFLOAT2 tex0;
-		DirectX::XMFLOAT2 tex1;
-		DirectX::PackedVector::XMCOLOR color;
+// 		DirectX::XMFLOAT2 tex0;
+// 		DirectX::XMFLOAT2 tex1;
 	};
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;

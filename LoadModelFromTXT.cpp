@@ -39,7 +39,6 @@ LoadModelFromTXT::LoadModelFromTXT(Graphics& gfx, const std::wstring& path)
 
 	std::vector<Vertices> verticesFromTXT(vertices);
 
-	DirectX::XMFLOAT4 black(0.0f, 0.0f, 0.0f, 1.0f);
 	for (size_t i = 0; i < vertices; i++)
 	{
 		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
