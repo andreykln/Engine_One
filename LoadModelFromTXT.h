@@ -12,23 +12,7 @@ public:
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 
-	//CB structures
-	struct CBPerFrame
-	{
-		CBPerFrame() { ZeroMemory(this, sizeof(this)); }
-		DirectionalLight dirLight[3];
-		DirectX::XMFLOAT3 cbEyePosition;
-		int numLights{};
-		Material skullMaterial;
-	};
 	CBPerFrame constBuffPerFrame;
-	struct CBPerObject
-	{
-		CBPerObject() { ZeroMemory(this, sizeof(this)); }
-		DirectX::XMMATRIX gWorld;
-		DirectX::XMMATRIX gWorldInvTranspose;
-		DirectX::XMMATRIX gWorldViewProj;
-	};
 	CBPerObject constBuffPerObject;
 
 private:

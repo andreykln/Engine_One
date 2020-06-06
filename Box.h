@@ -24,6 +24,8 @@ private:
 	void ColorBoxWithRainbow(std::vector<Vertex_B>& vertices) noexcept;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
+	CBPerFrame constLights;
+	CBPerObject constMatrices;
 
 public:
 //	float alpha{};

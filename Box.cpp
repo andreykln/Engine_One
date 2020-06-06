@@ -7,15 +7,33 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 {
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_B> vertices(mesh.vertices.size());
-	DirectX::XMFLOAT4 col{ 0.2f, 0.3f, 0.6f, 1.0f };
-// 	vertices[0].color = col;
+
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
+		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
 		vertices[i].pos = p;
-// 		vertices[i].color = col;
+ 		vertices[i].normal = n;
 	}
-	ColorBoxWithRainbow(vertices);
+
+	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
+	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
+	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+
+	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+
+	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+
+	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
+	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
@@ -26,6 +44,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	
 	const UINT offset = sizeof(DirectX::XMFLOAT3) * 3 + sizeof(DirectX::XMFLOAT2) * 2;
+
 
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{

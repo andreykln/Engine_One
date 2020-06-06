@@ -20,6 +20,7 @@ InputLayout::InputLayout(Graphics& gfx,
 
 }
 
+
 void InputLayout::Bind(Graphics& gfx) noexcept
 {
 	GetContext(gfx)->IASetInputLayout(pInputLayout.Get());

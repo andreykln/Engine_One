@@ -26,10 +26,10 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-// 	pTXTModel->SetCameraMatrix(mCamera);
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pTXTModel->BindAndDraw(wnd.GetGraphics());
+	pTXTModel->SetCameraMatrix(mCamera);
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pTXTModel->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pTXTModel->BindAndDraw(wnd.GetGraphics());
 // 
 	pBox1->SetCameraMatrix(mCamera);
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
