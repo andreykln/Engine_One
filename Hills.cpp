@@ -29,9 +29,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		spotLight.spot = 96.0f;
 		spotLight.range = 10000.0f;
 		spotLight.padding = 0.0f;
-
-
-
 	}
 
 	landMat.ambient = DirectX::XMFLOAT4(0.48f, 0.77f, 0.46f, 1.0f);
@@ -115,7 +112,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBMatricesHills = pPerObject->GetVertexConstantBuffer();
 	AddBind(pPerObject);
 
-
+	constLights.gMaterial = landMat;
 	PixelShaderConstantBuffer<PerFrame>* pPerFrameCB =
 		new PixelShaderConstantBuffer<PerFrame>(gfx, constLights, 1u, 1u);
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
@@ -180,13 +177,12 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 
 	if (!flatSurface)
 	{
-
 		// Circle light over the land surface.
 		pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());
 		pointLight.position.z = 70.0f * std::sinf(0.2f * GetAlpha());
 		pointLight.position.y = MathHelper::Max(GetHeight(pointLight.position.x, pointLight.position.z), -3.0f) + 10.0f;
 		// The spotlight takes on the camera position and is aimed in the
-	// same direction the camera is looking.  
+		// same direction the camera is looking.  
 		spotLight.position = eyePosition;
 		DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
 		DirectX::XMVECTOR test_target = { 60.0f,	-70.0f,	70.0f, 1.0f };
@@ -213,7 +209,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		frame->gSpotLight.position = spotLight.position;
 		frame->gSpotLight.direction = spotLight.direction;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
-
 	}
 	else
 	{
@@ -225,21 +220,19 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-
 		if (GetAsyncKeyState('0') & 0x8000)
 			frame->numLights = 0;
 		if (GetAsyncKeyState('1') & 0x8000)
 			frame->numLights = 1;
-
 		if (GetAsyncKeyState('2') & 0x8000)
 			frame->numLights = 2;
-
 		if (GetAsyncKeyState('3') & 0x8000)
 			frame->numLights = 3;
+		frame->objectMaterial = landMat;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
-	}
+ 	}
 }
 
 

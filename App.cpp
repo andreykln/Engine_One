@@ -10,7 +10,7 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
  	pBox1 = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
-// 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+ 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20u, 20u);
 
 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, true);
@@ -31,9 +31,9 @@ void App::DoFrame()
 // 	pSkull->SetCameraMatrix(mCamera);
 // 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	pSkull->BindAndDraw(wnd.GetGraphics());
-
-
-	//SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 
+// 
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 // 	pBox1->SetCameraMatrix(mCamera);
 // 	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	pBox1->BindAndDraw(wnd.GetGraphics());
