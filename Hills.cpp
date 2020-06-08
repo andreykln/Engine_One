@@ -47,24 +47,55 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 normal;
 	};
-
+	struct Vertex_Grid
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
+	};
 
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
+
 	std::vector<Vertex_l> vertices(grid.vertices.size());
-	
-	for (size_t i = 0; i < grid.vertices.size(); ++i) 
+	std::vector<Vertex_Grid> verticesGrid(grid.vertices.size());
+
+	if (!flatSurface)
 	{
-		DirectX::XMFLOAT3 p = grid.vertices[i].position;
-		if (!flatSurface)
+		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
-			p.y = GetHeight(p.x, p.z);
+			DirectX::XMFLOAT3 p = grid.vertices[i].position;
+// 			if (!flatSurface)
+// 			{
+				p.y = GetHeight(p.x, p.z);
+// 			}
+			vertices[i].pos = p;
+			vertices[i].normal = GetHillNormal(p.x, p.z);
 		}
-		vertices[i].pos = p;
-		vertices[i].normal = GetHillNormal(p.x, p.z);
+	}
+	else
+	{
+		for (size_t i = 0; i < grid.vertices.size(); ++i)
+		{
+			DirectX::XMFLOAT3 p = grid.vertices[i].position;
+			verticesGrid[i].pos = p;
+			verticesGrid[i].color = DirectX::XMFLOAT4{ 0.48f, 0.57f, 0.46f, 0.0f};
+		}
+
 	}
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
-	AddBind(pVertexBuffer);
+	if (!flatSurface)
+	{
+		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
+		AddBind(pVertexBuffer);
+
+	} 
+	else
+	{
+		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesGrid, L"Hills");
+		AddBind(pVertexBuffer);
+
+	}
+
+
 	if (!flatSurface)
 	{
 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\HillsLightVS.cso");
@@ -73,21 +104,37 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 	else
 	{
-		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightVS.cso");
+		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeVS.cso");
 		pVertexShaderBlob = pVertexShader->GetByteCode();
 		AddBind(pVertexShader);
 	}
-
-	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
+	if (!flatSurface)
 	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	};
+		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
+		{
+			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u},
+			{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u}
+		};
+		inputElemDesctoSend = inputElemDesc;
+	}
+	else
+	{
+		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
+		{
+			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u},
+			{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u}
+		};
+		inputElemDesctoSend = inputElemDesc;
+	}
 
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesctoSend, L"PositionAndColor");
 	AddBind(pInputLayout);
+
+
 
 	if (!flatSurface)
 	{
@@ -96,7 +143,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 	else
 	{
-		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightPS.cso");
+		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
 		AddBind(pPixelShader);
 	}
 

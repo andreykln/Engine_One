@@ -51,7 +51,7 @@ private:
 	ID3D11Buffer* pCopyPCBLightsHills = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesHills = nullptr;
 
-
+	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesctoSend;
 	ID3DBlob* pVertexShaderBlob = nullptr;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
