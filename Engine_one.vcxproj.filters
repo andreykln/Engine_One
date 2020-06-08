@@ -22,9 +22,6 @@
     <Filter Include="Source Files\Bindable">
       <UniqueIdentifier>{e8a00c09-7f25-4bda-857a-e6fd3c709d78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Drawable">
-      <UniqueIdentifier>{6ef0dec1-c9a7-4f9b-8081-6b3fe6b54796}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Drawable">
       <UniqueIdentifier>{235e1c2b-a253-4bb4-86ff-c6bcf7b989e3}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Shaders\Pixel">
       <UniqueIdentifier>{7932eff0-5b25-408a-a064-6652521fbaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Bindable\Drawable">
+      <UniqueIdentifier>{6ef0dec1-c9a7-4f9b-8081-6b3fe6b54796}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -204,49 +204,49 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Shape.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="TransformConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Hills.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Cylinder.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="ShapesDemo.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Box.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="VertexBufferDynamic.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="WaveSurface.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="GeoSphere.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Rasterizer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Pyramid.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="VertexConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="BoxAndCylinder.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="HillsAndWaves.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="PixelShaderConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
@@ -267,7 +267,7 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Skull.h">
-      <Filter>Header Files\Drawable</Filter>
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

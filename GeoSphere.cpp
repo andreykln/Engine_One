@@ -8,12 +8,33 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 normal;
 	};
+
+	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+
+	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+
+	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
+	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.1f, 0.2f, 0.3f, 1.0f);
+	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.2f, 0.4f, 0.6f, 1.0f);
+	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
+
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
 	std::vector<Vertex_G> vertices(mesh.vertices.size());
 	//DirectX::XMFLOAT4 col{ 0.5f, 0.6f, 0.2f, 1.0f };
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
+		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
 		vertices[i].pos = p;
 		vertices[i].normal = mesh.vertices[i].normal;
 

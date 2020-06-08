@@ -12,6 +12,7 @@ Cylinder::Cylinder(Graphics& gfx,
 		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
 		vertices[i].pos = p;
 		vertices[i].normal = n;
+
 	}
 
 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.7f, 0.85f, 0.7f, 1.0f);
