@@ -13,7 +13,11 @@ public:
 private:
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
-public:
-//	float alpha{};
+
+	CBPerFrame constLights;
+	CBPerObject constMatrices;
+
+	ID3D11Buffer* pCopyPCBLightsGeoSphere = nullptr;
+	ID3D11Buffer* pCopyVCBMatricesGeoSphere = nullptr;
 };
 

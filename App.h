@@ -53,9 +53,9 @@ private:
 	Box* pBox1 = nullptr;
  	Cylinder* pCylinder = nullptr;
 //  	std::vector<Cylinder*> cylinders;
-// 	GeoSphere* pGeoSphere = nullptr;
+ 	GeoSphere* pGeoSphere = nullptr;
 //  	std::vector<GeoSphere*> geoSpheres;
-// 	Sphere* pSphere = nullptr;
+ 	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
