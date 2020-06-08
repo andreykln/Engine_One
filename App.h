@@ -52,9 +52,9 @@ private:
  	Box* pBox = nullptr;
 	Box* pBox1 = nullptr;
  	Cylinder* pCylinder = nullptr;
-//  	std::vector<Cylinder*> cylinders;
+ 	std::vector<Cylinder*> cylinders;
  	GeoSphere* pGeoSphere = nullptr;
-//  	std::vector<GeoSphere*> geoSpheres;
+ 	std::vector<GeoSphere*> geoSpheres;
  	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
  	Skull* pSkull = nullptr;
@@ -63,7 +63,7 @@ private:
 // 
 // 
 // 	std::vector<std::unique_ptr<WaveSurface>> wave;
-// 	ShapesDemo shapes;
+ 	ShapesDemo shapes;
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
