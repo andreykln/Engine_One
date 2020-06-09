@@ -22,43 +22,6 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	ShapesDemoDrawShapes();
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 	pSkull->SetCameraMatrix(mCamera);
-// 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pSkull->BindAndDraw(wnd.GetGraphics());
-// 
-// 
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 	pBox1->SetCameraMatrix(mCamera);
-// 	pBox1->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox1->BindAndDraw(wnd.GetGraphics());
-	
-// 	pCylinder->SetCameraMatrix(mCamera);
-// 	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pCylinder->BindAndDraw(wnd.GetGraphics());
-// 
-// 	pGeoSphere->SetCameraMatrix(mCamera);
-// 	pGeoSphere->Update(timer.TotalTime());
-// 	pGeoSphere->UpdateVertexConstantBuffer(wnd.GetGraphics()); //offsetForHillsWithWaves
-// 	pGeoSphere->BindAndDraw(wnd.GetGraphics());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
-
-
-
-// 	pHills->SetCameraMatrix(mCamera );
-// 	pHills->Update(timer.TotalTime());
-// 	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target); //offsetForHillsWithWaves
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
-
-
-
-
-// 	pHills->SetCameraMatrix(mCamera);
-// 	pHills->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-
-
 
 
 
@@ -222,7 +185,7 @@ float App::Z_Generate(size_t& k, float& current_Z_Axis)
 
 void App::ShapesDemoCreateShapes()
 {
-	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 0.5f);
+	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.5f);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
 	for (int i = 0; i < 10; i++)
@@ -238,8 +201,6 @@ void App::ShapesDemoCreateShapes()
 
 void App::ShapesDemoDrawShapes()
 {
-
-
 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->SetCameraMatrix(mCamera);
@@ -249,24 +210,31 @@ void App::ShapesDemoDrawShapes()
 	pGeoSphere->SetCameraMatrix(mCamera);
 	pGeoSphere->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pGeoSphere->BindAndDraw(wnd.GetGraphics());
-// 
-// 	pHills->SetMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 
-// 	for (auto& x : cylinders)
-// 	{
-// 		x->SetMatrix(*(shapes.GetCylinderWorldArray())++ /** DirectX::XMMatrixRotationY(timer.TotalTime())*/ * shapes.GetCameraOffset());
-// 		x->BindAndDraw(wnd.GetGraphics());
-// // 		x->SetMatrix();
-// 	}
-// 	shapes.GetCylinderWorldArray() -= 10; //reset array position
-// 
-// 	for (auto& x : geoSpheres)
-// 	{
-// 		x->SetMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
-// 		x->BindAndDraw(wnd.GetGraphics());
-// 	}
-// 	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f));
+	SetObjectMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
+	pHills->Update(timer.TotalTime());
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target);
+	pHills->BindAndDraw(wnd.GetGraphics());
+
+	for (auto& x : cylinders)
+	{
+		SetObjectMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
+		x->SetCameraMatrix(mCamera);
+		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
+		x->BindAndDraw(wnd.GetGraphics());
+ 	
+ 	}
+ 	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		SetObjectMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
+		x->SetCameraMatrix(mCamera);
+		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
+		x->BindAndDraw(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
 }
 
 void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
