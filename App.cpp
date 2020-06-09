@@ -13,10 +13,6 @@ App::App()
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
-App::~App()
-{
-}
-
 void App::DoFrame()
 {
 // 	const float c = abs((sin(timer.TotalTime())));
@@ -153,40 +149,13 @@ DirectX::XMMATRIX App::CalculateProjection() noexcept
 }
 
 
-float App::X_Generate(size_t& i, float& current_X_Axis)
-{
-	if (i != 0)
-	{
-		current_X_Axis += 1.8f;
-		return current_X_Axis;
-	}
-	return axis_x;
-}
 
-float App::Y_Generate(size_t& j, float& current_Y_Axis)
-{
-	if (j != 0)
-	{
-		current_Y_Axis -= 1.8f;
-		return current_Y_Axis;
-	}
-	return axis_y;
-
-}
-float App::Z_Generate(size_t& k, float& current_Z_Axis)
-{
-	if (k != 0)
-	{
-		current_Z_Axis -= 1.8f;
-		return current_Z_Axis;
-	}
-	return axis_z;
-}
 
 void App::ShapesDemoCreateShapes()
 {
 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.5f);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
+	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
 	for (int i = 0; i < 10; i++)
 	{
@@ -207,9 +176,9 @@ void App::ShapesDemoDrawShapes()
 	pBox->BindAndDraw(wnd.GetGraphics());
 
 	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-	pGeoSphere->SetCameraMatrix(mCamera);
-	pGeoSphere->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pGeoSphere->BindAndDraw(wnd.GetGraphics());
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera );
+	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pSkull->BindAndDraw(wnd.GetGraphics());
 
 	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f));
 	SetObjectMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
@@ -252,4 +221,8 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 
 	mCamera = in_matrix * DirectX::XMMatrixLookAtLH(pos, target, up);
 
+}
+
+App::~App()
+{
 }

@@ -24,7 +24,7 @@ private:
 
 	const DirectX::XMMATRIX cameraOffset = 
 		DirectX::XMMatrixRotationRollPitchYaw(-0.2f, 0.4f, 0.0f) *
-		DirectX::XMMatrixTranslation(0.0f, -0.1f, 19.0f);
+		DirectX::XMMatrixTranslation(1.7f, -0.1f, 3.0f);
 
 	DirectX::XMFLOAT4X4 sSphereWorld[10];
 	DirectX::XMMATRIX m_SphereWorld[10];
