@@ -47,26 +47,18 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 normal;
 	};
-	struct Vertex_Grid
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT4 color;
-	};
+
 
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 
 	std::vector<Vertex_l> vertices(grid.vertices.size());
-	std::vector<Vertex_Grid> verticesGrid(grid.vertices.size());
 
 	if (!flatSurface)
 	{
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
 			DirectX::XMFLOAT3 p = grid.vertices[i].position;
-// 			if (!flatSurface)
-// 			{
-				p.y = GetHeight(p.x, p.z);
-// 			}
+			p.y = GetHeight(p.x, p.z);
 			vertices[i].pos = p;
 			vertices[i].normal = GetHillNormal(p.x, p.z);
 		}
@@ -76,25 +68,14 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
 			DirectX::XMFLOAT3 p = grid.vertices[i].position;
-			verticesGrid[i].pos = p;
-			verticesGrid[i].color = DirectX::XMFLOAT4{ 0.48f, 0.57f, 0.46f, 0.0f};
+			vertices[i].pos = p;
+			vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f};
 		}
 
 	}
 
-	if (!flatSurface)
-	{
-		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
-		AddBind(pVertexBuffer);
-
-	} 
-	else
-	{
-		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesGrid, L"Hills");
-		AddBind(pVertexBuffer);
-
-	}
-
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
+	AddBind(pVertexBuffer);
 
 	if (!flatSurface)
 	{
@@ -104,12 +85,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 	else
 	{
-		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeVS.cso");
+		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightVS.cso");
 		pVertexShaderBlob = pVertexShader->GetByteCode();
 		AddBind(pVertexShader);
 	}
-	if (!flatSurface)
-	{
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 		{
 			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -117,21 +96,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
 		};
-		inputElemDesctoSend = inputElemDesc;
-	}
-	else
-	{
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
-		{
-			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"Color", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u}
-		};
-		inputElemDesctoSend = inputElemDesc;
-	}
 
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesctoSend, L"PositionAndColor");
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
 
 
@@ -143,7 +109,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 	else
 	{
-		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubePS.cso");
+		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightPS.cso");
 		AddBind(pPixelShader);
 	}
 
@@ -199,6 +165,7 @@ DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
 	DirectX::XMStoreFloat3(&n, unitNormal);
 	return n;
 }
+
 
 void Hills::SetVerticesWidth(UINT in_vertWidth) noexcept
 {
@@ -277,6 +244,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 			frame->numLights = 2;
 		if (GetAsyncKeyState('3') & 0x8000)
 			frame->numLights = 3;
+		//frame->objectMaterial = landMat;
 		frame->objectMaterial = landMat;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
  	}
