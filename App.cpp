@@ -9,7 +9,8 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	ShapesDemoCreateShapes();
+	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
+	//ShapesDemoCreateShapes();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -17,9 +18,12 @@ void App::DoFrame()
 {
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	ShapesDemoDrawShapes();
+	//ShapesDemoDrawShapes();
 
-
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pBox->SetCameraMatrix(mCamera);
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDraw(wnd.GetGraphics());
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
