@@ -42,7 +42,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeLightTexVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader); 
 
@@ -55,6 +55,8 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
@@ -90,6 +92,8 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
+
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\WoodCrate01.dds");
 
 }
 

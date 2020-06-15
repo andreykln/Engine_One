@@ -9,7 +9,7 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 1.0f);
+	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
 	//ShapesDemoCreateShapes();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }

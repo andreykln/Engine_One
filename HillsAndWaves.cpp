@@ -89,7 +89,7 @@ HillsAndWaves::HillsAndWaves(Graphics& gfx)
 			k += 6; // next quad
 		}
 	}
-	wavesIndicesNum = indices.size();
+	wavesIndicesNum = (UINT)indices.size();
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"WavesAndHillsIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 

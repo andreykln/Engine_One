@@ -150,6 +150,9 @@
     <ClCompile Include="Skull.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderResourceView.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -269,6 +272,9 @@
     <ClInclude Include="Skull.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderResourceView.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -290,6 +296,12 @@
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="LightPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="CubeLightTexVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="CubeLightTexPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
