@@ -4,13 +4,14 @@ cbuffer CBPerObject : register(b0)
     float4x4 gWorld;
     float4x4 gWorldInvTranspose;
     float4x4 gWorldViewProj;
+    float4x4 gTexTransform;
 };
 
 struct VertexIn
 {
     float3 position : Position;
     float3 normal : Normal;
-    float2 texCoord : TexCoord;
+    float2 texCoord : TexCoordinate;
 };
 
 struct VertexOut
@@ -18,6 +19,7 @@ struct VertexOut
     float4 PosH : SV_Position;
     float3 PosW : Position;
     float3 NormalW : Normal;
+    float2 Tex : TexCoordinate;
 };
 
 VertexOut main(VertexIn vin)
@@ -29,5 +31,7 @@ VertexOut main(VertexIn vin)
 		
 	// Transform to homogeneous clip space.
     vout.PosH = mul(float4(vin.position, 1.0f), gWorldViewProj);
+    vout.Tex = mul(float4(vin.texCoord, 0.0f, 1.0f), gTexTransform).xy;
+
     return vout;
 }

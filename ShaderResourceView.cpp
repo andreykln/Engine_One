@@ -45,9 +45,9 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	GetDevice(gfx)->CreateTexture2D(&texDesc, NULL, &pTexture);
-	GetDevice(gfx)->CreateShaderResourceView(pTexture, &shaderResDesc, &pShaderResourceView);
-	GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSamplerState);
+	DX::ThrowIfFailed(GetDevice(gfx)->CreateTexture2D(&texDesc, NULL, &pTexture));
+	DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(pTexture, &shaderResDesc, &pShaderResourceView));
+	DX::ThrowIfFailed(GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSamplerState));
 	
 }
 

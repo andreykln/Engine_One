@@ -56,7 +56,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
@@ -79,8 +79,8 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 
 
-	VertexConstantBuffer<CBPerObject>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObject>(gfx, constMatrices, 0u, 1u);
+	VertexConstantBuffer<CBPerObjectTexture>* pVCBPerObject =
+		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
 	pCopyVCBMatricesBox = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
@@ -112,10 +112,11 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesBox, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
+	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object->gTexTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsBox, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));

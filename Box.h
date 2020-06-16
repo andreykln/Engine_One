@@ -20,10 +20,19 @@ private:
 // 		DirectX::XMFLOAT2 tex0;
 // 		DirectX::XMFLOAT2 tex1;
 	};
+	struct CBPerObjectTexture
+	{
+		CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
+		DirectX::XMMATRIX gWorld;
+		DirectX::XMMATRIX gWorldInvTranspose;
+		DirectX::XMMATRIX gWorldViewProj;
+		DirectX::XMMATRIX gTexTransform;
+	};
+
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
 	CBPerFrame constLights;
-	CBPerObject constMatrices;
+	CBPerObjectTexture constMatrices;
 
 private:
 	ID3D11Buffer* pCopyPCBLightsBox = nullptr;
