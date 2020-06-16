@@ -109,7 +109,10 @@
       <Command>xcopy /E /D /Y   "$(ProjectDir)Shaders\Vertex\*" "$(OutDir)Shaders\Vertex\" 
 
 xcopy /E /D /Y  "$(ProjectDir)Shaders\Pixel\*" "$(OutDir)Shaders\Pixel\" 
-</Command>
+
+xcopy /E /D /Y "$(ProjectDir)models\*" "$(OutDir)models\"
+
+xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

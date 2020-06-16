@@ -106,10 +106,6 @@ float4 main(VertexOut pin) : SV_TARGET
     }
     
     
-  
-    
-  
-    
     float4 litColor = texColor * (ambient + diffuse) + specular;
 
     
