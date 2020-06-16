@@ -10,6 +10,6 @@ private:
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture = nullptr;
 	ID3D11ShaderResourceView* pShaderResourceView = nullptr;
-	
+	ID3D11SamplerState* pSamplerState = nullptr;
 };
 
