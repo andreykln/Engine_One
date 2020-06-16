@@ -94,7 +94,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	AddBind(pRasterState);
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\WoodCrate01.dds");
-
+	AddBind(pSRV);
 }
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept

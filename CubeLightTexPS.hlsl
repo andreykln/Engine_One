@@ -7,7 +7,7 @@ struct DirectionalLight
     float pad;
 };
 Texture2D cubeTexture;
-SamplerState cubeSample;
+SamplerState cubeSample : register(s0);
 struct Material
 {
     float4 ambient;
@@ -87,7 +87,10 @@ float4 main(VertexOut pin) : SV_TARGET
     toEye /= distToEye;
     
     ////////////////////////////////////////
-    cubeTexture.Sample(cubeSample, pin.tex);
+    float4 texColor = float4(1, 1, 1, 1);
+    texColor = cubeTexture.Sample(cubeSample, pin.tex);
+    
+    
     float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -107,7 +110,7 @@ float4 main(VertexOut pin) : SV_TARGET
     
   
     
-    float4 litColor = ambient + diffuse + specular + cubeTexture.Sample(cubeSample, pin.tex);
+    float4 litColor = texColor * (ambient + diffuse) + specular;
 
     
     litColor.a = skullMaterial.diffuse.a;
