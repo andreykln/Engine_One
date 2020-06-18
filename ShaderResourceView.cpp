@@ -22,12 +22,14 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
 	texDesc.MiscFlags = 0u;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	
+	DX::ThrowIfFailed(GetDevice(gfx)->CreateTexture2D(&texDesc, NULL, &pTexture));
+
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
 	shaderResDesc.Format = textureFormat;
 	shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResDesc.Texture2D.MipLevels = -1; //to use all mip levels
 	shaderResDesc.Texture2D.MostDetailedMip = (UINT)textureMetaData.mipLevels - 1;
+	DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(pTexture, &shaderResDesc, &pShaderResourceView));
 
 	//sampler is here
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -36,7 +38,7 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.MaxAnisotropy = 4;
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	samplerDesc.BorderColor[0] = 0;
 	samplerDesc.BorderColor[1] = 0;
@@ -45,8 +47,6 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	DX::ThrowIfFailed(GetDevice(gfx)->CreateTexture2D(&texDesc, NULL, &pTexture));
-	DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(pTexture, &shaderResDesc, &pShaderResourceView));
 	DX::ThrowIfFailed(GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSamplerState));
 	
 }

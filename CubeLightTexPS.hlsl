@@ -108,8 +108,8 @@ float4 main(VertexOut pin) : SV_TARGET
     
     float4 litColor = texColor * (ambient + diffuse) + specular;
 
-    
-    litColor.a = skullMaterial.diffuse.a;
+    // Common to take alpha from diffuse material and texture
+    litColor.a = skullMaterial.diffuse.a * texColor.a;
     
     return litColor;
 }

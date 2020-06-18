@@ -6,7 +6,7 @@ struct CBPerFrame
 	CBPerFrame() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
 	DirectX::XMFLOAT3 cbEyePosition;
-	int numLights{0};
+	int numLights{3};
 	Material objectMaterial;
 };
 
