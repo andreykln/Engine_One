@@ -6,7 +6,8 @@ struct DirectionalLight
     float3 direction;
     float pad;
 };
-Texture2D cubeTexture;
+Texture2D cubeTexture : register(t0);
+
 SamplerState cubeSample : register(s0);
 struct Material
 {

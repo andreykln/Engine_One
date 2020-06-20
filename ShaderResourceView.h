@@ -8,6 +8,8 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 private:
 	ID3D11Resource* pResource = nullptr;
+	ID3D11Resource* pResource1 = nullptr;
+
 	ID3D11Texture2D* pTexture = nullptr;
 	ID3D11ShaderResourceView* pShaderResourceView = nullptr;
 	ID3D11SamplerState* pSamplerState = nullptr;
