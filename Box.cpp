@@ -18,16 +18,33 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
  		vertices[i].normal = n;
 		vertices[i].tex0 = t;
 	}
-// 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-// 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-// 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+// 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
 
 
 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
 
-	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+
+	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
+
+	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+
+
+
+	/*constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -40,7 +57,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
 	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);*/
 
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
 	AddBind(pVB);
@@ -75,11 +92,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
-
-// 	VertexConstantBuffer<DirectX::XMMATRIX>* pVCB =
-// 		new VertexConstantBuffer<DirectX::XMMATRIX>(gfx, GetTransform() * gfx.GetProjection(), 0u, 1u);
-// 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
-// 	AddBind(pVCB);
 
 
 

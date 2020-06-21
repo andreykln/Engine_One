@@ -77,8 +77,9 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
  	samplerDesc.MipLODBias = 0.0f;
- 	samplerDesc.MaxAnisotropy = 4;
+ 	samplerDesc.MaxAnisotropy = 16;
  	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;

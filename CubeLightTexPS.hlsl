@@ -80,13 +80,12 @@ float4 main(PSstruct pin) : SV_TARGET
     
     //normalize
     toEye /= distToEye;
-    
-    ////////////////////////////////////////
+
     float4 texColor = float4(1, 1, 1, 1);
     texColor = cubeTexture.Sample(cubeSample, pin.Tex);
     float4 litColor = texColor;
     
-    /*if (numLights > 0)
+    if (numLights > 0)
     {
     
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -105,10 +104,10 @@ float4 main(PSstruct pin) : SV_TARGET
     
     
         litColor = texColor * (ambient + diffuse) + specular;
-    }*/
+    }
     
     // Common to take alpha from diffuse material and texture
-    //litColor.a = objectMaterial.diffuse.a * texColor.a;
+    litColor.a = objectMaterial.diffuse.a * texColor.a;
     
     return litColor;
 }
