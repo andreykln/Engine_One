@@ -6,9 +6,8 @@ struct DirectionalLight
     float3 direction;
     float pad;
 };
-Texture2D cubeTexture : register(t0);
 
-SamplerState cubeSample : register(s0);
+
 struct Material
 {
     float4 ambient;
@@ -52,28 +51,23 @@ cbuffer CBPerFrame : register(b1)
 {
     DirectionalLight directLight[3];
     float3 eyePosition;
-    int padding;
-    Material skullMaterial;
+    int numLights;
+    Material objectMaterial;
 };
 
+Texture2D cubeTexture : register(t0);
+SamplerState cubeSample : register(s0);
 
-
-struct VertexIn
-{
-    float3 position : Position;
-    float3 normal : Normal;
-    float2 tex : TexCoordinate;
-};
-
-struct VertexOut
+struct PSstruct
 {
     float4 PosH : SV_Position;
     float3 PosW : Position;
     float3 NormalW : Normal;
-    float2 tex : TexCoordinate;
+    float2 Tex : TEXCOORD;
 };
 
-float4 main(VertexOut pin) : SV_TARGET
+
+float4 main(PSstruct pin) : SV_TARGET
 {
     // Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
@@ -89,28 +83,32 @@ float4 main(VertexOut pin) : SV_TARGET
     
     ////////////////////////////////////////
     float4 texColor = float4(1, 1, 1, 1);
-    texColor = cubeTexture.Sample(cubeSample, pin.tex);
+    texColor = cubeTexture.Sample(cubeSample, pin.Tex);
+    float4 litColor = texColor;
     
-    
-    float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    [unroll]
-    for (int i = 0; i < padding; ++i)
+    /*if (numLights > 0)
     {
-        float4 A, D, S;
-        ComputeDirectionalLight(skullMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
-        ambient += A;
-        diffuse += D;
-        specular += S;
-    }
+    
+        float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+        float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    
+        [unroll]
+        for (int i = 0; i < numLights; ++i)
+        {
+            float4 A, D, S;
+            ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
+            ambient += A;
+            diffuse += D;
+            specular += S;
+        }
     
     
-    float4 litColor = texColor * (ambient + diffuse) + specular;
-
+        litColor = texColor * (ambient + diffuse) + specular;
+    }*/
+    
     // Common to take alpha from diffuse material and texture
-    litColor.a = skullMaterial.diffuse.a * texColor.a;
+    //litColor.a = objectMaterial.diffuse.a * texColor.a;
     
     return litColor;
 }

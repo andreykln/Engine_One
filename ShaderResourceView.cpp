@@ -9,6 +9,30 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 	LoadFromDDSFile(path.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
 	const DirectX::TexMetadata& textureMetaData = pImageData->GetMetadata();
 	DXGI_FORMAT textureFormat = textureMetaData.format;
+
+	/////automatic creation
+	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
+	DirectX::CreateShaderResourceView(
+		GetDevice(gfx),
+		image, textureMetaData.mipLevels,
+		textureMetaData,
+		&pShaderResourceView);
+	////end of automatic
+
+// 	DirectX::CreateTexture(
+// 		GetDevice(gfx),
+// 		image,
+// 		textureMetaData.mipLevels,
+// 		textureMetaData,
+// 		&pResource);
+// 
+// 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
+// 	shaderResDesc.Format = textureFormat;
+// 	shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+// 	shaderResDesc.Texture2D.MipLevels = (UINT)textureMetaData.mipLevels;
+// 	shaderResDesc.Texture2D.MostDetailedMip = 0u;
+// 	DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(pResource, &shaderResDesc, &pShaderResourceView));
+
 // 	DirectX::CreateDDSTextureFromFile(
 // 		GetDevice(gfx),
 // 		GetContext(gfx),
@@ -18,19 +42,6 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 // 		NULL,
 // 		NULL);
 	
-
-	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
-// 	DirectX::CreateTexture(GetDevice(gfx),
-// 		image,
-// 		10,
-// 		textureMetaData,
-// 		&pResource1);
-
-	DirectX::CreateShaderResourceView(
-	GetDevice(gfx),
-		image, 10,
-		textureMetaData,
-		&pShaderResourceView);
 
 // 	D3D11_TEXTURE2D_DESC texDesc;
 // 	texDesc.Format = textureFormat;
@@ -62,17 +73,13 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 // 	DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(pResource1, &shaderResDesc, &pShaderResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MINIMUM_MIN_POINT_MAG_MIP_LINEAR;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 4;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
+ 	samplerDesc.MipLODBias = 0.0f;
+ 	samplerDesc.MaxAnisotropy = 4;
+ 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 

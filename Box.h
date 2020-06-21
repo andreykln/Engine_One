@@ -16,8 +16,9 @@ private:
 	{
 		DirectX::XMFLOAT3 pos;
 // 		DirectX::XMFLOAT3 tangent;
+		DirectX::XMFLOAT2 tex0;
+
 		DirectX::XMFLOAT3 normal;
-// 		DirectX::XMFLOAT2 tex0;
 // 		DirectX::XMFLOAT2 tex1;
 	};
 	struct CBPerObjectTexture

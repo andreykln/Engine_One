@@ -12,8 +12,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
 		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
+		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
+
 		vertices[i].pos = p;
  		vertices[i].normal = n;
+		vertices[i].tex0 = t;
 	}
 // 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 // 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
@@ -54,10 +57,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
+	
 	};
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");

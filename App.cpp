@@ -22,6 +22,7 @@ void App::DoFrame()
 
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 	pBox->SetCameraMatrix(mCamera);
+	pBox->Update(timer.TotalTime());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDraw(wnd.GetGraphics());
 
