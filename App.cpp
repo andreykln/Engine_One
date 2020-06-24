@@ -22,29 +22,11 @@ void App::DoFrame()
 	//ShapesDemoDrawShapes();
 	DrawHillsWithWaves();
 
-// 
-//  	pWaves->SetCameraMatrix(mCamera);
-// 	pWaves->BindAndDraw(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-//  	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 
-// 
-// 
-// 
-// 	//SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 // 	pBox->SetCameraMatrix(mCamera);
 // 	pBox->Update(timer.TotalTime());
 // 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	pBox->BindAndDraw(wnd.GetGraphics());
-// 
-// 
-// 	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
-// 	// 	SetObjectMatrix(offsetForHillsWithWaves);
-// 	pHills->Update(timer.TotalTime());
-// 	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target); //offsetForHillsWithWaves
-// 	pHills->BindAndDraw(wnd.GetGraphics());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
 
 	CalculateFrameStats();
 	//DebugTextToTitle();

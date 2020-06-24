@@ -156,6 +156,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\grass.dds");
 	AddBind(pSRV);
+
+// 	RasterizerState state;
+// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
+// 	AddBind(pRasterState);
 }
 
 
@@ -222,8 +226,8 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		// The spotlight takes on the camera position and is aimed in the
 		// same direction the camera is looking.  
 		spotLight.position = eyePosition;
-		DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
-		DirectX::XMVECTOR test_target = { 60.0f,	-70.0f,	70.0f, 1.0f };
+// 		DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
+// 		DirectX::XMVECTOR test_target = { 60.0f,	-70.0f,	70.0f, 1.0f };
 		DirectX::XMVECTOR flashLightvector = -DirectX::XMVector3Normalize(target - pos);
 		//to move light a bit up
 		flashLightvector.m128_f32[0] += 0.2f;
@@ -237,7 +241,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gTexTransform = DirectX::XMMatrixIdentity();
+		object->gTexTransform = grassScaling;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));

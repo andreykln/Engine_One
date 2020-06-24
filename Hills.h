@@ -43,7 +43,7 @@ private:
 // 		DirectX::XMMATRIX gWorldViewProj;
 // 	};
 	CBPerObjectTexture constMatrices;
-
+	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(50.0f, 50.0f, 50.0f);
 
 	bool flatSurface = true;
 	float width{};
