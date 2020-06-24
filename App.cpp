@@ -9,8 +9,9 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
+	//pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
 	//ShapesDemoCreateShapes();
+	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -19,12 +20,23 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
+	//DrawHillsWithWaves();
 
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
-	pBox->SetCameraMatrix(mCamera);
-	pBox->Update(timer.TotalTime());
-	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pBox->BindAndDraw(wnd.GetGraphics());
+
+ 	pWaves->SetCameraMatrix(mCamera);
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+ 	SetObjectMatrix(DirectX::XMMatrixIdentity());
+
+
+
+
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pBox->SetCameraMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, timer.TotalTime()) * mCamera);
+// 	pBox->Update(timer.TotalTime());
+// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pBox->BindAndDraw(wnd.GetGraphics());
 
 	CalculateFrameStats();
 	//DebugTextToTitle();

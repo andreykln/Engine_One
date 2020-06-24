@@ -5,13 +5,14 @@ Waves::Waves()
 	K1(0.0f), K2(0.0f), K3(0.0f), timeStep(0.0f), spatialStep(0.0f),
 	prevSolution(0), currSolution(0)
 {
-
 }
 
 Waves::~Waves()
 {
 	delete[] prevSolution;
 	delete[] currSolution;
+	delete[] normal;
+	delete[] tangent;
 }
 
 UINT Waves::GetRowCount() const
@@ -32,6 +33,16 @@ UINT Waves::GetVertexCount() const
 UINT Waves::GetTriangleCount() const
 {
 	return triangleCount;
+}
+
+float Waves::Width() const
+{
+	return numColumns * spatialStep;
+}
+
+float Waves::Depth() const
+{
+	return numRows * spatialStep;
 }
 
 float Waves::GetTimeStep() const
@@ -59,9 +70,13 @@ void Waves::Init(UINT m, UINT n, float dx, float dt, float speed, float damping)
 	// In case Init() called again.
 	delete[] prevSolution;
 	delete[] currSolution;
+	delete[] normal;
+	delete[] tangent;
 
 	prevSolution = new DirectX::XMFLOAT3[(long long)m * n];
 	currSolution = new DirectX::XMFLOAT3[(long long)m * n];
+	normal = new DirectX::XMFLOAT3[(long long)m * n];
+	tangent = new DirectX::XMFLOAT3[(long long)m * n];
 
 	// Generate grid vertices in system memory.
 
@@ -76,6 +91,8 @@ void Waves::Init(UINT m, UINT n, float dx, float dt, float speed, float damping)
 
 			prevSolution[i * n + j] = DirectX::XMFLOAT3(x, 0.0f, z);
 			currSolution[i * n + j] = DirectX::XMFLOAT3(x, 0.0f, z);
+			normal[i * n + j] = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+			tangent[i * n + j] = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 		}
 	}
 }
@@ -120,6 +137,28 @@ void Waves::UpdateSolution(float dt)
 		std::swap(prevSolution, currSolution);
 
 		t = 0.0f; // reset time
+
+		//compute normals using finite difference scheme
+		for (UINT i = 1; i < numRows - 1; ++i)
+		{
+			for (UINT j = 1; j < numColumns; ++j)
+			{
+				float l = currSolution[i * numColumns + j - 1].y;
+				float r = currSolution[i * numColumns + j + 1].y;
+				float t = currSolution[(i - 1) * numColumns + j].y;
+				float b = currSolution[(i + 1) * numColumns + j].y;
+				normal[i * numColumns + j].x = -r + l;
+				normal[i * numColumns + j].y = 2.0f * spatialStep;
+				normal[i * numColumns + j].z = b - t;
+
+				DirectX::XMVECTOR n = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&normal[i * numColumns + j]));
+				DirectX::XMStoreFloat3(&normal[i * numColumns + j], n);
+
+				tangent[i * numColumns + j] = DirectX::XMFLOAT3(2.0f * spatialStep, r - l, 0.0f);
+				DirectX::XMVECTOR T = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&tangent[i * numColumns + j]));
+				DirectX::XMStoreFloat3(&tangent[i * numColumns + j], T);
+			}
+		}
 	}
 }
 

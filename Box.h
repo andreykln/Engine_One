@@ -3,7 +3,7 @@
 #include "Shape.h"
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
-#include "directxpackedvector.h" //for XMCOLOR
+//#include "directxpackedvector.h" //for XMCOLOR
 class Box : public Shape
 {
 public:
@@ -21,14 +21,14 @@ private:
 		DirectX::XMFLOAT3 normal;
 // 		DirectX::XMFLOAT2 tex1;
 	};
-	struct CBPerObjectTexture
-	{
-		CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
-		DirectX::XMMATRIX gWorld;
-		DirectX::XMMATRIX gWorldInvTranspose;
-		DirectX::XMMATRIX gWorldViewProj;
-		DirectX::XMMATRIX gTexTransform;
-	};
+// 	struct CBPerObjectTexture
+// 	{
+// 		CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
+// 		DirectX::XMMATRIX gWorld;
+// 		DirectX::XMMATRIX gWorldInvTranspose;
+// 		DirectX::XMMATRIX gWorldViewProj;
+// 		DirectX::XMMATRIX gTexTransform;
+// 	};
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;

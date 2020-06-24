@@ -17,3 +17,12 @@ struct CBPerObject
 	DirectX::XMMATRIX gWorldInvTranspose;
 	DirectX::XMMATRIX gWorldViewProj;
 };
+
+struct CBPerObjectTexture
+{
+	CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX gWorld;
+	DirectX::XMMATRIX gWorldInvTranspose;
+	DirectX::XMMATRIX gWorldViewProj;
+	DirectX::XMMATRIX gTexTransform;
+};
