@@ -9,7 +9,7 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	//pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
+	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
 	//ShapesDemoCreateShapes();
 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -20,23 +20,31 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
-	//DrawHillsWithWaves();
+	DrawHillsWithWaves();
 
-
- 	pWaves->SetCameraMatrix(mCamera);
-	pWaves->BindAndDraw(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
- 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-
-
-
-
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 	pBox->SetCameraMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, timer.TotalTime()) * mCamera);
+// 
+//  	pWaves->SetCameraMatrix(mCamera);
+// 	pWaves->BindAndDraw(wnd.GetGraphics());
+// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+//  	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 
+// 
+// 
+// 
+// 	//SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pBox->SetCameraMatrix(mCamera);
 // 	pBox->Update(timer.TotalTime());
 // 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	pBox->BindAndDraw(wnd.GetGraphics());
+// 
+// 
+// 	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
+// 	// 	SetObjectMatrix(offsetForHillsWithWaves);
+// 	pHills->Update(timer.TotalTime());
+// 	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target); //offsetForHillsWithWaves
+// 	pHills->BindAndDraw(wnd.GetGraphics());
+// 	SetObjectMatrix(offsetForHillsWithWaves);
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
@@ -137,12 +145,12 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-// 	pWaves->SetCameraMatrix(mCamera);
-// 	pWaves->BindAndDraw(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 
+	pWaves->SetCameraMatrix(mCamera);
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+
 	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
 	pHills->Update(timer.TotalTime());

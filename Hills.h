@@ -19,27 +19,31 @@ public:
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
 	float GetAlpha() const noexcept;
 private:
-	struct PerFrame
-	{
-		PerFrame() { ZeroMemory(this, sizeof(this)); }
-		DirectionalLight gDirLight;
-		PointLight gPointLight;
-		SpotLight gSpotLight;
-		DirectX::XMFLOAT3 gEyePosW;
-		float padding{};
-		Material gMaterial;
-	};
-	PerFrame constLights;
+
+	//TEMPORARY DISABLE IT, DON'T NEED SPOT LIGHTS
+// 	struct PerFrame
+// 	{
+// 		PerFrame() { ZeroMemory(this, sizeof(this)); }
+// 		DirectionalLight gDirLight;
+// 		PointLight gPointLight;
+// 		SpotLight gSpotLight;
+// 		DirectX::XMFLOAT3 gEyePosW;
+// 		float padding{};
+// 		Material gMaterial;
+// 	};
+	CBPerFrame constLights;
+// 	PerFrame constLights;
 
 
-	struct PerObject
-	{
-		PerObject() { ZeroMemory(this, sizeof(this)); }
-		DirectX::XMMATRIX gWorld;
-		DirectX::XMMATRIX gWorldInvTranspose;
-		DirectX::XMMATRIX gWorldViewProj;
-	};
-	PerObject constMatrices;
+// 	struct PerObject
+// 	{
+// 		PerObject() { ZeroMemory(this, sizeof(this)); }
+// 		DirectX::XMMATRIX gWorld;
+// 		DirectX::XMMATRIX gWorldInvTranspose;
+// 		DirectX::XMMATRIX gWorldViewProj;
+// 	};
+	CBPerObjectTexture constMatrices;
+
 
 	bool flatSurface = true;
 	float width{};
