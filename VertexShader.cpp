@@ -2,6 +2,9 @@
 
 VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
 {
+#ifdef MY_DEBUG
+	gfx.CheckFileExistence(gfx, path);
+#endif // MY_DEBUG
 	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), pVertexShaderBlob.ReleaseAndGetAddressOf()));
 	DX::ThrowIfFailed(GetDevice(gfx)->CreateVertexShader(
 		pVertexShaderBlob->GetBufferPointer(),

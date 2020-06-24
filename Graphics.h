@@ -7,6 +7,7 @@
 #include "directxcolors.h"
 #include "CustomException.h"
 #include <d3dcompiler.h>
+#include <filesystem>
 #define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
@@ -23,9 +24,12 @@ public:
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
+	HWND GetWindowHandle() const noexcept;
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);
+	std::string wstrTostr(const std::wstring& wstr);
+	void CheckFileExistence(Graphics& gfx, const std::wstring& path);
 private:
 	void SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& name);
 #endif
@@ -38,6 +42,7 @@ public:
 	ID3D11Debug* debugDevice = nullptr;
 #endif
 private:
+	HWND windowHandle;
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;

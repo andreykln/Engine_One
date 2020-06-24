@@ -2,6 +2,7 @@
 // #include "D3Dcommon.h"
 Graphics::Graphics(HWND wnd)
 {
+	windowHandle = wnd;
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{ 0 };
 	swapChainDesc.BufferDesc.Width = 0;
 	swapChainDesc.BufferDesc.Height = 0;
@@ -179,6 +180,12 @@ void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVerte
 
 }
 
+
+HWND Graphics::GetWindowHandle() const noexcept
+{
+	return windowHandle;
+}
+
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 {
@@ -194,9 +201,27 @@ void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 	}
 }
 
+std::string Graphics::wstrTostr(const std::wstring& wstr)
+{
+	int size_needed = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), int(wstr.length() + 1), 0, 0, 0, 0);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), int(wstr.length() + 1), &strTo[0], size_needed, 0, 0);
+	return strTo;
+}
+
 void Graphics::SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 {
 	SetDebugName(child, name);
+}
+
+void Graphics::CheckFileExistence(Graphics& gfx, const std::wstring& path)
+{
+	if (!std::filesystem::exists(path.c_str()))
+	{
+		//can't append string literal message to this string for some reason. 
+		//I'll leave it like that, it's better than nothing
+		MessageBox(gfx.GetWindowHandle(), gfx.wstrTostr(path).c_str(), NULL, MB_OK);
+	}
 }
 
 #endif

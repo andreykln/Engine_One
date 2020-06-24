@@ -2,6 +2,9 @@
 
 PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
 {
+#ifdef MY_DEBUG
+	gfx.CheckFileExistence(gfx, path);
+#endif // MY_DEBUG
 	Microsoft::WRL::ComPtr<ID3DBlob> pPixelShaderBlob;
 	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), pPixelShaderBlob.ReleaseAndGetAddressOf())); 
 	DX::ThrowIfFailed(GetDevice(gfx)->CreatePixelShader(

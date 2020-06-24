@@ -109,7 +109,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\stonedds.dds");
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\stoneSurface.dds");
 	AddBind(pSRV);
 }
 

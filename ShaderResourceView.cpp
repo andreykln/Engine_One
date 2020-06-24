@@ -7,7 +7,10 @@
 
 ShaderResourceView::ShaderResourceView(Graphics& gfx, const std::wstring& path)
 {
-	std::filesystem::exists(path.c_str());
+#ifdef MY_DEBUG
+	gfx.CheckFileExistence(gfx, path);
+#endif // MY_DEBUG
+
 	DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
 	LoadFromDDSFile(path.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
 	const DirectX::TexMetadata& textureMetaData = pImageData->GetMetadata();
