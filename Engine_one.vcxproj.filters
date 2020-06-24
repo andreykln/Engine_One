@@ -298,10 +298,10 @@
     <FxCompile Include="LightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="CubeLightTexVS.hlsl">
+    <FxCompile Include="LightAndTextureVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="CubeLightTexPS.hlsl">
+    <FxCompile Include="LightAndTexturePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

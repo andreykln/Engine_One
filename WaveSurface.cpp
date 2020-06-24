@@ -23,18 +23,13 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 
-
-
 	vertices.resize(wave.GetVertexCount());
-
-
-
 
 	pDynamicVB = new VertexBufferDynamic(gfx, vertices, L"Waves");
 	pCopyDynamicVB = pDynamicVB->Get_p_DynamicVertexBuffer();
 	AddBind(pDynamicVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\CubeLightTexVS.cso");
+	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
@@ -52,7 +47,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\CubeLightTexPS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 	AddBind(pPixelShader);
 
 	std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face
