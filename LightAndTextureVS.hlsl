@@ -10,8 +10,9 @@ cbuffer CBPerObject : register(b0)
 struct VertexIn
 {
     float3 position : Position;
-    float2 texCoord : TexCoordinate;
     float3 normal : Normal;
+    float2 texCoord : TexCoordinate;
+
 };
 
 struct PSstruct

@@ -114,10 +114,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		{
 			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u},
 			{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			D3D11_INPUT_PER_VERTEX_DATA, 0u},
+			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
+
 		};
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
@@ -156,7 +157,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\grass.dds");
 	AddBind(pSRV);
-
+// 
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);

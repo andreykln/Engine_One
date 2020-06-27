@@ -8,8 +8,12 @@ void GeometryGenerator::CreateGrid(float width, float depth, UINT m, UINT n, Mes
 	UINT triangleCount = (m - 1) * (n - 1) * 2;
 	float halfWidth = 0.5f * width;
 	float halfDepth = 0.5f * depth;
+
 	float dx = width / (n - 1);
 	float dz = depth / (m - 1);
+
+	float du = 1.0f / (n - 1);
+	float dv = 1.0f / (m - 1);
 	meshData.vertices.resize(vertexCount);
 	for (UINT i = 0; i < m; ++i)
 	{
@@ -18,6 +22,12 @@ void GeometryGenerator::CreateGrid(float width, float depth, UINT m, UINT n, Mes
 		{
 			float x = -halfWidth + j * dx;
 			meshData.vertices[(long long)i * n + (long long)j].position = DirectX::XMFLOAT3(x, 0.0f, z);
+			meshData.vertices[(long long)i * n + (long long)j].normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+			meshData.vertices[(long long)i * n + (long long)j].tangentU = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+			// Stretch texture over grid.
+			meshData.vertices[(long long)i * n + (long long)j].TexC.x = j * du;
+			meshData.vertices[(long long)i * n + (long long)j].TexC.y = i * dv;
 		}
 	}
 
