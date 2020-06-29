@@ -55,8 +55,8 @@ cbuffer CBPerFrame : register(b1)
     Material objectMaterial;
 };
 
-Texture2D cubeTexture : register(t0);
-SamplerState cubeSample : register(s0);
+Texture2D SRVTexture : register(t0);
+SamplerState tex0Sample : register(s0);
 
 struct PSstruct
 {
@@ -82,7 +82,7 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1, 1, 1, 1);
-    texColor = cubeTexture.Sample(cubeSample, pin.Tex);
+    texColor = SRVTexture.Sample(tex0Sample, pin.Tex);
     float4 litColor = texColor;
     
     if (numLights > 0)

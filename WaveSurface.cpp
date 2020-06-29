@@ -89,7 +89,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	pCopyPixelConstantBuffer = pPSCB->GetPixelShaderConstantBuffer();
 	AddBind(pPSCB);
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\water2.dds");
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\water1.dds");
 	AddBind(pSRV);
 
 }

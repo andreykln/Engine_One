@@ -9,7 +9,7 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
+//	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
 	//ShapesDemoCreateShapes();
 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
@@ -127,13 +127,13 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-// 	pWaves->SetCameraMatrix(mCamera);
-// 	pWaves->BindAndDraw(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pWaves->SetCameraMatrix(mCamera);
+	pWaves->BindAndDraw(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-	pHills->SetCameraMatrix(mCamera /** DirectX::XMMatrixRotationY(timer.TotalTime())*/);
+	pHills->SetCameraMatrix(mCamera);
 // 	SetObjectMatrix(offsetForHillsWithWaves);
 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
@@ -145,7 +145,7 @@ void App::DrawHillsWithWaves()
 void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
-// 	pWaves = new WaveSurface(wnd.GetGraphics());
+	pWaves = new WaveSurface(wnd.GetGraphics());
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept
