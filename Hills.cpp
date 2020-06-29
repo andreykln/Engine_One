@@ -62,7 +62,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	struct Vertex_l
 	{
 		DirectX::XMFLOAT3 pos;
+		float padding0;
 		DirectX::XMFLOAT3 normal;
+		float padding1;
 		DirectX::XMFLOAT2 tex;
 	};
 
@@ -110,13 +112,15 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		pVertexShaderBlob = pVertexShader->GetByteCode();
 		AddBind(pVertexShader);
 	}
+
+	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3) + sizeof(float);
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 		{
-			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u,vertex_L_Offset ,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertex_L_Offset * 2,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
 
 		};
