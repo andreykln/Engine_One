@@ -21,7 +21,7 @@ void App::DoFrame()
 	timer.Tick();
 	//ShapesDemoDrawShapes();
 	DrawHillsWithWaves();
-
+	ScrollWheelCounter();
 // 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 // 	pBox->SetCameraMatrix(mCamera);
 // 	pBox->Update(timer.TotalTime());
@@ -60,32 +60,24 @@ void App::DebugTextToTitle()
 
 void App::ScrollWheelCounter()
 {
-// 	while (!wnd.mouse.IsEmpty())
-// 	{
-// 		const Mouse::Event e = wnd.mouse.Read();
-// 		switch (e.GetType())
-// 		{
-// 			case Mouse::Event::Type::MWheelUp:
-// 			{
-// 				axis_z += camera_move_step;
-// 				if (axis_z > 8.0f)
-// 				{
-// 					axis_z = 8.0f;
-// 				}
-// 			}
-// 			break;
-// 
-// 			case Mouse::Event::Type::MWheelDown:
-// 			{
-// 				axis_z -= camera_move_step;
-// 				if (axis_z < 1.0f)
-// 				{
-// 					axis_z = 1.0f;
-// 				}
-// 			}
-// 			break;
-// 		}
-// 	}
+	while (!wnd.mouse.IsEmpty())
+	{
+		const Mouse::Event e = wnd.mouse.Read();
+		switch (e.GetType())
+		{
+			case Mouse::Event::Type::MWheelUp:
+			{
+				zoom += 0.1f;
+			}
+			break;
+
+			case Mouse::Event::Type::MWheelDown:
+			{
+				zoom -= 0.1f;
+			}
+			break;
+		}
+	}
 }
 
 void App::CalculateFrameStats()
@@ -127,13 +119,13 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-	pWaves->SetCameraMatrix(mCamera);
+	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDraw(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-	pHills->SetCameraMatrix(mCamera);
+	pHills->SetCameraMatrix(mCamera * CameraZoom());
 // 	SetObjectMatrix(offsetForHillsWithWaves);
 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
@@ -146,6 +138,11 @@ void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
 	pWaves = new WaveSurface(wnd.GetGraphics());
+}
+
+DirectX::XMMATRIX App::CameraZoom() const noexcept
+{
+	return DirectX::XMMatrixTranslation(0.0f, 0.0f, zoom);
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept

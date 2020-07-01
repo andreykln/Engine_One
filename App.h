@@ -33,6 +33,7 @@ public:
 	void TwoTestCubes() noexcept;
 	void DrawHillsWithWaves();
 	void CreateHillsWithWaves();
+	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 
 private:
@@ -78,6 +79,7 @@ private:
 
 	Window wnd;
 	Timer timer;
+	float zoom = 0.0f;
 	float colors[4]{};
 	const float camera_move_step = 0.05f;
 
