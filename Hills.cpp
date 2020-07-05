@@ -159,8 +159,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\grass.dds");
-	AddBind(pSRV);
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\grass.dds", 1u);
+// 	AddBind(pSRV);
 // 
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());

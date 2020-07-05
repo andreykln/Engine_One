@@ -9,9 +9,9 @@ INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-//	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
+	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f);
 	//ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -20,13 +20,13 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 	ScrollWheelCounter();
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 	pBox->SetCameraMatrix(mCamera);
-// 	pBox->Update(timer.TotalTime());
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->BindAndDraw(wnd.GetGraphics());
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pBox->SetCameraMatrix(mCamera * CameraZoom());
+	pBox->Update(timer.TotalTime());
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDraw(wnd.GetGraphics());
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
@@ -142,7 +142,7 @@ void App::CreateHillsWithWaves()
 
 DirectX::XMMATRIX App::CameraZoom() const noexcept
 {
-	return DirectX::XMMatrixTranslation(0.0f, 0.0f, zoom);
+	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
 }
 
 DirectX::XMMATRIX App::CalculateProjection() noexcept

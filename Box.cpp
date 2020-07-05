@@ -108,8 +108,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
+	std::wstring directory[2];
+	directory[0] = L"Textures\\flare.dds";
+	directory[1] = L"Textures\\flarealpha.dds";
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\WoodCrate01.dds");
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 2u);
 	AddBind(pSRV);
 }
 
