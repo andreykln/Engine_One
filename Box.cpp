@@ -84,7 +84,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndMultitexturePS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer");
@@ -112,6 +112,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	directory[0] = L"Textures\\flare.dds";
 	directory[1] = L"Textures\\flarealpha.dds";
 
+// 	directory[0] = L"Textures\\WoodCrate01.dds";
+
+
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 2u);
 	AddBind(pSRV);
 }
@@ -135,7 +138,10 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX centerRotation = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f)) *
+		DirectX::XMMatrixRotationZ(alpha) * DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f));
+	object->gTexTransform = centerRotation;
+
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsBox, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));

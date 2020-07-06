@@ -56,6 +56,7 @@ cbuffer CBPerFrame : register(b1)
 };
 
 Texture2D SRVTexture0 : register(t0);
+Texture2D SRVTexture1 : register(t1);
 SamplerState tex0Sample : register(s0);
 
 struct PSstruct
@@ -82,7 +83,7 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1, 1, 1, 1);
-    texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
+    texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
     float4 litColor = texColor;
     
     if (numLights > 0)

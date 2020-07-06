@@ -304,6 +304,9 @@
     <FxCompile Include="LightAndTexturePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="LightAndMultitexturePS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">
