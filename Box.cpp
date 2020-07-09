@@ -112,10 +112,17 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	directory[0] = L"Textures\\flare.dds";
 	directory[1] = L"Textures\\flarealpha.dds";
 
+	std::wstring fireAnimArray[120];
+	for (UINT i = 0; i < 120; ++i)
+	{
+		fireAnimArray[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
+	}
+
+
 // 	directory[0] = L"Textures\\WoodCrate01.dds";
 
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 2u);
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, fireAnimArray, 120u);
 	AddBind(pSRV);
 }
 

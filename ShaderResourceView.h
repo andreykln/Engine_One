@@ -6,14 +6,17 @@
 class ShaderResourceView : public Bindable
 {
 public:
-	ShaderResourceView(Graphics& gfx, const std::wstring* path, UINT in_NumSRVs);
+	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumSRVs);
 	void Bind(Graphics& gfx) noexcept override;
+	void FlipPage(Graphics& gfx);
 	~ShaderResourceView()
 	{
 		delete[] pSRVArray;
 	}
 private:
 	UINT numSRVs = 0u;
+	std::wstring* path;
+	UINT index = 0;
 	DirectX::TexMetadata textureMetaData;
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture = nullptr;
