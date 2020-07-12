@@ -125,6 +125,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
+
+	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	AddBind(pTexSampler);
 }
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept

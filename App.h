@@ -33,6 +33,8 @@ public:
 	void TwoTestCubes() noexcept;
 	void DrawHillsWithWaves();
 	void CreateHillsWithWaves();
+	void CreateBox();
+	void DrawBox();
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 

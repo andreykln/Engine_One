@@ -14,3 +14,4 @@
 #include "VertexConstantBuffer.h"
 #include "PixelShaderConstantBuffer.h"
 #include "CBufferStructures.h"
+#include "TextureSampler.h"

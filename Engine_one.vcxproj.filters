@@ -153,6 +153,9 @@
     <ClCompile Include="ShaderResourceView.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="TextureSampler.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -273,6 +276,9 @@
       <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="ShaderResourceView.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureSampler.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
   </ItemGroup>

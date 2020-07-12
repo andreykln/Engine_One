@@ -28,25 +28,25 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	//point light .position will change every frame
 
-// 	if (!flatSurface) 
-// 	{
-// 		pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-// 		pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-// 		pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-// 		pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
-// 
-// 
-// 		pointLight.range = 25.0f;
-// 		pointLight.padding = 0.0f;
-// 		//position and direction will change every frame
-// 		spotLight.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-// 		spotLight.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-// 		spotLight.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 		spotLight.attenuation = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-// 		spotLight.spot = 96.0f;
-// 		spotLight.range = 10000.0f;
-// 		spotLight.padding = 0.0f;
-// 	}
+	if (!flatSurface) 
+	{
+		pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
+
+
+		pointLight.range = 25.0f;
+		pointLight.padding = 0.0f;
+		//position and direction will change every frame
+		spotLight.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		spotLight.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+		spotLight.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		spotLight.attenuation = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		spotLight.spot = 96.0f;
+		spotLight.range = 10000.0f;
+		spotLight.padding = 0.0f;
+	}
 
 	landMat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	landMat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -159,8 +159,15 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
-// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\grass.dds", 1u);
-// 	AddBind(pSRV);
+
+	std::wstring directory[1];
+	directory[0] = L"Textures\\darkbrick.dds";
+
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+	AddBind(pSRV);
+
+	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	AddBind(pTexSampler);
 // 
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());

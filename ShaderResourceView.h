@@ -8,7 +8,6 @@ class ShaderResourceView : public Bindable
 public:
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumSRVs);
 	void Bind(Graphics& gfx) noexcept override;
-	void FlipPage(Graphics& gfx);
 	~ShaderResourceView()
 	{
 		delete[] pSRVArray;
