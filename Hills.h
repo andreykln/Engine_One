@@ -44,7 +44,7 @@ private:
 // 	};
 	CBPerObjectTexture constMatrices;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
-	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
+	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 
 
 	bool flatSurface = true;
