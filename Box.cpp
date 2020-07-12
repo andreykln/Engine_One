@@ -108,21 +108,21 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
-	std::wstring directory[2];
-	directory[0] = L"Textures\\flare.dds";
-	directory[1] = L"Textures\\flarealpha.dds";
+	std::wstring directory[120];
+// 	directory[0] = L"Textures\\flare.dds";
+// 	directory[1] = L"Textures\\flarealpha.dds";
 
-	std::wstring fireAnimArray[120];
+	//std::wstring fireAnimArray[120];
 	for (UINT i = 0; i < 120; ++i)
 	{
-		fireAnimArray[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
+		directory[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
 	}
 
 
 // 	directory[0] = L"Textures\\WoodCrate01.dds";
 
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, fireAnimArray, 120u);
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 }
 

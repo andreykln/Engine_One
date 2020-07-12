@@ -84,7 +84,7 @@ float4 main(PSstruct pin) : SV_TARGET
 
     float4 texColor = float4(1, 1, 1, 1);
    // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
-    texColor = SRVTexture0[19].Sample(tex0Sample, pin.Tex);
+    texColor = SRVTexture0[119].Sample(tex0Sample, pin.Tex);
     
     float4 litColor = texColor;
     
