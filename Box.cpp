@@ -108,15 +108,16 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
-	std::wstring directory[120];
+	std::wstring directory[1];
+	directory[0] = L"Textures\\WoodCrate01.dds";
 // 	directory[0] = L"Textures\\flare.dds";
 // 	directory[1] = L"Textures\\flarealpha.dds";
 
 	//std::wstring fireAnimArray[120];
-	for (UINT i = 0; i < 120; ++i)
-	{
-		directory[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
-	}
+// 	for (UINT i = 0; i < 120; ++i)
+// 	{
+// 		directory[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
+// 	}
 
 
 // 	directory[0] = L"Textures\\WoodCrate01.dds";

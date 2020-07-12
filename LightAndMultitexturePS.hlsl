@@ -55,7 +55,7 @@ cbuffer CBPerFrame : register(b1)
     Material objectMaterial;
 };
 
-Texture2D SRVTexture0[120] : register(t0);
+Texture2D SRVTexture0 : register(t0);
 Texture2D SRVTexture1 : register(t1);
 SamplerState tex0Sample : register(s0);
 
@@ -84,7 +84,7 @@ float4 main(PSstruct pin) : SV_TARGET
 
     float4 texColor = float4(1, 1, 1, 1);
    // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
-    texColor = SRVTexture0[119].Sample(tex0Sample, pin.Tex);
+    texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
     
     float4 litColor = texColor;
     
