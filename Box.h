@@ -7,7 +7,7 @@
 class Box : public Shape
 {
 public:
-	Box(Graphics& gfx, float width, float height, float depth);
+	Box(Graphics& gfx, float width, float height, float depth, bool isDemo);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
@@ -36,6 +36,7 @@ private:
 	CBPerObjectTexture constMatrices;
 
 private:
+	bool shapesDemo = false;
 	ID3D11Buffer* pCopyPCBLightsBox = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesBox = nullptr;
 };

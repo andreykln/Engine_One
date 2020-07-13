@@ -3,7 +3,8 @@
 
 #define RANDFLOAT float(rand()) / 1.0f
 
-Box::Box(Graphics& gfx, float width, float height, float depth)
+Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
+	: shapesDemo{isDemo}
 {
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_B> vertices(mesh.vertices.size());
@@ -108,7 +109,15 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
 	std::wstring directory[1];
-	directory[0] = L"Textures\\WoodCrate01.dds";
+
+	if (shapesDemo)
+	{
+		directory[0] = L"Textures\\LightGreenMarble.dds";
+	}
+	else
+	{
+		directory[0] = L"Textures\\WoodCrate01.dds";
+	}
 // 	directory[0] = L"Textures\\flare.dds";
 // 	directory[1] = L"Textures\\flarealpha.dds";
 
