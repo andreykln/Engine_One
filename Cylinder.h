@@ -13,12 +13,15 @@ private:
 	struct Vertex_C
 	{
 		DirectX::XMFLOAT3 pos;
+		float padding0;
 		DirectX::XMFLOAT3 normal;
+		float padding1;
+		DirectX::XMFLOAT2 tex;
 	};
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
 	CBPerFrame constLights;
-	CBPerObject constMatrices;
+	CBPerObjectTexture constMatrices;
 
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;

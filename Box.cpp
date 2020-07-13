@@ -78,7 +78,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	
 	};
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");

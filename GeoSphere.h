@@ -15,7 +15,7 @@ private:
 	GeometryGenerator sphere;
 
 	CBPerFrame constLights;
-	CBPerObject constMatrices;
+	CBPerObjectTexture constMatrices;
 
 	ID3D11Buffer* pCopyPCBLightsGeoSphere = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesGeoSphere = nullptr;
