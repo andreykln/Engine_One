@@ -20,11 +20,12 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
+// 	DrawBox();
+
 	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
 
-	DrawBox();
 
 
 
@@ -119,24 +120,24 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
+
+// 	pHills->SetCameraMatrix(mCamera * CameraZoom());
+// 	pHills->Update(timer.TotalTime());
+// 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
+// 	pHills->BindAndDraw(wnd.GetGraphics());
+// 	SetObjectMatrix(offsetForHillsWithWaves);
+
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDraw(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-	pHills->SetCameraMatrix(mCamera * CameraZoom());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
-	pHills->Update(timer.TotalTime());
-	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
-	pHills->BindAndDraw(wnd.GetGraphics());
-	SetObjectMatrix(offsetForHillsWithWaves);
-
 }
 
 void App::CreateHillsWithWaves()
 {
- 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+//  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 }
 

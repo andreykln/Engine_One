@@ -4,24 +4,24 @@ WaveSurface::WaveSurface(Graphics& gfx)
 {
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
-	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
-
-	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-
-	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
-	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
-	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-
-	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+// 	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+// 	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+// 
+// 	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+// 	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+// 	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+// 	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+// 
+// 	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+// 	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
+// 	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+// 	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+// 
+// 	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+// 	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+// 	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+// 	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 
 	vertices.resize(wave.GetVertexCount());
 
@@ -33,13 +33,14 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
+	const UINT vertexOffset = sizeof(DirectX::XMFLOAT3) + sizeof(float);
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u,vertexOffset,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertexOffset * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
@@ -90,11 +91,15 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pPSCB);
 
 	std::wstring directory[1];
-	directory[0] = L"Textures\\water1.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 1u);
+	directory[0] = L"Textures\\water2.dds";
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
-	AddBind(pBlending);
+
+	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	AddBind(pTexSampler);
+
+// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+// 	AddBind(pBlending);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
@@ -127,11 +132,11 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 	Vertex* v = reinterpret_cast<Vertex*>(mappedData.pData);
 	for (UINT i = 0; i < vertices.size(); ++i)
 	{
-		v[i].Pos = wave[i];
-		v[i].Normal = wave.Normal(i);
+		v[i].pos = wave[i];
+		v[i].normal = wave.Normal(i);
 		//derive tex-coordinates in [0,1] from position
-		v[i].Tex.x = 0.5f + wave[i].x / wave.Width();
-		v[i].Tex.y = 0.5f - wave[i].z / wave.Depth();
+		v[i].tex.x = 0.5f + wave[i].x / wave.Width();
+		v[i].tex.y = 0.5f - wave[i].z / wave.Depth();
 	}
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDynamicVB, 0u);
 }

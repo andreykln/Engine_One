@@ -20,5 +20,5 @@ Blending::Blending(Graphics& gfx, D3D11_COLOR_WRITE_ENABLE colorState)
 
 void Blending::Bind(Graphics& gfx) noexcept
 {
-	GetContext(gfx)->OMSetBlendState(pBlendState, blendFactors, 0xf00fffff);
+	GetContext(gfx)->OMSetBlendState(pBlendState, blendFactors, 0xffffffff);
 }

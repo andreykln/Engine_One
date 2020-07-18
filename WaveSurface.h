@@ -11,9 +11,12 @@ class WaveSurface : public Shape
 public:
 	struct Vertex
 	{
-		DirectX::XMFLOAT3 Pos;
-		DirectX::XMFLOAT3 Normal;
-		DirectX::XMFLOAT2 Tex;
+		DirectX::XMFLOAT3 pos;
+		float padding0 = 0.0f;
+		DirectX::XMFLOAT3 normal;
+		float padding1 = 0.0f;
+		DirectX::XMFLOAT2 tex;
+	
 	};
 	CBPerObjectTexture perObjectMatrices;
 	CBPerFrame perFrameLight;

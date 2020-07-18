@@ -1,6 +1,9 @@
 #pragma once
 #include "LightHelper.h"
 #include "directxmath.h"
+
+
+
 struct CBPerFrame
 {
 	CBPerFrame() { ZeroMemory(this, sizeof(this)); }
