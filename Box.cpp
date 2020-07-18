@@ -128,14 +128,14 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 // 	}
 
 
-// 	directory[0] = L"Textures\\WoodCrate01.dds";
-
-
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
+
+	Blending* pBlending = new Blending(gfx);
+	AddBind(pBlending);
 }
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept

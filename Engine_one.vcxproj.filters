@@ -87,14 +87,8 @@
     <ClCompile Include="Topology.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="Shape.cpp">
       <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformConstantBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>Source Files\Utility</Filter>
@@ -156,6 +150,9 @@
     <ClCompile Include="TextureSampler.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Blending.cpp">
+      <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -206,14 +203,8 @@
     <ClInclude Include="Topology.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="Shape.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Hills.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
@@ -279,6 +270,9 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="TextureSampler.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="Blending.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
   </ItemGroup>

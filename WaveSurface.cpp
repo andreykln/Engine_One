@@ -89,8 +89,10 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	pCopyPixelConstantBuffer = pPSCB->GetPixelShaderConstantBuffer();
 	AddBind(pPSCB);
 
-// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, L"Textures\\water1.dds", 1u);
-// 	AddBind(pSRV);
+	std::wstring directory[1];
+	directory[0] = L"Textures\\water1.dds";
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 1u);
+	AddBind(pSRV);
 
 }
 

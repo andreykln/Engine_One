@@ -10,8 +10,8 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	CreateBox();
-	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	//ShapesDemoCreateShapes();
+	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -19,12 +19,12 @@ void App::DoFrame()
 {
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	ShapesDemoDrawShapes();
-// 	DrawHillsWithWaves();
+	//ShapesDemoDrawShapes();
+	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
 
-	//DrawBox();
+	DrawBox();
 
 
 
@@ -162,7 +162,7 @@ DirectX::XMMATRIX App::CameraZoom() const noexcept
 DirectX::XMMATRIX App::CalculateProjection() noexcept
 {
 	SetObjectMatrix(DirectX::XMMatrixIdentity()); //initialize with nothing;
-	return   mCamera * DirectX::XMMatrixPerspectiveFovLH(((FOV / 360.0f) * DirectX::XM_2PI) * 0.75f, screenAspect, 0.1f, 100.0f);
+	return   mCamera * DirectX::XMMatrixPerspectiveFovLH(((FOV / 360.0f) * DirectX::XM_2PI) * 0.75f, screenAspect, 0.1f, 1000.0f);
 
 }
 
