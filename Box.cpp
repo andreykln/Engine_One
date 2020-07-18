@@ -134,7 +134,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx);
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_GREEN);
 	AddBind(pBlending);
 }
 

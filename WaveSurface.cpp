@@ -93,7 +93,8 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	directory[0] = L"Textures\\water1.dds";
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 1u);
 	AddBind(pSRV);
-
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+	AddBind(pBlending);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
