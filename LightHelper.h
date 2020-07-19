@@ -10,7 +10,7 @@ struct DirectionalLight
 	DirectX::XMFLOAT4 diffuse;
 	DirectX::XMFLOAT4 specular;
 	DirectX::XMFLOAT3 direction;
-	float padding{}; // for arrays
+	float padding{}; 
 };
 
 struct PointLight

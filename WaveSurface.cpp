@@ -4,24 +4,24 @@ WaveSurface::WaveSurface(Graphics& gfx)
 {
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
-// 	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-// 	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
-// 
-// 	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-// 	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-// 	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-// 	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-// 
-// 	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-// 	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
-// 	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
-// 	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-// 
-// 	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-// 	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-// 	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-// 	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+
+	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+
+	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
+	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+
+	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 
 	vertices.resize(wave.GetVertexCount());
 
@@ -112,8 +112,9 @@ void WaveSurface::Update(float dt) noexcept
 	alpha = dt;
 }
 
-void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
+void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx, DirectX::XMFLOAT3& in_eyePosition)
 {
+	eyePosition = in_eyePosition;
 	alpha = dt;
 	// every quarter second, generate a random wave
 	static float t_base{};
@@ -158,6 +159,16 @@ void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPixelConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+// 	frame->dirLight[0] = perFrameLight.dirLight[0];
+// 	frame->dirLight[1] = perFrameLight.dirLight[1];
+// 	frame->dirLight[2] = perFrameLight.dirLight[2];
+// 	frame->objectMaterial.ambient = perFrameLight.objectMaterial.ambient;
+// 	frame->objectMaterial.diffuse = perFrameLight.objectMaterial.diffuse;
+// 	frame->objectMaterial.specular = perFrameLight.objectMaterial.specular;
+	frame->cbEyePosition = eyePosition;
+
+
+
 
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;

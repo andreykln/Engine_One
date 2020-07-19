@@ -23,11 +23,13 @@ public:
 	WaveSurface(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
-	void UpdateScene(float totalTime, float dt, Graphics& gfx);
+	void UpdateScene(float totalTime, float dt, Graphics& gfx, DirectX::XMFLOAT3& in_eyePosition);
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 public:
 //	float alpha{};
 private:
+	DirectX::XMFLOAT3 eyePosition;
+
 	std::vector<Vertex> vertices;
 	Waves wave;
 	VertexBufferDynamic* pDynamicVB = nullptr;

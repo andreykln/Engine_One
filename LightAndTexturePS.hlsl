@@ -47,12 +47,12 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPerFrame : register(b1)
+cbuffer CBPerFrame : register(b0)
 {
     DirectionalLight directLight[3];
+    Material objectMaterial;
     float3 eyePosition;
     int numLights;
-    Material objectMaterial;
 };
 
 Texture2D SRVTexture0 : register(t0);

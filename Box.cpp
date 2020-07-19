@@ -165,7 +165,7 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsBox, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-
+	
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)

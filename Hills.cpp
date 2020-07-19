@@ -155,7 +155,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	constLights.objectMaterial = landMat;
 	PixelShaderConstantBuffer<CBPerFrame>* pPerFrameCB =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 1u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 	std::wstring directory[1];
