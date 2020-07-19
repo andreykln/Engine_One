@@ -4,24 +4,27 @@ WaveSurface::WaveSurface(Graphics& gfx)
 {
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
-	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 0.5f);
+	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 0.6f);
+	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 8.0f);
 
-	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.0, -0.77735f, -0.77735f);
+
+//	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+
 
 	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 1.0f);
-	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 1.0f);
 	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-
-	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+// 
+// 	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+// 	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+// 	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+// 	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 
 	vertices.resize(wave.GetVertexCount());
 
@@ -98,8 +101,8 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
-// 	AddBind(pBlending);
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+	AddBind(pBlending);
 }
 
 DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
