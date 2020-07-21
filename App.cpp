@@ -20,11 +20,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
-// 	DrawBox();
 
 	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
+	DrawBox();
 
 
 

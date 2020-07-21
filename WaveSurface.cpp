@@ -101,7 +101,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
 	AddBind(pBlending);
 }
 
@@ -133,7 +133,7 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx, DirectX:
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDynamicVB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	Vertex* v = reinterpret_cast<Vertex*>(mappedData.pData);
+	Vertex_IA* v = reinterpret_cast<Vertex_IA*>(mappedData.pData);
 	for (UINT i = 0; i < vertices.size(); ++i)
 	{
 		v[i].pos = wave[i];
@@ -162,17 +162,7 @@ void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPixelConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-// 	frame->dirLight[0] = perFrameLight.dirLight[0];
-// 	frame->dirLight[1] = perFrameLight.dirLight[1];
-// 	frame->dirLight[2] = perFrameLight.dirLight[2];
-// 	frame->objectMaterial.ambient = perFrameLight.objectMaterial.ambient;
-// 	frame->objectMaterial.diffuse = perFrameLight.objectMaterial.diffuse;
-// 	frame->objectMaterial.specular = perFrameLight.objectMaterial.specular;
 	frame->cbEyePosition = eyePosition;
-
-
-
-
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)

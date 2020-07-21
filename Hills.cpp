@@ -59,19 +59,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 // 	
 // 	constLights.gMaterial = landMat;
 // 	constLights.padding = 0.0f;
-	struct Vertex_l
-	{
-		DirectX::XMFLOAT3 pos;
-		float padding0;
-		DirectX::XMFLOAT3 normal;
-		float padding1;
-		DirectX::XMFLOAT2 tex;
-	};
 
 
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 
-	std::vector<Vertex_l> vertices(grid.vertices.size());
+	std::vector<Vertex_IA> vertices(grid.vertices.size());
 
 	if (!flatSurface)
 	{
@@ -153,13 +145,13 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBMatricesHills = pPerObject->GetVertexConstantBuffer();
 	AddBind(pPerObject);
 
-	constLights.objectMaterial = landMat;
 	PixelShaderConstantBuffer<CBPerFrame>* pPerFrameCB =
 		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
-	std::wstring directory[1];
 
+
+	std::wstring directory[1];
 	if (!flatSurface)
 	{
 		directory[0] = L"Textures\\grass.dds";
@@ -175,7 +167,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
 	AddBind(pBlending);
 // 
 // 	RasterizerState state;

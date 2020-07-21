@@ -9,15 +9,6 @@
 class WaveSurface : public Shape
 {
 public:
-	struct Vertex
-	{
-		DirectX::XMFLOAT3 pos;
-		float padding0 = 0.0f;
-		DirectX::XMFLOAT3 normal;
-		float padding1 = 0.0f;
-		DirectX::XMFLOAT2 tex;
-	
-	};
 	CBPerObjectTexture perObjectMatrices;
 	CBPerFrame perFrameLight;
 	WaveSurface(Graphics& gfx);
@@ -25,12 +16,10 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx, DirectX::XMFLOAT3& in_eyePosition);
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
-public:
-//	float alpha{};
 private:
 	DirectX::XMFLOAT3 eyePosition;
 
-	std::vector<Vertex> vertices;
+	std::vector<Vertex_IA> vertices;
 	Waves wave;
 	VertexBufferDynamic* pDynamicVB = nullptr;
 	ID3D11Buffer* pCopyDynamicVB = nullptr;
@@ -39,10 +28,8 @@ private:
 	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 0.0f);
 	DirectX::XMFLOAT2 waterTextureOffset;
 	DirectX::XMMATRIX wavesOffset;
-
-
 	GeometryGenerator::MeshData mesh;
-	//GeometryGenerator sphere;
+
 
 };
 

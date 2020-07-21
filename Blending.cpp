@@ -1,12 +1,12 @@
 #include "Blending.h"
 
-Blending::Blending(Graphics& gfx, D3D11_COLOR_WRITE_ENABLE colorState)
+Blending::Blending(Graphics& gfx, D3D11_COLOR_WRITE_ENABLE colorState, BOOL enable)
 {
 
 	D3D11_BLEND_DESC blendDesc;
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.IndependentBlendEnable = false;
-	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].BlendEnable = enable;
 
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
 	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;

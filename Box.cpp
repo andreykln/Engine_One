@@ -7,7 +7,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	: shapesDemo{isDemo}
 {
 	box.CreateBox(width, height, depth, mesh);
-	std::vector<Vertex_B> vertices(mesh.vertices.size());
+	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
@@ -17,7 +17,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 
 		vertices[i].pos = p;
  		vertices[i].normal = n;
-		vertices[i].tex0 = t;
+		vertices[i].tex = t;
 	}
 // 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 // 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -68,23 +68,24 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	AddBind(pVertexShader); 
 
 	
- 	const UINT offset = sizeof(DirectX::XMFLOAT3);
+ 	const UINT offset = sizeof(DirectX::XMFLOAT3) + sizeof(float);
 
+	
 
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, offset,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, offset * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
 	AddBind(pInputLayout);
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndMultitexturePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer");
@@ -101,7 +102,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 1u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsBox = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
@@ -134,7 +135,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL);
+	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL,FALSE);
 	AddBind(pBlending);
 }
 
