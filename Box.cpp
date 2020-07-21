@@ -109,15 +109,16 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
 // 	AddBind(pRasterState);
-	std::wstring directory[1];
 
+
+	std::wstring directory[1];
 	if (shapesDemo)
 	{
 		directory[0] = L"Textures\\LightGreenMarble.dds";
 	}
 	else
 	{
-		directory[0] = L"Textures\\WoodCrate01.dds";
+		directory[0] = L"Textures\\WireFence.dds";
 	}
 // 	directory[0] = L"Textures\\flare.dds";
 // 	directory[1] = L"Textures\\flarealpha.dds";

@@ -263,6 +263,8 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LightHelper.h" />
+    <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="ShaderResourceView.h" />
     <ClInclude Include="Skull.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -276,7 +278,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Shape.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

@@ -230,9 +230,6 @@
     <ClInclude Include="GeoSphere.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="Rasterizer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="Pyramid.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
@@ -273,6 +270,12 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="Blending.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerState.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
   </ItemGroup>

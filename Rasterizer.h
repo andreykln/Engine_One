@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable.h"
+
 class Rasterizer : public Bindable
 {
 public:
@@ -8,4 +9,3 @@ public:
 private:
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> pRasterState;
 };
-
