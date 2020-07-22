@@ -106,9 +106,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	pCopyPCBLightsBox = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
-// 	RasterizerState state;
-// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.Wireframe());
-// 	AddBind(pRasterState);
+	RasterizerState state;
+	Rasterizer* pRasterState = new Rasterizer(gfx, state.CullBackNone());
+	AddBind(pRasterState);
 
 
 	std::wstring directory[1];

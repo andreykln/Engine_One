@@ -32,7 +32,20 @@ struct RasterizerState
 		return rasterDesc;
 	}
 
-
+	D3D11_RASTERIZER_DESC CullBackNone()
+	{
+		rasterDesc.AntialiasedLineEnable = FALSE;
+		rasterDesc.CullMode = D3D11_CULL_NONE;
+		rasterDesc.FrontCounterClockwise = FALSE;
+		rasterDesc.DepthBias = 0u;
+		rasterDesc.SlopeScaledDepthBias = 0.0f;
+		rasterDesc.DepthBiasClamp = 0.0f;
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
+		rasterDesc.DepthClipEnable = TRUE;
+		rasterDesc.ScissorEnable = FALSE;
+		rasterDesc.MultisampleEnable = FALSE;
+		return rasterDesc;
+	}
 private:
 	D3D11_RASTERIZER_DESC rasterDesc;
 
