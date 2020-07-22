@@ -11,6 +11,16 @@ struct Vertex_IA
 	DirectX::XMFLOAT2 tex;
 };
 
+struct CBFog
+{
+	DirectX::XMFLOAT4 fogColor;
+	float fogStart = 0.0f;
+	const float padding[3] = {0.0f, 0.0f, 0.0f};
+	float fogRange = 0.0f;
+	const float padding1[3] = { 0.0f, 0.0f, 0.0f };
+};
+
+
 struct CBPerFrame
 {
 	CBPerFrame() { ZeroMemory(this, sizeof(this)); }

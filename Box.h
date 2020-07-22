@@ -12,6 +12,7 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
+	CBFog fog;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
 	CBPerFrame constLights;

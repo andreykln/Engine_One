@@ -6,6 +6,11 @@
 Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	: shapesDemo{isDemo}
 {
+	fog.fogColor = { 0.75f, 0.75f, 0.75f, 0.03f };
+	fog.fogStart = 15.0f;
+	fog.fogRange = 175.0f;
+
+
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
@@ -105,6 +110,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsBox = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
+
+	PixelShaderConstantBuffer<CBFog>* pFog =
+		new PixelShaderConstantBuffer<CBFog>(gfx, fog, 1u, 1u);
+	AddBind(pFog);
+
 
 	RasterizerState state;
 	Rasterizer* pRasterState = new Rasterizer(gfx, state.CullBackNone());

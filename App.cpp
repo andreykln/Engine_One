@@ -20,11 +20,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	//ShapesDemoDrawShapes();
+	DrawBox();
 
 	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
-	DrawBox();
 
 
 
@@ -148,7 +148,7 @@ void App::CreateBox()
 
 void App::DrawBox()
 {
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
 	pBox->Update(timer.TotalTime());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());

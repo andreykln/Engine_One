@@ -32,16 +32,7 @@ private:
 // 		Material gMaterial;
 // 	};
 	CBPerFrame constLights;
-// 	PerFrame constLights;
-
-
-// 	struct PerObject
-// 	{
-// 		PerObject() { ZeroMemory(this, sizeof(this)); }
-// 		DirectX::XMMATRIX gWorld;
-// 		DirectX::XMMATRIX gWorldInvTranspose;
-// 		DirectX::XMMATRIX gWorldViewProj;
-// 	};
+	CBFog fog;
 	CBPerObjectTexture constMatrices;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);

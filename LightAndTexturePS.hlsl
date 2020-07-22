@@ -55,6 +55,13 @@ cbuffer CBPerFrame : register(b0)
     int numLights;
 };
 
+cbuffer CBFog : register(b1)
+{
+    float4 fogColor;
+    float fogStart;
+    float fogRange;
+}
+
 Texture2D SRVTexture0 : register(t0);
 SamplerState tex0Sample : register(s0);
 
@@ -85,6 +92,7 @@ float4 main(PSstruct pin) : SV_TARGET
     texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
     float4 litColor = texColor;
     clip(texColor.a - 0.1f);
+    
     if (numLights > 0)
     {
     
@@ -105,9 +113,12 @@ float4 main(PSstruct pin) : SV_TARGET
     
         litColor = texColor * (ambient + diffuse) + specular;
     }
-    
-    // Common to take alpha from diffuse material and texture
+
+     //fogging
+    float fogLerp = saturate((distToEye - fogStart) / fogRange);
+    litColor = lerp(litColor, fogColor, fogLerp);
+        // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-    
+
     return litColor;
 }
