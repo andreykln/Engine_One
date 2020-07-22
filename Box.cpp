@@ -7,8 +7,12 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	: shapesDemo{isDemo}
 {
 	fog.fogColor = { 0.75f, 0.75f, 0.75f, 0.03f };
-	fog.fogStart = 15.0f;
-	fog.fogRange = 175.0f;
+	fog.fogStartandRange[0] = { 5.0f };
+	fog.fogStartandRange[1] = { 105.0f };
+
+	// 
+// 	fog.fogStart = 15.0f;
+// 	fog.fogRange = 175.0f;
 
 
 	box.CreateBox(width, height, depth, mesh);

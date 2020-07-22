@@ -58,8 +58,7 @@ cbuffer CBPerFrame : register(b0)
 cbuffer CBFog : register(b1)
 {
     float4 fogColor;
-    float fogStart;
-    float fogRange;
+    float2 fogStartandRange;
 }
 
 Texture2D SRVTexture0 : register(t0);
@@ -115,7 +114,7 @@ float4 main(PSstruct pin) : SV_TARGET
     }
 
      //fogging
-    float fogLerp = saturate((distToEye - fogStart) / fogRange);
+    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
     litColor = lerp(litColor, fogColor, fogLerp);
         // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;

@@ -9,9 +9,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 // 	dirLight.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 // 	dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 // 	dirLight.padding = 0.0f;
-	fog.fogColor = { 0.75f, 0.75f, 0.75f, 1.0f };
-	fog.fogStart = 15.0f;
-	fog.fogRange = 175.0f;
+	fog.fogColor = { 0.75f, 0.75f, 0.75f, 0.03f };
+	fog.fogStartandRange[0] = { 5.0f };
+	fog.fogStartandRange[1] = { 105.0f };
 
 
 	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
