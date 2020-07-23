@@ -2,12 +2,6 @@
 
 WaveSurface::WaveSurface(Graphics& gfx)
 {
-
-	fog.fogColor = { 0.75f, 0.75f, 0.75f, 0.03f };
-	fog.fogStartandRange[0] = { 5.0f };
-	fog.fogStartandRange[1] = { 105.0f };
-
-
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
 	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 0.5f);
@@ -100,7 +94,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pPSCB);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fog, 1u, 1u);
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
 	AddBind(pFog);
 
 

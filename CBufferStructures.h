@@ -14,10 +14,9 @@ struct Vertex_IA
 struct CBFog
 {
 	DirectX::XMFLOAT4 fogColor;
-	float fogStartandRange[2] = { 0.0f, 0.0f };
+	float fogStartandRange[2] = { 5.0f, 105.0f };
 	const float padding0[2] = { 0.0f, 0.0f};
 };
-
 
 struct CBPerFrame
 {

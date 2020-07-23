@@ -32,7 +32,6 @@ private:
 // 		Material gMaterial;
 // 	};
 	CBPerFrame constLights;
-	CBFog fog;
 	CBPerObjectTexture constMatrices;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);

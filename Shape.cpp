@@ -1,6 +1,4 @@
 #include "Shape.h"
-class GeoSphere;
-
 
 float Shape::GetAlpha() const
 {

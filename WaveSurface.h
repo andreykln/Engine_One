@@ -18,7 +18,6 @@ public:
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 private:
 	DirectX::XMFLOAT3 eyePosition;
-	CBFog fog;
 	std::vector<Vertex_IA> vertices;
 	Waves wave;
 	VertexBufferDynamic* pDynamicVB = nullptr;

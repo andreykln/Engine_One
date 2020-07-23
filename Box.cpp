@@ -6,14 +6,6 @@
 Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	: shapesDemo{isDemo}
 {
-	fog.fogColor = { 0.75f, 0.75f, 0.75f, 0.03f };
-	fog.fogStartandRange[0] = { 5.0f };
-	fog.fogStartandRange[1] = { 105.0f };
-
-	// 
-// 	fog.fogStart = 15.0f;
-// 	fog.fogRange = 175.0f;
-
 
 	box.CreateBox(width, height, depth, mesh);
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
@@ -116,7 +108,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	AddBind(pPSCBPerFrame);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fog, 1u, 1u);
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
 	AddBind(pFog);
 
 
