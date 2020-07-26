@@ -87,8 +87,8 @@ float4 main(PSstruct pin) : SV_TARGET
     //normalize
     toEye /= distToEye;
 
-    float4 texColor = float4(1, 1, 1, 1);
-    texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
+    float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+   // texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
     float4 litColor = texColor;
     clip(texColor.a - 0.1f);
     
@@ -114,8 +114,8 @@ float4 main(PSstruct pin) : SV_TARGET
     }
 
      //fogging
-    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
-    litColor = lerp(litColor, fogColor, fogLerp);
+    //float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
+    //litColor = lerp(litColor, fogColor, fogLerp);
         // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
 

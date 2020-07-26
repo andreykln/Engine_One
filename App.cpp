@@ -4,8 +4,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "App.h"
-
-INT test = 0;
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
@@ -24,10 +22,6 @@ void App::DoFrame()
 
 	DrawHillsWithWaves();
 	ScrollWheelCounter();
-
-
-
-
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
@@ -90,10 +84,10 @@ void App::CalculateFrameStats()
 	{
 		float fps = static_cast<float>(frameCount);
 		float ms_per_frame = 1000.0f / fps;
-		std::ostringstream oss;
-		oss << "D3D. FPS:" << fps
-			<< "; Frame Time: " << ms_per_frame;
-		wnd.SetTitle(oss.str().c_str());
+			std::ostringstream oss;
+			oss << "D3D. FPS:" << fps
+				<< "; Frame Time: " << ms_per_frame << ", TotalTime: " << static_cast<UINT>(timer.TotalTime());
+			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
 	}

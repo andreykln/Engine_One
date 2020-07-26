@@ -150,7 +150,7 @@ Graphics::~Graphics()
 
 void Graphics::EndFrame()
 {
-	DX::ThrowIfFailed(pgfx_SwapChain->Present(1u, 0u));
+	DX::ThrowIfFailed(pgfx_SwapChain->Present(0u, 0u));
 	pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), pgfx_DepthStencilView.Get());
 	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 }
