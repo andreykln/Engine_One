@@ -77,9 +77,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool isDemo)
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, offset,
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, offset * 2,
+		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3) * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 

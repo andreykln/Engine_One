@@ -8,8 +8,8 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	CreateBox();
-	//ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	ShapesDemoCreateShapes();
+// 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -17,10 +17,10 @@ void App::DoFrame()
 {
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	//ShapesDemoDrawShapes();
+// 	ShapesDemoDrawShapes();
 	DrawBox();
 
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
 	CalculateFrameStats();
