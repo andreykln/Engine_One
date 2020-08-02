@@ -20,7 +20,7 @@ void App::DoFrame()
 	ShapesDemoDrawShapes();
 // 	DrawBox();
 
-// 	DrawHillsWithWaves();
+//  	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
 	CalculateFrameStats();
@@ -85,8 +85,8 @@ void App::CalculateFrameStats()
 		float fps = static_cast<float>(frameCount);
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
-			oss << "D3D. FPS:" << fps
-				<< "; Frame Time: " << ms_per_frame << ", TotalTime: " << static_cast<UINT>(timer.TotalTime());
+			oss << "FPS:" << fps
+				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s.";
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
@@ -185,16 +185,16 @@ void App::ShapesDemoDrawShapes()
 {
 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pBox->SetCameraMatrix(mCamera);
+	pBox->SetCameraMatrix(mCamera * CameraZoom());
 	pBox->BindAndDraw(wnd.GetGraphics());
 
 	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera );
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom() );
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDraw(wnd.GetGraphics());
 
 	SetObjectMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
-	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f) * CameraZoom());
 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target);
 	pHills->BindAndDraw(wnd.GetGraphics());
@@ -202,7 +202,7 @@ void App::ShapesDemoDrawShapes()
 	for (auto& x : cylinders)
 	{
 		SetObjectMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
-		x->SetCameraMatrix(mCamera);
+		x->SetCameraMatrix(mCamera * CameraZoom());
 		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
 		x->BindAndDraw(wnd.GetGraphics());
  	
@@ -212,7 +212,7 @@ void App::ShapesDemoDrawShapes()
 	for (auto& x : geoSpheres)
 	{
 		SetObjectMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
-		x->SetCameraMatrix(mCamera);
+		x->SetCameraMatrix(mCamera * CameraZoom());
 		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
 		x->BindAndDraw(wnd.GetGraphics());
 	}

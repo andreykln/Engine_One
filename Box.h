@@ -7,7 +7,7 @@
 class Box : public Shape
 {
 public:
-	Box(Graphics& gfx, float width, float height, float depth, bool isDemo);
+	Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDemo);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;

@@ -46,7 +46,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPerFrame : register (b1)
+cbuffer CBPerFrame : register (b0)
 {
     DirectionalLight directLight[3];
     float3 eyePosition;

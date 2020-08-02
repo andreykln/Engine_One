@@ -21,8 +21,8 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 
 
-	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.1f, 0.2f, 0.3f, 1.0f);
-	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.2f, 0.4f, 0.6f, 1.0f);
+	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
 
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
@@ -33,6 +33,10 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
 		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
 		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
+		if (std::isnan(t.x))
+		{
+			t = { 0.5f, 0.0f };
+		}
 		vertices[i].pos = p;
 		vertices[i].normal = mesh.vertices[i].normal;
 		vertices[i].tex = t;
@@ -77,7 +81,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 1u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsGeoSphere = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 

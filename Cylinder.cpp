@@ -17,9 +17,9 @@ Cylinder::Cylinder(Graphics& gfx,
 		vertices[i].tex = t;
 	}
 
-	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.7f, 0.85f, 0.7f, 1.0f);
-	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.7f, 0.85f, 0.7f, 1.0f);
-	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
 
 	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
@@ -31,8 +31,8 @@ Cylinder::Cylinder(Graphics& gfx,
 	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
 
-	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
-	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.4, 0.4f, 0.4f, 1.0f);
+	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -74,7 +74,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 1u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
