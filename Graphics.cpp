@@ -66,12 +66,24 @@ Graphics::Graphics(HWND wnd)
 	// RASTERIZER STATE END //////////////////////////
 	//
 
-	// DEPTH BUFFER
+	// DEPTH/STENCIL BUFFER
+	D3D11_DEPTH_STENCILOP_DESC stencilOperator;
+	stencilOperator.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilOperator.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilOperator.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilOperator.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+
 	D3D11_DEPTH_STENCIL_DESC depth_description = {};
-	depth_description.StencilEnable = FALSE;
+	depth_description.StencilEnable = TRUE;
 	depth_description.DepthEnable = TRUE;
 	depth_description.DepthFunc = D3D11_COMPARISON_LESS;
 	depth_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+// 	depth_description.StencilReadMask = 0xff;
+// 	depth_description.StencilWriteMask = 0xff;
+ 	depth_description.FrontFace = stencilOperator;
+	depth_description.BackFace = stencilOperator;
+
 	pgfx_pDevice->CreateDepthStencilState(&depth_description, pDSState.ReleaseAndGetAddressOf());
 #ifdef MY_DEBUG
 	SetDeviceDebugName(pDSState.Get(), L"DepthStencilState.");
