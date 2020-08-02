@@ -5,18 +5,18 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 {
 
 
-	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 1.0f);
+	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.75f, 0.75f, 0.75f, 1.0f);
 	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 
-	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
 
-	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 

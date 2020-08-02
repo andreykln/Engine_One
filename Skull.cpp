@@ -10,31 +10,25 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	UINT vertices = 0;
 	UINT triangles = 0;
 
-
-
-// 	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-// 	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-// 	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
-
  	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
  	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
  	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 16.0f);
 
 
-	constBuffPerFrame.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constBuffPerFrame.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constBuffPerFrame.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
+	constBuffPerFrame.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	constBuffPerFrame.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrame.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constBuffPerFrame.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
 
-	constBuffPerFrame.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	constBuffPerFrame.dirLight[1].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constBuffPerFrame.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	constBuffPerFrame.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	constBuffPerFrame.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrame.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	constBuffPerFrame.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
 
 	constBuffPerFrame.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
 	constBuffPerFrame.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constBuffPerFrame.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constBuffPerFrame.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	constBuffPerFrame.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
 	std::fstream file(path);
 	std::string ignore;
@@ -133,6 +127,8 @@ void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numLights = 3;
+
+	
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
 }

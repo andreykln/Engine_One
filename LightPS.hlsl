@@ -49,9 +49,9 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 cbuffer CBPerFrame : register (b0)
 {
     DirectionalLight directLight[3];
-    float3 eyePosition;
-    int padding;
     Material skullMaterial;
+    float3 eyePosition;
+    int numLights;
 };
 
 struct VertexIn
@@ -86,7 +86,7 @@ float4 main(VertexOut pin) : SV_TARGET
     float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
     [unroll]
-    for (int i = 0; i < padding; ++i)
+    for (int i = 0; i < numLights; ++i)
     {
         float4 A, D, S;
         ComputeDirectionalLight(skullMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
