@@ -3,12 +3,7 @@
 
 GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 {
-	struct Vertex_G
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT2 tex0;
-		DirectX::XMFLOAT3 normal;
-	};
+
 
 	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 1.0f);
@@ -31,7 +26,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
 
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
-	std::vector<Vertex_G> vertices(mesh.vertices.size());
+	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 	//DirectX::XMFLOAT4 col{ 0.5f, 0.6f, 0.2f, 1.0f };
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
@@ -40,7 +35,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
 		vertices[i].pos = p;
 		vertices[i].normal = mesh.vertices[i].normal;
-		vertices[i].tex0 = t;
+		vertices[i].tex = t;
 	}
 
 
@@ -51,13 +46,15 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
+
+	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3);
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertex_L_Offset ,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertex_L_Offset * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 

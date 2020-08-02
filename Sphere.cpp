@@ -9,7 +9,7 @@ Sphere::Sphere(Graphics& gfx, float radius, UINT sliceCount, UINT stackCount)
 	};
 	sphere.CreateSphere(radius, sliceCount, stackCount, mesh);
 
-	std::vector<Vertex_S> vertices(mesh.vertices.size());
+	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;

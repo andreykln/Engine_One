@@ -4,7 +4,7 @@ Cylinder::Cylinder(Graphics& gfx,
 {
 	
 	cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
-	std::vector<Vertex_C> vertices(mesh.vertices.size());
+	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
@@ -44,12 +44,12 @@ Cylinder::Cylinder(Graphics& gfx,
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
-	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3) + sizeof(float);
+	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3);
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u,vertex_L_Offset ,
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertex_L_Offset ,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertex_L_Offset * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}

@@ -106,12 +106,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		AddBind(pVertexShader);
 	}
 
-	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3) + sizeof(float);
+	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3);
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
 		{
 			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"Normal", 0u, DXGI_FORMAT_R8G8B8A8_UNORM, 0u,vertex_L_Offset ,
+			{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertex_L_Offset ,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u},
 			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertex_L_Offset * 2,
 			D3D11_INPUT_PER_VERTEX_DATA, 0u}
@@ -171,8 +171,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
-	AddBind(pBlending);
+// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
+// 	AddBind(pBlending);
 // 
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());
@@ -271,7 +271,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 			frame->numLights = 2;
 		if (GetAsyncKeyState('3') & 0x8000)
 			frame->numLights = 3;
-		//frame->objectMaterial = landMat;
+
 		frame->objectMaterial = landMat;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
 		//SPOTLIGHT HERE
