@@ -257,9 +257,6 @@
     <ClInclude Include="Waves.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="CBufferStructures.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Skull.h">
       <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
@@ -277,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="Rasterizer.h">
       <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilityStructures.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

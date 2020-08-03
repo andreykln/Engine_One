@@ -33,18 +33,18 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
-	const UINT vertexOffset = sizeof(DirectX::XMFLOAT3);
-	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
-	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertexOffset,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertexOffset * 2,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	};
+// 	const UINT vertexOffset = sizeof(DirectX::XMFLOAT3);
+// 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
+// 	{
+// 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
+// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+// 		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertexOffset,
+// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+// 		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertexOffset * 2,
+// 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
+// 	};
 
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
 	AddBind(pInputLayout);
 
 

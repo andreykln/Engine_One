@@ -7,7 +7,7 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	CreateBox();
+// 	CreateBox();
 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
  	wnd.GetGraphics().SetProjection(CalculateProjection());

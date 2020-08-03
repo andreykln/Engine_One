@@ -6,7 +6,7 @@
 #include <memory>
 #include <typeinfo>
 #include <cassert>
-#include "CBufferStructures.h"
+#include "UtilityStructures.h"
 class Shape
 {
 public:

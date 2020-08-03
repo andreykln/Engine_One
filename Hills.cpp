@@ -40,7 +40,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 		constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-		constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.2, 0.2f, 0.2f, 1.0f);
+		constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 		constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 		constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 		constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -126,19 +126,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		AddBind(pVertexShader);
 	}
 
-	const UINT vertex_L_Offset = sizeof(DirectX::XMFLOAT3);
-		const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
-		{
-			{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,vertex_L_Offset ,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u},
-			{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, vertex_L_Offset * 2,
-			D3D11_INPUT_PER_VERTEX_DATA, 0u}
-
-		};
-
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
 	AddBind(pInputLayout);
 
 

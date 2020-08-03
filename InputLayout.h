@@ -4,7 +4,7 @@ class InputLayout : public Bindable
 {
 public:
 	InputLayout(Graphics& gfx, ID3DBlob* pVertexBlobByteCode,
-				const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElement,
+		const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElement,
 				const std::wstring& name = std::wstring());
 	void Bind(Graphics& gfx) noexcept override;
 private:
