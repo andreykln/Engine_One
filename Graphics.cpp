@@ -66,6 +66,30 @@ Graphics::Graphics(HWND wnd)
 	// RASTERIZER STATE END //////////////////////////
 	//
 
+	//DEPTH/STENCIL for mirror
+	D3D11_DEPTH_STENCIL_DESC mirrorDepthDesc;
+	mirrorDepthDesc.DepthEnable = TRUE;
+	mirrorDepthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	mirrorDepthDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	mirrorDepthDesc.StencilEnable = TRUE;
+	mirrorDepthDesc.StencilReadMask = 0xff;
+	mirrorDepthDesc.StencilWriteMask = 0xff;
+
+	mirrorDepthDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDepthDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDepthDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	mirrorDepthDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	// We are not rendering back facing polygons, so these settings do not matter.
+	mirrorDepthDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDepthDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDepthDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	mirrorDepthDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	pgfx_pDevice->CreateDepthStencilState(&mirrorDepthDesc, pMarkMirror.ReleaseAndGetAddressOf());
+#ifdef MY_DEBUG
+	SetDeviceDebugName(pMarkMirror.Get(), L"DepthStencilState.");
+#endif
+	//pgfx_pDeviceContext->OMSetDepthStencilState(pMarkMirror.Get(), 1u);
+
 	// DEPTH/STENCIL BUFFER
 	D3D11_DEPTH_STENCILOP_DESC stencilOperator;
 	stencilOperator.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
@@ -79,16 +103,24 @@ Graphics::Graphics(HWND wnd)
 	depth_description.DepthEnable = TRUE;
 	depth_description.DepthFunc = D3D11_COMPARISON_LESS;
 	depth_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-// 	depth_description.StencilReadMask = 0xff;
-// 	depth_description.StencilWriteMask = 0xff;
- 	depth_description.FrontFace = stencilOperator;
-	depth_description.BackFace = stencilOperator;
+	depth_description.StencilReadMask = 0xff;
+	depth_description.StencilWriteMask = 0xff;
 
-	pgfx_pDevice->CreateDepthStencilState(&depth_description, pDSState.ReleaseAndGetAddressOf());
+	depth_description.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	// We are not rendering back facing polygons, so these settings do not matter.
+	depth_description.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depth_description.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	pgfx_pDevice->CreateDepthStencilState(&depth_description, pDrawReflectionState.ReleaseAndGetAddressOf());
 #ifdef MY_DEBUG
-	SetDeviceDebugName(pDSState.Get(), L"DepthStencilState.");
+	SetDeviceDebugName(pDrawReflectionState.Get(), L"DepthStencilState.");
 #endif
-	pgfx_pDeviceContext->OMSetDepthStencilState(pDSState.Get(), 1u);
+	pgfx_pDeviceContext->OMSetDepthStencilState(pDrawReflectionState.Get(), 1u);
 
 	D3D11_TEXTURE2D_DESC descDepthTexture;
 	descDepthTexture.Width = resolution_width;

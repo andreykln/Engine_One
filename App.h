@@ -35,17 +35,15 @@ public:
 	void CreateHillsWithWaves();
 	void CreateBox();
 	void DrawBox();
+	void MirrorDemoCreate();
+	void MirrorDemoDraw();
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
-
 private:
-	const float FOV = 90.0f;
-	DirectX::FXMVECTOR AxisVector{0.0f, 5.0f, 0.0f, 0.0f};
-
-	const float screenAspect = float(resolution_width) / float(resolution_height);
+	Window wnd;
+	Timer timer;
 
 	BoxAndCylinder* boxandCyl = nullptr;
-
  	Box* pBox = nullptr;
  	Cylinder* pCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;
@@ -53,12 +51,10 @@ private:
  	std::vector<GeoSphere*> geoSpheres;
  	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
+	Hills* pMirrorWall = nullptr;
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;
-// 
-// 
-// 	std::vector<std::unique_ptr<WaveSurface>> wave;
  	ShapesDemo shapes;
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
@@ -71,20 +67,18 @@ private:
 	//for movement around object's matrix
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	DirectX::XMFLOAT3 wEyePosition;
-
 	DirectX::XMMATRIX mCamera;
 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
-
 	DirectX::XMVECTOR pos;
 	DirectX::XMVECTOR target;
 	DirectX::XMVECTOR up;
 
-	Window wnd;
-	Timer timer;
+	//DirectX::FXMVECTOR AxisVector{ 0.0f, 5.0f, 0.0f, 0.0f };
+	const float FOV = 90.0f;
+	const float screenAspect = float(resolution_width) / float(resolution_height);
 	float zoom = 0.0f;
 	float colors[4]{};
 	const float camera_move_step = 0.05f;
-
 	const float axis_x = -10.0f;
 	const float axis_y = 10.0f;
 	const float axis_z = 5.0f;

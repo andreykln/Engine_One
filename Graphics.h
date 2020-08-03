@@ -49,7 +49,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDSState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDrawReflectionState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pMarkMirror;
+
 	D3D11_VIEWPORT vp;
 	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
 	UINT featureLevelNum = 7;
