@@ -4,6 +4,9 @@
 
 struct Vertex_IA
 {
+	Vertex_IA() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
+	Vertex_IA(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v)
+		: pos(posX, posY, posZ), normal(normX, normY, normZ), tex(u, v) {}
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT2 tex;

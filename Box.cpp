@@ -87,7 +87,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);*/
 
-	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box");
+	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
 	AddBind(pVB);
 
 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
@@ -100,7 +100,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 	AddBind(pPixelShader);
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer");
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

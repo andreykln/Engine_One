@@ -11,6 +11,7 @@
 #include "HillsAndWaves.h"
 #include "Skull.h"
 #include "BoxAndCylinder.h"
+#include "MirrorRoom.h"
 
 #include "WaveSurface.h"
 #include <vector>
@@ -51,7 +52,7 @@ private:
  	std::vector<GeoSphere*> geoSpheres;
  	Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
-	Hills* pMirrorWall = nullptr;
+	MirrorRoom* pMirrorRoom = nullptr;
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;

@@ -153,6 +153,9 @@
     <ClCompile Include="Blending.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="MirrorRoom.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="UtilityStructures.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="MirrorRoom.h">
+      <Filter>Header Files\Bindable\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
