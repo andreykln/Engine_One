@@ -88,8 +88,8 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	pCopyVCBMatricesMirror = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
-	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
+	PixelShaderConstantBuffer<CBPerFrameMirrorRoom>* pPSCBPerFrame =
+		new PixelShaderConstantBuffer<CBPerFrameMirrorRoom>(gfx, constLights, 0u, 1u);
 	pCopyPCBLightsMirror = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
@@ -147,6 +147,34 @@ void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numLights = 1;
+
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numLights = 2;
+
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numLights = 3;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
+}
+
+void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
+	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	object->gTexTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CBPerFrameMirrorRoom* frame = reinterpret_cast<CBPerFrameMirrorRoom*> (mappedData.pData);
+
+	frame->currentTexture[0] = texture;
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)

@@ -47,12 +47,13 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPerFrame : register(b0)
+cbuffer CBPerFrameMirrorRoom : register(b0)
 {
     DirectionalLight directLight[3];
     Material objectMaterial;
     float3 eyePosition;
     int numLights;
+    int currentTexture[4];
 };
 
 Texture2D SRVTexture0[3] : register(t0);
@@ -83,7 +84,19 @@ float4 main(PSstruct pin) : SV_TARGET
 
     float4 texColor = float4(1, 1, 1, 1);
    // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
-    texColor = SRVTexture0[2].Sample(tex0Sample, pin.Tex);
+    if(currentTexture[0] == 0)
+    {
+        texColor = SRVTexture0[0].Sample(tex0Sample, pin.Tex);
+    }
+    
+    if (currentTexture[0] == 1)
+    {
+        texColor = SRVTexture0[1].Sample(tex0Sample, pin.Tex);
+    }
+    if (currentTexture[0] == 2)
+    {
+        texColor = SRVTexture0[2].Sample(tex0Sample, pin.Tex);
+    }
     
     float4 litColor = texColor;
     
