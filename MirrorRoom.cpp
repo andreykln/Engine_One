@@ -75,7 +75,7 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor.");
 	AddBind(pInputLayout);
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndMultitexturePS.cso");
 	AddBind(pPixelShader);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -103,8 +103,11 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 // 	AddBind(pRasterState);
 
 
-	std::wstring directory[1];
-	directory[0] = L"Textures\\LightGreenMarble.dds";
+	std::wstring directory[3];
+	directory[0] = L"Textures\\brick01.dds";
+	directory[1] = L"Textures\\ice.dds";
+	directory[2] = L"Textures\\checkboard.dds";
+
 
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
