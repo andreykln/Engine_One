@@ -72,29 +72,11 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
 	AddBind(pVertexShader);
 
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
+	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor.");
 	AddBind(pInputLayout);
 
 	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 	AddBind(pPixelShader);
-
-	std::vector<UINT> indices;
-// 	UINT k = 0;
-	for (UINT i = 0; i < 29; ++i)
-	{
-		for (UINT j = 0; j < 28; ++j)
-		{
-			indices.push_back(i * 30 + j);
-			indices.push_back(i * 30 + j + 1);
-			indices.push_back((i + 1) * 30 + j);
-			indices.push_back((i + 1) * 30 + j);
-			indices.push_back(i * 30 + j + 1);
-			indices.push_back((i + 1) * 30 + j + 1);
-// 			k += 6; // next quad
-		}
-	}
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"BoxIndexBuffer.");
-	AddIndexBuffer(pIndexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
@@ -156,8 +138,6 @@ void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	DirectX::XMMATRIX centerRotation = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f)) *
-		DirectX::XMMatrixRotationZ(alpha) * DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f));
 	object->gTexTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 

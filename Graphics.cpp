@@ -217,6 +217,11 @@ void Graphics::DrawIndexed(UINT count) const noexcept
 	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
 }
 
+void Graphics::Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept
+{
+	pgfx_pDeviceContext->Draw(VertexCount, StartVertexLocation);
+}
+
 void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept
 {
 	pgfx_pDeviceContext->DrawIndexed(count, StartIndexLocation, BaseVertexLocation);

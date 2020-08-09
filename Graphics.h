@@ -23,6 +23,7 @@ public:
 	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
+	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 	HWND GetWindowHandle() const noexcept;
 #ifdef MY_DEBUG

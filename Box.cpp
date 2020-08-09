@@ -176,8 +176,8 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	DirectX::XMMATRIX centerRotation = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f)) *
-		DirectX::XMMatrixRotationZ(alpha) * DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f));
+// 	DirectX::XMMATRIX centerRotation = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f)) *
+// 		DirectX::XMMatrixRotationZ(alpha) * DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f));
 	object->gTexTransform = DirectX::XMMatrixIdentity();
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);

@@ -23,7 +23,8 @@ public:
 	virtual void Update(float dt) noexcept = 0;
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);
-	void BindAndDraw(Graphics& gfx) const noexcept;
+	void BindAndDrawIndexed(Graphics& gfx) const noexcept;
+	void BindAndDraw(Graphics& gfx, UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
 	void DeleteObject() const noexcept;
 	//can be used for rotation around world axis
