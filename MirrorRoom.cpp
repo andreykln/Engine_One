@@ -65,6 +65,10 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
+	mirrorMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	mirrorMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	mirrorMaterial.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"MirrorRoom.");
 	AddBind(pVB);
 
@@ -93,6 +97,11 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	pCopyPCBLightsMirror = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
+
+	PixelShaderConstantBuffer<MirrorRoomCB>* pMirrorRoom =
+		new PixelShaderConstantBuffer<MirrorRoomCB>(gfx, testCB, 1u, 1u);
+	pCopyMirrorRoomCB = pMirrorRoom->GetPixelShaderConstantBuffer();
+	AddBind(pMirrorRoom);
 // 	PixelShaderConstantBuffer<CBFog>* pFog =
 // 		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
 // 	AddBind(pFog);
@@ -171,10 +180,8 @@ void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
 	object->gTexTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrameMirrorRoom* frame = reinterpret_cast<CBPerFrameMirrorRoom*> (mappedData.pData);
-
-	frame->currentTexture[0] = texture;
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)
@@ -186,4 +193,11 @@ void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numLights = 3;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorRoomCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	MirrorRoomCB* frameMirror = reinterpret_cast<MirrorRoomCB*> (mappedData.pData);
+	frameMirror->currentTexture = texture;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyMirrorRoomCB, 0u);
+
+
 }

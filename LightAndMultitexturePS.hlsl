@@ -56,6 +56,12 @@ cbuffer CBPerFrameMirrorRoom : register(b0)
     int currentTexture[4];
 };
 
+cbuffer MirrorRoomCB : register(b1)
+{
+    unsigned int currentTestTexture;
+    unsigned int pad[3];
+}
+
 Texture2D SRVTexture0[3] : register(t0);
 SamplerState tex0Sample : register(s0);
 
@@ -84,16 +90,16 @@ float4 main(PSstruct pin) : SV_TARGET
 
     float4 texColor = float4(1, 1, 1, 1);
    // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
-    if(currentTexture[0] == 0)
+    if (currentTestTexture == 0)
     {
         texColor = SRVTexture0[0].Sample(tex0Sample, pin.Tex);
     }
     
-    if (currentTexture[0] == 1)
+    if (currentTestTexture == 1)
     {
         texColor = SRVTexture0[1].Sample(tex0Sample, pin.Tex);
     }
-    if (currentTexture[0] == 2)
+    if (currentTestTexture == 2)
     {
         texColor = SRVTexture0[2].Sample(tex0Sample, pin.Tex);
     }
