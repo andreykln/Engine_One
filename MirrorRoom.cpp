@@ -145,7 +145,7 @@ void MirrorRoom::Update(float dt) noexcept
 void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE, 0u, &mappedData));
 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);

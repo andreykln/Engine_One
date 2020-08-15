@@ -46,7 +46,7 @@ struct CBPerFrameMirrorRoom
 	Material objectMaterial;
 	DirectX::XMFLOAT3 cbEyePosition;
 	int numLights = { 3 };
-	int currentTexture[4];
+	//int currentTexture[4];
 };
 
 struct CBPerObject

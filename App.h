@@ -56,7 +56,7 @@ private:
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
 // 	Pyramid* pPyramid = nullptr;
- 	ShapesDemo shapes;
+  	ShapesDemo shapes;
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
