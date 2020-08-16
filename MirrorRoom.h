@@ -6,8 +6,11 @@
 
 struct MirrorRoomCB
 {
+	Material objectMaterial;
+	DirectX::XMFLOAT3 cbEyePosition;
+	int numLights = { 3 };
 	UINT currentTexture;
-	UINT pad[3];
+	unsigned int pad[3];
 };
 
 class MirrorRoom : public Shape
@@ -22,6 +25,7 @@ private:
 	MirrorRoomCB testCB;
 	Material mirrorMaterial;
 	Material floorMaterial;
+	Material wallMaterial;
 	CBPerFrameMirrorRoom constLights;
 	CBPerObjectTexture constMatrices;
 	ID3D11Buffer* pCopyPCBLightsMirror = nullptr;

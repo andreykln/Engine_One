@@ -50,13 +50,16 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 cbuffer CBPerFrameMirrorRoom : register(b0)
 {
     DirectionalLight directLight[3];
-    Material objectMaterial;
-    float3 eyePosition;
-    int numLights;
+    //Material objectMaterial;
+    //float3 eyePosition;
+    //int numLights;
 };
 
 cbuffer MirrorRoomCB : register(b1)
 {
+    Material objectMaterial;
+    float3 eyePosition;
+    int numLights;
     unsigned int currentTexture;
 }
 

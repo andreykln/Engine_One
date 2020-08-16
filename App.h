@@ -44,17 +44,20 @@ private:
 	Window wnd;
 	Timer timer;
 
-	BoxAndCylinder* boxandCyl = nullptr;
- 	Box* pBox = nullptr;
- 	Cylinder* pCylinder = nullptr;
- 	std::vector<Cylinder*> cylinders;
- 	GeoSphere* pGeoSphere = nullptr;
- 	std::vector<GeoSphere*> geoSpheres;
- 	Sphere* pSphere = nullptr;
-  	Hills* pHills = nullptr;
+// 	BoxAndCylinder* boxandCyl = nullptr;
+//  	Box* pBox = nullptr;
+//  	Cylinder* pCylinder = nullptr;
+//  	std::vector<Cylinder*> cylinders;
+//  	GeoSphere* pGeoSphere = nullptr;
+//  	std::vector<GeoSphere*> geoSpheres;
+//  	Sphere* pSphere = nullptr;
+//   	Hills* pHills = nullptr;
 	MirrorRoom* pMirrorRoom = nullptr;
- 	Skull* pSkull = nullptr;
- 	WaveSurface* pWaves = nullptr;
+//  	Skull* pSkull = nullptr;
+//  	WaveSurface* pWaves = nullptr;
+
+
+
 // 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;
 
