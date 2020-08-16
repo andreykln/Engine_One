@@ -8,11 +8,17 @@ struct MirrorRoomCB
 {
 	Material objectMaterial;
 	DirectX::XMFLOAT3 cbEyePosition;
-	int numLights = { 3 };
+	//int numLights = { 3 };
 	UINT currentTexture;
-	unsigned int pad[3];
+	//unsigned int pad[3];
 };
 
+
+struct LightSwitcher
+{
+	UINT numLights = { 3 };
+	UINT pad[3];
+};
 class MirrorRoom : public Shape
 {
 public:
@@ -23,6 +29,7 @@ public:
 	void UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture);
 private:
 	MirrorRoomCB testCB;
+	LightSwitcher switcher;
 	Material mirrorMaterial;
 	Material floorMaterial;
 	Material wallMaterial;
@@ -30,7 +37,7 @@ private:
 	CBPerObjectTexture constMatrices;
 	ID3D11Buffer* pCopyPCBLightsMirror = nullptr;
 	ID3D11Buffer* pCopyMirrorRoomCB = nullptr;
-
+	ID3D11Buffer* pCopyLightSwitcher = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesMirror = nullptr;
 
 };

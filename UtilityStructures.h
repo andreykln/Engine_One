@@ -43,7 +43,6 @@ struct CBPerFrameMirrorRoom
 {
 	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
-	//int currentTexture[4];
 };
 
 struct CBPerObject

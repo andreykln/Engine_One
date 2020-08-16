@@ -112,6 +112,13 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 		new PixelShaderConstantBuffer<MirrorRoomCB>(gfx, testCB, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyMirrorRoomCB = pMirrorRoom->GetPixelShaderConstantBuffer();
 	AddBind(pMirrorRoom);
+
+	PixelShaderConstantBuffer<LightSwitcher>* pLightSwitcher =
+		new PixelShaderConstantBuffer<LightSwitcher>(gfx, switcher, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyLightSwitcher = pLightSwitcher->GetPixelShaderConstantBuffer();
+	AddBind(pLightSwitcher);
+
+
 // 	PixelShaderConstantBuffer<CBFog>* pFog =
 // 		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
 // 	AddBind(pFog);
@@ -127,8 +134,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	directory[1] = L"Textures\\ice.dds";
 	directory[2] = L"Textures\\checkboard.dds";
 
-
-
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 
@@ -137,8 +142,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 
 // 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, FALSE);
 // 	AddBind(pBlending);
-
-
 
 }
 
@@ -190,46 +193,8 @@ void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
 	object->gTexTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CBPerFrameMirrorRoom* frame = reinterpret_cast<CBPerFrameMirrorRoom*> (mappedData.pData);
-// 	if (texture == 0)
-// 	{
-// 		frame->objectMaterial = wallMaterial;
-// 	}
-// 	if (texture == 1)
-// 	{
-// 		frame->objectMaterial = mirrorMaterial;
-// 	}
-// 	if (texture == 2)
-// 	{
-// 		frame->objectMaterial = floorMaterial;
-// 	}
-// 	if (GetAsyncKeyState('0') & 0x8000)
-// 		frame->numLights = 0;
-// 	if (GetAsyncKeyState('1') & 0x8000)
-// 		frame->numLights = 1;
-// 
-// 	if (GetAsyncKeyState('2') & 0x8000)
-// 		frame->numLights = 2;
-// 
-// 	if (GetAsyncKeyState('3') & 0x8000)
-// 		frame->numLights = 3;
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
-
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorRoomCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	MirrorRoomCB* frameMirror = reinterpret_cast<MirrorRoomCB*> (mappedData.pData);
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frameMirror->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frameMirror->numLights = 1;
-
-	if (GetAsyncKeyState('2') & 0x8000)
-		frameMirror->numLights = 2;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		frameMirror->numLights = 3;
-
 	if (texture == 0)
 	{
 		frameMirror->objectMaterial = wallMaterial;
@@ -242,10 +207,20 @@ void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
 	{
 		frameMirror->objectMaterial = floorMaterial;
 	}
-
-
+	//switch texture each draw
 	frameMirror->currentTexture = texture;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyMirrorRoomCB, 0u);
 
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyLightSwitcher, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	LightSwitcher* temptLightSwitcher = reinterpret_cast<LightSwitcher*> (mappedData.pData);
+	if (GetAsyncKeyState('0') & 0x8000)
+		temptLightSwitcher->numLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		temptLightSwitcher->numLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		temptLightSwitcher->numLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		temptLightSwitcher->numLights = 3;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyLightSwitcher, 0u);
 
 }

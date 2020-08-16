@@ -59,8 +59,13 @@ cbuffer MirrorRoomCB : register(b1)
 {
     Material objectMaterial;
     float3 eyePosition;
-    int numLights;
+    //int numLights;
     unsigned int currentTexture;
+}
+
+cbuffer LightSwitcher : register(b2)
+{
+    uint numLights;
 }
 
 Texture2D SRVTexture0[3] : register(t0);
