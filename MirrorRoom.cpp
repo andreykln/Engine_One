@@ -88,7 +88,7 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor.");
 	AddBind(pInputLayout);
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndMultitexturePS.cso");
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\MirrorRoomPS.cso");
 	AddBind(pPixelShader);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

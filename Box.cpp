@@ -114,12 +114,12 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsBox = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pFog);
 
 

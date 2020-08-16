@@ -155,12 +155,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPerFrameCB =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsHills = pPerFrameCB->GetPixelShaderConstantBuffer();
 	AddBind(pPerFrameCB);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pFog);
 
 	std::wstring directory[1];

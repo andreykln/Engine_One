@@ -88,7 +88,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 0u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsSkull = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 

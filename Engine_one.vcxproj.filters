@@ -313,7 +313,7 @@
     <FxCompile Include="LightAndTexturePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="LightAndMultitexturePS.hlsl">
+    <FxCompile Include="MirrorRoomPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

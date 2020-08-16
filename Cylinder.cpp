@@ -63,7 +63,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 

@@ -120,7 +120,7 @@ float4 main(PSstruct pin) : SV_TARGET
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
         [unroll]
-        for (int i = 0; i < numLights; ++i)
+        for (uint i = 0; i < numLights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);

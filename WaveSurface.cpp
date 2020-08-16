@@ -86,12 +86,12 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pVCB);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCB =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, perFrameLight, 0u, 1u);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, perFrameLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPixelConstantBuffer = pPSCB->GetPixelShaderConstantBuffer();
 	AddBind(pPSCB);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pFog);
 
 
