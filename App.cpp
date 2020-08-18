@@ -152,8 +152,8 @@ void App::DrawBox()
 
 void App::MirrorDemoCreate()
 {
-// 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, true);
-// 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, true);
+	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pMirrorRoom = new MirrorRoom(wnd.GetGraphics());
 }
 
@@ -174,15 +174,15 @@ void App::MirrorDemoDraw()
 
 
 
-// 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBox->BindAndDraw(wnd.GetGraphics());
-// 
-// 	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-// 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
-// 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pSkull->BindAndDraw(wnd.GetGraphics());
+	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->SetCameraMatrix(mCamera * CameraZoom());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 

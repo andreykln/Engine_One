@@ -110,7 +110,7 @@ Graphics::Graphics(HWND wnd)
 	depth_description.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	depth_description.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depth_description.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
-	// We are not rendering back facing polygons, so these settings do not matter.
+	// We are not rendering back facing polygons, so these settings do not matter. But it won't work without them
 	depth_description.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	depth_description.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	depth_description.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
