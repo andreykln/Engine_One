@@ -179,8 +179,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
-	AddBind(pBlending);
+// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
+// 	AddBind(pBlending);
 // 
 // 	RasterizerState state;
 // 	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());

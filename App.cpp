@@ -7,7 +7,22 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-//  	CreateBox();
+
+	blendDesc1.AlphaToCoverageEnable = false;
+	blendDesc1.IndependentBlendEnable = false;
+	blendDesc1.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc1.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	blendDesc1.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc1.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc1.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc1.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc1.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc1.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+
+
+
+  	CreateBox();
 // 	ShapesDemoCreateShapes();
 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
@@ -16,16 +31,23 @@ App::App()
 
 void App::DoFrame()
 {
+
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-//  	DrawBox();
+// 	wnd.GetGraphics().pgfx_pDevice->CreateBlendState(&blendDesc1, &pBlendState1);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(pBlendState1, blendFactors1, 0xffffffff);
+
 	DrawHillsWithWaves();
+	DrawBox();
+
 	ScrollWheelCounter();
 
 	CalculateFrameStats();
 	//DebugTextToTitle();
+
+
 
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
@@ -121,6 +143,8 @@ void App::DrawHillsWithWaves()
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 	SetObjectMatrix(offsetForHillsWithWaves);
+	wnd.GetGraphics().pgfx_pDevice->CreateBlendState(&blendDesc1, &pBlendState1);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(pBlendState1, blendFactors1, 0xffffffff);
 
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());

@@ -7,6 +7,8 @@ public:
 	void Bind(Graphics& gfx) noexcept override;
 private:
 	float blendFactors[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
+	float blendFactors1[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
 	ID3D11BlendState* pBlendState = nullptr;
 };
 
