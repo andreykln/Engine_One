@@ -9,8 +9,8 @@ App::App()
 {
 //  	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
-	MirrorDemoCreate();
+	CreateHillsWithWaves();
+// 	MirrorDemoCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -19,9 +19,9 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
-	MirrorDemoDraw();
+// 	MirrorDemoDraw();
 //  	DrawBox();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 	ScrollWheelCounter();
 
 	CalculateFrameStats();

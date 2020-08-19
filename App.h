@@ -41,6 +41,7 @@ public:
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 private:
+	D3D11_BLEND_DESC blendDesc1;
 	Window wnd;
 	Timer timer;
 
