@@ -173,20 +173,24 @@ void App::MirrorDemoDraw()
 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
 
 // 	pMirrorRoom->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 2u);
 	pMirrorRoom->SetCameraMatrix(mCamera * CameraZoom());
+
+	//floor
+	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 2u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 
+	//wall
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
+	//mirror
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 
 
 
 
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.3f, -3.5f) *
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.3f, -4.0f) *
 		 shapes.GetCameraOffset());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
