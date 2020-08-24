@@ -9,9 +9,10 @@
 #include "ShaderResourceView.h"
 #include "VertexBufferDynamic.h"
 #include "Rasterizer.h"
-#include "Blending.h"
 #include "RasterizerState.h"
 #include "VertexConstantBuffer.h"
 #include "PixelShaderConstantBuffer.h"
 #include "UtilityStructures.h"
 #include "TextureSampler.h"
+
+#include "RenderStates.h"

@@ -140,9 +140,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, FALSE);
-// 	AddBind(pBlending);
-
 }
 
 DirectX::XMMATRIX MirrorRoom::GetTransform() const noexcept

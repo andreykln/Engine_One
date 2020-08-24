@@ -46,6 +46,7 @@ private:
 	D3D11_BLEND_DESC blendDesc1;
 	Window wnd;
 	Timer timer;
+	RenderStates rStates;
 
 // 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;

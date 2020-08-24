@@ -7,25 +7,12 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-
-	blendDesc1.AlphaToCoverageEnable = false;
-	blendDesc1.IndependentBlendEnable = false;
-	blendDesc1.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc1.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
-	blendDesc1.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendDesc1.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendDesc1.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
-	blendDesc1.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-	blendDesc1.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendDesc1.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-
-
+	rStates.InitializeAll(wnd.GetGraphics());
 
   	CreateBox();
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
-// 	MirrorDemoCreate();
+// 	CreateHillsWithWaves();
+	MirrorDemoCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -35,12 +22,12 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
-// 	MirrorDemoDraw();
+	MirrorDemoDraw();
 // 	wnd.GetGraphics().pgfx_pDevice->CreateBlendState(&blendDesc1, &pBlendState1);
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(pBlendState1, blendFactors1, 0xffffffff);
 
-	DrawHillsWithWaves();
-	DrawBox();
+// 	DrawHillsWithWaves();
+// 	DrawBox();
 
 	ScrollWheelCounter();
 
@@ -143,8 +130,8 @@ void App::DrawHillsWithWaves()
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 	SetObjectMatrix(offsetForHillsWithWaves);
-	wnd.GetGraphics().pgfx_pDevice->CreateBlendState(&blendDesc1, &pBlendState1);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(pBlendState1, blendFactors1, 0xffffffff);
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactors1, 0xffffffff);
 
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
@@ -176,7 +163,7 @@ void App::DrawBox()
 
 void App::MirrorDemoCreate()
 {
-	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, true);
+	pBox = new Box(wnd.GetGraphics(), 2.5f, 2.5f, 1.5f, true);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pMirrorRoom = new MirrorRoom(wnd.GetGraphics());
 }
@@ -184,6 +171,7 @@ void App::MirrorDemoCreate()
 void App::MirrorDemoDraw()
 {
 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
+
 // 	pMirrorRoom->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 2u);
 	pMirrorRoom->SetCameraMatrix(mCamera * CameraZoom());
@@ -198,12 +186,14 @@ void App::MirrorDemoDraw()
 
 
 
-	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.3f, -3.5f) *
+		 shapes.GetCameraOffset());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
+	SetObjectMatrix(shapes.Get_m_CenterSphere() * DirectX::XMMatrixTranslation(4.0f, 0.0f, -0.5f) *
+		DirectX::XMMatrixRotationY(DirectX::XM_PI * 0.5f) *  shapes.GetCameraOffset());
 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
