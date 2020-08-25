@@ -10,8 +10,11 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	//updating only light for mirror demo
+	void UpdateLightDirection(Graphics& gfx);
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
-
+	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
+	DirectionalLight GetLight(UINT index) const noexcept;
 	CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
 

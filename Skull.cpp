@@ -116,6 +116,10 @@ void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+	frame->dirLight[0].direction = GetLight(0).direction;
+	frame->dirLight[1].direction = GetLight(1).direction;
+	frame->dirLight[2].direction = GetLight(2).direction;
+
 
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
@@ -133,7 +137,32 @@ void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 
 }
 
+void Skull::UpdateLightDirection(Graphics& gfx)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+	frame->dirLight[0].direction = GetLight(0).direction;
+	frame->dirLight[1].direction = GetLight(1).direction;
+	frame->dirLight[2].direction = GetLight(2).direction;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
+
+}
+
 void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;
+}
+
+void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
+{
+	constBuffPerFrame.dirLight[index].direction = lightDirection;
+}
+
+
+
+DirectionalLight Skull::GetLight(UINT index) const noexcept
+{
+	return constBuffPerFrame.dirLight[index];
 }
