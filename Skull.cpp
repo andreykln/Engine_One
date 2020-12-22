@@ -1,5 +1,7 @@
 #include "Skull.h"
 
+CBPerFrame Skull::constBuffPerFrameStatic;
+
 Skull::Skull(Graphics& gfx, const std::wstring& path)
 {
 	struct Vertices
@@ -29,6 +31,25 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	constBuffPerFrame.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constBuffPerFrame.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constBuffPerFrame.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
+
+	//static copy
+	constBuffPerFrameStatic.objectMaterial.ambient = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
+	constBuffPerFrameStatic.objectMaterial.diffuse = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
+	constBuffPerFrameStatic.objectMaterial.specular = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 16.0f);
+	constBuffPerFrameStatic.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
+	constBuffPerFrameStatic.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	constBuffPerFrameStatic.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constBuffPerFrameStatic.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
+	constBuffPerFrameStatic.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	constBuffPerFrameStatic.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	constBuffPerFrameStatic.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	constBuffPerFrameStatic.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
+	constBuffPerFrameStatic.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
+	constBuffPerFrameStatic.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	constBuffPerFrameStatic.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	constBuffPerFrameStatic.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
+
+
 
 	std::fstream file(path);
 	std::string ignore;
@@ -88,7 +109,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrameStatic, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsSkull = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
@@ -157,12 +178,12 @@ void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 
 void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
 {
-	constBuffPerFrame.dirLight[index].direction = lightDirection;
+	constBuffPerFrameStatic.dirLight[index].direction = lightDirection;
 }
 
 
 
 DirectionalLight Skull::GetLight(UINT index) const noexcept
 {
-	return constBuffPerFrame.dirLight[index];
+	return constBuffPerFrameStatic.dirLight[index];
 }

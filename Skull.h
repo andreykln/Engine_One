@@ -16,6 +16,7 @@ public:
 	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
 	DirectionalLight GetLight(UINT index) const noexcept;
 	CBPerFrame constBuffPerFrame;
+	static CBPerFrame constBuffPerFrameStatic;
 	CBPerObject constBuffPerObject;
 
 private:
