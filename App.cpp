@@ -191,7 +191,7 @@ void App::MirrorDemoDraw()
 // 		DirectX::XMMatrixRotationY(DirectX::XM_PI * 0.5f) * shapes.GetCameraOffset());
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f));
 
-	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->SetCameraMatrix(DirectX::XMMatrixRotationY(0.6f) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -206,12 +206,12 @@ void App::MirrorDemoDraw()
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 	//restore states
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
+ 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0, blendFactorsZero, 0xffffffff);
 
 
 	//skull reflection
-	DirectX::XMVECTOR mirrorPlane = {0.0f, 0.0f, 1.0f, 0.0f}; //TODO wrong mirror plane, figure out it later.
+	DirectX::XMVECTOR mirrorPlane = {0.0f, 0.0f, 1.0f, 0.0f};
 	DirectX::XMMATRIX R = DirectX::XMMatrixReflect(mirrorPlane);
 
 	//cache the old light direction, and reflect light about mirror plane
@@ -241,9 +241,9 @@ void App::MirrorDemoDraw()
 
 	// Only draw reflection into visible mirror pixels as marked by the stencil buffer. 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DrawReflectionDSS, 1);
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.0f, 4.0f));
 
-	pSkull->SetCameraMatrix(R * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	SetObjectMatrix(R * DirectX::XMMatrixTranslation(0.0f, 1.0f, 4.0f));
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	// Restore default states.
