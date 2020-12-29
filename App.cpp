@@ -201,7 +201,7 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 	// Render visible mirror pixels to stencil buffer.
 	// Do not write mirror depth to depth buffer at this point, otherwise it will occlude the reflection.
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::MarkMirrorDSS, 0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::MarkMirrorDSS, 1);
 	//mirror
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
@@ -259,7 +259,7 @@ void App::MirrorDemoDraw()
 
 	// Draw the mirror to the back buffer as usual but with transparency
 	// blending so the reflection shows through.
-// 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
+ 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);

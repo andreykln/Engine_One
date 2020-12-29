@@ -105,6 +105,7 @@ Graphics::Graphics(HWND wnd)
 	depth_description.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depth_description.StencilReadMask = 0xff;
 	depth_description.StencilWriteMask = 0xff;
+	
 
 	depth_description.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	depth_description.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
@@ -127,7 +128,7 @@ Graphics::Graphics(HWND wnd)
 	descDepthTexture.Height = resolution_height;
 	descDepthTexture.MipLevels = 1u;
 	descDepthTexture.ArraySize = 1u;
-	descDepthTexture.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepthTexture.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; //	DXGI_FORMAT_D32_FLOAT
 	descDepthTexture.SampleDesc.Count = 1u;
 	descDepthTexture.SampleDesc.Quality = 0u;
 	descDepthTexture.Usage = D3D11_USAGE_DEFAULT;
@@ -139,15 +140,15 @@ Graphics::Graphics(HWND wnd)
 	SetDeviceDebugName(pgfx_TextureDepthStencil.Get(), L"Text2DDepthStentcil.");
 #endif
 
-	//create view of depth stencil texture
+	//create view of depth stencil texture UNUSED
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
-	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
 
 	DX::ThrowIfFailed(pgfx_pDevice->CreateDepthStencilView(
 															pgfx_TextureDepthStencil.Get(),
-															&descDSV,
+															0u,
 															pgfx_DepthStencilView.ReleaseAndGetAddressOf()));
 #ifdef MY_DEBUG
 	SetDeviceDebugName(pgfx_DepthStencilView.Get(), L"DepthStencilView.");
