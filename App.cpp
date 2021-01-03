@@ -189,9 +189,9 @@ void App::MirrorDemoDraw()
 	//skull
 // 	SetObjectMatrix(shapes.Get_m_CenterSphere() * DirectX::XMMatrixTranslation(4.0f, 0.0f, -0.5f) *
 // 		DirectX::XMMatrixRotationY(DirectX::XM_PI * 0.5f) * shapes.GetCameraOffset());
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f));
+	SetObjectMatrix(mirroredSkull);
 
-	pSkull->SetCameraMatrix(DirectX::XMMatrixRotationY(0.6f) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->SetCameraMatrix( DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -241,8 +241,8 @@ void App::MirrorDemoDraw()
 
 	// Only draw reflection into visible mirror pixels as marked by the stencil buffer. 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DrawReflectionDSS, 1);
-
-	SetObjectMatrix(R * DirectX::XMMatrixTranslation(0.0f, 1.0f, 4.0f));
+	//draw reflected skull
+	SetObjectMatrix(mirroredSkull * R);
 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
