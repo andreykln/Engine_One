@@ -9,7 +9,7 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 
-  	CreateBox();
+//   	CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 	MirrorDemoCreate();
@@ -23,8 +23,6 @@ void App::DoFrame()
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
 	MirrorDemoDraw();
-// 	wnd.GetGraphics().pgfx_pDevice->CreateBlendState(&blendDesc1, &pBlendState1);
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(pBlendState1, blendFactors1, 0xffffffff);
 
 // 	DrawHillsWithWaves();
 // 	DrawBox();
@@ -170,7 +168,6 @@ void App::MirrorDemoCreate()
 
 void App::MirrorDemoDraw()
 {
-	//SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
 // 	pMirrorRoom->UpdateVertexConstantBuffer(wnd.GetGraphics());
@@ -186,15 +183,11 @@ void App::MirrorDemoDraw()
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
 
-	//skull
-// 	SetObjectMatrix(shapes.Get_m_CenterSphere() * DirectX::XMMatrixTranslation(4.0f, 0.0f, -0.5f) *
-// 		DirectX::XMMatrixRotationY(DirectX::XM_PI * 0.5f) * shapes.GetCameraOffset());
 	SetObjectMatrix(mirroredSkull);
-
 	pSkull->SetCameraMatrix( DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
-
+	
 
 
 	// Do not write to render target
@@ -235,9 +228,8 @@ void App::MirrorDemoDraw()
 	
 
 	pSkull->UpdateLightDirection(wnd.GetGraphics());
-	//cull clockwise triangles for reflections. IS IT DOING ANYTHING?
+	//cull clockwise triangles for reflections.
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullClockwiseRS);
-//  	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 
 	// Only draw reflection into visible mirror pixels as marked by the stencil buffer. 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DrawReflectionDSS, 1);
@@ -263,21 +255,7 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
-
-
-
-
-
-// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 1.3f, -4.0f) *
-// 		 shapes.GetCameraOffset());
-// 
-// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, -4.0f));
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-
-
-
+	
 
 }
 
