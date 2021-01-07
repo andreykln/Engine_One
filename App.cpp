@@ -182,14 +182,13 @@ void App::MirrorDemoDraw()
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
-
+	//rotate reflection and the original
+ 	mirroredSkull = DirectX::XMMatrixRotationY(abs((sin(timer.DeltaTime())))) * mirroredSkull;
 	SetObjectMatrix(mirroredSkull);
 	pSkull->SetCameraMatrix( DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	
-
-
 	// Do not write to render target
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 	// Render visible mirror pixels to stencil buffer.
@@ -209,25 +208,31 @@ void App::MirrorDemoDraw()
 
 	//cache the old light direction, and reflect light about mirror plane
 	DirectX::XMFLOAT3 oldLIghtDirection[3];
-	for (UINT i = 0; i < 3; i++)
+	ZeroMemory(&oldLIghtDirection, sizeof(DirectX::XMFLOAT3[3]));
+	DirectX::XMFLOAT3 reflectedLightDirection;
+	ZeroMemory(&reflectedLightDirection, sizeof(DirectX::XMFLOAT3));
+	DirectX::XMFLOAT3 lightDirection;
+	ZeroMemory(&lightDirection, sizeof(DirectX::XMFLOAT3));
+	DirectX::XMVECTOR lightDir;
+	ZeroMemory(&lightDir, sizeof(DirectX::XMVECTOR));
+	DirectX::XMVECTOR reflectedLD;
+	ZeroMemory(&reflectedLD, sizeof(DirectX::XMVECTOR));
+	UINT numOfLights{ 3 };
+	for (UINT i = 0; i < numOfLights; i++)
 	{
 		oldLIghtDirection[i] = pSkull->GetLight(i).direction;
-		DirectX::XMFLOAT3 lightDirection = pSkull->GetLight(i).direction;
-		DirectX::XMVECTOR lightDir;
+		lightDirection = pSkull->GetLight(i).direction;
 		lightDir.m128_f32[0] = lightDirection.x;
 		lightDir.m128_f32[1] = lightDirection.y;
 		lightDir.m128_f32[2] = lightDirection.z;
-		lightDir.m128_f32[0] = 0.0f;
-// 		DirectX::XMVECTOR lightDir_n = DirectX::XMVector3Normalize(lightDir);
-		DirectX::XMVECTOR reflectedLD = DirectX::XMVector3TransformNormal(lightDir, R);
-		DirectX::XMFLOAT3 reflectedLightDirection;
+		reflectedLD = DirectX::XMVector3TransformNormal(lightDir, R);
 		DirectX::XMStoreFloat3(&reflectedLightDirection, reflectedLD);
 		pSkull->SetNewLightDirection(reflectedLightDirection, i);
 	}
-
-	
-
 	pSkull->UpdateLightDirection(wnd.GetGraphics());
+	pSkull->UpdateEyePosition(wEyePosition);
+
+
 	//cull clockwise triangles for reflections.
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullClockwiseRS);
 
@@ -243,11 +248,11 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
 
 	//restore light direction
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < numOfLights; ++i)
 	{
 		pSkull->SetNewLightDirection(oldLIghtDirection[i], i);
 	}
-	
+	pSkull->UpdateLightDirection(wnd.GetGraphics());
 
 	// Draw the mirror to the back buffer as usual but with transparency
 	// blending so the reflection shows through.
@@ -255,7 +260,6 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
-	
 
 }
 

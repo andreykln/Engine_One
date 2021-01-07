@@ -14,12 +14,15 @@ public:
 	void UpdateLightDirection(Graphics& gfx);
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
+	void SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept;
+	void UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept;
 	DirectionalLight GetLight(UINT index) const noexcept;
-	CBPerFrame constBuffPerFrame;
-	static CBPerFrame constBuffPerFrameStatic;
+	static CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
 
 private:
+	UINT currentLightNum {};
+	DirectX::XMFLOAT3 eyePosition;
 	ID3D11Buffer* pCopyPCBLightsSkull = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesSkull = nullptr;
 

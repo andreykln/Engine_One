@@ -1,6 +1,6 @@
 #include "Skull.h"
 
-CBPerFrame Skull::constBuffPerFrameStatic;
+CBPerFrame Skull::constBuffPerFrame;
 
 Skull::Skull(Graphics& gfx, const std::wstring& path)
 {
@@ -12,42 +12,25 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	UINT vertices = 0;
 	UINT triangles = 0;
 
- 	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
- 	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
- 	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 16.0f);
+
+
+	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
+	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.89, 0.85f, 0.788f, 1.0f);
+	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
 
 
 	constBuffPerFrame.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
 	constBuffPerFrame.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	constBuffPerFrame.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	constBuffPerFrame.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
-
 	constBuffPerFrame.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	constBuffPerFrame.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	constBuffPerFrame.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 	constBuffPerFrame.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
-
 	constBuffPerFrame.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
 	constBuffPerFrame.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	constBuffPerFrame.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constBuffPerFrame.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
-
-	//static copy
-	constBuffPerFrameStatic.objectMaterial.ambient = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
-	constBuffPerFrameStatic.objectMaterial.diffuse = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 1.0f);
-	constBuffPerFrameStatic.objectMaterial.specular = DirectX::XMFLOAT4(0.905f, 0.874f, 0.79f, 16.0f);
-	constBuffPerFrameStatic.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
-	constBuffPerFrameStatic.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrameStatic.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrameStatic.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
-	constBuffPerFrameStatic.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrameStatic.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrameStatic.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrameStatic.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
-	constBuffPerFrameStatic.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
-	constBuffPerFrameStatic.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constBuffPerFrameStatic.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constBuffPerFrameStatic.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
 
 
@@ -109,7 +92,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrameStatic, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsSkull = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
@@ -161,12 +144,54 @@ void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 void Skull::UpdateLightDirection(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	//discarding and updating everything so we can avoid bug with light on the skull flashing.
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 	frame->dirLight[0].direction = GetLight(0).direction;
+	frame->dirLight[0].ambient = constBuffPerFrame.dirLight[0].ambient;
+	frame->dirLight[0].diffuse = constBuffPerFrame.dirLight[0].diffuse;
+	frame->dirLight[0].specular = constBuffPerFrame.dirLight[0].specular;
+
 	frame->dirLight[1].direction = GetLight(1).direction;
+	frame->dirLight[1].ambient = constBuffPerFrame.dirLight[1].ambient;
+	frame->dirLight[1].diffuse = constBuffPerFrame.dirLight[1].diffuse;
+	frame->dirLight[1].specular = constBuffPerFrame.dirLight[1].specular;
+
 	frame->dirLight[2].direction = GetLight(2).direction;
+	frame->dirLight[2].ambient = constBuffPerFrame.dirLight[2].ambient;
+	frame->dirLight[2].diffuse = constBuffPerFrame.dirLight[2].diffuse;
+	frame->dirLight[2].specular = constBuffPerFrame.dirLight[2].specular;
+
+	frame->objectMaterial = constBuffPerFrame.objectMaterial;
+	frame->cbEyePosition = eyePosition;
+	//because of discarding date, we have to keep updating the old light number.
+	if (GetAsyncKeyState('0') & 0x8000)
+	{
+		frame->numLights = 0;
+		currentLightNum = 0;
+	}
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		frame->numLights = 1;
+		currentLightNum = 1;
+	}
+
+	if (GetAsyncKeyState('2') & 0x8000)
+	{
+		frame->numLights = 2;
+		currentLightNum = 2;
+	}
+
+	if (GetAsyncKeyState('3') & 0x8000)
+	{
+		frame->numLights = 3;
+		currentLightNum = 3;
+	}
+	else
+	{
+		frame->numLights = currentLightNum;
+	}
+
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
 }
@@ -178,12 +203,20 @@ void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 
 void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
 {
-	constBuffPerFrameStatic.dirLight[index].direction = lightDirection;
+	constBuffPerFrame.dirLight[index].direction = lightDirection;
 }
 
+void Skull::SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept
+{
+	constBuffPerFrame.dirLight[index].direction = lightDirection[index];
+}
 
+void Skull::UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept
+{
+	eyePosition = eyePos;
+}
 
 DirectionalLight Skull::GetLight(UINT index) const noexcept
 {
-	return constBuffPerFrameStatic.dirLight[index];
+	return constBuffPerFrame.dirLight[index];
 }

@@ -43,7 +43,7 @@ public:
 private:
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	const DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixRotationY(DirectX::XM_1DIV2PI) * DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
+	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
 
 	ID3D11BlendState* pBlendState1 = nullptr;
 	D3D11_BLEND_DESC blendDesc1;
