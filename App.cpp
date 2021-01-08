@@ -9,7 +9,7 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 
-//   	CreateBox();
+//  CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 	MirrorDemoCreate();
@@ -168,6 +168,8 @@ void App::MirrorDemoCreate()
 
 void App::MirrorDemoDraw()
 {
+// 	pSkull->UpdateMaterial(wnd.GetGraphics(), false);
+
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
 // 	pMirrorRoom->UpdateVertexConstantBuffer(wnd.GetGraphics());
@@ -194,14 +196,14 @@ void App::MirrorDemoDraw()
 	// Render visible mirror pixels to stencil buffer.
 	// Do not write mirror depth to depth buffer at this point, otherwise it will occlude the reflection.
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::MarkMirrorDSS, 1);
-	//mirror
+	// draw mirror
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 	//restore states
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0, blendFactorsZero, 0xffffffff);
 
-
+	
 	//skull reflection
 	DirectX::XMVECTOR mirrorPlane = {0.0f, 0.0f, 1.0f, 0.0f};
 	DirectX::XMMATRIX R = DirectX::XMMatrixReflect(mirrorPlane);
@@ -260,6 +262,29 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
+
+
+	//shadow
+	DirectX::XMVECTOR shadowPlane = DirectX::XMVectorSet(0.0, 1.0f, 0.0, 0.0f); //xz plane
+	DirectX::XMFLOAT3 toMainLightTemp = pSkull->GetLight(0).direction;
+	using namespace DirectX; //for - sign
+	DirectX::XMVECTOR toMainLight = -DirectX::XMLoadFloat3(&toMainLightTemp);
+	DirectX::XMMATRIX S = DirectX::XMMatrixShadow(shadowPlane, toMainLight);
+	DirectX::XMMATRIX shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+	pSkull->UpdateMaterial(wnd.GetGraphics(), true);
+
+	SetObjectMatrix(mirroredSkull * S * shadowOffsetY);
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	// Restore default states.
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
+
+	//restore the material state
+	pSkull->UpdateLightDirection(wnd.GetGraphics());
+
 
 }
 

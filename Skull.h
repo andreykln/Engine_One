@@ -16,7 +16,9 @@ public:
 	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
 	void SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept;
 	void UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept;
+	void UpdateMaterial(Graphics& gfx, bool shadow) noexcept;
 	DirectionalLight GetLight(UINT index) const noexcept;
+	Material shadowMaterial;
 	static CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
 

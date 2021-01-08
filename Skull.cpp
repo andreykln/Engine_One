@@ -12,6 +12,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	UINT vertices = 0;
 	UINT triangles = 0;
 
+	shadowMaterial.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	shadowMaterial.diffuse = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	shadowMaterial.specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 
 
 	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
@@ -214,6 +217,67 @@ void Skull::SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT inde
 void Skull::UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept
 {
 	eyePosition = eyePos;
+}
+
+void Skull::UpdateMaterial(Graphics& gfx, bool shadow) noexcept
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+	if (shadow)
+	{
+		frame->objectMaterial = shadowMaterial;
+	}
+	else {
+		frame->objectMaterial = constBuffPerFrame.objectMaterial;
+	}
+	/*frame->dirLight[0].direction = GetLight(0).direction;
+	frame->dirLight[0].ambient = constBuffPerFrame.dirLight[0].ambient;
+	frame->dirLight[0].diffuse = constBuffPerFrame.dirLight[0].diffuse;
+	frame->dirLight[0].specular = constBuffPerFrame.dirLight[0].specular;
+
+	frame->dirLight[1].direction = GetLight(1).direction;
+	frame->dirLight[1].ambient = constBuffPerFrame.dirLight[1].ambient;
+	frame->dirLight[1].diffuse = constBuffPerFrame.dirLight[1].diffuse;
+	frame->dirLight[1].specular = constBuffPerFrame.dirLight[1].specular;
+
+	frame->dirLight[2].direction = GetLight(2).direction;
+	frame->dirLight[2].ambient = constBuffPerFrame.dirLight[2].ambient;
+	frame->dirLight[2].diffuse = constBuffPerFrame.dirLight[2].diffuse;
+	frame->dirLight[2].specular = constBuffPerFrame.dirLight[2].specular;
+
+	frame->objectMaterial = constBuffPerFrame.objectMaterial;
+	frame->cbEyePosition = eyePosition;
+	//because of discarding date, we have to keep updating the old light number.
+	if (GetAsyncKeyState('0') & 0x8000)
+	{
+		frame->numLights = 0;
+		currentLightNum = 0;
+	}
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		frame->numLights = 1;
+		currentLightNum = 1;
+	}
+
+	if (GetAsyncKeyState('2') & 0x8000)
+	{
+		frame->numLights = 2;
+		currentLightNum = 2;
+	}
+
+	if (GetAsyncKeyState('3') & 0x8000)
+	{
+		frame->numLights = 3;
+		currentLightNum = 3;
+	}
+	else
+	{
+		frame->numLights = currentLightNum;
+	}*/
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
+
 }
 
 DirectionalLight Skull::GetLight(UINT index) const noexcept
