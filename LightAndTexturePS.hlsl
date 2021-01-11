@@ -114,7 +114,7 @@ float4 main(PSstruct pin) : SV_TARGET
     }
 
      //fogging
-   float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
+    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
     litColor = lerp(litColor, fogColor, fogLerp);
         // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;

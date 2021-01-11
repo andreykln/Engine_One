@@ -73,8 +73,12 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	pCopyPCBLightsGeoSphere = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
+	PixelShaderConstantBuffer<CBFog>* pFog =
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pFog);
+
 	std::wstring directory[1];
-	directory[0] = L"Textures\\LightGreenMarble.dds";
+	directory[0] = L"Textures\\water1.dds";
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 

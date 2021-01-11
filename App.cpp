@@ -8,11 +8,11 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-
+	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 3.5f, 10u);
 //  CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
-	MirrorDemoCreate();
+// 	MirrorDemoCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -22,18 +22,21 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
-	MirrorDemoDraw();
-
+// 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 
-	ScrollWheelCounter();
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 2.0f, -4.0f));
+	pGeoSphere->SetCameraMatrix(mCamera * CameraZoom());
+	pGeoSphere->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
 
+
+
+
+	ScrollWheelCounter();
 	CalculateFrameStats();
 	//DebugTextToTitle();
-
-
-
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 }
