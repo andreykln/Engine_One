@@ -8,11 +8,10 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 3.5f, 10u);
 //  CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
-// 	MirrorDemoCreate();
+	MirrorDemoCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -22,14 +21,10 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
-// 	MirrorDemoDraw();
+	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 2.0f, -4.0f));
-	pGeoSphere->SetCameraMatrix(mCamera * CameraZoom());
-	pGeoSphere->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 
@@ -183,12 +178,11 @@ void App::MirrorDemoDraw()
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 
 
-	//wall
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
 	//rotate reflection and the original
- 	mirroredSkull = DirectX::XMMatrixRotationY(abs((sin(timer.DeltaTime())))) * mirroredSkull;
+//  	mirroredSkull = DirectX::XMMatrixRotationY(abs((sin(timer.DeltaTime())))) * mirroredSkull;
 	SetObjectMatrix(mirroredSkull);
 	pSkull->SetCameraMatrix( DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());

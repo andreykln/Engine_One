@@ -18,6 +18,8 @@ ID3D11DepthStencilState* RenderStates::DrawReflectionDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
 
 
+
+
 void RenderStates::InitializeAll(Graphics& gfx)
 {
 	//
@@ -143,7 +145,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	drawReflectionDesc.DepthEnable = true;
 	drawReflectionDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	drawReflectionDesc.DepthFunc = D3D11_COMPARISON_LESS; //D3D11_COMPARISON_LESS
-	drawReflectionDesc.StencilEnable = true;
+	drawReflectionDesc.StencilEnable = true; 
 	drawReflectionDesc.StencilReadMask = 0xff;
 	drawReflectionDesc.StencilWriteMask = 0xff;
 
@@ -168,7 +170,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	noDoubleBlendDesc.DepthEnable = true;
 	noDoubleBlendDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	noDoubleBlendDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	noDoubleBlendDesc.StencilEnable = true;
+	noDoubleBlendDesc.StencilEnable = true; 
 	noDoubleBlendDesc.StencilReadMask = 0xff;
 	noDoubleBlendDesc.StencilWriteMask = 0xff;
 
@@ -200,6 +202,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(MarkMirrorDSS);
 	ReleaseID3D(DrawReflectionDSS);
 	ReleaseID3D(NoDoubleBlendDSS);
+
 }
 
 void RenderStates::Bind(Graphics& gfx) noexcept
