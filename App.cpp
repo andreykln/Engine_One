@@ -11,7 +11,8 @@ App::App()
 //  CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
-	MirrorDemoCreate();
+// 	MirrorDemoCreate();
+	LightningCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,10 +22,10 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
-	MirrorDemoDraw();
+// 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
-
+	LightningDraw();
 
 
 
@@ -282,6 +283,21 @@ void App::MirrorDemoDraw()
 	//restore the material state
 	pSkull->UpdateLightDirection(wnd.GetGraphics());
 
+
+}
+
+void App::LightningCreate()
+{
+	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u);
+}
+
+void App::LightningDraw()
+{
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pCylinder->SetCameraMatrix(mCamera * CameraZoom());
+	pCylinder->Update(timer.TotalTime());
+	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 
 }
 

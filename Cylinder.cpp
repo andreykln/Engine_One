@@ -75,6 +75,10 @@ Cylinder::Cylinder(Graphics& gfx,
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
+	PixelShaderConstantBuffer<CBFog>* pFog =
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pFog);
+
 // 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, FALSE);
 // 	AddBind(pBlending);
 // 	RasterizerState state;

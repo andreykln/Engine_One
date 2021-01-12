@@ -38,6 +38,8 @@ public:
 	void DrawBox();
 	void MirrorDemoCreate();
 	void MirrorDemoDraw();
+	void LightningCreate();
+	void LightningDraw();
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 private:
