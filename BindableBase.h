@@ -8,8 +8,6 @@
 #include "Topology.h"
 #include "ShaderResourceView.h"
 #include "VertexBufferDynamic.h"
-#include "Rasterizer.h"
-#include "RasterizerState.h"
 #include "VertexConstantBuffer.h"
 #include "PixelShaderConstantBuffer.h"
 #include "UtilityStructures.h"

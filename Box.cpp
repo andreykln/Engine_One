@@ -122,12 +122,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pFog);
 
-
-	RasterizerState state;
-	Rasterizer* pRasterState = new Rasterizer(gfx, state.CullBackNone());
-	AddBind(pRasterState);
-
-
 	std::wstring directory[1];
 	if (shapesDemo)
 	{
@@ -176,8 +170,6 @@ void Box::UpdateVertexConstantBuffer(Graphics& gfx)
 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	DirectX::XMMATRIX centerRotation = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f)) *
-// 		DirectX::XMMatrixRotationZ(alpha) * DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f));
 	object->gTexTransform = DirectX::XMMatrixIdentity();
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);

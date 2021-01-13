@@ -48,7 +48,6 @@ private:
 	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
 
 	ID3D11BlendState* pBlendState1 = nullptr;
-	D3D11_BLEND_DESC blendDesc1;
 	Window wnd;
 	Timer timer;
 	RenderStates rStates;

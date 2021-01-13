@@ -12,6 +12,7 @@ ID3D11RasterizerState* RenderStates::CullClockwiseRS = nullptr;
 ID3D11BlendState* RenderStates::AlphaToCoverageBS = nullptr;
 ID3D11BlendState* RenderStates::TransparentBS = nullptr;
 ID3D11BlendState* RenderStates::NoRenderTargetWritesBS = nullptr;
+ID3D11BlendState* RenderStates::srsColor = nullptr;
 
 ID3D11DepthStencilState* RenderStates::MarkMirrorDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DrawReflectionDSS = nullptr;
@@ -92,6 +93,22 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateBlendState(&transparentDesc, &TransparentBS));
+
+	///test//////////////////////////////////////////////////////////////////////////
+	D3D11_BLEND_DESC test = { 0 };
+	test.AlphaToCoverageEnable = false;
+	test.IndependentBlendEnable = false;
+
+	test.RenderTarget[0].BlendEnable = true;
+	test.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	test.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	test.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	test.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	test.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	test.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	test.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateBlendState(&test, &srsColor));
 
 	//
 	// NoRenderTargetWritesBS
