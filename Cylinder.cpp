@@ -1,6 +1,6 @@
 #include "Cylinder.h"
 Cylinder::Cylinder(Graphics& gfx,
-	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, bool caps)
+	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, bool caps, bool lightning)
 {
 	if (caps)
 	{
@@ -74,7 +74,14 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddBind(pPSCBPerFrame);
 
 	std::wstring directory[1];
-	directory[0] = L"Textures\\darkbrick.dds";
+	if (lightning)
+	{
+		directory[0] = L"Textures\\Lightning\\Bolt001.dds";
+	}
+	else
+	{
+		directory[0] = L"Textures\\brick01.dds";
+	}
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 
