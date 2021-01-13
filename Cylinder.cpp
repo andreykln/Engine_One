@@ -1,9 +1,15 @@
 #include "Cylinder.h"
 Cylinder::Cylinder(Graphics& gfx,
-	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count )
+	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, bool caps)
 {
-	
-	cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
+	if (caps)
+	{
+		cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
+	}
+	else
+	{
+		cylinderParts.CreateCylinderNoCaps(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
+	}
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)

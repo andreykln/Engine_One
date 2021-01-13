@@ -480,6 +480,84 @@ void GeometryGenerator::CreateCylinder(float bottomRadius, float topRadius, floa
 		height, sliceCount, stackCount, meshData);
 }
 
+void GeometryGenerator::CreateCylinderNoCaps(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData)
+{
+	meshData.vertices.clear();
+	meshData.indices.clear();
+
+	//stacks
+	float stackHeight = height / stackCount;
+	//Amount to increment radius as we move up each stack
+	float radiusStep = (topRadius - bottomRadius) / stackCount;
+	UINT ringCount = stackCount + 1;
+	//compute vertices for each stack ring starting at the bottom and moving up
+	for (UINT i = 0; i < ringCount; ++i)
+	{
+		float y = -0.5f * height + float(i) * stackHeight; //height of i'th ring
+		float r = bottomRadius + float(i) * radiusStep; //radius of i'th ring
+
+		//vertices of ring
+		float dTheta = 2.0f * DirectX::XM_PI / sliceCount;
+		for (UINT j = 0; j <= sliceCount; ++j)
+		{
+			Vertex vertex;
+			float c = cosf(j * dTheta);
+			float s = sinf(j * dTheta);
+			vertex.position = DirectX::XMFLOAT3(r * c, y, r * s);
+			vertex.TexC.x = (float)j / sliceCount;
+			vertex.TexC.y = 1.0f - (float)i / stackCount;
+			// Cylinder can be parameterized as follows, where we
+			// introduce v parameter that goes in the same direction
+			// as the v tex-coord so that the bitangent goes in the
+			// same direction as the v tex-coord.
+			// Let r0 be the bottom radius and let r1 be the
+			// top radius.
+			// y(v) = h - hv for v in [0,1].
+			// r(v) = r1 + (r0-r1)v
+			//
+			// x(t, v) = r(v)*cos(t)
+			// y(t, v) = h - hv
+			// z(t, v) = r(v)*sin(t)
+			//
+			// dx/dt = -r(v)*sin(t)
+			// dy/dt = 0
+			// dz/dt = +r(v)*cos(t)
+			//
+			// dx/dv = (r0-r1)*cos(t)
+			// dy/dv = -h
+			// dz/dv = (r0-r1)*sin(t)
+			// TangentU us unit length
+
+			vertex.tangentU = DirectX::XMFLOAT3(-s, 0.0f, c);
+			float dr = bottomRadius - topRadius;
+
+			DirectX::XMFLOAT3 bitangent(dr * c, -height, dr * s);
+			DirectX::XMVECTOR T = DirectX::XMLoadFloat3(&vertex.tangentU);
+			DirectX::XMVECTOR B = DirectX::XMLoadFloat3(&bitangent);
+			DirectX::XMVECTOR N = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(T, B));
+			DirectX::XMStoreFloat3(&vertex.normal, N);
+			meshData.vertices.push_back(vertex);
+
+			// Indices
+			// Add one because we duplicate the first and last vertex per ring
+			// since the texture coordinates are different.
+			UINT ringVertexCount = sliceCount + 1;
+			for (UINT i = 0; i < stackCount; ++i)
+			{
+				for (UINT j = 0; j < sliceCount; ++j)
+				{
+					meshData.indices.push_back(i * ringVertexCount + j);
+					meshData.indices.push_back((i + 1) * ringVertexCount + j);
+					meshData.indices.push_back((i + 1) * ringVertexCount + j + 1);
+					meshData.indices.push_back(i * ringVertexCount + j);
+					meshData.indices.push_back((i + 1) * ringVertexCount + j + 1);
+					meshData.indices.push_back(i * ringVertexCount + j + 1);
+				}
+			}
+		}
+	}
+}
+
 void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData)
 {
 	UINT baseIndex = (UINT)meshData.vertices.size();

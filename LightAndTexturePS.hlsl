@@ -90,7 +90,7 @@ float4 main(PSstruct pin) : SV_TARGET
     float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     texColor = SRVTexture0.Sample(tex0Sample, pin.Tex);
     float4 litColor = texColor;
-   // clip(texColor.a - 0.1f);
+    clip(texColor.a - 0.1f);
     
     if (numLights > 0)
     {

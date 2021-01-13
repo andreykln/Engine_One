@@ -40,6 +40,7 @@ public:
 	void CreateGeosphere(float radius, UINT numSubdivisions, MeshData& meshData);
 	void CreateSphere(float radius, UINT sliceCount, UINT stackCount, MeshData& meshData);
 	void CreateCylinder(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
+	void CreateCylinderNoCaps(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
 private:
 	void BuildCylinderTopCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);
 	void BuildCylinderBottomCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData);

@@ -10,9 +10,9 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 //  CreateBox();
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-// 	LightningCreate();
+	LightningCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -23,9 +23,9 @@ void App::DoFrame()
 	timer.Tick();
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 // 	DrawBox();
-// 	LightningDraw();
+	LightningDraw();
 
 
 
@@ -299,11 +299,13 @@ void App::MirrorDemoDraw()
 
 void App::LightningCreate()
 {
-	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u);
+	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u, false);
 }
 
 void App::LightningDraw()
 {
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 	pCylinder->SetCameraMatrix(mCamera * CameraZoom());
 	pCylinder->Update(timer.TotalTime());
@@ -335,7 +337,7 @@ void App::ShapesDemoCreateShapes()
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
 	for (int i = 0; i < 10; i++)
 	{
-		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20));
+		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, true));
 	}
 
 	for (size_t i = 0; i < 10; i++)
