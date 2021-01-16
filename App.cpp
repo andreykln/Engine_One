@@ -9,10 +9,10 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 //  CreateBox();
-	ShapesDemoCreateShapes();
+// 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-// 	LightningCreate();
+	LightningCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,11 +21,11 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	ShapesDemoDrawShapes();
+// 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
-// 	LightningDraw();
+	LightningDraw();
 
 
 
