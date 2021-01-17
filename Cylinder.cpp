@@ -97,9 +97,10 @@ Cylinder::Cylinder(Graphics& gfx,
 	{
 		directory[0] = L"Textures\\brick01.dds";
 	}
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directoryL, (UINT)std::size(directoryL));
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directoryL, (UINT)std::size(directoryL));
+// 	AddBind(pSRV);
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directoryL, (UINT)std::size(directoryL), true);
 	AddBind(pSRV);
-
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
