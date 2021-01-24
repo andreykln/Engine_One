@@ -1,14 +1,15 @@
 #include "Cylinder.h"
 Cylinder::Cylinder(Graphics& gfx,
-	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, bool caps, bool lightning)
+	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, DemoSwitch in_switch)
+	: demo{in_switch}
 {
-	if (caps)
-	{
-		cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
-	}
-	else
+	if (in_switch == DemoSwitch::LightningCone)
 	{
 		cylinderParts.CreateCylinderNoCaps(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
+	}
+	if(in_switch == DemoSwitch::Shapesdemo)
+	{
+		cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
 	}
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
@@ -22,7 +23,7 @@ Cylinder::Cylinder(Graphics& gfx,
 		vertices[i].normal = n;
 		vertices[i].tex = t;
 	}
-
+	
 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
@@ -54,8 +55,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddBind(pInputLayout);
 
 
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-	AddBind(pPixelShader);
+
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -73,32 +73,33 @@ Cylinder::Cylinder(Graphics& gfx,
 	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 	////////////////////////////////////////////////////////////
-  	std::wstring LightningArray[60];
-
-	for (UINT i = 0; i < 60; ++i)
+	if (demo == DemoSwitch::LightningCone)
 	{
-		LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
+		std::wstring LightningArray[60];
+		for (UINT i = 0; i < 60; ++i)
+		{
+			LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
+		}
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
+		AddBind(pSRV);
+		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
+		AddBind(pPixelShader);
 	}
-
-	std::wstring directory[1];
+	if(demo == DemoSwitch::Shapesdemo)
+	{
+		std::wstring directory[1];
 		directory[0] = L"Textures\\brick01.dds";
-
-// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
-// 	AddBind(pSRV);
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
-	AddBind(pSRV);
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+		AddBind(pSRV);
+		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+		AddBind(pPixelShader);
+	}
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
 	PixelShaderConstantBuffer<CBFog>* pFog =
 		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pFog);
-
-// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, FALSE);
-// 	AddBind(pBlending);
-// 	RasterizerState state;
-// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());
-// 	AddBind(pRasterState);
 
 }
 

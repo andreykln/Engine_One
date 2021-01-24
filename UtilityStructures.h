@@ -61,3 +61,9 @@ struct CBPerObjectTexture
 	DirectX::XMMATRIX gWorldViewProj;
 	DirectX::XMMATRIX gTexTransform;
 };
+
+enum DemoSwitch
+{
+	LightningCone,
+	Shapesdemo
+};

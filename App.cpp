@@ -299,7 +299,7 @@ void App::MirrorDemoDraw()
 
 void App::LightningCreate()
 {
-	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u, false, true);
+	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u, DemoSwitch::LightningCone);
 }
 
 void App::LightningDraw()
@@ -337,7 +337,7 @@ void App::ShapesDemoCreateShapes()
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
 	for (int i = 0; i < 10; i++)
 	{
-		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, true, false));
+		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
 	}
 
 	for (size_t i = 0; i < 10; i++)
