@@ -68,7 +68,7 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 		DX::ThrowIfFailed(GetDevice(gfx)->CreateTexture2D(&texDesc, textureInitData, &pTexture));
 		D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
 		shaderResDesc.Format = textureMetaData.format;
-		shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D; //D3D11_SRV_DIMENSION_TEXTURE2D
+		shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		shaderResDesc.Texture2D.MipLevels = (UINT)textureMetaData.mipLevels;
 		shaderResDesc.Texture2D.MostDetailedMip = 0u;
 		DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(
@@ -105,9 +105,6 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 		ImagesArray[i].width = textureMetaData.width;
 		ImagesArray[i].pixels = image->pixels;
 	}
-// 	ScratchImage image;
-// 	image.InitializeArrayFromImages(ImagesArray, numTextures);
-
 	textureMetaData.arraySize = numTextures;
 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray, numTextures, textureMetaData, &pSRVTexArray);
 
@@ -120,20 +117,6 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 			delete[] ImagesArray[i].pixels;
 		}
 	}
-// 				D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
-// 			shaderResDesc.Format = textureMetaData.format;
-// 			shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-// 			shaderResDesc.Texture2D.MipLevels = (UINT)textureMetaData.mipLevels;
-// 			shaderResDesc.Texture2D.MostDetailedMip = 0u;
-// 			shaderResDesc.Texture2DArray.ArraySize = -1; //with -1 its working, but not being an array
-// 			shaderResDesc.Texture2DArray.FirstArraySlice = 0;
-// 			shaderResDesc.Texture2DArray.MipLevels = 1;
-// 			shaderResDesc.Texture2DArray.MostDetailedMip = 0;
-// 			DX::ThrowIfFailed(GetDevice(gfx)->CreateShaderResourceView(
-// 				reinterpret_cast<ID3D11Resource*>(*textureCarray),
-// 				&shaderResDesc,
-// 				&pSRVTexArray));
-
 }
 
 void ShaderResourceView::Bind(Graphics& gfx) noexcept

@@ -9,10 +9,10 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 //  CreateBox();
-	ShapesDemoCreateShapes();
+// 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-// 	LightningCreate();
+	LightningCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,11 +21,11 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	ShapesDemoDrawShapes();
+// 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
-// 	LightningDraw();
+	LightningDraw();
 
 
 
@@ -144,6 +144,7 @@ void App::DrawHillsWithWaves()
 	pBox->Update(timer.TotalTime());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
 //	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
 
 }
@@ -304,6 +305,9 @@ void App::LightningCreate()
 
 void App::LightningDraw()
 {
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
@@ -311,6 +315,8 @@ void App::LightningDraw()
 	pCylinder->Update(timer.TotalTime());
 	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
+
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);// reset isn't necessary?
 
 }
 

@@ -88,11 +88,14 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    texColor = SRVTexture.Sample(tex0Sample, float3(pin.Tex, 58u));
+    texColor = SRVTexture.Sample(tex0Sample, float3(pin.Tex, numLights));
     
+    clip(texColor.r - 0.001f); //clip pure black pixels for lightning.
+    clip(texColor.g - 0.001f);
+    clip(texColor.b - 0.001f);
+
     float4 litColor = texColor;
-    clip(texColor.a - 0.1f);
-    
+
     if (numLights > 0)
     {
     
