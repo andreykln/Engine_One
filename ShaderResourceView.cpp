@@ -80,8 +80,8 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 	}
 }
 //create texture array
-ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, bool texarr)
-: arrPath{in_path}, numTextures (in_NumofTextures)
+ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr)
+: arrPath{in_path}, numTextures (in_NumofTextures), numSRVs{in_NumSRVs}, textureArray{texarr}
 {
 #ifdef MY_DEBUG
 	for (size_t i = 0; i < numTextures; i++)
@@ -138,7 +138,13 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 
 void ShaderResourceView::Bind(Graphics& gfx) noexcept
 {
-// 	GetContext(gfx)->PSSetShaderResources(0u, numSRVs, pSRVArray);
-	GetContext(gfx)->PSSetShaderResources(0u, 1u, &pSRVTexArray);
+	if (!textureArray)
+	{
+		GetContext(gfx)->PSSetShaderResources(0u, numSRVs, pSRVArray);
+	}
+	else
+	{
+		GetContext(gfx)->PSSetShaderResources(0u, numSRVs, &pSRVTexArray);
+	}
 
-}
+ }

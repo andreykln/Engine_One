@@ -9,10 +9,10 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 //  CreateBox();
-// 	ShapesDemoCreateShapes();
+	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-	LightningCreate();
+// 	LightningCreate();
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,11 +21,11 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-// 	ShapesDemoDrawShapes();
+	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
-	LightningDraw();
+// 	LightningDraw();
 
 
 
@@ -259,7 +259,7 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
 
 	//restore light direction
-	for (int i = 0; i < numOfLights; ++i)
+	for (size_t i = 0; i < numOfLights; ++i)
 	{
 		pSkull->SetNewLightDirection(oldLIghtDirection[i], i);
 	}

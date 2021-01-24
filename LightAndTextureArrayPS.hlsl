@@ -61,7 +61,7 @@ cbuffer CBFog : register(b1)
     float2 fogStartandRange;
 }
 
-Texture2D SRVTexture : register(t0);
+Texture2DArray SRVTexture : register(t0);
 SamplerState tex0Sample : register(s0);
 
 struct PSstruct
@@ -88,8 +88,8 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    texColor = SRVTexture.Sample(tex0Sample, pin.Tex);
-  
+    texColor = SRVTexture.Sample(tex0Sample, float3(pin.Tex, 58u));
+    
     float4 litColor = texColor;
     clip(texColor.a - 0.1f);
     

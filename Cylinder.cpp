@@ -73,33 +73,19 @@ Cylinder::Cylinder(Graphics& gfx,
 	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 	////////////////////////////////////////////////////////////
-	// 	directory[0] = L"Textures\\flare.dds";
-  	std::wstring directoryL[60];
+  	std::wstring LightningArray[60];
 
-	//std::wstring fireAnimArray[120];
-// 	for (UINT i = 0; i < 120; ++i)
-// 	{
-// 		directory[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
-// 	}
 	for (UINT i = 0; i < 60; ++i)
 	{
-		directoryL[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
+		LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
 	}
 
-
-	//////////////////////////////////////////////////////////////
 	std::wstring directory[1];
-	if (lightning)
-	{
-		directory[0] = L"Textures\\Lightning\\Spark1.dds";
-	}
-	else
-	{
 		directory[0] = L"Textures\\brick01.dds";
-	}
-// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directoryL, (UINT)std::size(directoryL));
+
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 // 	AddBind(pSRV);
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directoryL, (UINT)std::size(directoryL), true);
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);

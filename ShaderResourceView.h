@@ -9,7 +9,7 @@ public:
 	//create SRV for each texture
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumSRVs);
 	//create texture array
-	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, bool texarr);
+	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr);
 	void Bind(Graphics& gfx) noexcept override;
 	~ShaderResourceView()
 	{
@@ -21,11 +21,10 @@ private:
 	std::wstring* arrPath;
 	UINT index{};
 	UINT numTextures{};
+	bool textureArray = false;
 	DirectX::TexMetadata textureMetaData;
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture = nullptr;
-	std::vector <ID3D11Texture2D*> textureArray;
-	ID3D11Texture2D* textureCarray[60];
 	//ID3D11ShaderResourceView* pShaderResourceView = nullptr;
 	ID3D11ShaderResourceView** pSRVArray = new ID3D11ShaderResourceView*[numSRVs];
 	ID3D11ShaderResourceView* pSRVTexArray = nullptr;

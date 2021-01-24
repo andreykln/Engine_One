@@ -18,7 +18,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 
 
 	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
-	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.89, 0.85f, 0.788f, 1.0f);
+	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
 	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
 
 
