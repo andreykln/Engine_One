@@ -4,14 +4,23 @@ Timer::Timer()
 	: secondsPerCount(0), deltaTime(-1.0), currentTime(0), baseTime(0)
 {
 	__int64 countPerSecond = {};
+	LARGE_INTEGER freqMS = {};
 	QueryPerformanceFrequency((LARGE_INTEGER*)(&countPerSecond));
+	QueryPerformanceFrequency(&freqMS);
 	secondsPerCount = 1.0 / static_cast<double>(countPerSecond);
+	frequencyMS = static_cast<double>(freqMS.QuadPart / 1000.0f);
 	
 }
 
 float Timer::TotalTime() const 
 {
 	float t = static_cast<float>((currentTime - baseTime) * secondsPerCount);
+	return t;
+}
+
+float Timer::MSTime() const
+{
+	float t = static_cast<float>((counterMSStart - baseTime) / frequencyMS);
 	return t;
 }
 
@@ -30,7 +39,7 @@ void Timer::Tick()
 	}
 
 	__int64 t_currentTime = {};
-	QueryPerformanceCounter((LARGE_INTEGER*)(&t_currentTime)); //TODO figure out why this throws error if I pass by value
+	QueryPerformanceCounter((LARGE_INTEGER*)(&t_currentTime));
 	currentTime = t_currentTime;
 
 	//time difference between this frame and the previous
@@ -41,6 +50,11 @@ void Timer::Tick()
 
 	//force nonnegative delta
 	if (deltaTime < 0.0f) { deltaTime = 0.0; }
+
+	//milliseconds
+	LARGE_INTEGER mseconds{};
+	QueryPerformanceCounter(&mseconds);
+	counterMSStart = mseconds.QuadPart;
 }
 
 void Timer::Reset()

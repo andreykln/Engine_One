@@ -32,6 +32,7 @@ void App::DoFrame()
 
 	ScrollWheelCounter();
 	CalculateFrameStats();
+
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
@@ -87,17 +88,18 @@ void App::CalculateFrameStats()
 	static int frameCount = 0;
 	static float timeElapsed = 0.0f;
 	frameCount++;
-	if ((timer.TotalTime() - timeElapsed) >= 1.0f)
-	{
+// 	if ((timer.TotalTime() - timeElapsed) >= 1.0f)
+// 	{
 		float fps = static_cast<float>(frameCount);
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
 			oss << "FPS:" << fps
-				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s.";
+				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. "
+				<< timer.MSTime() << "ms.";
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
-	}
+// 	}
 }
 
 
