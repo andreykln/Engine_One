@@ -68,8 +68,8 @@ Cylinder::Cylinder(Graphics& gfx,
 	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
-	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	PixelShaderConstantBuffer<CBPerFrameTexArray>* pPSCBPerFrame =
+		new PixelShaderConstantBuffer<CBPerFrameTexArray>(gfx, constLightsTexArr, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 	////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+	CBPerFrameTexArray* frame = reinterpret_cast<CBPerFrameTexArray*> (mappedData.pData);
 
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numLights = 0;
@@ -137,6 +137,23 @@ void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numLights = 3;
+
+	frame->arrayPos[0] = GetTexArrPos();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
+}
+
+
+void Cylinder::IncrementTexArrPos() noexcept
+{
+	texArrPosition++;
+	if (texArrPosition > 60)
+	{
+		texArrPosition = 0;
+	}
+}
+
+UINT Cylinder::GetTexArrPos() const noexcept
+{
+	return texArrPosition;
 }
 

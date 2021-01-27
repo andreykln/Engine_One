@@ -10,6 +10,8 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	void IncrementTexArrPos() noexcept;
+	UINT GetTexArrPos() const noexcept;
 private:
 	struct Vertex_C
 	{
@@ -22,10 +24,13 @@ private:
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
 	CBPerFrame constLights;
+	CBPerFrameTexArray constLightsTexArr;
 	CBPerObjectTexture constMatrices;
 	DemoSwitch demo;
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
+
+	UINT texArrPosition{};
 
 
 };

@@ -47,7 +47,6 @@ private:
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
 
-	ID3D11BlendState* pBlendState1 = nullptr;
 	Window wnd;
 	Timer timer;
 	RenderStates rStates;
@@ -85,7 +84,6 @@ private:
 	DirectX::XMVECTOR target;
 	DirectX::XMVECTOR up;
 
-	//DirectX::FXMVECTOR AxisVector{ 0.0f, 5.0f, 0.0f, 0.0f };
 	int test = 0;
 	const float FOV = 90.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
@@ -95,5 +93,10 @@ private:
 	const float axis_x = -10.0f;
 	const float axis_y = 10.0f;
 	const float axis_z = 5.0f;
+
+	float millisecCounter = 0.0f;
+	float millisecElapsed = 0.0f;
+	const double sixtythOfASecond = 1000.0 / 60.0;
+
 };
 

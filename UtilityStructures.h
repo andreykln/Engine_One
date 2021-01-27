@@ -39,6 +39,16 @@ struct CBPerFrame
 	int numLights = {3};
 };
 
+struct CBPerFrameTexArray
+{
+	CBPerFrameTexArray() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	Material objectMaterial;
+	DirectX::XMFLOAT3 cbEyePosition;
+	int numLights = { 3 };
+	int arrayPos[4] = { 0,0,0,0 };
+};
+
 struct CBPerFrameMirrorRoom
 {
 	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }

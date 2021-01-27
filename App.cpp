@@ -88,18 +88,18 @@ void App::CalculateFrameStats()
 	static int frameCount = 0;
 	static float timeElapsed = 0.0f;
 	frameCount++;
-// 	if ((timer.TotalTime() - timeElapsed) >= 1.0f)
-// 	{
+	if ((timer.TotalTime() - timeElapsed) >= 1.0f)
+	{
 		float fps = static_cast<float>(frameCount);
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
 			oss << "FPS:" << fps
 				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. "
-				<< timer.MSTime() << "ms.";
+				 << timer.Milliseconds();
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
-// 	}
+	}
 }
 
 
@@ -316,6 +316,14 @@ void App::LightningDraw()
 	pCylinder->SetCameraMatrix(mCamera * CameraZoom());
 	pCylinder->Update(timer.TotalTime());
 	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	
+	millisecCounter = timer.Milliseconds();
+	if (millisecCounter - millisecElapsed == sixtythOfASecond)
+	{
+		pCylinder->IncrementTexArrPos();
+		millisecElapsed = millisecCounter;
+	}
+
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);// reset isn't necessary?

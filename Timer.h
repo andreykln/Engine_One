@@ -12,15 +12,16 @@ public:
 	Timer(const Timer&) = delete;
 
 	float TotalTime() const;
-	//don't use is for outputting in SetTitle, SetTitle is quite expensive function
+	//don't use it in SetTitle, SetTitle is quite expensive function
 	float Milliseconds() const;
 	float DeltaTime() const;
 	void Tick() ;
 	void Reset();
 private:
+	LARGE_INTEGER q_CurrentTime{};
 	bool stopped = false;
 	double secondsPerCount = {};
-	double frequencyMS = {};
+	double millisecondsPerCount = {};
 	double deltaTime = {};
 	__int64 currentTime = {};
 	__int64 baseTime = {};

@@ -3,12 +3,10 @@
 Timer::Timer()
 	: secondsPerCount(0), deltaTime(-1.0), currentTime(0), baseTime(0)
 {
-	__int64 countPerSecond = {};
 	LARGE_INTEGER freqMS = {};
-	QueryPerformanceFrequency((LARGE_INTEGER*)(&countPerSecond));
 	QueryPerformanceFrequency(&freqMS);
-	secondsPerCount = 1.0 / static_cast<double>(countPerSecond);
-	frequencyMS = static_cast<double>(freqMS.QuadPart / 1000.0f);
+	secondsPerCount = 1.0 / freqMS.LowPart; 
+	millisecondsPerCount = static_cast<double>(freqMS.QuadPart / 1000.0f);
 	
 }
 
@@ -18,9 +16,9 @@ float Timer::TotalTime() const
 	return t;
 }
 
-float Timer::MSTime() const
+float Timer::Milliseconds() const
 {
-	float t = static_cast<float>((counterMSStart - baseTime) / frequencyMS);
+	float t = static_cast<float>((counterMSStart - baseTime) / millisecondsPerCount);
 	return t;
 }
 
@@ -37,10 +35,8 @@ void Timer::Tick()
 		deltaTime = 0.0;
 		return;
 	}
-
-	__int64 t_currentTime = {};
-	QueryPerformanceCounter((LARGE_INTEGER*)(&t_currentTime));
-	currentTime = t_currentTime;
+	QueryPerformanceCounter(&q_CurrentTime);
+	currentTime = q_CurrentTime.QuadPart;
 
 	//time difference between this frame and the previous
 	deltaTime = (currentTime - previousTime) * secondsPerCount;
@@ -52,9 +48,7 @@ void Timer::Tick()
 	if (deltaTime < 0.0f) { deltaTime = 0.0; }
 
 	//milliseconds
-	LARGE_INTEGER mseconds{};
-	QueryPerformanceCounter(&mseconds);
-	counterMSStart = mseconds.QuadPart;
+	counterMSStart = q_CurrentTime.QuadPart;
 }
 
 void Timer::Reset()

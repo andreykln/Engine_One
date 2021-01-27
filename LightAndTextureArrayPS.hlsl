@@ -53,6 +53,7 @@ cbuffer CBPerFrame : register(b0)
     Material objectMaterial;
     float3 eyePosition;
     int numLights;
+    int texArrPosition[4];
 };
 
 cbuffer CBFog : register(b1)
@@ -88,7 +89,7 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    texColor = SRVTexture.Sample(tex0Sample, float3(pin.Tex, numLights));
+    texColor = SRVTexture.Sample(tex0Sample, float3(pin.Tex, texArrPosition[0]));
     
     clip(texColor.r - 0.001f); //clip pure black pixels for lightning.
     clip(texColor.g - 0.001f);
