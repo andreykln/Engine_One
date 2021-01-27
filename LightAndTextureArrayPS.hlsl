@@ -47,13 +47,13 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPerFrame : register(b0)
+cbuffer CBPerFrameTextureArray : register(b0)
 {
     DirectionalLight directLight[3];
     Material objectMaterial;
     float3 eyePosition;
     int numLights;
-    int texArrPosition[4];
+    int4 texArrPosition;
 };
 
 cbuffer CBFog : register(b1)

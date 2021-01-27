@@ -24,6 +24,7 @@ Cylinder::Cylinder(Graphics& gfx,
 		vertices[i].tex = t;
 	}
 	
+
 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
@@ -42,6 +43,26 @@ Cylinder::Cylinder(Graphics& gfx,
 	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	/////
+	constLightsTexArr.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLightsTexArr.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLightsTexArr.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
+
+	constLightsTexArr.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLightsTexArr.dirLight[0].diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	constLightsTexArr.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	constLightsTexArr.dirLight[0].specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+
+	constLightsTexArr.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	constLightsTexArr.dirLight[1].diffuse = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
+	constLightsTexArr.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	constLightsTexArr.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
+
+	constLightsTexArr.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLightsTexArr.dirLight[2].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	constLightsTexArr.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	constLightsTexArr.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Cylinder");
@@ -67,14 +88,16 @@ Cylinder::Cylinder(Graphics& gfx,
 		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
 	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
+	CBPerFrameTexArray test;
 
-	PixelShaderConstantBuffer<CBPerFrameTexArray>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrameTexArray>(gfx, constLightsTexArr, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
-	AddBind(pPSCBPerFrame);
-	////////////////////////////////////////////////////////////
+
 	if (demo == DemoSwitch::LightningCone)
 	{
+		PixelShaderConstantBuffer<CBPerFrameTexArray>* pPSCBPerFrame =
+			new PixelShaderConstantBuffer<CBPerFrameTexArray>(gfx, constLightsTexArr, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
+		AddBind(pPSCBPerFrame);
+
 		std::wstring LightningArray[60];
 		for (UINT i = 0; i < 60; ++i)
 		{
@@ -87,6 +110,10 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	if(demo == DemoSwitch::Shapesdemo)
 	{
+		PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
+			new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
+		AddBind(pPSCBPerFrame);
 		std::wstring directory[1];
 		directory[0] = L"Textures\\brick01.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));

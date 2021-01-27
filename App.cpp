@@ -94,8 +94,7 @@ void App::CalculateFrameStats()
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
 			oss << "FPS:" << fps
-				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. "
-				 << timer.Milliseconds();
+				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. ";
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
@@ -317,12 +316,7 @@ void App::LightningDraw()
 	pCylinder->Update(timer.TotalTime());
 	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	
-	millisecCounter = timer.Milliseconds();
-	if (millisecCounter - millisecElapsed == sixtythOfASecond)
-	{
 		pCylinder->IncrementTexArrPos();
-		millisecElapsed = millisecCounter;
-	}
 
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 

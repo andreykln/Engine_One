@@ -46,7 +46,8 @@ struct CBPerFrameTexArray
 	Material objectMaterial;
 	DirectX::XMFLOAT3 cbEyePosition;
 	int numLights = { 3 };
-	int arrayPos[4] = { 0,0,0,0 };
+// 	const int padding = 0;
+	int arrayPos[4] = {0,0,0,0};
 };
 
 struct CBPerFrameMirrorRoom
