@@ -94,7 +94,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateBlendState(&transparentDesc, &TransparentBS));
 
-	///test//////////////////////////////////////////////////////////////////////////
+	//colorful one
 	D3D11_BLEND_DESC test = { 0 };
 	test.AlphaToCoverageEnable = false;
 	test.IndependentBlendEnable = false;
