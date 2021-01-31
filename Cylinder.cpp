@@ -88,7 +88,6 @@ Cylinder::Cylinder(Graphics& gfx,
 		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
 	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
-	CBPerFrameTexArray test;
 
 
 	if (demo == DemoSwitch::LightningCone)

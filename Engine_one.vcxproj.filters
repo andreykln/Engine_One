@@ -153,6 +153,9 @@
     <ClCompile Include="RenderStates.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="DepthComplexity.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -275,6 +278,9 @@
     <ClInclude Include="RenderStates.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="DepthComplexity.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -308,6 +314,12 @@
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="LightAndTextureArrayPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="DepthCompVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="DepthCompPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

@@ -9,10 +9,14 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 //  CreateBox();
-// 	ShapesDemoCreateShapes();
+	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 	LightningCreate();
+
+	pDepth = new DepthComplexity(wnd.GetGraphics());
+
+
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -21,13 +25,17 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-// 	ShapesDemoDrawShapes();
+	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 	LightningDraw();
-
-
+	///////////////////
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	pDepth->SetCameraMatrix(mCamera * CameraZoom());
+	pDepth->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pDepth->BindAndDrawIndexed(wnd.GetGraphics());
+	////////////////
 
 
 	ScrollWheelCounter();

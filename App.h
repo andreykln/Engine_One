@@ -12,7 +12,7 @@
 #include "Skull.h"
 #include "BoxAndCylinder.h"
 #include "MirrorRoom.h"
-
+#include "DepthComplexity.h"
 #include "WaveSurface.h"
 #include <vector>
 #include <cmath>
@@ -50,7 +50,7 @@ private:
 	Window wnd;
 	Timer timer;
 	RenderStates rStates;
-
+	DepthComplexity* pDepth = nullptr;
 // 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;
  	Cylinder* pCylinder = nullptr;
