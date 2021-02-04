@@ -26,7 +26,7 @@ struct PSstruct
 PSstruct main(VertexIn vin)
 {
     PSstruct vout;
-    	// Transform to world space space.
+    // Transform to world space.
     vout.PosW = mul(float4(vin.position, 1.0f), gWorld).xyz;
     vout.NormalW = mul(vin.normal, (float3x3) gWorldInvTranspose);
 		

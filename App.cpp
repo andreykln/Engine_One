@@ -8,11 +8,11 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-//  CreateBox();
-	ShapesDemoCreateShapes();
+	CreateBox();
+// 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-	LightningCreate();
+// 	LightningCreate();
 
 	pDepth = new DepthComplexity(wnd.GetGraphics());
 
@@ -25,13 +25,15 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	ShapesDemoDrawShapes();
+// 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
-// 	DrawBox();
-	LightningDraw();
-	///////////////////
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
+	DrawBox();
+// 	LightningDraw();
+	/////////////////// Depth Complexity test
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
+	
 	pDepth->SetCameraMatrix(mCamera * CameraZoom());
 	pDepth->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pDepth->BindAndDrawIndexed(wnd.GetGraphics());
@@ -174,7 +176,7 @@ void App::DrawBox()
 {
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-	pBox->Update(timer.TotalTime());
+// 	pBox->Update(timer.TotalTime());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }

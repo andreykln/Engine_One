@@ -13,4 +13,6 @@ public:
 private:
 	CBPerObject matrices;
 	ID3D11Buffer* pCopyVCBMatricesDepth;
+// 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
+// 	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 };

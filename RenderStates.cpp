@@ -8,6 +8,7 @@
 ID3D11RasterizerState* RenderStates::WireframeRS = nullptr;
 ID3D11RasterizerState* RenderStates::NoCullRS = nullptr;
 ID3D11RasterizerState* RenderStates::CullClockwiseRS = nullptr;
+ID3D11RasterizerState* RenderStates::SolidFillRS = nullptr;
 
 ID3D11BlendState* RenderStates::AlphaToCoverageBS = nullptr;
 ID3D11BlendState* RenderStates::TransparentBS = nullptr;
@@ -23,6 +24,18 @@ ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
 
 void RenderStates::InitializeAll(Graphics& gfx)
 {
+	//
+	//SolidFIllRS
+	//
+	D3D11_RASTERIZER_DESC solidFillDesc;
+	ZeroMemory(&solidFillDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidFillDesc.FillMode = D3D11_FILL_SOLID;
+	solidFillDesc.CullMode = D3D11_CULL_NONE;
+	solidFillDesc.FrontCounterClockwise = false;
+	solidFillDesc.DepthClipEnable = true;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRasterizerState(&solidFillDesc, &SolidFillRS));
+
+
 	//
 	// WireframeRS
 	//
@@ -211,6 +224,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(WireframeRS);
 	ReleaseID3D(NoCullRS);
 	ReleaseID3D(CullClockwiseRS);
+	ReleaseID3D(SolidFillRS);
 
 	ReleaseID3D(AlphaToCoverageBS);
 	ReleaseID3D(TransparentBS);
