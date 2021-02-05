@@ -84,6 +84,8 @@ private:
 	DirectX::XMVECTOR target;
 	DirectX::XMVECTOR up;
 
+	UINT stencilRef = 0;
+
 	int test = 0;
 	const float FOV = 90.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);

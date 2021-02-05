@@ -18,6 +18,8 @@ ID3D11BlendState* RenderStates::srsColor = nullptr;
 ID3D11DepthStencilState* RenderStates::MarkMirrorDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DrawReflectionDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
+ID3D11DepthStencilState* RenderStates::DepthComplexityCountDSS = nullptr;
+ID3D11DepthStencilState* RenderStates::DepthComplexityReadDSS = nullptr;
 
 
 
@@ -174,7 +176,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	D3D11_DEPTH_STENCIL_DESC drawReflectionDesc;
 	drawReflectionDesc.DepthEnable = true;
 	drawReflectionDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	drawReflectionDesc.DepthFunc = D3D11_COMPARISON_LESS; //D3D11_COMPARISON_LESS
+	drawReflectionDesc.DepthFunc = D3D11_COMPARISON_LESS;
 	drawReflectionDesc.StencilEnable = true; 
 	drawReflectionDesc.StencilReadMask = 0xff;
 	drawReflectionDesc.StencilWriteMask = 0xff;
@@ -217,6 +219,57 @@ void RenderStates::InitializeAll(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&noDoubleBlendDesc, &NoDoubleBlendDSS));
 
+	//
+	//DepthComplexityCounter
+	//
+	D3D11_DEPTH_STENCIL_DESC depthComplCountDesc;
+	depthComplCountDesc.DepthEnable = true;
+	depthComplCountDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthComplCountDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	depthComplCountDesc.StencilEnable = true;
+	depthComplCountDesc.StencilReadMask = 0xff;
+	depthComplCountDesc.StencilWriteMask = 0xff;
+
+	depthComplCountDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	depthComplCountDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplCountDesc, &DepthComplexityCountDSS));
+
+	//
+//DepthComplexityCounter
+//
+	D3D11_DEPTH_STENCIL_DESC depthComplReadDesc;
+	depthComplReadDesc.DepthEnable = true;
+	depthComplReadDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthComplReadDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthComplReadDesc.StencilEnable = true;
+	depthComplReadDesc.StencilReadMask = 0xff;
+	depthComplReadDesc.StencilWriteMask = 0xff;
+
+	depthComplReadDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	depthComplReadDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplReadDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplReadDesc, &DepthComplexityReadDSS));
+
+
 }
 
 void RenderStates::DestroyAll()
@@ -233,6 +286,8 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(MarkMirrorDSS);
 	ReleaseID3D(DrawReflectionDSS);
 	ReleaseID3D(NoDoubleBlendDSS);
+	ReleaseID3D(DepthComplexityCountDSS);
+	ReleaseID3D(DepthComplexityReadDSS);
 
 }
 

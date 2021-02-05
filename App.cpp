@@ -8,9 +8,9 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-	CreateBox();
+// 	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 
@@ -22,19 +22,24 @@ App::App()
 
 void App::DoFrame()
 {
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
+
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-// 	DrawHillsWithWaves();
-	DrawBox();
+	DrawHillsWithWaves();
+// 	DrawBox();
 // 	LightningDraw();
 	/////////////////// Depth Complexity test
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
 	
-	pDepth->SetCameraMatrix(mCamera * CameraZoom());
+	pDepth->SetCameraMatrix(mCamera /** CameraZoom()*/);
 	pDepth->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pDepth->BindAndDrawIndexed(wnd.GetGraphics());
 	////////////////

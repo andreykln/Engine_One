@@ -26,6 +26,8 @@ public:
 	static ID3D11DepthStencilState* MarkMirrorDSS;
 	static ID3D11DepthStencilState* DrawReflectionDSS;
 	static ID3D11DepthStencilState* NoDoubleBlendDSS;
+	static ID3D11DepthStencilState* DepthComplexityCountDSS;
+	static ID3D11DepthStencilState* DepthComplexityReadDSS;
 
 
 
