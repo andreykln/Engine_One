@@ -230,8 +230,8 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	depthComplCountDesc.StencilReadMask = 0xff;
 	depthComplCountDesc.StencilWriteMask = 0xff;
 
-	depthComplCountDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	depthComplCountDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
 	depthComplCountDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
 	depthComplCountDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
@@ -245,12 +245,12 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplCountDesc, &DepthComplexityCountDSS));
 
 	//
-//DepthComplexityCounter
-//
+	//DepthComplexityRead
+	//
 	D3D11_DEPTH_STENCIL_DESC depthComplReadDesc;
 	depthComplReadDesc.DepthEnable = true;
 	depthComplReadDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthComplReadDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthComplReadDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 	depthComplReadDesc.StencilEnable = true;
 	depthComplReadDesc.StencilReadMask = 0xff;
 	depthComplReadDesc.StencilWriteMask = 0xff;

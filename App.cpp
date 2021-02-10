@@ -13,36 +13,26 @@ App::App()
 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
-
-	pDepth = new DepthComplexity(wnd.GetGraphics());
-
+// 	DepthComplexityStencilCreate();
 
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
 void App::DoFrame()
 {
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
-	/////////////////// Depth Complexity test
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+// 	DepthComplexityStencilDraw();
 
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
-	
-	pDepth->SetCameraMatrix(mCamera /** CameraZoom()*/);
-	pDepth->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pDepth->BindAndDrawIndexed(wnd.GetGraphics());
-	////////////////
+
 
 
 	ScrollWheelCounter();
@@ -51,6 +41,7 @@ void App::DoFrame()
 	//DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+
 }
 
 int App::Go()
@@ -336,6 +327,67 @@ void App::LightningDraw()
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);// reset isn't necessary?
+
+}
+
+void App::DepthComplexityStencilDraw()
+{
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
+
+	pHills->SetCameraMatrix(mCamera * CameraZoom());
+	pHills->Update(timer.TotalTime());
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target); //offsetForHillsWithWaves
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+	SetObjectMatrix(offsetForHillsWithWaves);
+
+
+	pWaves->SetCameraMatrix(mCamera * CameraZoom());
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	pBox->SetCameraMatrix(mCamera * CameraZoom());
+	pBox->Update(timer.TotalTime());
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
+	pDepthArr[0]->SetCameraMatrix(mCamera /** CameraZoom()*/);
+	pDepthArr[0]->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pDepthArr[1]->SetCameraMatrix(mCamera /** CameraZoom()*/);
+	pDepthArr[1]->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pDepthArr[2]->SetCameraMatrix(mCamera /** CameraZoom()*/);
+	pDepthArr[2]->UpdateVertexConstantBuffer(wnd.GetGraphics());
+
+	////////////////
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 3);
+	pDepthArr[0]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.5f, 0.0f, 0.0f });
+	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 2);
+	pDepthArr[1]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 1.0f, 0.54f, 0.117f });
+	pDepthArr[1]->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 1);
+	pDepthArr[2]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.0f, 0.5f, 0.0f });
+	pDepthArr[2]->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
+
+}
+
+void App::DepthComplexityStencilCreate()
+{
+	pDepthArr[0] = new DepthComplexity(wnd.GetGraphics());
+	pDepthArr[1] = new DepthComplexity(wnd.GetGraphics());
+	pDepthArr[2] = new DepthComplexity(wnd.GetGraphics());
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+	pWaves = new WaveSurface(wnd.GetGraphics());
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, false);
 
 }
 

@@ -37,6 +37,11 @@ struct CBFog
 	const float padding0[2] = { 0.0f, 0.0f};
 };
 
+struct CBPSDepth
+{
+	DirectX::XMFLOAT4 depthColor;
+};
+
 struct CBPerFrame
 {
 	CBPerFrame() { ZeroMemory(this, sizeof(this)); }

@@ -40,6 +40,9 @@ public:
 	void MirrorDemoDraw();
 	void LightningCreate();
 	void LightningDraw();
+	void DepthComplexityStencilDraw();
+	void DepthComplexityStencilCreate();
+
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX CalculateProjection() noexcept;
 private:
@@ -50,7 +53,7 @@ private:
 	Window wnd;
 	Timer timer;
 	RenderStates rStates;
-	DepthComplexity* pDepth = nullptr;
+	DepthComplexity* pDepthArr[3];
 // 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;
  	Cylinder* pCylinder = nullptr;
