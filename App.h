@@ -60,7 +60,7 @@ private:
  	std::vector<Cylinder*> cylinders;
  	GeoSphere* pGeoSphere = nullptr;
  	std::vector<GeoSphere*> geoSpheres;
-//  	Sphere* pSphere = nullptr;
+//  Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
 	MirrorRoom* pMirrorRoom = nullptr;
  	Skull* pSkull = nullptr;

@@ -87,5 +87,7 @@ struct CBPerObjectTexture
 enum DemoSwitch
 {
 	LightningCone,
-	Shapesdemo
+	Shapesdemo,
+	HillsDemo,
+	DefaultBox
 };

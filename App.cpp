@@ -10,10 +10,10 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
-// 	DepthComplexityStencilCreate();
+	DepthComplexityStencilCreate();
 
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -27,10 +27,10 @@ void App::DoFrame()
 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
-// 	DepthComplexityStencilDraw();
+	DepthComplexityStencilDraw();
 
 
 
@@ -158,14 +158,14 @@ void App::DrawHillsWithWaves()
 
 void App::CreateHillsWithWaves()
 {
- 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+ 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
-	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, false);
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
 }
 
 void App::CreateBox()
 {
-	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f, false);
+	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f, DemoSwitch::DefaultBox);
 }
 
 void App::DrawBox()
@@ -179,7 +179,7 @@ void App::DrawBox()
 
 void App::MirrorDemoCreate()
 {
-	pBox = new Box(wnd.GetGraphics(), 2.5f, 2.5f, 1.5f, true);
+	pBox = new Box(wnd.GetGraphics(), 2.5f, 2.5f, 1.5f, DemoSwitch::Shapesdemo);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pMirrorRoom = new MirrorRoom(wnd.GetGraphics());
 }
@@ -385,9 +385,9 @@ void App::DepthComplexityStencilCreate()
 	pDepthArr[0] = new DepthComplexity(wnd.GetGraphics());
 	pDepthArr[1] = new DepthComplexity(wnd.GetGraphics());
 	pDepthArr[2] = new DepthComplexity(wnd.GetGraphics());
-	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, false);
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
-	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, false);
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
 
 }
 
@@ -408,10 +408,10 @@ DirectX::XMMATRIX App::CalculateProjection() noexcept
 
 void App::ShapesDemoCreateShapes()
 {
-	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, true);
+	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
  	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
-	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, true);
+	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));

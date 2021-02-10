@@ -3,8 +3,8 @@
 
 #define RANDFLOAT float(rand()) / 1.0f
 
-Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDemo)
-	: shapesDemo{ in_ShapesDemo }
+Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
+	: currentDemo{ demo }
 {
 
 	box.CreateBox(width, height, depth, mesh);
@@ -25,7 +25,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 // 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
 
 
-	if (shapesDemo)
+	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
 		constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 		constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
@@ -46,7 +46,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 		constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 		constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	} 
-	else
+	if (currentDemo == DemoSwitch::DefaultBox)
 	{
 		constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
 		constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
@@ -123,11 +123,11 @@ Box::Box(Graphics& gfx, float width, float height, float depth, bool in_ShapesDe
 	AddBind(pFog);
 
 	std::wstring directory[1];
-	if (shapesDemo)
+	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
 		directory[0] = L"Textures\\LightGreenMarble.dds";
 	}
-	else
+	if (currentDemo == DemoSwitch::DefaultBox)
 	{
 		directory[0] = L"Textures\\WireFence.dds";
 	}

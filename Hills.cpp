@@ -1,8 +1,8 @@
 #include "Hills.h"
 #include <cmath>
 
-Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, bool isFlat)
-	: width(in_width), depth(in_depth), m(in_m), n(in_n), flatSurface(isFlat)
+Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo)
+	: width(in_width), depth(in_depth), m(in_m), n(in_n), currentDemo(demo)
 {
 // 	dirLight.ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 // 	dirLight.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -11,7 +11,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 // 	dirLight.padding = 0.0f;
 
 
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -86,7 +86,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
 
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
@@ -113,7 +113,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 		pVertexShaderBlob = pVertexShader->GetByteCode();
@@ -131,7 +131,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 		AddBind(pPixelShader);
@@ -164,7 +164,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pFog);
 
 	std::wstring directory[1];
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		directory[0] = L"Textures\\grass.dds";
 	}
@@ -242,7 +242,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 {
  	using namespace DirectX;
 
-	if (!flatSurface)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		// Circle light over the land surface.
 		pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());

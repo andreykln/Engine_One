@@ -7,7 +7,7 @@
 class Hills : public Shape
 {
 public:
-	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, bool isFlat);
+	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void SetWidth(float in_width) noexcept;
@@ -37,7 +37,7 @@ private:
 	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 
 
-	bool flatSurface = true;
+	DemoSwitch currentDemo;
 	float width{};
 	float depth{};
 	UINT m{};
