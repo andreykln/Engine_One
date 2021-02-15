@@ -151,7 +151,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	D3D11_DEPTH_STENCIL_DESC mirrorDesc;
 	mirrorDesc.DepthEnable = true;
 	mirrorDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	mirrorDesc.DepthFunc = D3D11_COMPARISON_LESS; //D3D11_COMPARISON_LESS
+	mirrorDesc.DepthFunc = D3D11_COMPARISON_LESS; 
 	mirrorDesc.StencilEnable = true;
 	mirrorDesc.StencilReadMask = 0xff;
 	mirrorDesc.StencilWriteMask = 0xff;
