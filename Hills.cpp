@@ -85,7 +85,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
-
+	treesPositions.resize(25);
+	size_t j = 0; //trees index
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
@@ -96,6 +97,13 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			vertices[i].pos = p;
 			vertices[i].normal = GetHillNormal(p.x, p.z);
 			vertices[i].tex = grid.vertices[i].TexC;
+
+			if (i % 100 == 0)
+			{
+				treesPositions[j].pos = vertices[i].pos;
+				treesPositions[j].size = DirectX::XMFLOAT2{ 2.0f, 1.0f };
+				j++;
+			}
 		}
 	}
 	else
@@ -198,7 +206,7 @@ void Hills::Update(float dt) noexcept
 	alpha = dt;
 }
 
-void Hills::SetWidth(float in_width) noexcept
+/*void Hills::SetWidth(float in_width) noexcept
 {
 	width = in_width;
 }
@@ -206,7 +214,7 @@ void Hills::SetWidth(float in_width) noexcept
 void Hills::SetDepth(float in_depth) noexcept
 {
 	depth = in_depth;
-}
+}*/
 
 DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
 {
@@ -320,6 +328,11 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
  	}
 }
 
+
+std::vector<TreePointSprite> Hills::GetTreesPositions()
+{
+	return treesPositions;
+}
 
 float Hills::GetAlpha() const noexcept
 {

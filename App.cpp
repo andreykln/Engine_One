@@ -10,10 +10,10 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
-	DepthComplexityStencilCreate();
+// 	DepthComplexityStencilCreate();
 
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
@@ -27,10 +27,10 @@ void App::DoFrame()
 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
-	DepthComplexityStencilDraw();
+// 	DepthComplexityStencilDraw();
 
 
 

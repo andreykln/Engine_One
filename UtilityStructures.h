@@ -1,7 +1,6 @@
 #pragma once
 #include "LightHelper.h"
 #include "directxmath.h"
-
 struct Vertex_IA
 {
 	Vertex_IA() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
@@ -10,6 +9,21 @@ struct Vertex_IA
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT2 tex;
+};
+
+struct TreePointSprite
+{
+	TreePointSprite() : pos(0.0f, 0.0f, 0.0f), size(0.0f, 0.0f) {};
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 size;
+};
+
+static std::vector<D3D11_INPUT_ELEMENT_DESC> treeBbrdLayout
+{
+	{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+	D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"Size", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+	D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
 
 static std::vector<D3D11_INPUT_ELEMENT_DESC> inputLightTexture =
