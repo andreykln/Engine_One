@@ -13,6 +13,8 @@ TreeBillboard::TreeBillboard(Graphics& gfx, std::vector<TreePointSprite> in_tree
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, treeBbrdLayout, L"TreeBilboardInLayout");
 	AddBind(pInputLayout);
 
+
+
 }
 
 DirectX::XMMATRIX TreeBillboard::GetTransform() const noexcept

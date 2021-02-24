@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Drawable">
       <UniqueIdentifier>{6ef0dec1-c9a7-4f9b-8081-6b3fe6b54796}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Geometry">
+      <UniqueIdentifier>{c9e3aaad-33e7-44b3-9ee2-6887df964f5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -129,9 +132,6 @@
     <ClCompile Include="HillsAndWaves.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="PixelShaderConstantBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
@@ -158,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="TreeBillboard.cpp">
       <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,6 +290,12 @@
     <ClInclude Include="TreeBillboard.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShaderConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -330,6 +339,9 @@
     </FxCompile>
     <FxCompile Include="TreeBillboardVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="TreeBillboardGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

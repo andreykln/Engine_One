@@ -12,5 +12,5 @@
 #include "PixelShaderConstantBuffer.h"
 #include "UtilityStructures.h"
 #include "TextureSampler.h"
-
+#include "GeometryShader.h"
 #include "RenderStates.h"

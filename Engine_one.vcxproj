@@ -110,6 +110,8 @@
 
 xcopy /E /D /Y  "$(ProjectDir)Shaders\Pixel\*" "$(OutDir)Shaders\Pixel\" 
 
+xcopy /E /D /Y "$(ProjectDir)Shaders\Geometry\*" "$(OutDir)Shaders\Geometry\"
+
 xcopy /E /D /Y "$(ProjectDir)models\*" "$(OutDir)models\"
 
 xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
@@ -178,6 +180,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="DepthComplexity.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GeoSphere.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -204,7 +207,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
-    <ClCompile Include="PixelShaderConstantBuffer.cpp" />
     <ClCompile Include="Pyramid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -249,6 +251,8 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="DepthComplexity.h" />
+    <ClInclude Include="GeometryShader.h" />
+    <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="MirrorRoom.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="TreeBillboard.h" />
@@ -425,6 +429,17 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="TreeBillboardGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Geometry\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="TreeBillboardVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
