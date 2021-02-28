@@ -6,8 +6,8 @@ struct VertexIn
 
 struct VertexOut
 {
-    float3 center : Position;
     float2 size : Size;
+    float3 center : Position;
 };
 
 VertexOut main(VertexIn vin)

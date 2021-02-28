@@ -23,4 +23,5 @@ GeometryShader::GeometryShader(Graphics& gfx, const std::wstring& path)
 void GeometryShader::Bind(Graphics& gfx) noexcept
 {
 	GetContext(gfx)->GSSetShader(pGeometryShader.Get(), nullptr, numClassInstances);
+	
 }

@@ -8,8 +8,8 @@ float2 gTexC[4] =
 
 struct VertexOut
 {
-    float3 center : Position;
     float2 size : Size;
+    float3 center : Position;
 };
 
 struct GSOutput

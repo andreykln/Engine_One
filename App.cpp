@@ -14,7 +14,7 @@ App::App()
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
-	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+// 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 
@@ -138,6 +138,11 @@ void App::DrawHillsWithWaves()
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+
+// 	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
+// 	pBillboards->Update(timer.TotalTime());
+// 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
+// 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());

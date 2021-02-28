@@ -13,6 +13,9 @@ TreeBillboard::TreeBillboard(Graphics& gfx, std::vector<TreePointSprite> in_tree
 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, treeBbrdLayout, L"TreeBilboardInLayout");
 	AddBind(pInputLayout);
 
+	GeometryShader* pGeometryShader = new GeometryShader(gfx, L"Shaders\\Geometry\\TreeBillboardGS.cso");
+	AddBind(pGeometryShader);
+
 	GeometryShaderConstantBuffer<CBBillboardGeometry>* pGSconstBuffer =
 		new GeometryShaderConstantBuffer<CBBillboardGeometry>(gfx, CBGeometryShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyGSConstBuffer = pGSconstBuffer->GetGeometryShaderConstantBuffer();
@@ -48,6 +51,8 @@ TreeBillboard::TreeBillboard(Graphics& gfx, std::vector<TreePointSprite> in_tree
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, treesTex, (UINT)std::size(treesTex), 1, true);
 	AddBind(pSRV);
 
+	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\TreeBillboardPS.cso");
+	AddBind(pPixelShader);
 
 	PixelShaderConstantBuffer<CBBillboardPixel>* pPSconstBuffer =
 		new PixelShaderConstantBuffer<CBBillboardPixel>(gfx, CBPixelShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -81,7 +86,7 @@ void TreeBillboard::UpdateVertexConstantBuffer(Graphics& gfx)
 void TreeBillboard::UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition)
 {
 	UpdateGeometryConstBufer(gfx, eyePosition);
-
+	UpdatePixelShaderConstBuffer(gfx);
 }
 
 void TreeBillboard::UpdateGeometryConstBufer(Graphics& gfx, DirectX::XMFLOAT3& eyePosition)
