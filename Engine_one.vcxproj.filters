@@ -343,6 +343,9 @@
     <FxCompile Include="TreeBillboardGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
+    <FxCompile Include="TreeBillboardPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

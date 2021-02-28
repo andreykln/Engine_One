@@ -13,6 +13,7 @@
 #include "BoxAndCylinder.h"
 #include "MirrorRoom.h"
 #include "DepthComplexity.h"
+#include "TreeBillboard.h"
 #include "WaveSurface.h"
 #include <vector>
 #include <cmath>
@@ -56,6 +57,7 @@ private:
 	DepthComplexity* pDepthArr[3];
 // 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;
+	TreeBillboard* pBillboards = nullptr;
  	Cylinder* pCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;
  	GeoSphere* pGeoSphere = nullptr;

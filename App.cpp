@@ -14,7 +14,7 @@ App::App()
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
-
+	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 

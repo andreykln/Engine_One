@@ -75,6 +75,22 @@ struct CBPerFrameTexArray
 	int arrayPos[4] = {0,0,0,0}; //padding array, only [0] is used
 };
 
+struct CBBillboardGeometry
+{
+	CBBillboardGeometry() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX gWorldViewProj;
+	DirectX::XMFLOAT3 cbEyePosition;
+	const int padding = 0;
+};
+
+struct CBBillboardPixel
+{
+	CBBillboardPixel() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	Material treeMaterial;
+	int numLights[4] = { 3,0,0,0 }; //padding array, only [0] is used
+};
+
 struct CBPerFrameMirrorRoom
 {
 	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }

@@ -5,7 +5,7 @@ template <typename C>
 class GeometryShaderConstantBuffer : public Bindable
 {
 public:
-	GeometryShaderConstantBuffe(Graphics& gfx, const C& data, UINT in_startSlot, UINT in_numOfBuffers,
+	GeometryShaderConstantBuffer(Graphics& gfx, const C& data, UINT in_startSlot, UINT in_numOfBuffers,
 		D3D11_CPU_ACCESS_FLAG in_cpuFlag, D3D11_USAGE in_usageFlag)
 		: numOfBuffers(in_numOfBuffers), startSlot(in_startSlot), cpuFlag(in_cpuFlag), usageFlag(in_usageFlag)
 	{
@@ -25,7 +25,7 @@ public:
 	}
 	void Bind(Graphics& gfx) noexcept override
 	{
-		GetContext(gfx)->GSSetConstantBuffers(startSlot, numBuffers, pConstBuffer.GetAddressOf());
+		GetContext(gfx)->GSSetConstantBuffers(startSlot, numOfBuffers, pConstBuffer.GetAddressOf());
 	}
 	ID3D11Buffer* GetGeometryShaderConstantBuffer()
 	{
