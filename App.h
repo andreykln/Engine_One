@@ -15,6 +15,7 @@
 #include "DepthComplexity.h"
 #include "TreeBillboard.h"
 #include "WaveSurface.h"
+#include "Shaders.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -54,6 +55,10 @@ private:
 	Window wnd;
 	Timer timer;
 	RenderStates rStates;
+	Shape* pShapes;
+
+	Shaders* pShaders = nullptr;
+
 	DepthComplexity* pDepthArr[3];
 // 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;

@@ -63,3 +63,8 @@ void Shape::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;
 }
+
+void Shape::SetVertexShader(Graphics& gfx, ID3D11VertexShader* pVertexShader,std::wstring& path)
+{
+	gfx.SetVertexShader(pVertexShader, path);
+}

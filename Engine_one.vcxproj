@@ -200,6 +200,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="MirrorRoom.cpp" />
     <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ShaderResourceView.cpp" />
+    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="Skull.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -255,6 +256,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="MirrorRoom.h" />
     <ClInclude Include="RenderStates.h" />
+    <ClInclude Include="Shaders.h" />
     <ClInclude Include="TreeBillboard.h" />
     <ClInclude Include="UtilityStructures.h" />
     <ClInclude Include="CustomException.h" />

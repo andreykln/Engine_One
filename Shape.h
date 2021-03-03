@@ -30,6 +30,8 @@ public:
 	//can be used for rotation around world axis
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 	virtual void UpdateVertexConstantBuffer(Graphics& gfx) = 0;
+
+	void SetVertexShader(Graphics& gfx, ID3D11VertexShader* pVertexShader,std::wstring& path);
 private:
 	std::vector<Bindable*> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;

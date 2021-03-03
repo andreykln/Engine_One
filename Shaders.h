@@ -1,0 +1,28 @@
+#pragma once
+#include "Bindable.h"
+#include "UtilityStructures.h"
+#include "Shape.h"
+#include "BindableBase.h"
+class Shaders : public Bindable
+{
+public:
+	Shaders(Graphics& in_gfx);
+	void VS_ILCreateAndBind(ID3D11VertexShader* pVShader, const std::wstring& path);
+
+	void InputLayoutCreateAndBind(std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout, ID3DBlob* pBlob, const std::wstring& name);
+
+
+
+	void Bind(Graphics& gfx) noexcept;
+private:
+	Graphics* pSgfx = nullptr;
+	ID3D11VertexShader* pBillboardVS = nullptr;
+	ID3D11VertexShader* pLightAndTextureVS = nullptr;
+
+
+	ID3DBlob* pVABlob = nullptr;
+	std::vector<D3D11_INPUT_ELEMENT_DESC> inputLightTexture;
+	ID3D11InputLayout* pLightAndTextureIL = nullptr;
+
+};
+

@@ -8,9 +8,10 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-// 	CreateBox();
+	CreateBox();
+	pShaders = new Shaders(wnd.GetGraphics());
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
@@ -27,8 +28,8 @@ void App::DoFrame()
 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-	DrawHillsWithWaves();
-// 	DrawBox();
+// 	DrawHillsWithWaves();
+	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 
@@ -129,7 +130,7 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-
+	
 	pHills->SetCameraMatrix(mCamera * CameraZoom());
 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves

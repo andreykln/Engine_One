@@ -151,6 +151,11 @@ HWND Graphics::GetWindowHandle() const noexcept
 	return windowHandle;
 }
 
+void Graphics::SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path)
+{
+	pgfx_pDeviceContext->VSSetShader(pVertexShader, 0u, 0u);
+}
+
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 {
@@ -186,6 +191,16 @@ void Graphics::CheckFileExistence(Graphics& gfx, const std::wstring& path)
 		//can't append string literal message to this string for some reason. 
 		//I'll leave it like that, it's better than nothing
 		MessageBox(gfx.GetWindowHandle(), gfx.wstrTostr(path).c_str(), NULL, MB_OK);
+	}
+}
+
+void Graphics::CheckFileExistence(Graphics* gfx, const std::wstring& path)
+{
+	if (!std::filesystem::exists(path.c_str()))
+	{
+		//can't append string literal message to this string for some reason. 
+		//I'll leave it like that, it's better than nothing
+		MessageBox(gfx->GetWindowHandle(), gfx->wstrTostr(path).c_str(), NULL, MB_OK);
 	}
 }
 

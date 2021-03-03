@@ -15,7 +15,6 @@ extern const short resolution_height;
 class Graphics
 {
 public:
-	//TODO  put all of your render state group objects in a static class
 	Graphics(HWND wnd);
 	~Graphics();
 	void EndFrame();
@@ -26,11 +25,13 @@ public:
 	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 	HWND GetWindowHandle() const noexcept;
+	void SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path);
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);
 	std::string wstrTostr(const std::wstring& wstr);
 	void CheckFileExistence(Graphics& gfx, const std::wstring& path);
+	void CheckFileExistence(Graphics* gfx, const std::wstring& path);
 private:
 	void SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& name);
 #endif
