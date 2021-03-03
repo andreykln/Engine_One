@@ -121,3 +121,9 @@ enum DemoSwitch
 	HillsDemo,
 	DefaultBox
 };
+
+
+enum ShaderPicker
+{
+	LightAndTexture_VS_PS
+};

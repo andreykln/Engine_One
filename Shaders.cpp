@@ -13,16 +13,23 @@ Shaders::Shaders(Graphics& in_gfx)
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
-	VS_ILCreateAndBind(pLightAndTextureVS, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-	
-// 
-// 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 	pVABlob = pVertexShader->GetByteCode();
-// 	gfx.pgfx_pDeviceContext->VSSetShader(pVertexShader, )
+	VS_IL_Init(&pLightAndTextureVS, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 
 }
 
-void Shaders::VS_ILCreateAndBind(ID3D11VertexShader* pVShader, const std::wstring& path)
+void Shaders::BindVSandIA(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::LightAndTexture_VS_PS:
+		{
+			pSgfx->pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
+			GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		}
+	}
+}
+
+void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader, const std::wstring& path)
 {
 #ifdef MY_DEBUG
 	pSgfx->CheckFileExistence(pSgfx, path);
@@ -32,20 +39,19 @@ void Shaders::VS_ILCreateAndBind(ID3D11VertexShader* pVShader, const std::wstrin
 		pVABlob->GetBufferPointer(),
 		pVABlob->GetBufferSize(),
 		nullptr,
-		&pVShader));
+		pVShader));
 #ifdef MY_DEBUG
 	if (path != std::wstring())
 	{
-		pSgfx->SetDebugName(pVShader, path.c_str());
+		pSgfx->SetDebugName(*pVShader, path.c_str());
 	}
 #endif
-	pSgfx->pgfx_pDeviceContext->VSSetShader(pVShader, nullptr, 0u);
-	InputLayoutCreateAndBind(inputLightTexture, pVABlob, L"LightAndTextureVS_");
+	InitializeInputLayout(inputLightTexture, pVABlob, L"LightAndTextureVS_");
 
 
 }
 
-void Shaders::InputLayoutCreateAndBind(std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout, ID3DBlob* pBlob, const std::wstring& name)
+void Shaders::InitializeInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout, ID3DBlob* pBlob, const std::wstring& name)
 {
 	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateInputLayout(
 		inputLayout.data(),
@@ -60,7 +66,6 @@ void Shaders::InputLayoutCreateAndBind(std::vector<D3D11_INPUT_ELEMENT_DESC> inp
 	}
 #endif
 
-	GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
 }
 
 void Shaders::Bind(Graphics& gfx) noexcept

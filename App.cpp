@@ -176,6 +176,9 @@ void App::CreateBox()
 
 void App::DrawBox()
 {
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
 // 	pBox->Update(timer.TotalTime());
