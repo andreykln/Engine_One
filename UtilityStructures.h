@@ -125,5 +125,6 @@ enum DemoSwitch
 
 enum ShaderPicker
 {
-	LightAndTexture_VS_PS
+	LightAndTexture_VS_PS,
+	Keep
 };

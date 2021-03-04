@@ -57,6 +57,7 @@ private:
 	RenderStates rStates;
 	Shape* pShapes;
 
+	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 
 	DepthComplexity* pDepthArr[3];

@@ -176,7 +176,12 @@ void App::CreateBox()
 
 void App::DrawBox()
 {
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	if (picker == ShaderPicker::LightAndTexture_VS_PS)
+	{
+		pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+		pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+		picker = ShaderPicker::Keep;
+	}
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
