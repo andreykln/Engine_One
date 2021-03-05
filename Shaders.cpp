@@ -3,17 +3,7 @@
 Shaders::Shaders(Graphics& in_gfx)
 	: pSgfx(&in_gfx)
 {
-	inputLightTexture =
-	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3) * 2,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	};
-
-	VS_IL_Init(&pLightAndTextureVS, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+	VS_IL_Init(&pLightAndTextureVS, IL.lightTexture, IL.nLightTextureElements, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	PS_Init(&pLightAndTextuerPS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 }
 
@@ -44,7 +34,8 @@ void Shaders::BindPS(ShaderPicker shader)
 	}
 }
 
-void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader, const std::wstring& path)
+void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader, const D3D11_INPUT_ELEMENT_DESC* inputLayout,
+						UINT nElements, const std::wstring& path)
 {
 #ifdef MY_DEBUG
 	pSgfx->CheckFileExistence(pSgfx, path);
@@ -61,9 +52,10 @@ void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader, const std::wstring& path
 		pSgfx->SetDebugName(*pVShader, path.c_str());
 	}
 #endif
-	InitializeInputLayout(inputLightTexture, pBlob, L"LightAndTextureVS_");
+	auto name = path;
+	InitializeInputLayout(inputLayout, nElements, pBlob, L"LightAndTextureVS_");
 
-	//for usage in other Shaders;
+	//for usage in other shaders;
 	pBlob->Release();
 
 }
@@ -87,11 +79,11 @@ void Shaders::PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path)
 #endif
 }
 
-void Shaders::InitializeInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayout, ID3DBlob* pBlob, const std::wstring& name)
+void Shaders::InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout, UINT nElements, ID3DBlob* pBlob, const std::wstring& name)
 {
 	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateInputLayout(
-		inputLayout.data(),
-		static_cast<UINT>(inputLayout.size()),
+		inputLayout,
+		nElements,
 		pBlob->GetBufferPointer(),
 		pBlob->GetBufferSize(),
 		&pLightAndTextureIL));

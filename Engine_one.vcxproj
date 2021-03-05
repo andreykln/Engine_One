@@ -252,6 +252,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="DepthComplexity.h" />
+    <ClInclude Include="DrawableBase.h" />
     <ClInclude Include="GeometryShader.h" />
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="MirrorRoom.h" />

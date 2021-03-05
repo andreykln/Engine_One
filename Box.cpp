@@ -20,10 +20,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
  		vertices[i].normal = n;
 		vertices[i].tex = t;
 	}
-// 	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 	constLights.objectMaterial.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 16.0f);
-
 
 	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
@@ -69,44 +65,14 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	}
 
 
-
-
-
-	/*constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-
-	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
-
-	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
-	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);*/
-
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
 	AddBind(pVB);
-
-// 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-// 	AddBind(pVertexShader); 
-// 
-// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
-// 	AddBind(pInputLayout);
-
-// 	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-// 	AddBind(pPixelShader);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
-
-
 
 	VertexConstantBuffer<CBPerObjectTexture>* pVCBPerObject =
 		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
@@ -131,15 +97,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	{
 		directory[0] = L"Textures\\WireFence.dds";
 	}
-// 	directory[0] = L"Textures\\flare.dds";
-// 	directory[1] = L"Textures\\flarealpha.dds";
-
-	//std::wstring fireAnimArray[120];
-// 	for (UINT i = 0; i < 120; ++i)
-// 	{
-// 		directory[i] = L"Textures\\FireAnim\\Fire" + std::to_wstring(i+ 1) + L".dds";
-// 	}
-
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
@@ -147,8 +104,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL,FALSE);
-// 	AddBind(pBlending);
 }
 
 DirectX::XMMATRIX Box::GetTransform() const noexcept

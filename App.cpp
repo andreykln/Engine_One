@@ -8,14 +8,21 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-	CreateBox();
 	pShaders = new Shaders(wnd.GetGraphics());
+
+
+
+
+	CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
 // 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+
+
+
  	wnd.GetGraphics().SetProjection(CalculateProjection());
 }
 

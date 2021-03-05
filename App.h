@@ -1,20 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "Timer.h"
-#include "Hills.h"
-#include "Box.h"
-#include "ShapesDemo.h"
-#include "Pyramid.h"
-#include "GeoSphere.h"
-#include "Sphere.h"
-#include "Cylinder.h"
-#include "HillsAndWaves.h"
-#include "Skull.h"
-#include "BoxAndCylinder.h"
-#include "MirrorRoom.h"
-#include "DepthComplexity.h"
-#include "TreeBillboard.h"
-#include "WaveSurface.h"
+#include "DrawableBase.h"
 #include "Shaders.h"
 #include <vector>
 #include <cmath>
@@ -61,7 +48,6 @@ private:
 	Shaders* pShaders = nullptr;
 
 	DepthComplexity* pDepthArr[3];
-// 	BoxAndCylinder* boxandCyl = nullptr;
  	Box* pBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;
  	Cylinder* pCylinder = nullptr;
