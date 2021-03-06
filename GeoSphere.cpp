@@ -46,17 +46,6 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"GeoSphere");
 	AddBind(pVertexBuffer);
 
-// 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-// 	AddBind(pVertexShader);
-// 
-// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
-// 	AddBind(pInputLayout);
-// 
-// 
-// 	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-// 	AddBind(pPixelShader);
-
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"GeoSphereIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 

@@ -14,11 +14,11 @@ App::App()
 
 
 // 	CreateBox();
-	ShapesDemoCreateShapes();
+// 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
-// 	DepthComplexityStencilCreate();
+	DepthComplexityStencilCreate();
 // 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
 
 
@@ -33,12 +33,12 @@ void App::DoFrame()
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
-	ShapesDemoDrawShapes();
+// 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
-// 	DepthComplexityStencilDraw();
+	DepthComplexityStencilDraw();
 
 
 
@@ -137,7 +137,13 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-	
+	if (picker == ShaderPicker::LightAndTexture_VS_PS)
+	{
+		pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+		pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+		picker = ShaderPicker::Keep;
+	}
+
 	pHills->SetCameraMatrix(mCamera * CameraZoom());
 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
@@ -171,6 +177,7 @@ void App::DrawHillsWithWaves()
 
 void App::CreateHillsWithWaves()
 {
+
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
@@ -194,7 +201,6 @@ void App::DrawBox()
 
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBox->Update(timer.TotalTime());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
@@ -208,11 +214,11 @@ void App::MirrorDemoCreate()
 
 void App::MirrorDemoDraw()
 {
-// 	pSkull->UpdateMaterial(wnd.GetGraphics(), false);
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
 
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-// 	pMirrorRoom->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pMirrorRoom->SetCameraMatrix(mCamera * CameraZoom());
 
 	//floor
@@ -226,6 +232,8 @@ void App::MirrorDemoDraw()
 	//rotate reflection and the original
 //  	mirroredSkull = DirectX::XMMatrixRotationY(abs((sin(timer.DeltaTime())))) * mirroredSkull;
 	SetObjectMatrix(mirroredSkull);
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	pSkull->SetCameraMatrix( DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
@@ -236,6 +244,8 @@ void App::MirrorDemoDraw()
 	// Do not write mirror depth to depth buffer at this point, otherwise it will occlude the reflection.
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::MarkMirrorDSS, 1);
 	// draw mirror
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 	//restore states
@@ -280,6 +290,8 @@ void App::MirrorDemoDraw()
 	// Only draw reflection into visible mirror pixels as marked by the stencil buffer. 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DrawReflectionDSS, 1);
 	//draw reflected skull
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	SetObjectMatrix(mirroredSkull * R);
 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
@@ -297,6 +309,8 @@ void App::MirrorDemoDraw()
 
 	// Draw the mirror to the back buffer as usual but with transparency
 	// blending so the reflection shows through.
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
  	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
@@ -316,6 +330,8 @@ void App::MirrorDemoDraw()
 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	// Restore default states.
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
@@ -339,6 +355,9 @@ void App::LightningDraw()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTextureArrayPS);
+
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 	pCylinder->SetCameraMatrix(mCamera * CameraZoom());
 	pCylinder->Update(timer.TotalTime());
@@ -355,6 +374,9 @@ void App::LightningDraw()
 void App::DepthComplexityStencilDraw()
 {
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pHills->SetCameraMatrix(mCamera * CameraZoom());
 	pHills->Update(timer.TotalTime());
@@ -378,6 +400,9 @@ void App::DepthComplexityStencilDraw()
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
+	pShaders->BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
+	pShaders->BindPS(ShaderPicker::DepthComplexityVS_PS);
+
 	pDepthArr[0]->SetCameraMatrix(mCamera /** CameraZoom()*/);
 	pDepthArr[0]->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pDepthArr[1]->SetCameraMatrix(mCamera /** CameraZoom()*/);

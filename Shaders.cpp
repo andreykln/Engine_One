@@ -3,12 +3,19 @@
 Shaders::Shaders(Graphics& in_gfx)
 	: pSgfx(&in_gfx)
 {
-	VS_IL_Init(&pLightAndTextureVS, IL.lightTexture,&pLightAndTextureIL,
+	VS_IL_Init(&pLightAndTextureVS, IL.lightTexture, &pLightAndTextureIL,
 				IL.nLightTextureElements, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 
 	VS_IL_Init(&pLightVS, IL.light, &pLightIL, IL.nLightElements, L"Shaders\\Vertex\\LightVS.cso");
 	PS_Init(&pLightPS, L"Shaders\\Pixel\\LightPS.cso");
+
+	PS_Init(&pMirrorRoomPS, L"Shaders\\Pixel\\MirrorRoomPS.cso");
+
+	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
+
+	VS_IL_Init(&pDepthComplexityVS, IL.depthComplexityIL, &pDepthCoplexityIL, IL.nDepthComplElements, L"Shaders\\Vertex\\DepthCompVS.cso");
+	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -40,6 +47,14 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pLightVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::DepthComplexityVS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pDepthCoplexityIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
+		break;
+	}
+	default:
+	break;
 	}
 }
 
@@ -66,9 +81,24 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
 		break;
 		}
-	case Light_VS_PS:
+	case ShaderPicker::Light_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::MirrorRoomPS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pMirrorRoomPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::LightAndTextureArrayPS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightAndTextureArrayPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DepthComplexityVS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
 		break;
 	}
 	default:

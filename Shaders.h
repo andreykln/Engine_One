@@ -25,6 +25,16 @@ struct InputLayouts
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
+	static const UINT nDepthComplElements = 2;
+	const D3D11_INPUT_ELEMENT_DESC depthComplexityIL[nDepthComplElements] =
+	{
+		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u },
+		{ "Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
+		D3D11_INPUT_PER_VERTEX_DATA, 0u },
+	};
+
+
 };
 class Shaders : public Bindable
 {
@@ -55,10 +65,17 @@ private:
 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
 	ID3D11PixelShader* pLightAndTexturePS = nullptr;
+	ID3D11PixelShader* pLightAndTextureArrayPS = nullptr;
+
+	ID3D11VertexShader* pDepthComplexityVS = nullptr;
+	ID3D11InputLayout* pDepthCoplexityIL = nullptr;
+	ID3D11PixelShader*  pDepthComplexityPS = nullptr;
 
 	ID3D11VertexShader* pLightVS = nullptr;
 	ID3D11InputLayout* pLightIL = nullptr;
 	ID3D11PixelShader* pLightPS = nullptr;
+
+	ID3D11PixelShader* pMirrorRoomPS = nullptr;
 
 	ID3DBlob* pBlob = nullptr;
 

@@ -44,7 +44,6 @@ Cylinder::Cylinder(Graphics& gfx,
 	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	/////
 	constLightsTexArr.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLightsTexArr.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLightsTexArr.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
@@ -67,16 +66,6 @@ Cylinder::Cylinder(Graphics& gfx,
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Cylinder");
 	AddBind(pVertexBuffer);
-
-// 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-// 	AddBind(pVertexShader);
-// 
-// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
-// 	AddBind(pInputLayout);
-
-
-
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -104,8 +93,6 @@ Cylinder::Cylinder(Graphics& gfx,
 		}
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
 		AddBind(pSRV);
-		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
-		AddBind(pPixelShader);
 	}
 	if(demo == DemoSwitch::Shapesdemo)
 	{
@@ -117,8 +104,6 @@ Cylinder::Cylinder(Graphics& gfx,
 		directory[0] = L"Textures\\brick01.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 		AddBind(pSRV);
-// 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-// 		AddBind(pPixelShader);
 	}
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);

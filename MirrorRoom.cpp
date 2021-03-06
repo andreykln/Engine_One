@@ -81,16 +81,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"MirrorRoom.");
 	AddBind(pVB);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(pVertexShader);
-
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor.");
-	AddBind(pInputLayout);
-
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\MirrorRoomPS.cso");
-	AddBind(pPixelShader);
-
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
@@ -117,17 +107,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 		new PixelShaderConstantBuffer<LightSwitcher>(gfx, switcher, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyLightSwitcher = pLightSwitcher->GetPixelShaderConstantBuffer();
 	AddBind(pLightSwitcher);
-
-
-// 	PixelShaderConstantBuffer<CBFog>* pFog =
-// 		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u);
-// 	AddBind(pFog);
-
-
-// 	RasterizerState state;
-// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.CullBackNone());
-// 	AddBind(pRasterState);
-
 
 	std::wstring directory[3];
 	directory[0] = L"Textures\\brick01.dds";

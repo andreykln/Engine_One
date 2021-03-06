@@ -26,24 +26,7 @@ static std::vector<D3D11_INPUT_ELEMENT_DESC> treeBbrdLayout
 	D3D11_INPUT_PER_VERTEX_DATA, 0}
 };
 
-static std::vector<D3D11_INPUT_ELEMENT_DESC> inputLightTexture =
-{
-	{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-	D3D11_INPUT_PER_VERTEX_DATA, 0u},
-	{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
-	D3D11_INPUT_PER_VERTEX_DATA, 0u},
-	{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3) * 2,
-	D3D11_INPUT_PER_VERTEX_DATA, 0u}
-};
 
-static std::vector<D3D11_INPUT_ELEMENT_DESC> depthComplexityIL =
-{
-	{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-	D3D11_INPUT_PER_VERTEX_DATA, 0u},
-	{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
-	D3D11_INPUT_PER_VERTEX_DATA, 0u},
-
-};
 struct CBFog
 {
 	DirectX::XMFLOAT4 fogColor;
@@ -127,5 +110,8 @@ enum ShaderPicker
 {
 	LightAndTexture_VS_PS,
 	Light_VS_PS,
+	MirrorRoomPS,
+	LightAndTextureArrayPS,
+	DepthComplexityVS_PS,
 	Keep
 };

@@ -64,25 +64,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 	AddBind(pVertexBuffer);
 
-// 	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightVS.cso");
-// 	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-// 	AddBind(pVertexShader);
-
-// 	const std::vector<D3D11_INPUT_ELEMENT_DESC> inputElemDesc =
-// 	{
-// 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-// 		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-// 	};
-
-// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputElemDesc, L"PositionAndColor");
-// 	AddBind(pInputLayout);
-// 
-// 
-// 	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightPS.cso");
-// 	AddBind(pPixelShader);
-
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 

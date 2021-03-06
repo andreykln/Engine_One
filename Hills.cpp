@@ -73,15 +73,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	landMat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	landMat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
 
-// 	constLights.gDirLight = dirLight;
-// 	constLights.gEyePosW = { 0.0f, 0.0f, 0.0f };
-// 	constLights.gPointLight = pointLight;
-// 	constLights.gSpotLight = spotLight;
-// 	
-// 	constLights.gMaterial = landMat;
-// 	constLights.padding = 0.0f;
-
-
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
@@ -121,35 +112,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
-// 	if (currentDemo == DemoSwitch::HillsDemo)
-// 	{
-// 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 		pVertexShaderBlob = pVertexShader->GetByteCode();
-// 		AddBind(pVertexShader);
-// 	}
-// 	else
-// 	{
-// 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-// 		pVertexShaderBlob = pVertexShader->GetByteCode();
-// 		AddBind(pVertexShader);
-// 	}
-
-// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
-// 	AddBind(pInputLayout);
-
-
-
-// 	if (currentDemo == DemoSwitch::HillsDemo)
-// 	{
-// 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-// 		AddBind(pPixelShader);
-// 	}
-// 	else
-// 	{
-// 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-// 		AddBind(pPixelShader);
-// 	}
-
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
@@ -187,12 +149,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-// 	Blending* pBlending = new Blending(gfx, D3D11_COLOR_WRITE_ENABLE_ALL, TRUE);
-// 	AddBind(pBlending);
-// 
-// 	RasterizerState state;
-// 	Rasterizer* pRasterState = new Rasterizer(gfx, state.SolidFill());
-// 	AddBind(pRasterState);
 }
 
 
@@ -205,16 +161,6 @@ void Hills::Update(float dt) noexcept
 {
 	alpha = dt;
 }
-
-/*void Hills::SetWidth(float in_width) noexcept
-{
-	width = in_width;
-}
-
-void Hills::SetDepth(float in_depth) noexcept
-{
-	depth = in_depth;
-}*/
 
 DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
 {

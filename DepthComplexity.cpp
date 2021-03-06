@@ -23,15 +23,6 @@ DepthComplexity::DepthComplexity(Graphics& gfx)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"DepthPlane");
 	AddBind(pVertexBuffer);
 
-	VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\DepthCompVS.cso");
-	ID3DBlob* pVertexShaderBlob = pVertexShader->GetByteCode();
-	AddBind(pVertexShader);
-
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, depthComplexityIL, L"PositionAndColor");
-	AddBind(pInputLayout);
-	PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\DepthCompPS.cso");
-	AddBind(pPixelShader);
-
 	std::vector<UINT> indices(6);
 	indices[0] = 0;
 	indices[1] = 1;
