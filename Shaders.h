@@ -34,6 +34,14 @@ struct InputLayouts
 		D3D11_INPUT_PER_VERTEX_DATA, 0u },
 	};
 
+	static const UINT nTreeBillboardElements = 2;
+	const D3D11_INPUT_ELEMENT_DESC treeBillboardIL[nTreeBillboardElements] = 
+	{
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+		D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Size", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
+		D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
 
 };
 class Shaders : public Bindable
@@ -43,21 +51,22 @@ public:
 	Shaders(const Shaders&) = delete;
 	Shaders& operator= (const Shaders&) = delete;
 
-
 	void BindVSandIA(DemoSwitch demo);
 	void BindPS(DemoSwitch demo);
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
-
-	//most convenient to have this class to be a child of Bindable
-	//but this function is empty
-	void Bind(Graphics& gfx) noexcept override; 
+	void BindGS(ShaderPicker shader);
 private:
+	//most convenient to have this class to be a child of Bindable
+//but this function isn't needed
+	void Bind(Graphics& gfx) noexcept override; 
 	void VS_IL_Init(ID3D11VertexShader** pVShader, const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 		ID3D11InputLayout** pIL, UINT nElements, const std::wstring& path);
 	void PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path);
 	void InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout, ID3D11InputLayout** pIL,
 		UINT nElements,ID3DBlob* pBlob, const std::wstring& name);
+	void GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
+
 	Graphics* pSgfx = nullptr;
 	InputLayouts IL;
 	ID3D11VertexShader* pBillboardVS = nullptr;
@@ -74,6 +83,11 @@ private:
 	ID3D11VertexShader* pLightVS = nullptr;
 	ID3D11InputLayout* pLightIL = nullptr;
 	ID3D11PixelShader* pLightPS = nullptr;
+
+	ID3D11VertexShader* pTreeBillboardVS = nullptr;
+	ID3D11InputLayout* pTreeBillboardIL = nullptr;
+	ID3D11PixelShader* pTreeBillboardPS = nullptr;
+	ID3D11GeometryShader* pTreeBillboardGS = nullptr;
 
 	ID3D11PixelShader* pMirrorRoomPS = nullptr;
 

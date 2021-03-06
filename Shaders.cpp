@@ -16,6 +16,10 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	VS_IL_Init(&pDepthComplexityVS, IL.depthComplexityIL, &pDepthCoplexityIL, IL.nDepthComplElements, L"Shaders\\Vertex\\DepthCompVS.cso");
 	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
+
+	VS_IL_Init(&pTreeBillboardVS, IL.treeBillboardIL, &pTreeBillboardIL, IL.nTreeBillboardElements, L"Shaders\\Vertex\\TreeBillboardVS.cso");
+
+	PS_Init(&pTreeBillboardPS, L"Shaders\\Pixel\\TreeBillboardPS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -106,6 +110,20 @@ void Shaders::BindPS(ShaderPicker shader)
 	}
 }
 
+void Shaders::BindGS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::TreeBillboardVS_PS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pTreeBillboardGS, nullptr, 0u);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
 						const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 						ID3D11InputLayout** pIL,
@@ -150,6 +168,9 @@ void Shaders::PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path)
 		pSgfx->SetDebugName(*pPSShader, path.c_str());
 	}
 #endif
+	//for usage in other shaders;
+	pBlob->Release();
+
 }
 
 void Shaders::InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout,
@@ -169,6 +190,27 @@ void Shaders::InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 		pSgfx->SetDebugName(pLightAndTextureIL, name.c_str());
 	}
 #endif
+}
+
+void Shaders::GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateGeometryShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pGSShader));
+#ifdef MY_DEBUG
+	if (GetDebug(*pSgfx) != nullptr)
+	{
+		pSgfx->SetDebugName(*pGSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
 }
 
 void Shaders::Bind(Graphics& gfx) noexcept

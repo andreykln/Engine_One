@@ -15,11 +15,11 @@ App::App()
 
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
-	DepthComplexityStencilCreate();
-// 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+// 	DepthComplexityStencilCreate();
+	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
 
 
 
@@ -35,10 +35,10 @@ void App::DoFrame()
 // 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
-	DepthComplexityStencilDraw();
+// 	DepthComplexityStencilDraw();
 
 
 
@@ -137,12 +137,9 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-	if (picker == ShaderPicker::LightAndTexture_VS_PS)
-	{
-		pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-		pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
-		picker = ShaderPicker::Keep;
-	}
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pHills->SetCameraMatrix(mCamera * CameraZoom());
 	pHills->Update(timer.TotalTime());
@@ -152,11 +149,6 @@ void App::DrawHillsWithWaves()
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-
-// 	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBillboards->Update(timer.TotalTime());
-// 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
-// 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
@@ -171,13 +163,21 @@ void App::DrawHillsWithWaves()
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
+
+	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
+	pBillboards->Update(timer.TotalTime());
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
+	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+
 //	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
 
 }
 
 void App::CreateHillsWithWaves()
 {
-
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
