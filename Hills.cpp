@@ -121,34 +121,34 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
-	if (currentDemo == DemoSwitch::HillsDemo)
-	{
-		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-		pVertexShaderBlob = pVertexShader->GetByteCode();
-		AddBind(pVertexShader);
-	}
-	else
-	{
-		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-		pVertexShaderBlob = pVertexShader->GetByteCode();
-		AddBind(pVertexShader);
-	}
+// 	if (currentDemo == DemoSwitch::HillsDemo)
+// 	{
+// 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+// 		pVertexShaderBlob = pVertexShader->GetByteCode();
+// 		AddBind(pVertexShader);
+// 	}
+// 	else
+// 	{
+// 		VertexShader* pVertexShader = new VertexShader(gfx, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+// 		pVertexShaderBlob = pVertexShader->GetByteCode();
+// 		AddBind(pVertexShader);
+// 	}
 
-	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
-	AddBind(pInputLayout);
+// 	InputLayout* pInputLayout = new InputLayout(gfx, pVertexShaderBlob, inputLightTexture, L"PositionAndColor");
+// 	AddBind(pInputLayout);
 
 
 
-	if (currentDemo == DemoSwitch::HillsDemo)
-	{
-		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-		AddBind(pPixelShader);
-	}
-	else
-	{
-		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
-		AddBind(pPixelShader);
-	}
+// 	if (currentDemo == DemoSwitch::HillsDemo)
+// 	{
+// 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+// 		AddBind(pPixelShader);
+// 	}
+// 	else
+// 	{
+// 		PixelShader* pPixelShader = new PixelShader(gfx, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+// 		AddBind(pPixelShader);
+// 	}
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);

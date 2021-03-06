@@ -13,8 +13,8 @@ App::App()
 
 
 
-	CreateBox();
-// 	ShapesDemoCreateShapes();
+// 	CreateBox();
+	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
@@ -32,11 +32,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
-
-// 	ShapesDemoDrawShapes();
+// 
+	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
-	DrawBox();
+// 	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 
@@ -183,6 +183,7 @@ void App::CreateBox()
 
 void App::DrawBox()
 {
+	//in order to avoid binding every frame
 	if (picker == ShaderPicker::LightAndTexture_VS_PS)
 	{
 		pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
@@ -446,15 +447,23 @@ void App::ShapesDemoCreateShapes()
 
 void App::ShapesDemoDrawShapes()
 {
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+
+	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
+	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+
 	SetObjectMatrix(shapes.Get_m_BoxWorld() * shapes.GetCameraOffset());
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->SetCameraMatrix(mCamera * CameraZoom());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom() );
-	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 	SetObjectMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
 	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f) * CameraZoom());
