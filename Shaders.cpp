@@ -18,7 +18,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
 
 	VS_IL_Init(&pTreeBillboardVS, IL.treeBillboardIL, &pTreeBillboardIL, IL.nTreeBillboardElements, L"Shaders\\Vertex\\TreeBillboardVS.cso");
-
+	GS_Init(&pTreeBillboardGS, L"Shaders\\Geometry\\TreeBillboardGS.cso");
 	PS_Init(&pTreeBillboardPS, L"Shaders\\Pixel\\TreeBillboardPS.cso");
 }
 
@@ -55,6 +55,13 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pDepthCoplexityIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::TreeBillboardVS_PS_GS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pTreeBillboardIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pTreeBillboardVS, nullptr, 0u);
+		
 		break;
 	}
 	default:
@@ -105,6 +112,11 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::TreeBillboardVS_PS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pTreeBillboardPS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -122,6 +134,11 @@ void Shaders::BindGS(ShaderPicker shader)
 	default:
 		break;
 	}
+}
+
+void Shaders::UnbindGS()
+{
+	pSgfx->pgfx_pDeviceContext->GSSetShader(0u, nullptr, 0u);
 }
 
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,

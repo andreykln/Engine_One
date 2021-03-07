@@ -56,6 +56,8 @@ public:
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
 	void BindGS(ShaderPicker shader);
+
+	void UnbindGS();
 private:
 	//most convenient to have this class to be a child of Bindable
 //but this function isn't needed
@@ -69,7 +71,6 @@ private:
 
 	Graphics* pSgfx = nullptr;
 	InputLayouts IL;
-	ID3D11VertexShader* pBillboardVS = nullptr;
 
 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
