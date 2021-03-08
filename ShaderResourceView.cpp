@@ -104,6 +104,7 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 		ImagesArray[i].slicePitch = image->slicePitch;
 		ImagesArray[i].width = textureMetaData.width;
 		ImagesArray[i].pixels = image->pixels;
+
 	}
 	textureMetaData.arraySize = numTextures;
 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray, numTextures, textureMetaData, &pSRVTexArray);

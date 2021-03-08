@@ -15,11 +15,11 @@ App::App()
 
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-// 	LightningCreate();
+	LightningCreate();
 // 	DepthComplexityStencilCreate();
-	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+// 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
 
 
 
@@ -35,9 +35,9 @@ void App::DoFrame()
 // 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 // 	DrawBox();
-// 	LightningDraw();
+	LightningDraw();
 // 	DepthComplexityStencilDraw();
 
 
@@ -136,8 +136,9 @@ void App::TwoTestCubes() noexcept
 
 void App::DrawHillsWithWaves()
 {
-//  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-// 
+ 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+// // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+
 // 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 // 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 // 
@@ -162,7 +163,7 @@ void App::DrawHillsWithWaves()
 // 	pBox->Update(timer.TotalTime());
 // 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-// 
+
 
 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
 	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
@@ -171,8 +172,9 @@ void App::DrawHillsWithWaves()
 	pBillboards->Update(timer.TotalTime());
 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
-// 	pShaders->UnbindGS();
-//	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
+
+
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
 
 }
 
