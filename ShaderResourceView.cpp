@@ -90,24 +90,26 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 	}
 
 #endif // MY_DEBUG
-	DirectX::Image* ImagesArray = new DirectX::Image[numTextures];
-
+	DirectX::Image* ImagesArray = new DirectX::Image[40];
 	for (size_t i = 0; i < numTextures; ++i)
 	{
-		//no delete here, because LoadFromDDSFile uses Release() on it
 		DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
 		LoadFromDDSFile(arrPath[i].c_str(), DirectX::DDS_FLAGS_NONE, &textureMetaData, *pImageData);
-		const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
-		ImagesArray[i].format = textureMetaData.format;
-		ImagesArray[i].height = textureMetaData.height;
-		ImagesArray[i].rowPitch = image->rowPitch;
-		ImagesArray[i].slicePitch = image->slicePitch;
-		ImagesArray[i].width = textureMetaData.width;
-		ImagesArray[i].pixels = image->pixels;
-
+		for (size_t mip = 0; mip < textureMetaData.mipLevels; ++mip)
+		{
+			const DirectX::Image* image = pImageData->GetImage(mip, 0, 0);
+			ImagesArray[index].format = textureMetaData.format;
+			ImagesArray[index].height = textureMetaData.height;
+			ImagesArray[index].rowPitch = image->rowPitch;
+			ImagesArray[index].slicePitch = image->slicePitch;
+			ImagesArray[index].width = textureMetaData.width;
+			ImagesArray[index].pixels = image->pixels;
+			index++;
+		}
 	}
 	textureMetaData.arraySize = numTextures;
-	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray, numTextures, textureMetaData, &pSRVTexArray);
+
+	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray, numTextures * textureMetaData.mipLevels, textureMetaData, &pSRVTexArray);
 
 	//TODO check if this is slow
 	for (size_t i = 0; i < numTextures; i++)

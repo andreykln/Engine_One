@@ -15,11 +15,11 @@ App::App()
 
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
-	LightningCreate();
+// 	LightningCreate();
 // 	DepthComplexityStencilCreate();
-// 	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
 
 
 
@@ -35,9 +35,9 @@ void App::DoFrame()
 // 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 // 	DrawBox();
-	LightningDraw();
+// 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 
 
@@ -137,32 +137,32 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-// // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
-// 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
-// 
-// 	pHills->SetCameraMatrix(mCamera * CameraZoom());
-// 	pHills->Update(timer.TotalTime());
-// 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
-// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
-// 
-// 	//transparency for the box achieved with clip in PS, so this isn't necessary?
-// // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-// 
-// 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
-// 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-// 
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
-// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
-// 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBox->Update(timer.TotalTime());
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+	pHills->SetCameraMatrix(mCamera * CameraZoom());
+	pHills->Update(timer.TotalTime());
+	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+	SetObjectMatrix(offsetForHillsWithWaves);
+
+	//transparency for the box achieved with clip in PS, so this isn't necessary?
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+
+	pWaves->SetCameraMatrix(mCamera * CameraZoom());
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	pBox->SetCameraMatrix(mCamera * CameraZoom());
+	pBox->Update(timer.TotalTime());
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);

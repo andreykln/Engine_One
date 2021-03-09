@@ -1,11 +1,5 @@
 
-float2 gTexC[4] =
-{
-    float2(0.0f, 1.0f),
-    float2(0.0f, 0.0f),
-    float2(1.0f, 1.0f),
-    float2(1.0f, 0.0f)
-};
+
 struct VertexOut
 {
     float2 size : Size;
@@ -53,7 +47,13 @@ void main(point VertexOut gin[1],
     v[2] = float4(gin[0].center - halfWidth * right - halfHeight * up, 1.0f);
     v[3] = float4(gin[0].center - halfWidth * right + halfHeight * up, 1.0f);
     
-
+    float2 gTexC[4] = //it can't be global for some reason, figure out why.
+    {
+        float2(0.0f, 1.0f),
+    float2(0.0f, 0.0f),
+    float2(1.0f, 1.0f),
+    float2(1.0f, 0.0f)
+    };
     //transform quad vertices to world space and output as triangle strip
     GSOutput gout;
     [unroll]
@@ -67,7 +67,6 @@ void main(point VertexOut gin[1],
         gout.gEyePosition = eyePosition;
         triStream.Append(gout);
     }
-    //return gout;
 
 }
 
