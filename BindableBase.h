@@ -1,9 +1,6 @@
 #pragma once
 #include "VertexBuffer.h"
 #include "Bindable.h"
-#include "VertexShader.h"
-#include "PixelShader.h"
-#include "InputLayout.h"
 #include "IndexBuffer.h"
 #include "Topology.h"
 #include "ShaderResourceView.h"
@@ -12,7 +9,6 @@
 #include "PixelShaderConstantBuffer.h"
 #include "UtilityStructures.h"
 #include "TextureSampler.h"
-#include "GeometryShader.h"
 #include "RenderStates.h"
 #include "GeometryShaderConstantBuffer.h"
 #include "Shaders.h"

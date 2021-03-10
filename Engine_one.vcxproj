@@ -180,7 +180,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="DepthComplexity.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GeoSphere.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -195,7 +194,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="MirrorRoom.cpp" />
     <ClCompile Include="RenderStates.cpp" />
@@ -207,7 +205,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClCompile>
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Pyramid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -231,7 +228,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexBufferDynamic.cpp" />
     <ClCompile Include="VertexConstantBuffer.cpp" />
-    <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Waves.cpp" />
     <ClCompile Include="WaveSurface.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -253,7 +249,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClInclude>
     <ClInclude Include="DepthComplexity.h" />
     <ClInclude Include="DrawableBase.h" />
-    <ClInclude Include="GeometryShader.h" />
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="MirrorRoom.h" />
     <ClInclude Include="RenderStates.h" />
@@ -290,7 +285,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClInclude>
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PixelShaderConstantBuffer.h" />
     <ClInclude Include="Pyramid.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -314,7 +308,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexBufferDynamic.h" />
     <ClInclude Include="VertexConstantBuffer.h" />
-    <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Waves.h" />
     <ClInclude Include="WaveSurface.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

@@ -3,47 +3,7 @@
 #include "UtilityStructures.h"
 #include "Shape.h"
 #include "BindableBase.h"
-struct InputLayouts
-{
-	static const UINT nLightTextureElements = 3;
-	const D3D11_INPUT_ELEMENT_DESC lightTexture[nLightTextureElements] =
-	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3) * 2,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	};
-
-	static const UINT nLightElements = 2;
-	const D3D11_INPUT_ELEMENT_DESC light[nLightElements] =
-	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-	};
-
-	static const UINT nDepthComplElements = 2;
-	const D3D11_INPUT_ELEMENT_DESC depthComplexityIL[nDepthComplElements] =
-	{
-		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u },
-		{ "Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3),
-		D3D11_INPUT_PER_VERTEX_DATA, 0u },
-	};
-
-	static const UINT nTreeBillboardElements = 2;
-	const D3D11_INPUT_ELEMENT_DESC treeBillboardIL[nTreeBillboardElements] = 
-	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Size", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12,
-		D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-};
+#include "InputLayout.h"
 class Shaders : public Bindable
 {
 public:
@@ -70,7 +30,7 @@ private:
 	void GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
 
 	Graphics* pSgfx = nullptr;
-	InputLayouts IL;
+	InputLayout IL;
 
 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;

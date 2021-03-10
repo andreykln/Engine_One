@@ -92,7 +92,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			if (i % 100 == 0)
 			{
 				treesPositions[j].pos = vertices[i].pos;
-				treesPositions[j].size = DirectX::XMFLOAT2{ 2.0f, 1.0f };
+				treesPositions[j].size = DirectX::XMFLOAT2{ 20.0f, 10.0f };
 				j++;
 			}
 		}

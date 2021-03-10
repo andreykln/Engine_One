@@ -75,15 +75,6 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShader.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
@@ -159,9 +150,6 @@
     <ClCompile Include="TreeBillboard.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryShader.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
@@ -198,12 +186,6 @@
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
@@ -292,9 +274,6 @@
     </ClInclude>
     <ClInclude Include="TreeBillboard.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryShader.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="GeometryShaderConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
