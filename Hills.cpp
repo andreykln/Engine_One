@@ -78,6 +78,16 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
 	treesPositions.resize(25);
 	size_t j = 0; //trees index
+
+
+// 	for (auto& a : treesPositions)
+// 	{
+// 		a.pos.x = MathHelper::RandomFloatWithinRange(-75.0f, 75.0f);
+// 		a.pos.z = MathHelper::RandomFloatWithinRange(-75.0f, 75.0f);
+// 		a.pos.y = GetHeight(a.pos.x, a.pos.z);
+// 		a.size = DirectX::XMFLOAT2{ 25.0f, 25.0f };
+// 
+// 	}
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
@@ -92,6 +102,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			if (i % 100 == 0)
 			{
 				treesPositions[j].pos = vertices[i].pos;
+				treesPositions[j].pos.y += 10.0f;
 				treesPositions[j].size = DirectX::XMFLOAT2{ 20.0f, 10.0f };
 				j++;
 			}
@@ -274,11 +285,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
  	}
 }
 
-
-std::vector<TreePointSprite> Hills::GetTreesPositions()
-{
-	return treesPositions;
-}
 
 float Hills::GetAlpha() const noexcept
 {

@@ -182,7 +182,7 @@ void App::CreateHillsWithWaves()
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
-	pBillboards = new TreeBillboard(wnd.GetGraphics(), pHills->GetTreesPositions());
+	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
 
 void App::CreateBox()

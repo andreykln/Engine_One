@@ -1,8 +1,19 @@
 #include "TreeBillboard.h"
 
-TreeBillboard::TreeBillboard(Graphics& gfx, std::vector<TreePointSprite> in_trees_pos)
-	: treePositions(in_trees_pos)
+TreeBillboard::TreeBillboard(Graphics& gfx)
 {
+	std::vector<TreePointSprite> treePositions;
+	treePositions.resize(25);
+	MathHelper helper;
+	for (auto& a : treePositions)
+	{
+		a.pos.x = helper.RandomFloatWithinRange(-75.0f, 75.0f);
+		a.pos.z = helper.RandomFloatWithinRange(-75.0f, 75.0f);
+		a.pos.y = (0.3f * (a.pos.z * sinf(0.1f * a.pos.x) + a.pos.x * cosf(0.1f * a.pos.z))) + 10.0f; //GetHeight function from Hills
+		a.size = DirectX::XMFLOAT2{ 25.0f, 25.0f };
+	}
+
+
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, treePositions, L"TreeSpritePositions");
 	AddBind(pVertexBuffer);
 
