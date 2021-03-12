@@ -7,7 +7,11 @@ cbuffer CBBillboardPS : register(b0)
     int4 numLights;
 };
 
-
+cbuffer CBFog : register(b1)
+{
+    float4 fogColor;
+    float2 fogStartandRange;
+}
 struct GSOutput
 {
     float4 posH : SV_Position;
@@ -65,8 +69,8 @@ float4 main(GSOutput pin) : SV_TARGET
     }
 
      //fogging
-    //float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
-    //litColor = lerp(litColor, fogColor, fogLerp);
+    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
+    litColor = lerp(litColor, fogColor, fogLerp);
         // Common to take alpha from diffuse material and texture
     litColor.a = mat.diffuse.a * texColor.a;
 

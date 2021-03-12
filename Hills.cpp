@@ -4,13 +4,6 @@
 Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo)
 	: width(in_width), depth(in_depth), m(in_m), n(in_n), currentDemo(demo)
 {
-// 	dirLight.ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-// 	dirLight.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-// 	dirLight.specular = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-// 	dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-// 	dirLight.padding = 0.0f;
-
-
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -80,14 +73,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	size_t j = 0; //trees index
 
 
-// 	for (auto& a : treesPositions)
-// 	{
-// 		a.pos.x = MathHelper::RandomFloatWithinRange(-75.0f, 75.0f);
-// 		a.pos.z = MathHelper::RandomFloatWithinRange(-75.0f, 75.0f);
-// 		a.pos.y = GetHeight(a.pos.x, a.pos.z);
-// 		a.size = DirectX::XMFLOAT2{ 25.0f, 25.0f };
-// 
-// 	}
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		for (size_t i = 0; i < grid.vertices.size(); ++i)

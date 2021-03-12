@@ -57,6 +57,10 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 	pCopyPSConstBuffer = pPSconstBuffer->GetPixelShaderConstantBuffer();
 	AddBind(pPSconstBuffer);
 
+	PixelShaderConstantBuffer<CBFog>* pPSConstBufferFog =
+		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pPSConstBufferFog);
+
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
