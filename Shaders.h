@@ -52,6 +52,10 @@ private:
 
 	ID3D11PixelShader* pMirrorRoomPS = nullptr;
 
+	ID3D11VertexShader* pCirletoCylinderVS = nullptr;
+	ID3D11InputLayout* pCirletoCylinderIL = nullptr;
+	ID3D11PixelShader* pCirletoCylinderPS = nullptr;
+
 	ID3DBlob* pBlob = nullptr;
 
 };

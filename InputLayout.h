@@ -22,8 +22,8 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
-	static const UINT nDepthComplElements = 2;
-	const D3D11_INPUT_ELEMENT_DESC depthComplexityIL[nDepthComplElements] =
+	static const UINT nPosition_Color = 2;
+	const D3D11_INPUT_ELEMENT_DESC positionColorIL[nPosition_Color] =
 	{
 		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u },

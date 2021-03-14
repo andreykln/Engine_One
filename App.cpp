@@ -10,12 +10,12 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 	pShaders = new Shaders(wnd.GetGraphics());
 
-
+	pCircle = new Circle(wnd.GetGraphics());
 
 
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-	CreateHillsWithWaves();
+// 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
@@ -34,11 +34,18 @@ void App::DoFrame()
 // 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-	DrawHillsWithWaves();
+// 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
+	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
+	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
+	
 
+
+	pCircle->SetCameraMatrix(mCamera * CameraZoom());
+	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pCircle->BindAndDraw(wnd.GetGraphics(), 3u, 0u);
 
 
 

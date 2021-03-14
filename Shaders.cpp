@@ -14,12 +14,15 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
 
-	VS_IL_Init(&pDepthComplexityVS, IL.depthComplexityIL, &pDepthCoplexityIL, IL.nDepthComplElements, L"Shaders\\Vertex\\DepthCompVS.cso");
+	VS_IL_Init(&pDepthComplexityVS, IL.positionColorIL, &pDepthCoplexityIL, IL.nPosition_Color, L"Shaders\\Vertex\\DepthCompVS.cso");
 	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
 
 	VS_IL_Init(&pTreeBillboardVS, IL.treeBillboardIL, &pTreeBillboardIL, IL.nTreeBillboardElements, L"Shaders\\Vertex\\TreeBillboardVS.cso");
 	GS_Init(&pTreeBillboardGS, L"Shaders\\Geometry\\TreeBillboardGS.cso");
 	PS_Init(&pTreeBillboardPS, L"Shaders\\Pixel\\TreeBillboardPS.cso");
+
+	VS_IL_Init(&pCirletoCylinderVS, IL.positionColorIL, &pCirletoCylinderIL, IL.nPosition_Color, L"Shaders\\Vertex\\Circle_CylinderVS.cso");
+	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -62,6 +65,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		GetContext(*pSgfx)->IASetInputLayout(pTreeBillboardIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pTreeBillboardVS, nullptr, 0u);
 		
+		break;
+	}
+	case ShaderPicker::CircleToCylinderVS_GS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pCirletoCylinderIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pCirletoCylinderVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -115,6 +124,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::TreeBillboardVS_PS_GS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pTreeBillboardPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CircleToCylinderVS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pCirletoCylinderPS, nullptr, 0u);
 		break;
 	}
 	default:

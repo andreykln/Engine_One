@@ -46,7 +46,8 @@ private:
 
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
-
+	
+	Circle* pCircle = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;

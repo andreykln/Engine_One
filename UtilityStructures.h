@@ -18,6 +18,7 @@ struct TreePointSprite
 	DirectX::XMFLOAT2 size;
 };
 
+
 struct CBFog
 {
 	DirectX::XMFLOAT4 fogColor;
@@ -105,5 +106,6 @@ enum ShaderPicker
 	LightAndTextureArrayPS,
 	DepthComplexityVS_PS,
 	TreeBillboardVS_PS_GS,
+	CircleToCylinderVS_GS_PS,
 	Keep
 };

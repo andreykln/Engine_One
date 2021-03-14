@@ -153,6 +153,9 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -284,6 +287,9 @@
     <ClInclude Include="DrawableBase.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -332,6 +338,12 @@
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
     <FxCompile Include="TreeBillboardPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="Circle_CylinderVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="Circle_CylinderPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
