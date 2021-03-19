@@ -7,17 +7,25 @@ Circle::Circle(Graphics& gfx)
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 col;
 	};
-
 	std::vector<Lines> circleVertices;
-	circleVertices.resize(3);
-	circleVertices[0].col = DirectX::XMFLOAT4{ 0.5f, 0.5f, 0.5f, 1.0f };
-	circleVertices[0].pos = DirectX::XMFLOAT3{ 0.5f, 0.5f, 0.5f};
+	circleVertices.resize(segments);
 
-	circleVertices[1].col = DirectX::XMFLOAT4{ 0.5f, 0.5f, 0.5f, 1.0f };
-	circleVertices[1].pos = DirectX::XMFLOAT3{ 1.5f, 1.5f, 0.5f };
 
-	circleVertices[2].col = DirectX::XMFLOAT4{ 0.5f, 0.5f, 0.5f, 1.0f };
-	circleVertices[2].pos = DirectX::XMFLOAT3{ -0.5f, -0.5f, 0.5f };
+	float radius = 5;
+	const float alpha = DirectX::XM_2PI / segments;
+	float angle = alpha;
+	UINT segment = 1;
+	for (UINT i = 0; i < segments; i++)
+	{
+		circleVertices[i].pos.x = sin(angle) * radius;
+		circleVertices[i].pos.y = cos(angle) * radius;
+		circleVertices[i].pos.z = 0.0f;
+		circleVertices[i].col = DirectX::XMFLOAT4{ 0.5f, 0.5f, 0.5f, 1.0f };
+		angle += alpha;
+	}
+	//circle won't connects, so connect last vertex with the first one manually
+	//with big enough amount of vertices (200+) this is not noticeable
+	circleVertices[segments - 1].pos = circleVertices[0].pos;
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, circleVertices, L"CirclePositoins_");
 	AddBind(pVertexBuffer);
@@ -33,7 +41,8 @@ Circle::Circle(Graphics& gfx)
 
 DirectX::XMMATRIX Circle::GetTransform() const noexcept
 {
-	return DirectX::XMMatrixIdentity();
+	//using scaling for circumwent shitty matrix usage, it should fix itself later
+	return DirectX::XMMatrixScaling(0.75f, 1.0f, 1.0f);
 }
 
 void Circle::Update(float dt) noexcept
@@ -50,4 +59,9 @@ void Circle::UpdateVertexConstantBuffer(Graphics& gfx)
 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCircle, 0u);
+}
+
+UINT Circle::GetVertices() const
+{
+	return segments;
 }

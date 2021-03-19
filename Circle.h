@@ -10,6 +10,7 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	UINT GetVertices() const;
 private:
 // 	CBBillboardGeometry CBGeometryShader;
 // 	CBBillboardPixel CBPixelShader;
@@ -18,5 +19,8 @@ private:
 // 	ID3DBlob* pVertexShaderBlob = nullptr;
 	CBPerObject CBObject;
 	ID3D11Buffer* pCopyVCBMatricesCircle = nullptr;
+
+	const UINT segments = 200u;
+
 
 };

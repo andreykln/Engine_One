@@ -38,14 +38,16 @@ void App::DoFrame()
 // 	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
+// 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+
+	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+
 	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
 	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
-	
 
-
-	pCircle->SetCameraMatrix(mCamera * CameraZoom());
+// 	pCircle->SetCameraMatrix(/*mCamera **/ CameraZoom());
 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pCircle->BindAndDraw(wnd.GetGraphics(), 3u, 0u);
+	pCircle->BindAndDraw(wnd.GetGraphics(), pCircle->GetVertices(), 0u);
 
 
 

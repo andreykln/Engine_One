@@ -22,7 +22,7 @@ struct VertexOut
 VertexOut main(VertexIN vin)
 {
     VertexOut vout;
-    vout.pos = mul(float4(vin.pos, 1.0f), gWorld);
+    vout.pos = mul(float4(vin.pos, 1.0f), gWorldViewProj);
 
     vout.col = vin.col;
     
