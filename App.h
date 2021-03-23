@@ -35,6 +35,11 @@ public:
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX GetPerspectiveProjection() noexcept;
 private:
+	DirectX::XMVECTOR camPos{ 0.0f, 0.0f, -6.0f };
+	DirectX::XMVECTOR camFront{ 0.0f, 0.0f, 5.0f };
+	DirectX::XMVECTOR camUp{ 0.0f, 1.0f, 0.0f };
+	DirectX::XMMATRIX GLCamera;
+
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
@@ -48,6 +53,7 @@ private:
 	Shaders* pShaders = nullptr;
 	
 	Circle* pCircle = nullptr;
+	Circle* pCircle1 = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;

@@ -13,6 +13,7 @@ App::App()
 	pCircle = new Circle(wnd.GetGraphics());
 
 
+
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
@@ -48,7 +49,7 @@ void App::DoFrame()
 // 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 
 	
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
 	//model/world
 	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
@@ -56,24 +57,27 @@ void App::DoFrame()
 	//reverse reading order
 	model = DirectX::XMMatrixRotationZ((timer.TotalTime())) * DirectX::XMMatrixTranslation(-1.5f, 1.5f, 0.0f) ;
 
-	//move the camera
-	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
-// 	view = DirectX::XMMatrixTranslation(-2.5f, 0.5f, 0.0f);
 
 	//projection
 	DirectX::XMMATRIX projection = GetPerspectiveProjection();
 
 	//learnopengl camera
-	DirectX::FXMMATRIX GLCamera = GetCamera();
+	GLCamera = GetCamera();
 
 	//reversed order from opengl
-	DirectX::XMMATRIX clipMatrix = model * view * GLCamera * projection ;
+	DirectX::XMMATRIX clipMatrix = model * GLCamera * projection ;
 
 
 	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
 // 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
 
+
+	model = DirectX::XMMatrixRotationZ((-timer.TotalTime())) * DirectX::XMMatrixTranslation(1.5f, 1.5f, 0.0f);
+	clipMatrix = model * GLCamera * projection;
+
+	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
+	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 	ScrollWheelCounter();
@@ -337,7 +341,7 @@ void App::MirrorDemoDraw()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
 
 	//restore light direction
-	for (size_t i = 0; i < numOfLights; ++i)
+	for (UINT i = 0; i < numOfLights; ++i)
 	{
 		pSkull->SetNewLightDirection(oldLIghtDirection[i], i);
 	}
@@ -573,20 +577,51 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 }
 DirectX::XMMATRIX App::GetCamera() noexcept
 {
-	//for arithmetics
+	//for vector arithmetics
 	using namespace DirectX;
 
-	DirectX::FXMVECTOR cameraPos = { 0.0f, 0.0f, -6.0f };
-	DirectX::FXMVECTOR cameraTarget = { 0.0f, 0.0f, 0.0f };
-	DirectX::FXMVECTOR cameraDirection = DirectX::XMVector4Normalize(cameraPos - cameraTarget);
+	DirectX::XMVECTOR cameraPos = { 0.0f, 0.0f, -6.0f };
+	DirectX::XMVECTOR cameraTarget = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMVECTOR cameraReverseDirection = DirectX::XMVector4Normalize(cameraPos - cameraTarget);
 
-	DirectX::FXMVECTOR up = { 0.0f, 1.0f, 0.0f };
-	DirectX::FXMVECTOR cameraRight = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(up, cameraDirection));
+	DirectX::XMVECTOR up = { 0.0f, 1.0f, 0.0f };
+	DirectX::XMVECTOR cameraRight = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(up, cameraReverseDirection));
 
-	DirectX::FXMVECTOR cameraUp = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(cameraDirection, cameraRight));
+	DirectX::XMVECTOR cameraUp = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(cameraReverseDirection, cameraRight));
 
+	//rotational cam
+	const float radius = 10.0f;
+	float camX = sin(timer.TotalTime()) * radius;
+	float camZ = cos(timer.TotalTime()) * radius;
+	DirectX::FXMVECTOR camRotatePos{ camX, 0.0f, camZ };
+	DirectX::FXMMATRIX viewAround = DirectX::XMMatrixLookAtLH(camRotatePos, cameraTarget, cameraUp);
+	//default cam
 	DirectX::FXMMATRIX view = DirectX::XMMatrixLookAtLH(cameraPos, cameraTarget, cameraUp);
-	return view;
+
+	//movement cam
+	const float cameraSpeed = 0.0001f;
+	if (GetAsyncKeyState('W') & 0x8000)
+	{
+		camPos += cameraSpeed * camFront;
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		camPos -= cameraSpeed * camFront;
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		camPos -= DirectX::XMVector4Normalize(DirectX::XMVector3Cross(camFront, camUp)) * cameraSpeed;
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
+	{
+		camPos += DirectX::XMVector4Normalize(DirectX::XMVector3Cross(camFront, camUp)) * cameraSpeed;
+	}
+
+
+	DirectX::FXMMATRIX viewMov = DirectX::XMMatrixLookAtLH(camPos, camPos + camFront, camUp);
+
+
+	return viewMov;
 }
 
 App::~App()
