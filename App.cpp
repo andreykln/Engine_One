@@ -13,7 +13,7 @@ App::App()
 	pCircle = new Circle(wnd.GetGraphics());
 
 
-	CreateBox();
+// 	CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
@@ -22,7 +22,7 @@ App::App()
 
 
 
- 	wnd.GetGraphics().SetProjection(CalculateProjection());
+//  	wnd.GetGraphics().SetProjection(GetPerspectiveProjection());
 }
 
 void App::DoFrame()
@@ -35,20 +35,44 @@ void App::DoFrame()
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
-	DrawBox();
+// 	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
-// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
-// 	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
+	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
 // 	pShaders->BindGS(ShaderPicker::CircleToCylinderVS_GS_PS);
-// 	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
+	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
+// 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+// 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 
-// 	pCircle->SetCameraMatrix(/*mCamera **/ CameraZoom());
+	
+	SetObjectMatrix(DirectX::XMMatrixIdentity());
+
+	//model/world
+	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
+	//model = DirectX::XMMatrixRotationZ((timer.TotalTime())) * DirectX::XMMatrixTranslation(0.5f, -0.5f, 0.0f) ;
+	//reverse reading order
+	model = DirectX::XMMatrixRotationZ((timer.TotalTime())) * DirectX::XMMatrixTranslation(-1.5f, 1.5f, 0.0f) ;
+
+	//move the camera
+	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+// 	view = DirectX::XMMatrixTranslation(-2.5f, 0.5f, 0.0f);
+
+	//projection
+	DirectX::XMMATRIX projection = GetPerspectiveProjection();
+
+	//learnopengl camera
+	DirectX::FXMMATRIX GLCamera = GetCamera();
+
+	//reversed order from opengl
+	DirectX::XMMATRIX clipMatrix = model * view * GLCamera * projection ;
+
+
+	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
 // 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pCircle->BindAndDraw(wnd.GetGraphics(), pCircle->GetVertices(), 0u);
+	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 
@@ -455,12 +479,15 @@ DirectX::XMMATRIX App::CameraZoom() const noexcept
 	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
 }
 
-DirectX::XMMATRIX App::CalculateProjection() noexcept
+DirectX::XMMATRIX App::GetPerspectiveProjection() noexcept
 {
-	SetObjectMatrix(DirectX::XMMatrixIdentity()); //initialize with nothing;
-	return   mCamera * DirectX::XMMatrixPerspectiveFovLH(((FOV / 360.0f) * DirectX::XM_2PI) * 0.75f, screenAspect, 0.1f, 1000.0f);
+
+	return   DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PI * 0.25f, screenAspect, 1.0f, 1000.0f);
+
+// 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
 
 }
+
 
 
 
@@ -541,8 +568,25 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 	target = DirectX::XMVectorZero();
 	up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	mCamera = in_matrix * DirectX::XMMatrixLookAtLH(pos, target, up);
+	mCamera = DirectX::XMMatrixLookAtLH(pos, target, up);
 
+}
+DirectX::XMMATRIX App::GetCamera() noexcept
+{
+	//for arithmetics
+	using namespace DirectX;
+
+	DirectX::FXMVECTOR cameraPos = { 0.0f, 0.0f, -6.0f };
+	DirectX::FXMVECTOR cameraTarget = { 0.0f, 0.0f, 0.0f };
+	DirectX::FXMVECTOR cameraDirection = DirectX::XMVector4Normalize(cameraPos - cameraTarget);
+
+	DirectX::FXMVECTOR up = { 0.0f, 1.0f, 0.0f };
+	DirectX::FXMVECTOR cameraRight = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(up, cameraDirection));
+
+	DirectX::FXMVECTOR cameraUp = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(cameraDirection, cameraRight));
+
+	DirectX::FXMMATRIX view = DirectX::XMMatrixLookAtLH(cameraPos, cameraTarget, cameraUp);
+	return view;
 }
 
 App::~App()

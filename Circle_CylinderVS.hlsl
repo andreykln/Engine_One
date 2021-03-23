@@ -1,7 +1,7 @@
 
 cbuffer CBPerObject : register(b0)
 {
-    float4x4 gWorld;
+     float4x4 gWorld;
     float4x4 gWorldInvTranspose;
     float4x4 gWorldViewProj;
 };
@@ -21,6 +21,6 @@ VertexOut main(VertexIN vin)
 {
     VertexOut vout;
     vout.pos = mul(float4(vin.pos, 1.0f), gWorldViewProj);
-   
+    //vout.pos = mul(gWorldViewProj, float4(vin.pos, 1.0f) );
     return vout;
 }

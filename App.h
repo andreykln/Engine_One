@@ -33,7 +33,7 @@ public:
 	void DepthComplexityStencilCreate();
 
 	DirectX::XMMATRIX CameraZoom() const noexcept;
-	DirectX::XMMATRIX CalculateProjection() noexcept;
+	DirectX::XMMATRIX GetPerspectiveProjection() noexcept;
 private:
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -73,8 +73,11 @@ private:
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
-	//for movement around object's matrix
+	//Camera from Frank Luna's book
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
+	//from LearnOpenGL
+	DirectX::XMMATRIX GetCamera() noexcept;
+
 	DirectX::XMFLOAT3 wEyePosition;
 	DirectX::XMMATRIX mCamera;
 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
