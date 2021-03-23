@@ -346,6 +346,9 @@
     <FxCompile Include="Circle_CylinderPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="Circle_CylinderGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

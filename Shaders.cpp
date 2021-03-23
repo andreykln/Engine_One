@@ -21,7 +21,8 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_Init(&pTreeBillboardGS, L"Shaders\\Geometry\\TreeBillboardGS.cso");
 	PS_Init(&pTreeBillboardPS, L"Shaders\\Pixel\\TreeBillboardPS.cso");
 
-	VS_IL_Init(&pCirletoCylinderVS, IL.positionColorIL, &pCirletoCylinderIL, IL.nPosition_Color, L"Shaders\\Vertex\\Circle_CylinderVS.cso");
+	VS_IL_Init(&pCirletoCylinderVS, IL.positonIL, &pCirletoCylinderIL, IL.nPositon, L"Shaders\\Vertex\\Circle_CylinderVS.cso");
+	GS_Init(&pCircletoCylinderGS, L"Shaders\\Geometry\\Circle_CylinderGS.cso");
 	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
 }
 
@@ -143,6 +144,11 @@ void Shaders::BindGS(ShaderPicker shader)
 	case ShaderPicker::TreeBillboardVS_PS_GS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pTreeBillboardGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CircleToCylinderVS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pCircletoCylinderGS, nullptr, 0u);
 		break;
 	}
 	default:

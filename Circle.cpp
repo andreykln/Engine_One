@@ -5,7 +5,6 @@ Circle::Circle(Graphics& gfx)
 	struct Lines
 	{
 		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT4 col;
 	};
 	std::vector<Lines> circleVertices;
 	circleVertices.resize(segments);
@@ -18,9 +17,8 @@ Circle::Circle(Graphics& gfx)
 	for (UINT i = 0; i < segments; i++)
 	{
 		circleVertices[i].pos.x = sin(angle) * radius;
-		circleVertices[i].pos.y = cos(angle) * radius;
-		circleVertices[i].pos.z = 0.0f;
-		circleVertices[i].col = DirectX::XMFLOAT4{ 0.5f, 0.5f, 0.5f, 1.0f };
+		circleVertices[i].pos.y = 0.0f;
+		circleVertices[i].pos.z = cos(angle) * radius;
 		angle += alpha;
 	}
 	//circle won't connects, so connect last vertex with the first one manually
@@ -41,7 +39,7 @@ Circle::Circle(Graphics& gfx)
 
 DirectX::XMMATRIX Circle::GetTransform() const noexcept
 {
-	//using scaling for circumwent shitty matrix usage, it should fix itself later
+	//using scaling for circumvent shitty matrix usage, it should fix itself later
 	return DirectX::XMMatrixScaling(0.75f, 1.0f, 1.0f);
 }
 

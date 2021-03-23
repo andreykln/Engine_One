@@ -13,7 +13,7 @@ App::App()
 	pCircle = new Circle(wnd.GetGraphics());
 
 
-// 	CreateBox();
+	CreateBox();
 // 	ShapesDemoCreateShapes();
 // 	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
@@ -35,19 +35,20 @@ void App::DoFrame()
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
 // 	DrawHillsWithWaves();
-// 	DrawBox();
+	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
 
-	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
-	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
+// 	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
+// 	pShaders->BindGS(ShaderPicker::CircleToCylinderVS_GS_PS);
+// 	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
 
 // 	pCircle->SetCameraMatrix(/*mCamera **/ CameraZoom());
-	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pCircle->BindAndDraw(wnd.GetGraphics(), pCircle->GetVertices(), 0u);
+// 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pCircle->BindAndDraw(wnd.GetGraphics(), pCircle->GetVertices(), 0u);
 
 
 
