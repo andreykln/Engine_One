@@ -83,6 +83,16 @@ private:
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	//from LearnOpenGL
 	DirectX::XMMATRIX GetCamera() noexcept;
+	DirectX::XMVECTOR GetCameraFront(int xPos, int yPos) noexcept;
+	float lastX = 0.0f;
+	float lastY = 0.0f;
+	float yaw = 45.5f;
+	float pitch = 0.0f;
+	bool firstMouse = true;
+	float GetYaw();
+	float GetPitch();
+
+
 
 	DirectX::XMFLOAT3 wEyePosition;
 	DirectX::XMMATRIX mCamera;
