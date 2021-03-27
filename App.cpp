@@ -53,9 +53,8 @@ void App::DoFrame()
 
 	//model/world
 	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
-	//model = DirectX::XMMatrixRotationZ((timer.TotalTime())) * DirectX::XMMatrixTranslation(0.5f, -0.5f, 0.0f) ;
 	//reverse reading order
-	model = DirectX::XMMatrixRotationZ((timer.TotalTime())) /** DirectX::XMMatrixTranslation(-1.5f, 1.5f, 0.0f) */;
+// 	model = DirectX::XMMatrixRotationZ((timer.TotalTime())) /** DirectX::XMMatrixTranslation(-1.5f, 1.5f, 0.0f) */;
 
 
 	//projection
@@ -509,14 +508,7 @@ DirectX::XMMATRIX App::CameraZoom() const noexcept
 
 DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
 {
-
-	if (in_FOV < 1.0f)
-		FOV = 1.0f;
-	if (in_FOV > 45.0f)
-		FOV = 45.0f;
-	FOV = in_FOV;
-
-	return   DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 1.0f, 1000.0f);
+	return   DirectX::XMMatrixPerspectiveFovLH(0.25f * DirectX::XM_PI, screenAspect, 1.0f, 1000.0f);
 
 // 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
 

@@ -7,12 +7,12 @@ Circle::Circle(Graphics& gfx)
 		DirectX::XMFLOAT3 pos;
 	};
 	std::vector<Lines> circleVertices;
-	geoGenerator.CreateBox(1.0f, 1.0f, 1.0f, mesh);
+// 	geoGenerator.CreateBox(1.0f, 1.0f, 1.0f, mesh);
 
 	circleVertices.resize(segments);
 	float offset = 0.5f;
 	circleVertices[0].pos = DirectX::XMFLOAT3{ offset, 0.0f, 0.0f };
-	circleVertices[1].pos = DirectX::XMFLOAT3{ 0.0f, offset, 0.0f };
+	circleVertices[1].pos = DirectX::XMFLOAT3{ 0.0f,offset, 0.0f };
 	circleVertices[2].pos = DirectX::XMFLOAT3{ -offset, 0.0f, 0.0f };
 // 	circleVertices[3].pos = DirectX::XMFLOAT3{ -offset, 0.0f, 0.0f };
 
@@ -31,7 +31,7 @@ Circle::Circle(Graphics& gfx)
 // 	//with big enough amount of vertices (200+) this is not noticeable
 // 	circleVertices[segments - 1].pos = circleVertices[0].pos;
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, mesh.vertices, L"CirclePositoins_");
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, circleVertices, L"CirclePositoins_");
 	AddBind(pVertexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -46,7 +46,7 @@ Circle::Circle(Graphics& gfx)
 	indices[2] = 0;
 
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);
 
 
