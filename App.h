@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "DrawableBase.h"
 #include "Shaders.h"
+#include "Camera.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -18,6 +19,7 @@ public:
 	int Go();
 	void DebugTextToTitle();
 	void ScrollWheelCounter();
+	float Scroll();
 	void CalculateFrameStats();
 	void CameraMove();
 	void TwoTestCubes() noexcept;
@@ -32,13 +34,12 @@ public:
 	void DepthComplexityStencilDraw();
 	void DepthComplexityStencilCreate();
 
+
 	DirectX::XMMATRIX CameraZoom() const noexcept;
-	DirectX::XMMATRIX GetPerspectiveProjection() noexcept;
+	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 private:
-	DirectX::XMVECTOR camPos{ 0.0f, 0.0f, -6.0f };
-	DirectX::XMVECTOR camFront{ 0.0f, 0.0f, 5.0f };
-	DirectX::XMVECTOR camUp{ 0.0f, 1.0f, 0.0f };
-	DirectX::XMMATRIX GLCamera;
+
+	DirectX::XMMATRIX viewMatrix;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -48,6 +49,8 @@ private:
 	Timer timer;
 	RenderStates rStates;
 	Shape* pShapes;
+
+	Camera camera;
 
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
@@ -103,10 +106,8 @@ private:
 
 	UINT stencilRef = 0;
 
-	int test = 0;
-	const float FOV = 90.0f;
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-	float zoom = 0.0f;
+	float zoom = 45.0f;
 	float colors[4]{};
 	const float camera_move_step = 0.05f;
 	const float axis_x = -10.0f;

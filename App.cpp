@@ -59,31 +59,32 @@ void App::DoFrame()
 
 
 	//projection
-	DirectX::XMMATRIX projection = GetPerspectiveProjection();
+	DirectX::XMMATRIX projection = GetPerspectiveProjection(Scroll());
 
 	//learnopengl camera
-	GLCamera = GetCamera();
-
+	camera.ProcessMouseMovement(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed());
+	camera.ProcessKeyboard(timer.DeltaTime());
+	viewMatrix = camera.GetViewMatrix();
 	//reversed order from opengl
-	DirectX::XMMATRIX clipMatrix = model * GLCamera * projection ;
+	DirectX::XMMATRIX clipMatrix = model * viewMatrix * projection ;
 
 
 	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
 // 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
 
-
+// 	camera.GetViewMatrix();
 	model = DirectX::XMMatrixRotationZ((-timer.TotalTime())) * DirectX::XMMatrixTranslation(1.5f, 1.5f, 0.0f);
-	clipMatrix = model * GLCamera * projection;
+	clipMatrix = model * viewMatrix * projection;
 
 	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
 	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
 
 
-	ScrollWheelCounter();
+// 	ScrollWheelCounter();
 	CalculateFrameStats();
 
-	DebugTextToTitle();
+// 	DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 
@@ -132,6 +133,29 @@ void App::ScrollWheelCounter()
 			break;
 		}
 	}
+}
+
+float App::Scroll()
+{
+	while (!wnd.mouse.IsEmpty())
+	{
+		const Mouse::Event e = wnd.mouse.Read();
+		switch (e.GetType())
+		{
+		case Mouse::Event::Type::MWheelUp:
+		{
+			zoom += 0.1f;
+		}
+		break;
+
+		case Mouse::Event::Type::MWheelDown:
+		{
+			zoom -= 0.1f;
+		}
+		break;
+		}
+	}
+	return zoom;
 }
 
 void App::CalculateFrameStats()
@@ -483,10 +507,16 @@ DirectX::XMMATRIX App::CameraZoom() const noexcept
 	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
 }
 
-DirectX::XMMATRIX App::GetPerspectiveProjection() noexcept
+DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
 {
 
-	return   DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PI * 0.25f, screenAspect, 1.0f, 1000.0f);
+	if (in_FOV < 1.0f)
+		FOV = 1.0f;
+	if (in_FOV > 45.0f)
+		FOV = 45.0f;
+	FOV = in_FOV;
+
+	return   DirectX::XMMatrixPerspectiveFovLH(FOV, screenAspect, 1.0f, 1000.0f);
 
 // 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
 
@@ -575,95 +605,7 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 	mCamera = DirectX::XMMatrixLookAtLH(pos, target, up);
 
 }
-DirectX::XMMATRIX App::GetCamera() noexcept
-{
-	//for vector arithmetics
-	using namespace DirectX;
 
-	DirectX::XMVECTOR cameraPos = { 0.0f, 0.0f, -6.0f };
-	DirectX::XMVECTOR cameraTarget = { 0.0f, 0.0f, 0.0f };
-	DirectX::XMVECTOR cameraReverseDirection = DirectX::XMVector4Normalize(cameraPos - cameraTarget);
-
-	DirectX::XMVECTOR up = { 0.0f, 1.0f, 0.0f };
-	DirectX::XMVECTOR cameraRight = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(up, cameraReverseDirection));
-
-	DirectX::XMVECTOR cameraUp = DirectX::XMVector4Normalize(DirectX::XMVector3Cross(cameraReverseDirection, cameraRight));
-
-	//rotational cam
-	const float radius = 10.0f;
-	float camX = sin(timer.TotalTime()) * radius;
-	float camZ = cos(timer.TotalTime()) * radius;
-	DirectX::FXMVECTOR camRotatePos{ camX, 0.0f, camZ };
-	DirectX::FXMMATRIX viewAround = DirectX::XMMatrixLookAtLH(camRotatePos, cameraTarget, cameraUp);
-	//default cam
-	DirectX::FXMMATRIX view = DirectX::XMMatrixLookAtLH(cameraPos, cameraTarget, cameraUp);
-
-	//movement cam
-	const float cameraSpeed = 2.5f * timer.DeltaTime();
-	if (GetAsyncKeyState('W') & 0x8000)
-	{
-		camPos += cameraSpeed * camFront;
-	}
-	if (GetAsyncKeyState('S') & 0x8000)
-	{
-		camPos -= cameraSpeed * camFront;
-	}
-	if (GetAsyncKeyState('D') & 0x8000)
-	{
-		camPos -= DirectX::XMVector4Normalize(DirectX::XMVector3Cross(camFront, camUp)) * cameraSpeed;
-	}
-	if (GetAsyncKeyState('A') & 0x8000)
-	{
-		camPos += DirectX::XMVector4Normalize(DirectX::XMVector3Cross(camFront, camUp)) * cameraSpeed;
-	}
-	DirectX::FXMMATRIX viewMov = 
-		DirectX::XMMatrixLookAtLH(camPos, camPos + GetCameraFront(wnd.mouse.GetPosX(), wnd.mouse.GetPosY()), camUp);
-	//GetCameraFront(wnd.mouse.GetPosX(), wnd.mouse.GetPosY())
-
-	return viewMov;
-}
-
-DirectX::XMVECTOR App::GetCameraFront(int xPos, int yPos) noexcept
-{
-	if (firstMouse)
-	{
-		lastX = xPos;
-		lastY = yPos;
-		firstMouse = false;
-	}
-
-	float xOffset = (float)xPos - (float)lastX;
-	float yOffset = (float)yPos - (float)lastY;
-	lastX = xPos;
-	lastY = yPos;
-
-	const float sensitivity = 0.01f;
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-
-	yaw += xOffset;
-	pitch += yOffset;
-
-	if (pitch > 89.0f)
-	{
-		pitch = 89.0f;
-	}
-	if (pitch < -89.0f)
-	{
-		pitch = -89.0f;
-	}
-
-	//reset to original position
-	if (wnd.mouse.IsLeftPressed())
-	{
-		yaw = 45.5f;
-		pitch = 0.0f;
-	}
-	//is this multiplication necessary?
-	DirectX::XMVECTOR direction{ -cos(yaw) * cos(pitch), -sin(pitch), sin(yaw) * cos(pitch) };
-	camFront = DirectX::XMVector3Normalize(direction);
-	return camFront;
-}
 
 float App::GetYaw()
 {
