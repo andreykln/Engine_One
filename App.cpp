@@ -10,13 +10,13 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 	pShaders = new Shaders(wnd.GetGraphics());
 
-	pCircle = new Circle(wnd.GetGraphics());
+// 	pCircle = new Circle(wnd.GetGraphics());
 
 
 
 // 	CreateBox();
 // 	ShapesDemoCreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	MirrorDemoCreate();
 // 	LightningCreate();
 // 	DepthComplexityStencilCreate();
@@ -35,50 +35,31 @@ void App::DoFrame()
 // 
 // 	ShapesDemoDrawShapes();
 // 	MirrorDemoDraw();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 // 	DrawBox();
 // 	LightningDraw();
 // 	DepthComplexityStencilDraw();
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
+	//Camera testing
 
-	pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
-// 	pShaders->BindGS(ShaderPicker::CircleToCylinderVS_GS_PS);
+	/*pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
 	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
-// 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-// 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
-
-	
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-
 	//model/world
-	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
-	//reverse reading order
-// 	model = DirectX::XMMatrixRotationZ((timer.TotalTime())) /** DirectX::XMMatrixTranslation(-1.5f, 1.5f, 0.0f) */;
-
-
-	//projection
+	model = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX projection = GetPerspectiveProjection(Scroll());
-
-	//learnopengl camera
 	camera.ProcessMouseMovement(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed());
 	camera.ProcessKeyboard(timer.DeltaTime());
 	viewMatrix = camera.GetViewMatrix();
 	//reversed order from opengl
 	DirectX::XMMATRIX clipMatrix = model * viewMatrix * projection ;
-
-
 	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
-// 	pCircle->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
-
-// 	camera.GetViewMatrix();
 	model = DirectX::XMMatrixRotationZ((-timer.TotalTime())) * DirectX::XMMatrixTranslation(1.5f, 1.5f, 0.0f);
 	clipMatrix = model * viewMatrix * projection;
-
 	pCircle->UpdateVSMatrices(wnd.GetGraphics(), clipMatrix);
-	pCircle->BindAndDrawIndexed(wnd.GetGraphics());
-
+	pCircle->BindAndDrawIndexed(wnd.GetGraphics());*/
+	
 
 // 	ScrollWheelCounter();
 	CalculateFrameStats();
@@ -197,41 +178,47 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+// 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	pHills->SetCameraMatrix(mCamera * CameraZoom());
-	pHills->Update(timer.TotalTime());
+	camera.ProcessMouseMovement(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed());
+	camera.ProcessKeyboard(timer.DeltaTime());
+	viewMatrix = camera.GetViewMatrix();
+	viewMatrix *= GetPerspectiveProjection(0.25f * DirectX::XM_PI);
+// 	pHills->SetCameraMatrix(mCamera * CameraZoom());
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), offsetForHillsWithWaves, viewMatrix);
+// 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-	SetObjectMatrix(offsetForHillsWithWaves);
+// 	SetObjectMatrix(offsetForHillsWithWaves);
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
-	pWaves->SetCameraMatrix(mCamera * CameraZoom());
-	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
-	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	SetObjectMatrix(DirectX::XMMatrixIdentity());
+// 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
+// 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
+// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
-	pBox->SetCameraMatrix(mCamera * CameraZoom());
-	pBox->Update(timer.TotalTime());
-	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+// 	pBox->SetCameraMatrix(mCamera * CameraZoom());
+// 	pBox->Update(timer.TotalTime());
+// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 
-	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
-	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
-	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
-	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
-	pBillboards->Update(timer.TotalTime());
-	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
-	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+// 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+// 	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+// 	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+// 	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
+// 	pBillboards->Update(timer.TotalTime());
+// 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
+// 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
@@ -241,9 +228,9 @@ void App::DrawHillsWithWaves()
 void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
-	pWaves = new WaveSurface(wnd.GetGraphics());
-	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
-	pBillboards = new TreeBillboard(wnd.GetGraphics());
+// 	pWaves = new WaveSurface(wnd.GetGraphics());
+// 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
+// 	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
 
 void App::CreateBox()

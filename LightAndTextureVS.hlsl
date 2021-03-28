@@ -1,10 +1,10 @@
 
 cbuffer CBPerObject : register(b0)
 {
-    float4x4 gWorld;
-    float4x4 gWorldInvTranspose;
-    float4x4 gWorldViewProj;
-    float4x4 gTexTransform;
+    float4x4 world;
+    float4x4 worldViewProjection;
+    float4x4 worldInverseTranspose;
+    float4x4 texTransform;
 };
 
 struct VertexIn
@@ -27,12 +27,12 @@ PSstruct main(VertexIn vin)
 {
     PSstruct vout;
     // Transform to world space.
-    vout.PosW = mul(float4(vin.position, 1.0f), gWorld).xyz;
-    vout.NormalW = mul(vin.normal, (float3x3) gWorldInvTranspose);
+    vout.PosW = mul(float4(vin.position, 1.0f), world).xyz;
+    vout.NormalW = mul(vin.normal, (float3x3) worldInverseTranspose);
 		
 	// Transform to homogeneous clip space.
-    vout.PosH = mul(float4(vin.position, 1.0f), gWorldViewProj);
-    vout.Tex = mul(float4(vin.texCoord, 0.0f, 1.0f), gTexTransform).xy;
+    vout.PosH = mul(float4(vin.position, 1.0f), worldViewProjection);
+    vout.Tex = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform).xy;
     //vout.Tex = vin.texCoord;
     
 

@@ -38,7 +38,7 @@ public:
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 private:
-
+	DirectX::XMMATRIX model;
 	DirectX::XMMATRIX viewMatrix;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -76,17 +76,14 @@ private:
   	ShapesDemo shapes;
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
-	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
-	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
-	const DirectX::XMMATRIX offsettest = DirectX::XMMatrixTranslation(-0.6f, 0.0f, 0.0f);
+// 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
+	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, 4.0f, -10.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();
 	//Camera from Frank Luna's book
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	//from LearnOpenGL
-	DirectX::XMMATRIX GetCamera() noexcept;
-	DirectX::XMVECTOR GetCameraFront(int xPos, int yPos) noexcept;
 	float lastX = 0.0f;
 	float lastY = 0.0f;
 	float yaw = 45.5f;

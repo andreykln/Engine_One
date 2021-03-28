@@ -115,10 +115,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddBind(pTopology);
 
 
-	VertexConstantBuffer<CBPerObjectTexture>* pPerObject =
-		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices,  0u, 1u);
-	pCopyVCBMatricesHills = pPerObject->GetVertexConstantBuffer();
-	AddBind(pPerObject);
+	VertexConstantBuffer<CB_VS_Transform>* pVSCB = new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+	pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
+	AddBind(pVSCB);
+
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPerFrameCB =
 		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -195,7 +195,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		// Circle light over the land surface.
-		pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());
+		/*pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());
 		pointLight.position.z = 70.0f * std::sinf(0.2f * GetAlpha());
 		pointLight.position.y = MathHelper::Max(GetHeight(pointLight.position.x, pointLight.position.z), -3.0f) + 10.0f;
 		// The spotlight takes on the camera position and is aimed in the
@@ -206,18 +206,18 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		DirectX::XMVECTOR flashLightvector = -DirectX::XMVector3Normalize(target - pos);
 		//to move light a bit up
 		flashLightvector.m128_f32[0] += 0.2f;
-		flashLightvector.m128_f32[2] += 0.03f;
+		flashLightvector.m128_f32[2] += 0.03f;*/
 
-		DirectX::XMStoreFloat3(&spotLight.direction, flashLightvector);
+		//DirectX::XMStoreFloat3(&spotLight.direction, flashLightvector);
 
 		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		/*DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 		CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 		object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		object->gTexTransform = grassScaling;
-		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);*/
 
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
@@ -245,12 +245,12 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	else
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		/*DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 		CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 		object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
 		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gTexTransform = plateScaling;
+		object->gTexTransform = plateScaling;*/
 	
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 
@@ -270,6 +270,24 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
  	}
 }
 
+
+void Hills::UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX& in_world,
+	DirectX::XMMATRIX& in_worldViewProj)
+{
+	if (currentDemo == DemoSwitch::HillsDemo)
+	{
+		//TODO spotlight
+
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+		pMatrices->world = in_world;
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_worldViewProj);
+		pMatrices->texTransform = grassScaling;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+	}
+}
 
 float Hills::GetAlpha() const noexcept
 {

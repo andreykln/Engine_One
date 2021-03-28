@@ -10,13 +10,12 @@ public:
 	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
-	/*void SetWidth(float in_width) noexcept;
-	void SetDepth(float in_depth) noexcept;*/
 	DirectX::XMFLOAT3 GetHillNormal(float x, float z) const;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
+	void UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX& in_world, DirectX::XMMATRIX& in_worldViewProj);
 	float GetAlpha() const noexcept;
 private:
 
@@ -31,6 +30,8 @@ private:
 // 		float padding{};
 // 		Material gMaterial;
 // 	};
+	CB_VS_Transform transformMatrices;
+
 	CBPerFrame constLights;
 	CBPerObjectTexture constMatrices;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
@@ -56,7 +57,7 @@ private:
 	Material landMat;
 	Material wavesMat;
 	std::vector<TreePointSprite> treesPositions;
-	//fir sin terrain
+	//for sin terrain
 // 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
 // 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30)); //for terrain
 

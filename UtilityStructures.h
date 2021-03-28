@@ -11,6 +11,17 @@ struct Vertex_IA
 	DirectX::XMFLOAT2 tex;
 };
 
+struct CB_VS_Transform
+{
+	CB_VS_Transform() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+};
+
+
+
 struct TreePointSprite
 {
 	TreePointSprite() : pos(0.0f, 0.0f, 0.0f), size(0.0f, 0.0f) {};
@@ -37,7 +48,7 @@ struct CBPerFrame
 	DirectionalLight dirLight[3];
 	Material objectMaterial;
 	DirectX::XMFLOAT3 cbEyePosition;
-	int numLights = {3};
+	int numLights = { 3 };
 };
 
 struct CBPerFrameTexArray
