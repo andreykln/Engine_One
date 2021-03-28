@@ -87,7 +87,7 @@ int App::Go()
 void App::DebugTextToTitle()
 {
 	std::ostringstream oss;
-	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY() << " Fov: " << camera.GetFOV();
+	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY();
 	wnd.SetTitle(oss.str().c_str());
 }
 
@@ -133,6 +133,8 @@ void App::TwoTestCubes() noexcept
 void App::DrawHillsWithWaves()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
+
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
 
@@ -156,12 +158,10 @@ void App::DrawHillsWithWaves()
 // 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
-// 	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
-// 	pBox->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBox->Update(timer.TotalTime());
-// 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
+	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 // 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
@@ -181,7 +181,7 @@ void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 // 	pWaves = new WaveSurface(wnd.GetGraphics());
-// 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
 // 	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
 

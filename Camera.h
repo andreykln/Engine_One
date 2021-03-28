@@ -1,9 +1,11 @@
 #pragma once
 #include "Window.h"
 
-//default values
+
 extern const short resolution_width;
 extern const short resolution_height;
+
+//default values
 const float YAW = 45.5f;
 const float PITCH = 0.0f;
 const float SPEED = 20.5f;
@@ -28,11 +30,6 @@ public:
 		pitch = _pitch;
 		UpdateCameraVectors();
 	}
-
-	 float GetFOV()
-	 {
-		 return fov;
-	 }
 
 	 DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, Window& wnd)
 	 {

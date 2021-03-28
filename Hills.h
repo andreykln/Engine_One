@@ -17,7 +17,6 @@ public:
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
 	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	DirectX::XMMATRIX GetHillsOffset() const;
-	float GetAlpha() const noexcept;
 private:
 
 	//TEMPORARY DISABLE IT, DON'T NEED SPOT LIGHTS

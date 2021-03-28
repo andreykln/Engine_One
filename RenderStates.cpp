@@ -9,6 +9,7 @@ ID3D11RasterizerState* RenderStates::WireframeRS = nullptr;
 ID3D11RasterizerState* RenderStates::NoCullRS = nullptr;
 ID3D11RasterizerState* RenderStates::CullClockwiseRS = nullptr;
 ID3D11RasterizerState* RenderStates::SolidFillRS = nullptr;
+ID3D11RasterizerState* RenderStates::CullCounterClockwiseRS = nullptr;
 
 ID3D11BlendState* RenderStates::AlphaToCoverageBS = nullptr;
 ID3D11BlendState* RenderStates::TransparentBS = nullptr;
@@ -77,6 +78,17 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	cullClockwiseDesc.DepthClipEnable = true;
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRasterizerState(&cullClockwiseDesc, &CullClockwiseRS));
+
+	////Cull counterCloskwise
+	D3D11_RASTERIZER_DESC cullCounterClockwiseDesc;
+	ZeroMemory(&cullCounterClockwiseDesc, sizeof(D3D11_RASTERIZER_DESC));
+	cullCounterClockwiseDesc.FillMode = D3D11_FILL_SOLID;
+	cullCounterClockwiseDesc.CullMode = D3D11_CULL_FRONT;
+	cullCounterClockwiseDesc.FrontCounterClockwise = true;
+	cullCounterClockwiseDesc.DepthClipEnable = true;
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRasterizerState(&cullCounterClockwiseDesc, &CullCounterClockwiseRS));
+
 
 	//
 	// AlphaToCoverageBS
@@ -277,6 +289,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(WireframeRS);
 	ReleaseID3D(NoCullRS);
 	ReleaseID3D(CullClockwiseRS);
+	ReleaseID3D(CullCounterClockwiseRS);
 	ReleaseID3D(SolidFillRS);
 
 	ReleaseID3D(AlphaToCoverageBS);

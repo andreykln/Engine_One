@@ -294,10 +294,6 @@ DirectX::XMMATRIX Hills::GetHillsOffset() const
 	return offsetForHillsWithWaves;
 }
 
-float Hills::GetAlpha() const noexcept
-{
-	return alpha;
-}
 
 float Hills::GetHeight(float x, float z) const
 {
