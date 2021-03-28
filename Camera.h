@@ -40,7 +40,10 @@ public:
 		 perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
 		 return viewMatrix * perspectiveProjection;
 	 }
-
+	 DirectX::XMVECTOR GetCameraPosition() const
+	 {
+		 return positon;
+	 }
 
 private:
 	DirectX::XMMATRIX GetViewMatrix()

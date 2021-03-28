@@ -58,9 +58,9 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	AddBind(pTopology);
 
 
-	VertexConstantBuffer<CBPerObjectTexture>* pVCB =
-		new VertexConstantBuffer<CBPerObjectTexture>(gfx, perObjectMatrices, 0u, 1u);
-	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); //for updating every frame
+	VertexConstantBuffer<CB_VS_Transform>* pVCB =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); 
 	AddBind(pVCB);
 
 	PixelShaderConstantBuffer<CBPerFrame>* pPSCB =
@@ -93,9 +93,8 @@ void WaveSurface::Update(float dt) noexcept
 	alpha = dt;
 }
 
-void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx, DirectX::XMFLOAT3& in_eyePosition)
+void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 {
-	eyePosition = in_eyePosition;
 	alpha = dt;
 	// every quarter second, generate a random wave
 	static float t_base{};
@@ -152,5 +151,22 @@ void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numLights = 3;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPixelConstantBuffer, 0u);
+
+}
+
+void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	waterTextureOffset.y += 0.05f * alpha;
+	waterTextureOffset.x += 0.1f * alpha;
+	wavesOffset = DirectX::XMMatrixTranslation(waterTextureOffset.x, waterTextureOffset.y, 0.0f);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* object = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	object->world = in_world;
+	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	object->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	object->texTransform = wavesScale * wavesOffset;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 
 }

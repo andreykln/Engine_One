@@ -150,12 +150,13 @@ void App::DrawHillsWithWaves()
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
 // 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
-// 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
-// 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 // 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
@@ -180,7 +181,7 @@ void App::DrawHillsWithWaves()
 void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
-// 	pWaves = new WaveSurface(wnd.GetGraphics());
+	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
 // 	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
@@ -389,7 +390,7 @@ void App::DepthComplexityStencilDraw()
 
 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics(), wEyePosition);
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	SetObjectMatrix(DirectX::XMMatrixIdentity());
 

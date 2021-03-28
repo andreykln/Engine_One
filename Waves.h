@@ -19,11 +19,9 @@ public:
 	float GetTimeStep() const;
 	//return the solution at the i'th grid point
 	const DirectX::XMFLOAT3& operator[] (int i) const { return currSolution[i]; }
-
-	//returns the solution normal at the ith grid point
+	//returns the solution normal at the i'th grid point
 	const DirectX::XMFLOAT3& Normal(int i) { return normal[i]; }
-
-	//returns the unit tangent vector at the ith grid point in the local x-axis
+	//returns the unit tangent vector at the i'th grid point in the local x-axis
 	const DirectX::XMFLOAT3& Tangent(int i) { return tangent[i]; }
 
 	void Init(UINT m, UINT n, float dx, float dt, float speed, float damping);
@@ -34,9 +32,8 @@ private:
 	UINT numColumns{};
 	UINT vertexCount{};
 	UINT triangleCount{};
+
 	// Simulation constants we can precompute.
-
-
 	float timeStep;
 	float spatialStep;
 
