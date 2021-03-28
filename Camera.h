@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+
 //default values
 extern const short resolution_width;
 extern const short resolution_height;
@@ -7,20 +8,19 @@ const float YAW = 45.5f;
 const float PITCH = 0.0f;
 const float SPEED = 20.5f;
 const float SENSITIVITY = 0.009f;
-const float FOV = DirectX::XM_PI * 0.25;
+const float FOV_max = DirectX::XM_PI * 0.25;
+const float FOV_min = DirectX::XM_PI / 180.0f;
 const DirectX::XMVECTOR defaultFront{ 0.0f, 0.0f, 5.0f };
 const DirectX::XMVECTOR defaultPositon{ 0.0f, 0.0f, -6.0f };
 const DirectX::XMVECTOR defaultUp{ 0.0f, 1.0f, 0.0f };
 
-
-class Window;
 
 class Camera
 {
 public:
 	 Camera(DirectX::XMVECTOR _pos = DirectX::XMVECTOR{ 0.0f, 0.0f, -6.0f }, DirectX::XMVECTOR _up = DirectX::XMVECTOR{ 0.0f, 1.0f, 0.0f },
 	 	float _yaw = YAW, float _pitch = PITCH)
-	 	: front(DirectX::XMVECTOR{ 0.0f, 0.0f, 5.0f }), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV)
+	 	: front(DirectX::XMVECTOR{ 0.0f, 0.0f, 5.0f }), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV_max)
 {
 		positon = _pos;
 		worldUp = _up;
@@ -29,18 +29,23 @@ public:
 		UpdateCameraVectors();
 	}
 
-	 DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, float zoom)
+	 float GetFOV()
+	 {
+		 return fov;
+	 }
+
+	 DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, Window& wnd)
 	 {
 		 ProcessMouseMovement(xMouse, yMouse, isLeftPressed);
 		 ProcessKeyboard(deltaTime);
-		 ProcessMouseScroll(zoom);
+		 ProcessMouseScroll(wnd);
 		 viewMatrix = GetViewMatrix();
 		 perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
 		 return viewMatrix * perspectiveProjection;
 	 }
 
 
-
+private:
 	DirectX::XMMATRIX GetViewMatrix()
 	{
 		using namespace DirectX;
@@ -78,11 +83,12 @@ public:
 		//reset to original position
 		if (isLeftPressed)
 		{
-			yaw = 45.5f;
-			pitch = 0.0f;
+			yaw = YAW;
+			pitch = PITCH;
 			front = defaultFront;
 			positon = defaultPositon;
 			up = defaultUp;
+			fov = FOV_max;
 		}
 		UpdateCameraVectors();
 	}
@@ -109,17 +115,46 @@ public:
 		}
 	}
 
-	void ProcessMouseScroll(float zoom)
+	void ProcessMouseScroll(Window& wnd)
 	{
-		fov += zoom;
-		if (fov < 1.0f)
+		while (!wnd.mouse.IsEmpty())
 		{
-			fov = 1.0f;
+			const Mouse::Event e = wnd.mouse.Read();
+
+			switch (e.GetType())
+			{
+			case Mouse::Event::Type::MWheelUp:
+			{
+				fov += 0.1f;
+				if (fov > FOV_max)
+				{
+					fov = FOV_max;
+				}
+				break;
+			}
+			
+
+			case Mouse::Event::Type::MWheelDown:
+			{
+				fov -= 0.1f;
+				if (fov < FOV_min)
+				{
+					fov = FOV_min;
+				}
+				break;
+			}
+			}
+		}
+
+		/*fov = zoom;
+		if (fov < DirectX::XM_PI / 180.0f)
+		{
+			fov = DirectX::XM_PI / 180.0f;
 		}
 		if (fov > FOV)
 		{
 			fov = FOV;
-		}
+		}*/
 	}
 
 	void UpdateCameraVectors()
@@ -147,7 +182,7 @@ public:
 	//camera options
 	float movementSpeed = 0.0f;
 	float mouseSensitivity = 0.0f;
-	float fov = FOV;
+	float fov = FOV_max;
 	//mouse
 	float lastX = 0.0f;
 	float lastY = 0.0f;

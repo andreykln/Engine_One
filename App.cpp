@@ -61,7 +61,6 @@ void App::DoFrame()
 	pCircle->BindAndDrawIndexed(wnd.GetGraphics());*/
 	
 
-// 	ScrollWheelCounter();
 	CalculateFrameStats();
 
 // 	DebugTextToTitle();
@@ -88,55 +87,11 @@ int App::Go()
 void App::DebugTextToTitle()
 {
 	std::ostringstream oss;
-	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY() << " Yaw: " << GetYaw() <<
-		 " Pitch: " << GetPitch();
+	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY() << " Fov: " << camera.GetFOV();
 	wnd.SetTitle(oss.str().c_str());
 }
 
-void App::ScrollWheelCounter()
-{
-	while (!wnd.mouse.IsEmpty())
-	{
-		const Mouse::Event e = wnd.mouse.Read();
-		switch (e.GetType())
-		{
-			case Mouse::Event::Type::MWheelUp:
-			{
-				zoom += 0.1f;
-			}
-			break;
 
-			case Mouse::Event::Type::MWheelDown:
-			{
-				zoom -= 0.1f;
-			}
-			break;
-		}
-	}
-}
-
-float App::Scroll()
-{
-	while (!wnd.mouse.IsEmpty())
-	{
-		const Mouse::Event e = wnd.mouse.Read();
-		switch (e.GetType())
-		{
-		case Mouse::Event::Type::MWheelUp:
-		{
-			zoom += 0.1f;
-		}
-		break;
-
-		case Mouse::Event::Type::MWheelDown:
-		{
-			zoom -= 0.1f;
-		}
-		break;
-		}
-	}
-	return zoom;
-}
 
 void App::CalculateFrameStats()
 {
@@ -184,7 +139,7 @@ void App::DrawHillsWithWaves()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	viewProjectionMatrix = camera.GetViewProjection(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed(), timer.DeltaTime(), Scroll());
+	viewProjectionMatrix = camera.GetViewProjection(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed(), timer.DeltaTime(), wnd);
 
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
@@ -582,16 +537,6 @@ void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
 
 }
 
-
-float App::GetYaw()
-{
-	return yaw;
-}
-
-float App::GetPitch()
-{
-	return pitch;
-}
 
 App::~App()
 {

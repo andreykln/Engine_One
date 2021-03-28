@@ -18,8 +18,7 @@ public:
 	void DoFrame();
 	int Go();
 	void DebugTextToTitle();
-	void ScrollWheelCounter();
-	float Scroll();
+
 	void CalculateFrameStats();
 	void CameraMove();
 	void TwoTestCubes() noexcept;
@@ -103,7 +102,7 @@ private:
 	UINT stencilRef = 0;
 
 	const float screenAspect = float(resolution_width) / float(resolution_height);
-	float zoom = 45.0f;
+	float zoom = DirectX::XM_PI * 0.25f;
 	float colors[4]{};
 	const float camera_move_step = 0.05f;
 	const float axis_x = -10.0f;
