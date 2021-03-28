@@ -184,16 +184,13 @@ void App::DrawHillsWithWaves()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	camera.ProcessMouseMovement(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed());
-	camera.ProcessKeyboard(timer.DeltaTime());
-	viewMatrix = camera.GetViewMatrix();
-	viewMatrix *= GetPerspectiveProjection(0.25f * DirectX::XM_PI);
-// 	pHills->SetCameraMatrix(mCamera * CameraZoom());
-	pHills->UpdateVSMatrices(wnd.GetGraphics(), offsetForHillsWithWaves, viewMatrix);
+	viewProjectionMatrix = camera.GetViewProjection(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed(), timer.DeltaTime(), Scroll());
+
+
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
 // 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-// 	SetObjectMatrix(offsetForHillsWithWaves);
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);

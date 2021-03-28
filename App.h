@@ -38,8 +38,7 @@ public:
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 private:
-	DirectX::XMMATRIX model;
-	DirectX::XMMATRIX viewMatrix;
+	DirectX::XMMATRIX viewProjectionMatrix;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -77,7 +76,7 @@ private:
 
 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 // 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
-	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, 4.0f, -10.0f);
+	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
 
 	void ShapesDemoCreateShapes();
 	void ShapesDemoDrawShapes();

@@ -1,11 +1,13 @@
 #pragma once
 #include "Window.h"
 //default values
+extern const short resolution_width;
+extern const short resolution_height;
 const float YAW = 45.5f;
 const float PITCH = 0.0f;
-const float SPEED = 2.5f;
+const float SPEED = 20.5f;
 const float SENSITIVITY = 0.009f;
-const float ZOOM = 45.0f;
+const float FOV = DirectX::XM_PI * 0.25;
 const DirectX::XMVECTOR defaultFront{ 0.0f, 0.0f, 5.0f };
 const DirectX::XMVECTOR defaultPositon{ 0.0f, 0.0f, -6.0f };
 const DirectX::XMVECTOR defaultUp{ 0.0f, 1.0f, 0.0f };
@@ -18,7 +20,7 @@ class Camera
 public:
 	 Camera(DirectX::XMVECTOR _pos = DirectX::XMVECTOR{ 0.0f, 0.0f, -6.0f }, DirectX::XMVECTOR _up = DirectX::XMVECTOR{ 0.0f, 1.0f, 0.0f },
 	 	float _yaw = YAW, float _pitch = PITCH)
-	 	: front(DirectX::XMVECTOR{ 0.0f, 0.0f, 5.0f }), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), zoom(ZOOM)
+	 	: front(DirectX::XMVECTOR{ 0.0f, 0.0f, 5.0f }), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV)
 {
 		positon = _pos;
 		worldUp = _up;
@@ -26,6 +28,18 @@ public:
 		pitch = _pitch;
 		UpdateCameraVectors();
 	}
+
+	 DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, float zoom)
+	 {
+		 ProcessMouseMovement(xMouse, yMouse, isLeftPressed);
+		 ProcessKeyboard(deltaTime);
+		 ProcessMouseScroll(zoom);
+		 viewMatrix = GetViewMatrix();
+		 perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
+		 return viewMatrix * perspectiveProjection;
+	 }
+
+
 
 	DirectX::XMMATRIX GetViewMatrix()
 	{
@@ -95,12 +109,19 @@ public:
 		}
 	}
 
-	void ProcessMouseScroll(float yOffset)
+	void ProcessMouseScroll(float zoom)
 	{
-
+		fov += zoom;
+		if (fov < 1.0f)
+		{
+			fov = 1.0f;
+		}
+		if (fov > FOV)
+		{
+			fov = FOV;
+		}
 	}
 
-private:
 	void UpdateCameraVectors()
 	{
 		//calculate the new front vector
@@ -113,8 +134,8 @@ private:
 	}
 	
 
-
-
+	DirectX::XMMATRIX viewMatrix;
+	DirectX::XMMATRIX perspectiveProjection;
 	DirectX::XMVECTOR positon;
 	DirectX::XMVECTOR front;
 	DirectX::XMVECTOR up;
@@ -126,10 +147,12 @@ private:
 	//camera options
 	float movementSpeed = 0.0f;
 	float mouseSensitivity = 0.0f;
-	float zoom = 0.0f;
+	float fov = FOV;
 	//mouse
 	float lastX = 0.0f;
 	float lastY = 0.0f;
 	bool firstMouse = true;
+
+
 
 };

@@ -15,7 +15,8 @@ public:
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
-	void UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX& in_world, DirectX::XMMATRIX& in_worldViewProj);
+	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	DirectX::XMMATRIX GetHillsOffset() const;
 	float GetAlpha() const noexcept;
 private:
 
@@ -36,6 +37,7 @@ private:
 	CBPerObjectTexture constMatrices;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
+	const DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
 
 
 	DemoSwitch currentDemo;
@@ -57,13 +59,6 @@ private:
 	Material landMat;
 	Material wavesMat;
 	std::vector<TreePointSprite> treesPositions;
-	//for sin terrain
-// 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixTranslation(0.0f, -35.0f, 90.0f) *
-// 		DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-30)); //for terrain
-
-
-public:
-//	float alpha{};
 
 };
 

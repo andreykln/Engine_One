@@ -271,8 +271,8 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 }
 
 
-void Hills::UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX& in_world,
-	DirectX::XMMATRIX& in_worldViewProj)
+void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+	const DirectX::XMMATRIX& in_ViewProj)
 {
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
@@ -283,10 +283,15 @@ void Hills::UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX& in_world,
 		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
 		pMatrices->world = in_world;
 		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_worldViewProj);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 		pMatrices->texTransform = grassScaling;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 	}
+}
+
+DirectX::XMMATRIX Hills::GetHillsOffset() const
+{
+	return offsetForHillsWithWaves;
 }
 
 float Hills::GetAlpha() const noexcept
