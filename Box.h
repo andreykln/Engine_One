@@ -16,7 +16,7 @@ public:
 
 private:
 	CB_VS_Transform transformMatrices;
-	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(0.0f, -2.5f, 4.0f);
+	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(-5.0f, -3.5f, 4.0f);
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;

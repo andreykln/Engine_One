@@ -17,7 +17,7 @@ public:
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
-
+	DirectX::XMMATRIX GetWaveSurfaceOffset();
 private:
 	DirectX::XMFLOAT3 eyePosition;
 
@@ -32,6 +32,7 @@ private:
 	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 0.0f);
 	DirectX::XMFLOAT2 waterTextureOffset;
 	DirectX::XMMATRIX wavesOffset;
+	DirectX::XMMATRIX wavesSurfaceOffset = DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f);
 	GeometryGenerator::MeshData mesh;
 
 

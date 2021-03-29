@@ -151,18 +151,16 @@ void App::DrawHillsWithWaves()
 
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-
-// 	pWaves->SetCameraMatrix(mCamera * CameraZoom());
-	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	SetObjectMatrix(DirectX::XMMatrixIdentity());
-
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
+	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
+
 
 
 // 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
@@ -174,7 +172,7 @@ void App::DrawHillsWithWaves()
 // 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset isn't necessary?
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u); reset?
 
 }
 

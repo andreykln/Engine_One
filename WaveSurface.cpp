@@ -124,19 +124,9 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 
 void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-	waterTextureOffset.y += 0.05f * alpha;
-	waterTextureOffset.x += 0.1f * alpha;
-	wavesOffset = DirectX::XMMatrixTranslation(waterTextureOffset.x, waterTextureOffset.y, 0.0f);
+
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = wavesScale * wavesOffset;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
-
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPixelConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 	frame->cbEyePosition = eyePosition;
@@ -169,4 +159,9 @@ void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_wo
 	object->texTransform = wavesScale * wavesOffset;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 
+}
+
+DirectX::XMMATRIX WaveSurface::GetWaveSurfaceOffset()
+{
+	return wavesSurfaceOffset;
 }
