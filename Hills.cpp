@@ -242,7 +242,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 // 		frame->gSpotLight.direction = spotLight.direction;
 // 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
 	}
-	else
+	if(currentDemo == DemoSwitch::Shapesdemo)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 		/*DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
@@ -252,7 +252,7 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
 		object->gTexTransform = plateScaling;*/
 	
-		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+// 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
@@ -274,19 +274,18 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj)
 {
-	if (currentDemo == DemoSwitch::HillsDemo)
-	{
+
 		//TODO spotlight
 
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-		pMatrices->world = in_world;
-		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-		pMatrices->texTransform = grassScaling;
-		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
-	}
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = grassScaling;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+
 }
 
 DirectX::XMMATRIX Hills::GetHillsOffset() const

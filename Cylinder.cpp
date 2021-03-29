@@ -73,9 +73,9 @@ Cylinder::Cylinder(Graphics& gfx,
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<CBPerObjectTexture>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
-	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer();
 	AddBind(pVCBPerObject);
 
 
@@ -127,13 +127,13 @@ void Cylinder::Update(float dt) noexcept
 void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
+// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gTexTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrameTexArray* frame = reinterpret_cast<CBPerFrameTexArray*> (mappedData.pData);
@@ -153,6 +153,18 @@ void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 }
 
+
+void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+}
 
 void Cylinder::IncrementTexArrPos() noexcept
 {

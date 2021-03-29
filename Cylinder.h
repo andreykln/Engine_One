@@ -10,8 +10,12 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+
 	void IncrementTexArrPos() noexcept;
 	UINT GetTexArrPos() const noexcept;
+
+
 private:
 	struct Vertex_C
 	{
@@ -26,6 +30,8 @@ private:
 	CBPerFrame constLights;
 	CBPerFrameTexArray constLightsTexArr;
 	CBPerObjectTexture constMatrices;
+	CB_VS_Transform transformMatrices;
+
 	DemoSwitch demo;
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
