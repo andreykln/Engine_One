@@ -52,8 +52,8 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<CBPerObjectTexture>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
+	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
 	pCopyVCBMatricesGeoSphere = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
@@ -67,7 +67,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	AddBind(pFog);
 
 	std::wstring directory[1];
-	directory[0] = L"Textures\\water1.dds";
+	directory[0] = L"Textures\\ice.dds";
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 
@@ -88,14 +88,6 @@ void GeoSphere::Update(float dt) noexcept
 void GeoSphere::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesGeoSphere, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
-
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 
@@ -111,5 +103,17 @@ void GeoSphere::UpdateVertexConstantBuffer(Graphics& gfx)
 		frame->numLights = 3;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsGeoSphere, 0u);
 
+}
+
+void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesGeoSphere, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
 }
 

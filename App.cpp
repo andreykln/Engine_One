@@ -471,11 +471,11 @@ void App::ShapesDemoCreateShapes()
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
 	}
-// 
-// 	for (size_t i = 0; i < 10; i++)
-// 	{
-// 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u));
-// 	}
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u));
+	}
 }
 
 void App::ShapesDemoDrawShapes()
@@ -497,33 +497,26 @@ void App::ShapesDemoDrawShapes()
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-
-// 	SetObjectMatrix(shapes.Get_m_GridWorld() * shapes.GetCameraOffset());
-// 	pHills->SetCameraMatrix(mCamera * DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f) * CameraZoom());
-// 	pHills->Update(timer.TotalTime());
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition, pos, target);
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 	for (auto& x : cylinders)
 	{
-// 		SetObjectMatrix(*(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset());
 		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-// 		x->SetCameraMatrix(mCamera * CameraZoom());
 		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
  	
  	}
  	shapes.GetCylinderWorldArray() -= 10; //reset array position
-// 
-// 	for (auto& x : geoSpheres)
-// 	{
-// 		SetObjectMatrix(*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset());
-// 		x->SetCameraMatrix(mCamera * CameraZoom());
-// 		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 		x->BindAndDrawIndexed(wnd.GetGraphics());
-// 	}
-// 	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdateVertexConstantBuffer(wnd.GetGraphics());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
 }
 
 void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)

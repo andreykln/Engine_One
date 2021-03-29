@@ -211,14 +211,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 		//DirectX::XMStoreFloat3(&spotLight.direction, flashLightvector);
 
 		D3D11_MAPPED_SUBRESOURCE mappedData;
-		/*DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-		CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-		object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gTexTransform = grassScaling;
-		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);*/
-
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 		if (GetAsyncKeyState('0') & 0x8000)
@@ -245,15 +237,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	if(currentDemo == DemoSwitch::Shapesdemo)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;
-		/*DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-		CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-		object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-		object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-		object->gTexTransform = plateScaling;*/
-	
-// 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
-
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
 		if (GetAsyncKeyState('0') & 0x8000)
