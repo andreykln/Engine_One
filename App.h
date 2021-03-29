@@ -36,6 +36,7 @@ public:
 
 	DirectX::XMMATRIX CameraZoom() const noexcept;
 	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
+	DirectX::XMMATRIX GetViewProjectionCamera();
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;
 

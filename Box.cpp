@@ -42,7 +42,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 		constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	} 
-	if (currentDemo == DemoSwitch::DefaultBox)
+	if ( (currentDemo == DemoSwitch::HillsDemo))
 	{
 		constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
 		constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.651f, 0.5f, 0.392f, 1.0f);
@@ -93,9 +93,13 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	{
 		directory[0] = L"Textures\\LightGreenMarble.dds";
 	}
-	if (currentDemo == DemoSwitch::DefaultBox)
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		directory[0] = L"Textures\\WireFence.dds";
+	}
+	if (currentDemo == DemoSwitch::DefaultBox)
+	{
+		directory[0] = L"Textures\\WoodCrate01.dds";
 	}
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
@@ -146,16 +150,15 @@ DirectX::XMMATRIX Box::GetBoxForHillsOffset()
 
 void Box::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
-	if (currentDemo == DemoSwitch::DefaultBox)
-	{
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesBox, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-		pMatrices->world = in_world;
-		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-		pMatrices->texTransform = DirectX::XMMatrixIdentity();
-		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);
-	}
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesBox, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesBox, 0u);
+
 }
 

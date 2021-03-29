@@ -137,15 +137,12 @@ void App::DrawHillsWithWaves()
 
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
-
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	viewProjectionMatrix = camera.GetViewProjection(wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), wnd.mouse.IsLeftPressed(), timer.DeltaTime(), wnd);
-
+	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
-// 	pHills->Update(timer.TotalTime());
 	pHills->UpdateConstantBuffers(wnd.GetGraphics(),  wEyePosition, pos, target); //offsetForHillsWithWaves
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -160,7 +157,6 @@ void App::DrawHillsWithWaves()
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
 	pWaves->UpdateVertexConstantBuffer(wnd.GetGraphics());
-
 
 
 // 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
@@ -180,7 +176,7 @@ void App::CreateHillsWithWaves()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
-	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::DefaultBox);
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
 // 	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
 
@@ -198,10 +194,9 @@ void App::DrawBox()
 		pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 		picker = ShaderPicker::Keep;
 	}
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	viewProjectionMatrix = GetViewProjectionCamera();
 
-	SetObjectMatrix(DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f));
-	pBox->SetCameraMatrix(mCamera * CameraZoom());
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
@@ -455,6 +450,16 @@ DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
 
 
 
+
+DirectX::XMMATRIX App::GetViewProjectionCamera()
+{
+	return 	viewProjectionMatrix = camera.GetViewProjection(
+		wnd.mouse.GetPosX(),
+		wnd.mouse.GetPosY(),
+		wnd.mouse.IsLeftPressed(),
+		timer.DeltaTime(),
+		wnd);
+}
 
 void App::ShapesDemoCreateShapes()
 {
