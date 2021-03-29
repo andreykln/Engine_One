@@ -10,7 +10,7 @@ ShapesDemo::ShapesDemo()
 	DirectX::XMStoreFloat4x4(&sBoxWorld, DirectX::XMMatrixMultiply(boxScale, boxOffset));
 
 	DirectX::XMMATRIX centerSphereScale = DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
-	DirectX::XMMATRIX centerSphereOffset = DirectX::XMMatrixTranslation(0.0f, 2.0f, 0.0f);
+	DirectX::XMMATRIX centerSphereOffset = DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f);
 	DirectX::XMStoreFloat4x4(&sCenterSphere, DirectX::XMMatrixMultiply(centerSphereScale, centerSphereOffset));
 
 	//5 rows of 2 cylinders and spheres per row

@@ -13,6 +13,9 @@ public:
 	//updating only light for mirror demo
 	void UpdateLightDirection(Graphics& gfx);
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
+
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+
 	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
 	void SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept;
 	void UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept;
@@ -21,7 +24,7 @@ public:
 	Material shadowMaterial;
 	static CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
-
+	CB_VS_Transform transformMatrices;
 private:
 	UINT currentLightNum {};
 	DirectX::XMFLOAT3 eyePosition;

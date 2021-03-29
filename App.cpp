@@ -465,7 +465,7 @@ void App::ShapesDemoCreateShapes()
 {
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
  	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
-//  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+ 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
 	{
@@ -481,13 +481,14 @@ void App::ShapesDemoCreateShapes()
 void App::ShapesDemoDrawShapes()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
-// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 
 // 	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
 // 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
+	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
 // 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);

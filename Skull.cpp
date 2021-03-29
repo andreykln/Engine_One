@@ -70,8 +70,8 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<CBPerObject>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObject>(gfx, constBuffPerObject, 0u, 1u);
+	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
 	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
@@ -95,12 +95,12 @@ void Skull::Update(float dt) noexcept
 void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
+// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
@@ -183,6 +183,18 @@ void Skull::UpdateLightDirection(Graphics& gfx)
 void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
 {
 	m_Matrix = in_matrix;
+}
+
+void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 }
 
 void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
