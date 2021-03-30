@@ -197,6 +197,11 @@ void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, c
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 }
 
+DirectX::XMMATRIX Skull::GetMirroredSkullTranslation() const
+{
+	return mirroredSkull;
+}
+
 void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
 {
 	constBuffPerFrame.dirLight[index].direction = lightDirection;

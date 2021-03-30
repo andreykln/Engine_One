@@ -86,8 +86,8 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 
 
 
-	VertexConstantBuffer<CBPerObjectTexture>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObjectTexture>(gfx, constMatrices, 0u, 1u);
+	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
 	pCopyVCBMatricesMirror = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
@@ -134,13 +134,13 @@ void MirrorRoom::Update(float dt) noexcept
 void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE, 0u, &mappedData));
-	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE, 0u, &mappedData));
+// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
+// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gTexTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
@@ -158,16 +158,29 @@ void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
 }
 
+void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+}
+
 void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gTexTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
+// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gTexTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorRoomCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	MirrorRoomCB* frameMirror = reinterpret_cast<MirrorRoomCB*> (mappedData.pData);

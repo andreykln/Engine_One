@@ -26,6 +26,7 @@ public:
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture);
 private:
 	MirrorRoomCB testCB;
@@ -33,8 +34,14 @@ private:
 	Material mirrorMaterial;
 	Material floorMaterial;
 	Material wallMaterial;
+
+
 	CBPerFrameMirrorRoom constLights;
 	CBPerObjectTexture constMatrices;
+
+	CB_VS_Transform transformMatrices;
+
+
 	ID3D11Buffer* pCopyPCBLightsMirror = nullptr;
 	ID3D11Buffer* pCopyMirrorRoomCB = nullptr;
 	ID3D11Buffer* pCopyLightSwitcher = nullptr;

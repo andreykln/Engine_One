@@ -42,7 +42,7 @@ private:
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 1.0f, -4.0f);
+	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 5.0f, -20.0f);
 
 	Window wnd;
 	Timer timer;
