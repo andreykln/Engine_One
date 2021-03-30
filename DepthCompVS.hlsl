@@ -1,9 +1,10 @@
 
 cbuffer CBPerObject : register(b0)
 {
-    float4x4 gWorld;
-    float4x4 gWorldInvTranspose;
-    float4x4 gWorldViewProj;
+    float4x4 world;
+    float4x4 worldViewProjection;
+    float4x4 worldInverseTranspose;
+    float4x4 texTransform;
 };
 
 
@@ -22,7 +23,7 @@ struct VertexOut
 VertexOut main( VertexIN vin )
 {
     VertexOut vout;
-    vout.pos = mul(float4(vin.pos, 1.0f), gWorld);
+    vout.pos = mul(float4(vin.pos, 1.0f), worldViewProjection);
 
     vout.col = vin.col;
     

@@ -27,18 +27,18 @@ DepthComplexity::DepthComplexity(Graphics& gfx)
 	indices[0] = 0;
 	indices[1] = 1;
 	indices[2] = 2;
-	indices[3] = 2;
-	indices[4] = 3;
-	indices[5] = 0;
+	indices[3] = 0;
+	indices[4] = 2;
+	indices[5] = 3;
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"DepthIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	VertexConstantBuffer<CBPerObject>* pVCBPerObject =
-		new VertexConstantBuffer<CBPerObject>(gfx, matrices, 0u, 1u);
-	pCopyVCBMatricesDepth = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+	pCopyVCBMatricesDepth = pVCBPerObject->GetVertexConstantBuffer();
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CBPSDepth>* pPSCBDepth =
@@ -59,12 +59,24 @@ void DepthComplexity::Update(float dt) noexcept
 
 void DepthComplexity::UpdateVertexConstantBuffer(Graphics& gfx)
 {
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesDepth, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
+// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesDepth, 0u);
+}
+
+void DepthComplexity::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesDepth, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+	pMatrices->world = in_world;
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesDepth, 0u);
 }
 

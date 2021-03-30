@@ -31,7 +31,7 @@ Circle::Circle(Graphics& gfx)
 // 	//with big enough amount of vertices (200+) this is not noticeable
 // 	circleVertices[segments - 1].pos = circleVertices[0].pos;
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, mesh.vertices, L"CirclePositoins_");
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, circleVertices, L"CirclePositoins_");
 	AddBind(pVertexBuffer);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -46,7 +46,7 @@ Circle::Circle(Graphics& gfx)
 	indices[2] = 0;
 
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);
 
 
@@ -83,10 +83,9 @@ void Circle::UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX matrix)
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCircle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(matrix);
 	object->gWorld = matrix;
 
-	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
+	object->gWorldInvTranspose = MathHelper::InverseTranspose(matrix);
 	object->gWorldViewProj = DirectX::XMMatrixTranspose(matrix);
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCircle, 0u);
 }
