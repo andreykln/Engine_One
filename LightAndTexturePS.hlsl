@@ -47,19 +47,18 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
+
 cbuffer CBPerFrame : register(b0)
 {
     DirectionalLight directLight[3];
     Material objectMaterial;
     float3 eyePosition;
     int numLights;
-};
-
-cbuffer CBFog : register(b1)
-{
     float4 fogColor;
     float2 fogStartandRange;
-}
+    float2 padding;
+};
+
 
 Texture2D SRVTexture : register(t0);
 SamplerState tex0Sample : register(s0);

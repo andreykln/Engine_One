@@ -42,7 +42,16 @@ public:
 	 }
 	 DirectX::XMVECTOR GetCameraPosition() const
 	 {
+		 
 		 return positon;
+	 }
+	 DirectX::XMFLOAT3 GetCameraPositionFloat()
+	 {
+		 DirectX::XMFLOAT3 pos;
+		 pos.x = positon.m128_f32[0];
+		 pos.y = positon.m128_f32[1];
+		 pos.z = positon.m128_f32[2];
+		 return pos;
 	 }
 
 private:

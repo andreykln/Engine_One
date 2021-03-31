@@ -20,7 +20,17 @@ struct CB_VS_Transform
 	DirectX::XMMATRIX texTransform;
 };
 
-
+struct CB_PS_DirectionalL_Fog
+{
+	CB_PS_DirectionalL_Fog() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	Material mat;
+	DirectX::XMFLOAT3 cameraPositon;
+	unsigned int numberOfLights;
+	DirectX::XMFLOAT4 fogColor;
+	float fogStartandRange[2] = { 10.0f, 130.0f };
+	const float padding0[2] = { 0.0f, 0.0f };
+};
 
 struct TreePointSprite
 {

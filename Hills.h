@@ -16,6 +16,7 @@ public:
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
 	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	DirectX::XMMATRIX GetHillsOffset() const;
 private:
 
@@ -31,6 +32,7 @@ private:
 // 		Material gMaterial;
 // 	};
 	CB_VS_Transform transformMatrices;
+	CB_PS_DirectionalL_Fog directionalLight;
 
 	CBPerFrame constLights;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
