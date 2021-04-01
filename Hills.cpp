@@ -25,24 +25,29 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
 		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-		directionalLight.fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+
 	}
-	else
+	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
-		constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.2f, 1.0f);
-		constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-		constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-		constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-		constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-		constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
 
-		constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-		constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-		constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
+		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 
 
@@ -123,11 +128,14 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
 	AddBind(pVSCB);
 
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsCB =
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
- 	AddBind(pLightsCB);
+ 	AddBind(pLightsPS);
 
+	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
+	AddBind(pLightsCB);
 
 
 	std::wstring directory[1];
@@ -276,10 +284,8 @@ void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_DirectionalL_Fog* frame = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
+	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPositon;
-//	frame->mat = landMat;
-
 
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numberOfLights = 0;

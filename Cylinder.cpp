@@ -25,24 +25,24 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	
 
-	constLights.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
 
-	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 
-	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
-	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
+	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
+	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
 
-	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	constLightsTexArr.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	constLightsTexArr.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
@@ -96,10 +96,15 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	if(demo == DemoSwitch::Shapesdemo)
 	{
-		PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-			new PixelShaderConstantBuffer<CBPerFrame>(gfx, constLights, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
-		AddBind(pPSCBPerFrame);
+		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		AddBind(pLightsPS);
+
+		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
+		AddBind(pLightsCB);
+
 		std::wstring directory[1];
 		directory[0] = L"Textures\\brick01.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
@@ -126,7 +131,7 @@ void Cylinder::Update(float dt) noexcept
 
 void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
 // 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 // 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 // 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
@@ -135,22 +140,22 @@ void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 // 	object->gTexTransform = DirectX::XMMatrixIdentity();
 // 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBPerFrameTexArray* frame = reinterpret_cast<CBPerFrameTexArray*> (mappedData.pData);
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numLights = 1;
-
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numLights = 2;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numLights = 3;
-
-	frame->arrayPos[0] = GetTexArrPos();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CBPerFrameTexArray* frame = reinterpret_cast<CBPerFrameTexArray*> (mappedData.pData);
+// 
+// 	if (GetAsyncKeyState('0') & 0x8000)
+// 		frame->numLights = 0;
+// 	if (GetAsyncKeyState('1') & 0x8000)
+// 		frame->numLights = 1;
+// 
+// 	if (GetAsyncKeyState('2') & 0x8000)
+// 		frame->numLights = 2;
+// 
+// 	if (GetAsyncKeyState('3') & 0x8000)
+// 		frame->numLights = 3;
+// 
+// 	frame->arrayPos[0] = GetTexArrPos();
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 }
 
 
@@ -164,6 +169,25 @@ void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world
 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+}
+
+void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+	frame->cameraPositon = camPositon;
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numberOfLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numberOfLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numberOfLights = 3;
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 }
 
 void Cylinder::IncrementTexArrPos() noexcept

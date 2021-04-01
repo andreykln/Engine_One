@@ -18,6 +18,7 @@ public:
 private:
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;
+	CB_PS_PerFrameUpdate pscBuffer;
 
 	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(-5.0f, -3.5f, 4.0f);
 

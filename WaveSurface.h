@@ -9,14 +9,13 @@
 class WaveSurface : public Shape
 {
 public:
-	CBPerObjectTexture perObjectMatrices;
-	CBPerFrame perFrameLight;
 	WaveSurface(Graphics& gfx);
 	DirectX::XMMATRIX GetTransform() const noexcept override;
 	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	DirectX::XMMATRIX GetWaveSurfaceOffset();
 private:
 	DirectX::XMFLOAT3 eyePosition;
@@ -26,7 +25,10 @@ private:
 	VertexBufferDynamic* pDynamicVB = nullptr;
 	ID3D11Buffer* pCopyDynamicVB = nullptr;
 	CB_VS_Transform transformMatrices;
-	
+	CB_PS_DirectionalL_Fog directionalLight;
+	CB_PS_PerFrameUpdate pscBuffer;
+
+
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 	ID3D11Buffer* pCopyPixelConstantBuffer = nullptr;
 	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 0.0f);

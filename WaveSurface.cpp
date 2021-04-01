@@ -4,24 +4,29 @@ WaveSurface::WaveSurface(Graphics& gfx)
 {
 	wave.Init(200, 200, 0.8f, 0.03f, 3.25f, 0.4f);
 
-	perFrameLight.objectMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
-	perFrameLight.objectMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	perFrameLight.objectMaterial.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
 
-	perFrameLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-	perFrameLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
-	perFrameLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
-	perFrameLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
+	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
+	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
+	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 
-	perFrameLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	perFrameLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 0.5f);
-	perFrameLight.dirLight[1].specular = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 0.5f);
-	perFrameLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 0.5f);
+	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 0.5f);
+	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
 
-	perFrameLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	perFrameLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-	perFrameLight.dirLight[2].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
-	perFrameLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
+	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
+	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.0f, 0.427f, 0.557f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.0f, 0.427f, 0.557f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 64.0f);
+	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	vertices.resize(wave.GetVertexCount());
 
@@ -63,14 +68,15 @@ WaveSurface::WaveSurface(Graphics& gfx)
 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer(); 
 	AddBind(pVCB);
 
-	PixelShaderConstantBuffer<CBPerFrame>* pPSCB =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, perFrameLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPixelConstantBuffer = pPSCB->GetPixelShaderConstantBuffer();
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCB =
+		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pPSCB);
 
-	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pFog);
+	;	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyPixelConstantBuffer = pLightsCB->GetPixelShaderConstantBuffer();
+	AddBind(pLightsCB);
+
 
 
 	std::wstring directory[1];
@@ -126,22 +132,6 @@ void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
 {
 
 
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPixelConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-	frame->cbEyePosition = eyePosition;
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numLights = 1;
-
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numLights = 2;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numLights = 3;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPixelConstantBuffer, 0u);
-
 }
 
 void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
@@ -159,6 +149,25 @@ void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_wo
 	object->texTransform = wavesScale * wavesOffset;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 
+}
+
+void WaveSurface::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPixelConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+	frame->cameraPositon = camPositon;
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numberOfLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numberOfLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numberOfLights = 3;
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPixelConstantBuffer, 0u);
 }
 
 DirectX::XMMATRIX WaveSurface::GetWaveSurfaceOffset()

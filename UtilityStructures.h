@@ -25,12 +25,20 @@ struct CB_PS_DirectionalL_Fog
 	CB_PS_DirectionalL_Fog() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
 	Material mat;
-	DirectX::XMFLOAT3 cameraPositon;
-	unsigned int numberOfLights;
-	DirectX::XMFLOAT4 fogColor;
-	float fogStartandRange[2] = { 10.0f, 130.0f };
-	const float padding0[2] = { 0.0f, 0.0f };
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	float fogstart = 10.0f;
+	float fogRange = 130.0f;
+	float padding[2];
 };
+
+struct CB_PS_PerFrameUpdate
+{
+	CB_PS_PerFrameUpdate() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMFLOAT3 cameraPositon;
+	unsigned int numberOfLights = 2u;
+};
+
+
 
 struct TreePointSprite
 {

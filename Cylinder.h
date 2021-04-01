@@ -11,7 +11,7 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
-
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void IncrementTexArrPos() noexcept;
 	UINT GetTexArrPos() const noexcept;
 
@@ -30,7 +30,10 @@ private:
 	CBPerFrame constLights;
 	CBPerFrameTexArray constLightsTexArr;
 	CBPerObjectTexture constMatrices;
+
+	CB_PS_DirectionalL_Fog directionalLight;
 	CB_VS_Transform transformMatrices;
+	CB_PS_PerFrameUpdate pscBuffer;
 
 	DemoSwitch demo;
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;

@@ -48,17 +48,21 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 }
 
 
-cbuffer CBPerFrame : register(b0)
+cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
     DirectionalLight directLight[3];
     Material objectMaterial;
-    float3 eyePosition;
-    int numLights;
     float4 fogColor;
-    float2 fogStartandRange;
+    float fogStart;
+    float fogRange;
     float2 padding;
 };
 
+cbuffer PS_Per_Frame : register(b1)
+{
+    float3 camPositon;
+    unsigned int numberOfLights;
+}
 
 Texture2D SRVTexture : register(t0);
 SamplerState tex0Sample : register(s0);
@@ -78,7 +82,7 @@ float4 main(PSstruct pin) : SV_TARGET
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = eyePosition - pin.PosW;
+    float3 toEye = camPositon - pin.PosW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -92,7 +96,7 @@ float4 main(PSstruct pin) : SV_TARGET
     float4 litColor = texColor;
     clip(texColor.a - 0.1f);
     
-    if (numLights > 0)
+    if (numberOfLights > 0)
     {
     
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -100,7 +104,7 @@ float4 main(PSstruct pin) : SV_TARGET
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
         [unroll]
-        for (int i = 0; i < numLights; ++i)
+        for (uint i = 0; i < numberOfLights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
@@ -114,7 +118,7 @@ float4 main(PSstruct pin) : SV_TARGET
     }
 
      //fogging
-    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
+    float fogLerp = saturate((distToEye - fogStart) / fogRange);
     litColor = lerp(litColor, fogColor, fogLerp);
         // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
