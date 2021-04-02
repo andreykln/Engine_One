@@ -1,7 +1,7 @@
 #include "Cylinder.h"
 Cylinder::Cylinder(Graphics& gfx,
 	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, DemoSwitch in_switch)
-	: demo{in_switch}
+	: currentDemo{in_switch}
 {
 	if (in_switch == DemoSwitch::LightningCone)
 	{
@@ -44,25 +44,6 @@ Cylinder::Cylinder(Graphics& gfx,
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	constLightsTexArr.objectMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLightsTexArr.objectMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLightsTexArr.objectMaterial.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
-
-	constLightsTexArr.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLightsTexArr.dirLight[0].diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	constLightsTexArr.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constLightsTexArr.dirLight[0].specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-
-	constLightsTexArr.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLightsTexArr.dirLight[1].diffuse = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
-	constLightsTexArr.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constLightsTexArr.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
-
-	constLightsTexArr.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLightsTexArr.dirLight[2].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	constLightsTexArr.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constLightsTexArr.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Cylinder");
 	AddBind(pVertexBuffer);
@@ -78,14 +59,17 @@ Cylinder::Cylinder(Graphics& gfx,
 	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer();
 	AddBind(pVCBPerObject);
 
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pLightsPS);
 
-	if (demo == DemoSwitch::LightningCone)
+	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
+	AddBind(pLightsCB);
+
+	if (currentDemo == DemoSwitch::LightningCone)
 	{
-		PixelShaderConstantBuffer<CBPerFrameTexArray>* pPSCBPerFrame =
-			new PixelShaderConstantBuffer<CBPerFrameTexArray>(gfx, constLightsTexArr, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsCylinder = pPSCBPerFrame->GetPixelShaderConstantBuffer();
-		AddBind(pPSCBPerFrame);
-
 		std::wstring LightningArray[60];
 		for (UINT i = 0; i < 60; ++i)
 		{
@@ -94,17 +78,8 @@ Cylinder::Cylinder(Graphics& gfx,
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
 		AddBind(pSRV);
 	}
-	if(demo == DemoSwitch::Shapesdemo)
+	if(currentDemo == DemoSwitch::Shapesdemo)
 	{
-		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		AddBind(pLightsPS);
-
-		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
-		AddBind(pLightsCB);
-
 		std::wstring directory[1];
 		directory[0] = L"Textures\\brick01.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
@@ -113,9 +88,6 @@ Cylinder::Cylinder(Graphics& gfx,
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-	PixelShaderConstantBuffer<CBFog>* pFog =
-		new PixelShaderConstantBuffer<CBFog>(gfx, fogObj, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pFog);
 
 }
 
@@ -131,31 +103,7 @@ void Cylinder::Update(float dt) noexcept
 
 void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gTexTransform = DirectX::XMMatrixIdentity();
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
 
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CBPerFrameTexArray* frame = reinterpret_cast<CBPerFrameTexArray*> (mappedData.pData);
-// 
-// 	if (GetAsyncKeyState('0') & 0x8000)
-// 		frame->numLights = 0;
-// 	if (GetAsyncKeyState('1') & 0x8000)
-// 		frame->numLights = 1;
-// 
-// 	if (GetAsyncKeyState('2') & 0x8000)
-// 		frame->numLights = 2;
-// 
-// 	if (GetAsyncKeyState('3') & 0x8000)
-// 		frame->numLights = 3;
-// 
-// 	frame->arrayPos[0] = GetTexArrPos();
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 }
 
 
@@ -177,6 +125,11 @@ void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPositon;
+	if (currentDemo == DemoSwitch::LightningCone)
+	{
+		frame->texArrayPos = GetTexArrPos();
+	}
+
 
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numberOfLights = 0;

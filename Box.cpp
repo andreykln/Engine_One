@@ -20,7 +20,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		vertices[i].tex = t;
 	}
 
-	if (currentDemo == DemoSwitch::Shapesdemo)
+	if (currentDemo == DemoSwitch::Shapesdemo || DemoSwitch::DefaultBox)
 	{
 		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -41,7 +41,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		directionalLight.mat.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	} 
-	if ( (currentDemo == DemoSwitch::HillsDemo))
+	if (currentDemo == DemoSwitch::HillsDemo)
 	{
 		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);

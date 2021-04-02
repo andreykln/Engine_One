@@ -15,6 +15,7 @@ public:
 	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
 
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	DirectX::XMMATRIX GetMirroredSkullTranslation() const;
 	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
 	void SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept;
@@ -24,7 +25,11 @@ public:
 	Material shadowMaterial;
 	static CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
+
+
 	CB_VS_Transform transformMatrices;
+	CB_PS_DirectionalL_Fog directionalLight;
+	CB_PS_PerFrameUpdate pscBuffer;
 private:
 	UINT currentLightNum {};
 	DirectX::XMFLOAT3 eyePosition;

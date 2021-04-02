@@ -20,14 +20,15 @@ private:
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
 
-	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(-5.0f, -3.5f, 4.0f);
-
+	DemoSwitch currentDemo;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator box;
-	CBPerFrame constLights;
-	CBPerObjectTexture constMatrices;
-	DemoSwitch currentDemo;
+// 	CBPerFrame constLights;
+// 	CBPerObjectTexture constMatrices;
 	ID3D11Buffer* pCopyPCBLightsBox = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesBox = nullptr;
+
+	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(-5.0f, -3.5f, 4.0f);
+
 };
 

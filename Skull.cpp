@@ -17,23 +17,21 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	shadowMaterial.specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
 
 
-	constBuffPerFrame.objectMaterial.ambient = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
-	constBuffPerFrame.objectMaterial.diffuse = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 1.0f);
-	constBuffPerFrame.objectMaterial.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
-
-
-	constBuffPerFrame.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
-	constBuffPerFrame.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrame.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrame.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
-	constBuffPerFrame.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrame.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	constBuffPerFrame.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constBuffPerFrame.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
-	constBuffPerFrame.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
-	constBuffPerFrame.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	constBuffPerFrame.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constBuffPerFrame.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
+	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
+	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
+	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
+	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
+	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
 
 
@@ -75,10 +73,14 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
-	PixelShaderConstantBuffer<CBPerFrame>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrame>(gfx, constBuffPerFrame, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsSkull = pPSCBPerFrame->GetPixelShaderConstantBuffer();
-	AddBind(pPSCBPerFrame);
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pLightsPS);
+
+	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
+	AddBind(pLightsCB);
 
 }
 
@@ -94,34 +96,6 @@ void Skull::Update(float dt) noexcept
 
 void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
-
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-	frame->dirLight[0].direction = GetLight(0).direction;
-	frame->dirLight[1].direction = GetLight(1).direction;
-	frame->dirLight[2].direction = GetLight(2).direction;
-
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numLights = 1;
-
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numLights = 2;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numLights = 3;
-
-	
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
 }
 
@@ -195,6 +169,25 @@ void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, c
 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
+}
+
+void Skull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+	frame->cameraPositon = camPositon;
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numberOfLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numberOfLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numberOfLights = 3;
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 }
 
 DirectX::XMMATRIX Skull::GetMirroredSkullTranslation() const

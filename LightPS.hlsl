@@ -46,13 +46,21 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPerFrame : register (b0)
+cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
     DirectionalLight directLight[3];
-    Material skullMaterial;
-    float3 eyePosition;
-    int numLights;
+    Material objectMaterial;
+    float4 fogColor;
+    float fogStart;
+    float fogRange;
+    float2 padding;
 };
+
+cbuffer PS_Per_Frame : register(b1)
+{
+    float3 camPositon;
+    unsigned int numberOfLights;
+}
 
 struct VertexIn
 {
@@ -73,7 +81,7 @@ float4 main(VertexOut pin) : SV_TARGET
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = eyePosition - pin.PosW;
+    float3 toEye = camPositon - pin.PosW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -86,23 +94,17 @@ float4 main(VertexOut pin) : SV_TARGET
     float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
     [unroll]
-    for (int i = 0; i < numLights; ++i)
+    for (uint i = 0; i < numberOfLights; ++i)
     {
         float4 A, D, S;
-        ComputeDirectionalLight(skullMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
+        ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
         ambient += A;
         diffuse += D;
         specular += S;
     }
-    
-    
-  
-    
-  
-    
     float4 litColor = ambient + diffuse + specular;
     
-    litColor.a = skullMaterial.diffuse.a;
+    litColor.a = objectMaterial.diffuse.a;
     
     return litColor;
 }

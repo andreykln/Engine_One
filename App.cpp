@@ -14,12 +14,12 @@ App::App()
 
 
 
-// 	CreateBox();
-	ShapesDemoCreateShapes();
+	CreateBox();
+// 	CreateShapes();
 // 	CreateHillsWithWaves();
-// 	MirrorDemoCreate();
-// 	LightningCreate();
-// 	DepthComplexityStencilCreate();
+// 	CreateMirror();
+// 	CreateLightning();
+// 	CreateDepthComplexityStencil();
 
 
 
@@ -33,12 +33,12 @@ void App::DoFrame()
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
-	ShapesDemoDrawShapes();
-// 	MirrorDemoDraw();
+// 	DrawShapes();
+// 	DrawMirror();
 // 	DrawHillsWithWaves();
-// 	DrawBox();
-// 	LightningDraw();
-// 	DepthComplexityStencilDraw();
+	DrawBox();
+// 	DrawLightning();
+// 	DrawDepthComplexityStencil();
 
 	//Camera testing
 	/*pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
@@ -108,7 +108,7 @@ void App::CameraMove()
 
 
 
-void App::TwoTestCubes() noexcept
+void App::TwoTestCubes()
 {
 	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
 // 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
@@ -182,18 +182,18 @@ void App::DrawBox()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pBox->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
 
-void App::MirrorDemoCreate()
+void App::CreateMirror()
 {
 	pBox = new Box(wnd.GetGraphics(), 2.5f, 2.5f, 1.5f, DemoSwitch::Shapesdemo);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pMirrorRoom = new MirrorRoom(wnd.GetGraphics());
 }
 
-void App::MirrorDemoDraw()
+void App::DrawMirror()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
@@ -322,12 +322,12 @@ void App::MirrorDemoDraw()
 
 }
 
-void App::LightningCreate()
+void App::CreateLightning()
 {
 	pCylinder = new Cylinder(wnd.GetGraphics(), 3.0f, 3.0f, 5.0f, 15u, 15u, DemoSwitch::LightningCone);
 }
 
-void App::LightningDraw()
+void App::DrawLightning()
 {
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 	viewProjectionMatrix = GetViewProjectionCamera();
@@ -335,16 +335,16 @@ void App::LightningDraw()
 	pShaders->BindPS(ShaderPicker::LightAndTextureArrayPS);
 
 	pCylinder->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pCylinder->Update(timer.TotalTime());
-	pCylinder->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	pCylinder->Update(timer.TotalTime());
 	
 	pCylinder->IncrementTexArrPos();
+	pCylinder->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
 
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 
 }
 
-void App::DepthComplexityStencilDraw()
+void App::DrawDepthComplexityStencil()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
@@ -395,7 +395,7 @@ void App::DepthComplexityStencilDraw()
 
 }
 
-void App::DepthComplexityStencilCreate()
+void App::CreateDepthComplexityStencil()
 {
 	pDepthArr[0] = new DepthComplexity(wnd.GetGraphics());
 	pDepthArr[1] = new DepthComplexity(wnd.GetGraphics());
@@ -433,11 +433,11 @@ DirectX::XMMATRIX App::GetViewProjectionCamera()
 		wnd);
 }
 
-void App::ShapesDemoCreateShapes()
+void App::CreateShapes()
 {
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
  	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
-//  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+ 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
 	{
@@ -450,17 +450,15 @@ void App::ShapesDemoCreateShapes()
 	}
 }
 
-void App::ShapesDemoDrawShapes()
+void App::DrawShapes()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 
-// 	SetObjectMatrix(shapes.Get_m_CenterSphere() * shapes.GetCameraOffset());
-// 	pSkull->SetCameraMatrix(DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) * mCamera * CameraZoom());
-// 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-// 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);

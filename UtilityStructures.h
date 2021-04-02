@@ -36,6 +36,10 @@ struct CB_PS_PerFrameUpdate
 	CB_PS_PerFrameUpdate() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 cameraPositon;
 	unsigned int numberOfLights = 2u;
+	unsigned int texArrayPos = 0u;
+	float padding0;
+	float padding1;
+	float padding2;
 };
 
 

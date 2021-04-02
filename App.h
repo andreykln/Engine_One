@@ -18,20 +18,22 @@ public:
 	void DoFrame();
 	int Go();
 	void DebugTextToTitle();
-
+private:
 	void CalculateFrameStats();
 	void CameraMove();
-	void TwoTestCubes() noexcept;
-	void DrawHillsWithWaves();
+	void TwoTestCubes();
 	void CreateHillsWithWaves();
+	void DrawHillsWithWaves();
 	void CreateBox();
 	void DrawBox();
-	void MirrorDemoCreate();
-	void MirrorDemoDraw();
-	void LightningCreate();
-	void LightningDraw();
-	void DepthComplexityStencilDraw();
-	void DepthComplexityStencilCreate();
+	void CreateMirror();
+	void DrawMirror();
+	void CreateLightning();
+	void DrawLightning();
+	void CreateDepthComplexityStencil();
+	void DrawDepthComplexityStencil();
+	void CreateShapes();
+	void DrawShapes();
 
 
 	DirectX::XMMATRIX CameraZoom() const noexcept;
@@ -78,8 +80,6 @@ private:
 // 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
 	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
 
-	void ShapesDemoCreateShapes();
-	void ShapesDemoDrawShapes();
 	//Camera from Frank Luna's book
 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	//from LearnOpenGL

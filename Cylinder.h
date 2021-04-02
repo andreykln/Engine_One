@@ -13,29 +13,18 @@ public:
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void IncrementTexArrPos() noexcept;
-	UINT GetTexArrPos() const noexcept;
 
 
 private:
-	struct Vertex_C
-	{
-		DirectX::XMFLOAT3 pos;
-		float padding0;
-		DirectX::XMFLOAT3 normal;
-		float padding1;
-		DirectX::XMFLOAT2 tex;
-	};
+	UINT GetTexArrPos() const noexcept;
+
+	DemoSwitch currentDemo;
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
-	CBPerFrame constLights;
-	CBPerFrameTexArray constLightsTexArr;
-	CBPerObjectTexture constMatrices;
-
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_VS_Transform transformMatrices;
 	CB_PS_PerFrameUpdate pscBuffer;
 
-	DemoSwitch demo;
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
 
