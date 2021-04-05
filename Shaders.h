@@ -57,6 +57,8 @@ private:
 	ID3D11GeometryShader* pCircletoCylinderGS = nullptr;
 	ID3D11PixelShader* pCirletoCylinderPS = nullptr;
 
+	ID3D11PixelShader* pMirrorSkullPS = nullptr;
+
 	ID3DBlob* pBlob = nullptr;
 
 };

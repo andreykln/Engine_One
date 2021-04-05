@@ -91,22 +91,13 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	pCopyVCBMatricesMirror = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
-	PixelShaderConstantBuffer<CBPerFrameMirrorRoom>* pPSCBPerFrame =
-		new PixelShaderConstantBuffer<CBPerFrameMirrorRoom>(gfx, constLights, 0u, 1u,
-			static_cast<D3D11_CPU_ACCESS_FLAG>(0u), D3D11_USAGE_IMMUTABLE);
-	pCopyPCBLightsMirror = pPSCBPerFrame->GetPixelShaderConstantBuffer();
+	PixelShaderConstantBuffer<CB_PS_MirrorRoom>* pPSCBPerFrame =
+		new PixelShaderConstantBuffer<CB_PS_MirrorRoom>(gfx, pscBuffer, 0u, 1u,
+			D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyMirrorCBuffer = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
 
-	PixelShaderConstantBuffer<MirrorRoomCB>* pMirrorRoom =
-		new PixelShaderConstantBuffer<MirrorRoomCB>(gfx, testCB, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyMirrorRoomCB = pMirrorRoom->GetPixelShaderConstantBuffer();
-	AddBind(pMirrorRoom);
-
-	PixelShaderConstantBuffer<LightSwitcher>* pLightSwitcher =
-		new PixelShaderConstantBuffer<LightSwitcher>(gfx, switcher, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyLightSwitcher = pLightSwitcher->GetPixelShaderConstantBuffer();
-	AddBind(pLightSwitcher);
 
 	std::wstring directory[3];
 	directory[0] = L"Textures\\brick01.dds";
@@ -133,7 +124,7 @@ void MirrorRoom::Update(float dt) noexcept
 
 void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
 // 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE, 0u, &mappedData));
 // 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
 // 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
@@ -142,20 +133,20 @@ void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 // 	object->gTexTransform = DirectX::XMMatrixIdentity();
 // 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numLights = 1;
-
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numLights = 2;
-
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numLights = 3;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+// 
+// 	if (GetAsyncKeyState('0') & 0x8000)
+// 		frame->numLights = 0;
+// 	if (GetAsyncKeyState('1') & 0x8000)
+// 		frame->numLights = 1;
+// 
+// 	if (GetAsyncKeyState('2') & 0x8000)
+// 		frame->numLights = 2;
+// 
+// 	if (GetAsyncKeyState('3') & 0x8000)
+// 		frame->numLights = 3;
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
 }
 
 void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
@@ -169,6 +160,31 @@ void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_wor
 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+}
+
+void MirrorRoom::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, UINT texArrpos)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorCBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_PS_MirrorRoom* frameMirror = reinterpret_cast<CB_PS_MirrorRoom*> (mappedData.pData);
+	frameMirror->cameraPosition = camPositon;
+	frameMirror->texArrayPos = texArrpos;
+
+	if (texArrpos == 0)
+	{
+		frameMirror->mat = wallMaterial;
+	}
+	if (texArrpos == 1)
+	{
+		frameMirror->mat = mirrorMaterial;
+	}
+	if (texArrpos == 2)
+	{
+		frameMirror->mat = floorMaterial;
+	}
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyMirrorCBuffer, 0u);
+
 }
 
 void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)

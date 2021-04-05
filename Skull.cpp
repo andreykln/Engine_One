@@ -2,7 +2,8 @@
 
 CBPerFrame Skull::constBuffPerFrame;
 
-Skull::Skull(Graphics& gfx, const std::wstring& path)
+Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
+	: currentDemo(in_currentDemo)
 {
 	struct Vertices
 	{
@@ -33,7 +34,22 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
+	mirrorBuffer.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
+	mirrorBuffer.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	mirrorBuffer.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	mirrorBuffer.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
+	mirrorBuffer.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	mirrorBuffer.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	mirrorBuffer.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	mirrorBuffer.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
+	mirrorBuffer.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
+	mirrorBuffer.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	mirrorBuffer.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	mirrorBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
+	mirrorBuffer.mat.ambient = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	mirrorBuffer.mat.diffuse = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	mirrorBuffer.mat.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
 
 	std::fstream file(path);
 	std::string ignore;
@@ -73,14 +89,25 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
 	AddBind(pVCBPerObject);
 
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pLightsPS);
+	if (currentDemo == Shapesdemo)
+	{
+		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		AddBind(pLightsPS);
 
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
-	AddBind(pLightsCB);
+		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
+		AddBind(pLightsCB);
+	}
+
+	if (currentDemo == MirrorSkull)
+	{
+		PixelShaderConstantBuffer<CB_PS_Skull_Mirror>* pLightsCB =
+			new PixelShaderConstantBuffer<CB_PS_Skull_Mirror>(gfx, mirrorBuffer, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBMirrorSkull = pLightsCB->GetPixelShaderConstantBuffer();
+		AddBind(pLightsCB);
+	}
 
 }
 
@@ -101,56 +128,6 @@ void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
 
 void Skull::UpdateLightDirection(Graphics& gfx)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	//discarding and updating everything so we can avoid bug with light on the skull flashing.
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-	frame->dirLight[0].direction = GetLight(0).direction;
-	frame->dirLight[0].ambient = constBuffPerFrame.dirLight[0].ambient;
-	frame->dirLight[0].diffuse = constBuffPerFrame.dirLight[0].diffuse;
-	frame->dirLight[0].specular = constBuffPerFrame.dirLight[0].specular;
-
-	frame->dirLight[1].direction = GetLight(1).direction;
-	frame->dirLight[1].ambient = constBuffPerFrame.dirLight[1].ambient;
-	frame->dirLight[1].diffuse = constBuffPerFrame.dirLight[1].diffuse;
-	frame->dirLight[1].specular = constBuffPerFrame.dirLight[1].specular;
-
-	frame->dirLight[2].direction = GetLight(2).direction;
-	frame->dirLight[2].ambient = constBuffPerFrame.dirLight[2].ambient;
-	frame->dirLight[2].diffuse = constBuffPerFrame.dirLight[2].diffuse;
-	frame->dirLight[2].specular = constBuffPerFrame.dirLight[2].specular;
-
-	frame->objectMaterial = constBuffPerFrame.objectMaterial;
-	frame->cbEyePosition = eyePosition;
-	//because of discarding date, we have to keep updating the old light number.
-	if (GetAsyncKeyState('0') & 0x8000)
-	{
-		frame->numLights = 0;
-		currentLightNum = 0;
-	}
-	if (GetAsyncKeyState('1') & 0x8000)
-	{
-		frame->numLights = 1;
-		currentLightNum = 1;
-	}
-
-	if (GetAsyncKeyState('2') & 0x8000)
-	{
-		frame->numLights = 2;
-		currentLightNum = 2;
-	}
-
-	if (GetAsyncKeyState('3') & 0x8000)
-	{
-		frame->numLights = 3;
-		currentLightNum = 3;
-	}
-	else
-	{
-		frame->numLights = currentLightNum;
-	}
-
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
 }
 
@@ -171,23 +148,55 @@ void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, c
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 }
 
-void Skull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+void Skull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition)
+{
+	if (pCopyPCBLightsSkull)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+		CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+		frame->cameraPositon = camPosition;
+
+		if (GetAsyncKeyState('0') & 0x8000)
+			frame->numberOfLights = 0;
+		if (GetAsyncKeyState('1') & 0x8000)
+			frame->numberOfLights = 1;
+		if (GetAsyncKeyState('2') & 0x8000)
+			frame->numberOfLights = 2;
+		if (GetAsyncKeyState('3') & 0x8000)
+			frame->numberOfLights = 3;
+
+		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
+	}
+	if (pCopyPCBMirrorSkull)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBMirrorSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+		CB_PS_Skull_Mirror* frame = reinterpret_cast<CB_PS_Skull_Mirror*> (mappedData.pData);
+		frame->cameraPosition = camPosition;
+
+		if (GetAsyncKeyState('0') & 0x8000)
+			frame->numberOfLights = 0;
+		if (GetAsyncKeyState('1') & 0x8000)
+			frame->numberOfLights = 1;
+		if (GetAsyncKeyState('2') & 0x8000)
+			frame->numberOfLights = 2;
+		if (GetAsyncKeyState('3') & 0x8000)
+			frame->numberOfLights = 3;
+
+		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBMirrorSkull, 0u);
+	}
+
+}
+
+void Skull::UpdatePSLightDirection(Graphics& gfx,DirectX::XMFLOAT3 lightDirection, UINT index)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-	frame->cameraPositon = camPositon;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBMirrorSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_Skull_Mirror* frame = reinterpret_cast<CB_PS_Skull_Mirror*> (mappedData.pData);
+	frame->dirLight[index].direction = lightDirection;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBMirrorSkull, 0u);
 
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numberOfLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numberOfLights = 1;
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numberOfLights = 2;
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numberOfLights = 3;
-
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 }
 
 DirectX::XMMATRIX Skull::GetMirroredSkullTranslation() const
@@ -271,7 +280,7 @@ void Skull::UpdateMaterial(Graphics& gfx, bool shadow) noexcept
 
 }
 
-DirectionalLight Skull::GetLight(UINT index) const noexcept
+DirectionalLight Skull::GetLightDirection(UINT index) const noexcept
 {
-	return constBuffPerFrame.dirLight[index];
+	return directionalLight.dirLight[index];
 }

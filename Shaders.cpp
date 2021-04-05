@@ -24,6 +24,8 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pCirletoCylinderVS, IL.positonIL, &pCirletoCylinderIL, IL.nPositon, L"Shaders\\Vertex\\Circle_CylinderVS.cso");
 	GS_Init(&pCircletoCylinderGS, L"Shaders\\Geometry\\Circle_CylinderGS.cso");
 	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
+
+	PS_Init(&pMirrorSkullPS, L"Shaders\\Pixel\\SkullMirrorPS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -130,6 +132,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::CircleToCylinderVS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pCirletoCylinderPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::MirrorSkull_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pMirrorSkullPS, nullptr, 0u);
 		break;
 	}
 	default:

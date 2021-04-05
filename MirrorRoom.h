@@ -27,8 +27,15 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, UINT texArrpos);
+
+
 	void UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture);
 private:
+	CB_VS_Transform transformMatrices;
+	CB_PS_MirrorRoom pscBuffer;
+
+
 	MirrorRoomCB testCB;
 	LightSwitcher switcher;
 	Material mirrorMaterial;
@@ -39,10 +46,10 @@ private:
 	CBPerFrameMirrorRoom constLights;
 	CBPerObjectTexture constMatrices;
 
-	CB_VS_Transform transformMatrices;
 
 
-	ID3D11Buffer* pCopyPCBLightsMirror = nullptr;
+	ID3D11Buffer* pCopyMirrorCBuffer = nullptr;
+
 	ID3D11Buffer* pCopyMirrorRoomCB = nullptr;
 	ID3D11Buffer* pCopyLightSwitcher = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesMirror = nullptr;

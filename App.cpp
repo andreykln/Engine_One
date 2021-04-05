@@ -14,10 +14,10 @@ App::App()
 
 
 
-	CreateBox();
+// 	CreateBox();
 // 	CreateShapes();
 // 	CreateHillsWithWaves();
-// 	CreateMirror();
+	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 
@@ -34,9 +34,9 @@ void App::DoFrame()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
 // 	DrawShapes();
-// 	DrawMirror();
+	DrawMirror();
 // 	DrawHillsWithWaves();
-	DrawBox();
+// 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
 
@@ -189,7 +189,7 @@ void App::DrawBox()
 void App::CreateMirror()
 {
 	pBox = new Box(wnd.GetGraphics(), 2.5f, 2.5f, 1.5f, DemoSwitch::Shapesdemo);
-	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::MirrorSkull);
 	pMirrorRoom = new MirrorRoom(wnd.GetGraphics());
 }
 
@@ -203,19 +203,18 @@ void App::DrawMirror()
 
 	//floor
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 2u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 2u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 
-
-	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 0u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
 	//rotate reflection and the original
 //  	mirroredSkull = DirectX::XMMatrixRotationY(abs((sin(timer.DeltaTime())))) * mirroredSkull;
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorSkull_PS);
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	
 	// Do not write to render target
@@ -226,7 +225,7 @@ void App::DrawMirror()
 	// draw mirror
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
-	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 	//restore states
@@ -243,26 +242,22 @@ void App::DrawMirror()
 	ZeroMemory(&oldLIghtDirection, sizeof(DirectX::XMFLOAT3[3]));
 	DirectX::XMFLOAT3 reflectedLightDirection;
 	ZeroMemory(&reflectedLightDirection, sizeof(DirectX::XMFLOAT3));
-	DirectX::XMFLOAT3 lightDirection;
-	ZeroMemory(&lightDirection, sizeof(DirectX::XMFLOAT3));
-	DirectX::XMVECTOR lightDir;
-	ZeroMemory(&lightDir, sizeof(DirectX::XMVECTOR));
+	DirectX::XMFLOAT3 currentLightDirection;
+	ZeroMemory(&currentLightDirection, sizeof(DirectX::XMFLOAT3));
+	DirectX::XMVECTOR lightDirtemp;
+	ZeroMemory(&lightDirtemp, sizeof(DirectX::XMVECTOR));
 	DirectX::XMVECTOR reflectedLD;
 	ZeroMemory(&reflectedLD, sizeof(DirectX::XMVECTOR));
 	UINT numOfLights{ 3 };
 	for (UINT i = 0; i < numOfLights; i++)
 	{
-		oldLIghtDirection[i] = pSkull->GetLight(i).direction;
-		lightDirection = pSkull->GetLight(i).direction;
-		lightDir.m128_f32[0] = lightDirection.x;
-		lightDir.m128_f32[1] = lightDirection.y;
-		lightDir.m128_f32[2] = lightDirection.z;
-		reflectedLD = DirectX::XMVector3TransformNormal(lightDir, R);
+		oldLIghtDirection[i] = pSkull->GetLightDirection(i).direction;
+		currentLightDirection = pSkull->GetLightDirection(i).direction;
+		lightDirtemp = DirectX::XMLoadFloat3(&currentLightDirection);
+		reflectedLD = DirectX::XMVector3TransformNormal(lightDirtemp, R);
 		DirectX::XMStoreFloat3(&reflectedLightDirection, reflectedLD);
-		pSkull->SetNewLightDirection(reflectedLightDirection, i);
+		pSkull->UpdatePSLightDirection(wnd.GetGraphics(), reflectedLightDirection, i);
 	}
-	pSkull->UpdateLightDirection(wnd.GetGraphics());
-	pSkull->UpdateEyePosition(wEyePosition);
 
 
 	//cull clockwise triangles for reflections.
@@ -272,9 +267,8 @@ void App::DrawMirror()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DrawReflectionDSS, 1);
 	//draw reflected skull
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorSkull_PS);
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * R * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	// Restore default states.
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
@@ -283,41 +277,40 @@ void App::DrawMirror()
 	//restore light direction
 	for (UINT i = 0; i < numOfLights; ++i)
 	{
-		pSkull->SetNewLightDirection(oldLIghtDirection[i], i);
+		pSkull->UpdatePSLightDirection(wnd.GetGraphics(), oldLIghtDirection[i], i);
 	}
-	pSkull->UpdateLightDirection(wnd.GetGraphics());
 
 	// Draw the mirror to the back buffer as usual but with transparency
 	// blending so the reflection shows through.
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
- 	pMirrorRoom->UpdateMirrorRoomConstBuffers(wnd.GetGraphics(), 1u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 
 
 	//shadow
-	DirectX::XMVECTOR shadowPlane = DirectX::XMVectorSet(0.0, 1.0f, 0.0, 0.0f); //xz plane
-	DirectX::XMFLOAT3 toMainLightTemp = pSkull->GetLight(0).direction;
-	using namespace DirectX; //for - sign
-	DirectX::XMVECTOR toMainLight = -DirectX::XMLoadFloat3(&toMainLightTemp);
-	DirectX::XMMATRIX S = DirectX::XMMatrixShadow(shadowPlane, toMainLight);
-	DirectX::XMMATRIX shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
-	pSkull->UpdateMaterial(wnd.GetGraphics(), true);
-
-	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * S * shadowOffsetY * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
-	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-	pShaders->BindPS(ShaderPicker::Light_VS_PS);
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
-	// Restore default states.
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
-
-	//restore the material state
-	pSkull->UpdateLightDirection(wnd.GetGraphics());
+// 	DirectX::XMVECTOR shadowPlane = DirectX::XMVectorSet(0.0, 1.0f, 0.0, 0.0f); //xz plane
+// 	DirectX::XMFLOAT3 toMainLightTemp = pSkull->GetLight(0).direction;
+// 	using namespace DirectX; //for - sign
+// 	DirectX::XMVECTOR toMainLight = -DirectX::XMLoadFloat3(&toMainLightTemp);
+// 	DirectX::XMMATRIX S = DirectX::XMMatrixShadow(shadowPlane, toMainLight);
+// 	DirectX::XMMATRIX shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+// 	pSkull->UpdateMaterial(wnd.GetGraphics(), true);
+// 
+// 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * S * shadowOffsetY * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+// 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+// 	// Restore default states.
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
+// 
+// 	//restore the material state
+// 	pSkull->UpdateLightDirection(wnd.GetGraphics());
 
 
 }
@@ -437,7 +430,7 @@ void App::CreateShapes()
 {
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
  	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
- 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
+ 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
 	{

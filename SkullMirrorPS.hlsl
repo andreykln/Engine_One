@@ -46,28 +46,15 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-/*cbuffer CBPSDirectionalLight_Fog : register(b0)
+cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
     DirectionalLight directLight[3];
     Material mat;
     float3 cameraPosition;
     uint numberOfLights;
-};*/
-cbuffer CBPSDirectionalLight_Fog : register(b0)
-{
-    DirectionalLight directLight[3];
-    Material mat;
-    float4 fogColor;
-    float fogStart;
-    float fogRange;
-    float2 padding;
 };
 
-cbuffer PS_Per_Frame : register(b1)
-{
-    float3 cameraPositon;
-    unsigned int numberOfLights;
-}
+
 struct VertexIn
 {
     float3 position : Position;
@@ -87,7 +74,7 @@ float4 main(VertexOut pin) : SV_TARGET
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = cameraPositon - pin.PosW;
+    float3 toEye = cameraPosition - pin.PosW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);

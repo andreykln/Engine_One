@@ -42,7 +42,27 @@ struct CB_PS_PerFrameUpdate
 	float padding2;
 };
 
+struct CB_PS_MirrorRoom
+{
+	CB_PS_MirrorRoom() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	Material mat;
+	DirectX::XMFLOAT3 cameraPosition;
+	unsigned int numberOfLights = 2u;
+	unsigned int texArrayPos = 0u;
+	const UINT padding0 = 0u;
+	const UINT padding1 = 0u;
+	const UINT padding2 = 0u;
+};
 
+struct CB_PS_Skull_Mirror
+{
+	CB_PS_Skull_Mirror() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	Material mat;
+	DirectX::XMFLOAT3 cameraPosition;
+	unsigned int numberOfLights = 2u;
+};
 
 struct TreePointSprite
 {
@@ -127,7 +147,8 @@ enum DemoSwitch
 	LightningCone,
 	Shapesdemo,
 	HillsDemo,
-	DefaultBox
+	DefaultBox,
+	MirrorSkull,
 };
 
 
@@ -140,5 +161,6 @@ enum ShaderPicker
 	DepthComplexityVS_PS,
 	TreeBillboardVS_PS_GS,
 	CircleToCylinderVS_GS_PS,
+	MirrorSkull_PS,
 	Keep
 };

@@ -47,26 +47,20 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
+
 cbuffer CBPerFrameMirrorRoom : register(b0)
 {
     DirectionalLight directLight[3];
-    //Material objectMaterial;
-    //float3 eyePosition;
-    //int numLights;
+    Material mat;
+    float3 cameraPositon;
+    uint numberOfLights;
+    uint texArrayPos;
+    uint padding0;
+    uint padding1;
+    uint padding2;
 };
 
-cbuffer MirrorRoomCB : register(b1)
-{
-    Material objectMaterial;
-    float3 eyePosition;
-    //int numLights;
-    unsigned int currentTexture;
-}
 
-cbuffer LightSwitcher : register(b2)
-{
-    uint numLights;
-}
 
 Texture2D SRVTexture0[3] : register(t0);
 SamplerState tex0Sample : register(s0);
@@ -86,7 +80,7 @@ float4 main(PSstruct pin) : SV_TARGET
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = eyePosition - pin.PosW;
+    float3 toEye = cameraPositon - pin.PosW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -96,23 +90,23 @@ float4 main(PSstruct pin) : SV_TARGET
 
     float4 texColor = float4(1, 1, 1, 1);
    // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
-    if (currentTexture == 0)
+    if (texArrayPos == 0)
     {
         texColor = SRVTexture0[0].Sample(tex0Sample, pin.Tex);
     }
     
-    if (currentTexture == 1)
+    if (texArrayPos == 1)
     {
         texColor = SRVTexture0[1].Sample(tex0Sample, pin.Tex);
     }
-    if (currentTexture == 2)
+    if (texArrayPos == 2)
     {
         texColor = SRVTexture0[2].Sample(tex0Sample, pin.Tex);
     }
     
     float4 litColor = texColor;
     
-    if (numLights > 0)
+    if (numberOfLights > 0)
     {
     
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -120,10 +114,10 @@ float4 main(PSstruct pin) : SV_TARGET
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
         [unroll]
-        for (uint i = 0; i < numLights; ++i)
+        for (uint i = 0; i < numberOfLights; ++i)
         {
             float4 A, D, S;
-            ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
+            ComputeDirectionalLight(mat, directLight[i], pin.NormalW, toEye, A, D, S);
             ambient += A;
             diffuse += D;
             specular += S;
@@ -134,7 +128,7 @@ float4 main(PSstruct pin) : SV_TARGET
     }
     
     // Common to take alpha from diffuse material and texture
-    litColor.a = objectMaterial.diffuse.a * texColor.a;
+    litColor.a = mat.diffuse.a * texColor.a;
     
     return litColor;
 }
