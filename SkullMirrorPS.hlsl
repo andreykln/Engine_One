@@ -46,15 +46,17 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-cbuffer CBPSDirectionalLight_Fog : register(b0)
+cbuffer CBPSDirectionalLight : register(b0)
 {
     DirectionalLight directLight[3];
-    Material mat;
     float3 cameraPosition;
     uint numberOfLights;
 };
 
-
+cbuffer CBPSMat_Switcher : register(b1)
+{
+    Material mat;
+}
 struct VertexIn
 {
     float3 position : Position;

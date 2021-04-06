@@ -59,9 +59,13 @@ struct CB_PS_Skull_Mirror
 {
 	CB_PS_Skull_Mirror() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
-	Material mat;
 	DirectX::XMFLOAT3 cameraPosition;
 	unsigned int numberOfLights = 2u;
+};
+
+struct CB_PS_Skull_Mat
+{
+	Material mat;
 };
 
 struct TreePointSprite

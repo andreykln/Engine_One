@@ -24,6 +24,7 @@ public:
 	void UpdateMaterial(Graphics& gfx, bool shadow) noexcept;
 	DirectionalLight GetLightDirection(UINT index) const noexcept;
 	Material shadowMaterial;
+	Material skullMatData;
 	static CBPerFrame constBuffPerFrame;
 	CBPerObject constBuffPerObject;
 
@@ -32,6 +33,7 @@ public:
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
 	CB_PS_Skull_Mirror mirrorBuffer;
+	CB_PS_Skull_Mat skullMaterial;
 private:
 	DemoSwitch currentDemo;
 
@@ -41,6 +43,8 @@ private:
 	ID3D11Buffer* pCopyPCBLightsSkull = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesSkull = nullptr;
 	ID3D11Buffer* pCopyPCBMirrorSkull = nullptr;
+	ID3D11Buffer* pCopySkullMaterial = nullptr;
+
 
 
 };

@@ -47,9 +47,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	mirrorBuffer.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	mirrorBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
-	mirrorBuffer.mat.ambient = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
-	mirrorBuffer.mat.diffuse = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
-	mirrorBuffer.mat.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
+	skullMatData.ambient = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	skullMatData.diffuse = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
+	skullMatData.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
 
 	std::fstream file(path);
 	std::string ignore;
@@ -107,6 +107,11 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 			new PixelShaderConstantBuffer<CB_PS_Skull_Mirror>(gfx, mirrorBuffer, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pCopyPCBMirrorSkull = pLightsCB->GetPixelShaderConstantBuffer();
 		AddBind(pLightsCB);
+
+		PixelShaderConstantBuffer<CB_PS_Skull_Mat>* pSkullM =
+			new PixelShaderConstantBuffer<CB_PS_Skull_Mat>(gfx, skullMaterial, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopySkullMaterial = pSkullM->GetPixelShaderConstantBuffer();
+		AddBind(pSkullM);
 	}
 
 }
@@ -222,61 +227,18 @@ void Skull::UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept
 void Skull::UpdateMaterial(Graphics& gfx, bool shadow) noexcept
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopySkullMaterial, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_PS_Skull_Mat* frame = reinterpret_cast<CB_PS_Skull_Mat*> (mappedData.pData);
 	if (shadow)
 	{
-		frame->objectMaterial = shadowMaterial;
+		frame->mat = shadowMaterial;
 	}
 	else {
-		frame->objectMaterial = constBuffPerFrame.objectMaterial;
-	}
-	/*frame->dirLight[0].direction = GetLight(0).direction;
-	frame->dirLight[0].ambient = constBuffPerFrame.dirLight[0].ambient;
-	frame->dirLight[0].diffuse = constBuffPerFrame.dirLight[0].diffuse;
-	frame->dirLight[0].specular = constBuffPerFrame.dirLight[0].specular;
-
-	frame->dirLight[1].direction = GetLight(1).direction;
-	frame->dirLight[1].ambient = constBuffPerFrame.dirLight[1].ambient;
-	frame->dirLight[1].diffuse = constBuffPerFrame.dirLight[1].diffuse;
-	frame->dirLight[1].specular = constBuffPerFrame.dirLight[1].specular;
-
-	frame->dirLight[2].direction = GetLight(2).direction;
-	frame->dirLight[2].ambient = constBuffPerFrame.dirLight[2].ambient;
-	frame->dirLight[2].diffuse = constBuffPerFrame.dirLight[2].diffuse;
-	frame->dirLight[2].specular = constBuffPerFrame.dirLight[2].specular;
-
-	frame->objectMaterial = constBuffPerFrame.objectMaterial;
-	frame->cbEyePosition = eyePosition;
-	//because of discarding date, we have to keep updating the old light number.
-	if (GetAsyncKeyState('0') & 0x8000)
-	{
-		frame->numLights = 0;
-		currentLightNum = 0;
-	}
-	if (GetAsyncKeyState('1') & 0x8000)
-	{
-		frame->numLights = 1;
-		currentLightNum = 1;
+		frame->mat = skullMatData;
 	}
 
-	if (GetAsyncKeyState('2') & 0x8000)
-	{
-		frame->numLights = 2;
-		currentLightNum = 2;
-	}
 
-	if (GetAsyncKeyState('3') & 0x8000)
-	{
-		frame->numLights = 3;
-		currentLightNum = 3;
-	}
-	else
-	{
-		frame->numLights = currentLightNum;
-	}*/
-
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pCopySkullMaterial, 0u);
 
 }
 

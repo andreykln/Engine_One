@@ -200,6 +200,8 @@ void App::DrawMirror()
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
 
 
+	// 	//restore the material state
+	pSkull->UpdateMaterial(wnd.GetGraphics(), false);
 
 	//floor
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
@@ -295,26 +297,26 @@ void App::DrawMirror()
 
 
 	//shadow
-// 	DirectX::XMVECTOR shadowPlane = DirectX::XMVectorSet(0.0, 1.0f, 0.0, 0.0f); //xz plane
-// 	DirectX::XMFLOAT3 toMainLightTemp = pSkull->GetLight(0).direction;
-// 	using namespace DirectX; //for - sign
-// 	DirectX::XMVECTOR toMainLight = -DirectX::XMLoadFloat3(&toMainLightTemp);
-// 	DirectX::XMMATRIX S = DirectX::XMMatrixShadow(shadowPlane, toMainLight);
-// 	DirectX::XMMATRIX shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
-// 	pSkull->UpdateMaterial(wnd.GetGraphics(), true);
-// 
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::MirrorSkull_PS);
+	DirectX::XMVECTOR shadowPlane = DirectX::XMVectorSet(0.0, 1.0f, 0.0, 0.0f); //xz plane
+	DirectX::XMFLOAT3 toMainLightTemp = pSkull->GetLightDirection(0).direction;
+	using namespace DirectX; //for - sign
+	DirectX::XMVECTOR toMainLight = -DirectX::XMLoadFloat3(&toMainLightTemp);
+	DirectX::XMMATRIX S = DirectX::XMMatrixShadow(shadowPlane, toMainLight);
+	DirectX::XMMATRIX shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+	pSkull->UpdateMaterial(wnd.GetGraphics(), true);
+
 // 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * S * shadowOffsetY * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-// 	pSkull->UpdateVertexConstantBuffer(wnd.GetGraphics());
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
-// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
-// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
-// 	// Restore default states.
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
-// 
-// 	//restore the material state
-// 	pSkull->UpdateLightDirection(wnd.GetGraphics());
+	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * S * shadowOffsetY * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	// Restore default states.
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0);
+
 
 
 }
