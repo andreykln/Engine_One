@@ -14,6 +14,16 @@ struct MirrorRoomCB
 };
 
 
+struct TextureSwitcher
+{
+	Material mat;
+	UINT currentTexture = 1u;
+	UINT pad0;
+	UINT pad1;
+	UINT pad2;
+
+};
+
 struct LightSwitcher
 {
 	UINT numLights = { 3 };
@@ -27,14 +37,12 @@ public:
 	void Update(float dt) noexcept override;
 	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
-	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, UINT texArrpos);
-
-
-	void UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture);
+	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
+	void SwitchTexture(Graphics& gfx, UINT texArrPos);
 private:
 	CB_VS_Transform transformMatrices;
 	CB_PS_MirrorRoom pscBuffer;
-
+	TextureSwitcher tSwitcher;
 
 	MirrorRoomCB testCB;
 	LightSwitcher switcher;
@@ -53,6 +61,7 @@ private:
 	ID3D11Buffer* pCopyMirrorRoomCB = nullptr;
 	ID3D11Buffer* pCopyLightSwitcher = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesMirror = nullptr;
+	ID3D11Buffer* pCopyTexSwitcher = nullptr;
 
 };
 

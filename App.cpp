@@ -203,10 +203,12 @@ void App::DrawMirror()
 
 	//floor
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 2u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 2u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 0u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
 	//rotate reflection and the original
@@ -225,7 +227,8 @@ void App::DrawMirror()
 	// draw mirror
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 1u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
 	//restore states
@@ -284,7 +287,8 @@ void App::DrawMirror()
 	// blending so the reflection shows through.
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat(), 1u);
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);

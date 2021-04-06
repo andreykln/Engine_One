@@ -53,29 +53,29 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	floorMaterial.diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	floorMaterial.specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 16.0f);
 
-	mirrorMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	mirrorMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	mirrorMaterial.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
+	wallMaterial.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	wallMaterial.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	wallMaterial.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
 
-	wallMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	wallMaterial.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	wallMaterial.specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 16.0f);
+	mirrorMaterial.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	mirrorMaterial.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.2f);
+	mirrorMaterial.specular = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 16.0f);
 
 
-	constLights.dirLight[0].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[0].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	pscBuffer.dirLight[0].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[0].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	pscBuffer.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 
-	constLights.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[1].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	constLights.dirLight[1].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	pscBuffer.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[1].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	pscBuffer.dirLight[1].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	constLights.dirLight[2].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[2].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	constLights.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	constLights.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	pscBuffer.dirLight[2].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[2].diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	pscBuffer.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	pscBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
 
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"MirrorRoom.");
@@ -93,10 +93,15 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 
 	PixelShaderConstantBuffer<CB_PS_MirrorRoom>* pPSCBPerFrame =
 		new PixelShaderConstantBuffer<CB_PS_MirrorRoom>(gfx, pscBuffer, 0u, 1u,
-			D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+														D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyMirrorCBuffer = pPSCBPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSCBPerFrame);
 
+	PixelShaderConstantBuffer<TextureSwitcher>* pTexSwitcher =
+		new PixelShaderConstantBuffer<TextureSwitcher>(gfx, tSwitcher, 1u, 1u,
+			D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyTexSwitcher = pTexSwitcher->GetPixelShaderConstantBuffer();
+	AddBind(pTexSwitcher);
 
 
 	std::wstring directory[3];
@@ -124,29 +129,7 @@ void MirrorRoom::Update(float dt) noexcept
 
 void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
 {
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE, 0u, &mappedData));
-// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gTexTransform = DirectX::XMMatrixIdentity();
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsMirror, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-// 
-// 	if (GetAsyncKeyState('0') & 0x8000)
-// 		frame->numLights = 0;
-// 	if (GetAsyncKeyState('1') & 0x8000)
-// 		frame->numLights = 1;
-// 
-// 	if (GetAsyncKeyState('2') & 0x8000)
-// 		frame->numLights = 2;
-// 
-// 	if (GetAsyncKeyState('3') & 0x8000)
-// 		frame->numLights = 3;
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsMirror, 0u);
 }
 
 void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
@@ -162,70 +145,45 @@ void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_wor
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
 }
 
-void MirrorRoom::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, UINT texArrpos)
+void MirrorRoom::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorCBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorCBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_MirrorRoom* frameMirror = reinterpret_cast<CB_PS_MirrorRoom*> (mappedData.pData);
 	frameMirror->cameraPosition = camPositon;
-	frameMirror->texArrayPos = texArrpos;
+	if (GetAsyncKeyState('0') & 0x8000)
+		frameMirror->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frameMirror->numberOfLights = 1;
 
-	if (texArrpos == 0)
-	{
-		frameMirror->mat = wallMaterial;
-	}
-	if (texArrpos == 1)
-	{
-		frameMirror->mat = mirrorMaterial;
-	}
-	if (texArrpos == 2)
-	{
-		frameMirror->mat = floorMaterial;
-	}
+	if (GetAsyncKeyState('2') & 0x8000)
+		frameMirror->numberOfLights = 2;
 
+	if (GetAsyncKeyState('3') & 0x8000)
+		frameMirror->numberOfLights = 3;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyMirrorCBuffer, 0u);
 
 }
 
-void MirrorRoom::UpdateMirrorRoomConstBuffers(Graphics& gfx, UINT texture)
+void MirrorRoom::SwitchTexture(Graphics& gfx, UINT texArrPos)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesMirror, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CBPerObjectTexture* object = reinterpret_cast<CBPerObjectTexture*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gTexTransform = DirectX::XMMatrixIdentity();
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesMirror, 0u);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyTexSwitcher, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	TextureSwitcher* frameMirror = reinterpret_cast<TextureSwitcher*> (mappedData.pData);
+	frameMirror->currentTexture = texArrPos;
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyMirrorRoomCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	MirrorRoomCB* frameMirror = reinterpret_cast<MirrorRoomCB*> (mappedData.pData);
-	if (texture == 0)
+	if (texArrPos == 0)
 	{
-		frameMirror->objectMaterial = wallMaterial;
+		frameMirror->mat = wallMaterial;
 	}
-	if (texture == 1)
+	if (texArrPos == 1)
 	{
-		frameMirror->objectMaterial = mirrorMaterial;
+		frameMirror->mat = mirrorMaterial;
 	}
-	if (texture == 2)
+	if (texArrPos == 2)
 	{
-		frameMirror->objectMaterial = floorMaterial;
+		frameMirror->mat = floorMaterial;
 	}
-	//switch texture each draw
-	frameMirror->currentTexture = texture;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyMirrorRoomCB, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyLightSwitcher, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	LightSwitcher* temptLightSwitcher = reinterpret_cast<LightSwitcher*> (mappedData.pData);
-	if (GetAsyncKeyState('0') & 0x8000)
-		temptLightSwitcher->numLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		temptLightSwitcher->numLights = 1;
-	if (GetAsyncKeyState('2') & 0x8000)
-		temptLightSwitcher->numLights = 2;
-	if (GetAsyncKeyState('3') & 0x8000)
-		temptLightSwitcher->numLights = 3;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyLightSwitcher, 0u);
-
+	gfx.pgfx_pDeviceContext->Unmap(pCopyTexSwitcher, 0u);
 }

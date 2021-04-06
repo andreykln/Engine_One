@@ -46,13 +46,13 @@ struct CB_PS_MirrorRoom
 {
 	CB_PS_MirrorRoom() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
-	Material mat;
+// 	Material mat;
 	DirectX::XMFLOAT3 cameraPosition;
 	unsigned int numberOfLights = 2u;
-	unsigned int texArrayPos = 0u;
-	const UINT padding0 = 0u;
-	const UINT padding1 = 0u;
-	const UINT padding2 = 0u;
+// 	unsigned int texArrayPos = 0u;
+// 	const UINT padding0 = 0u;
+// 	const UINT padding1 = 0u;
+// 	const UINT padding2 = 0u;
 };
 
 struct CB_PS_Skull_Mirror

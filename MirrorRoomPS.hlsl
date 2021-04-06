@@ -51,15 +51,23 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
 cbuffer CBPerFrameMirrorRoom : register(b0)
 {
     DirectionalLight directLight[3];
-    Material mat;
     float3 cameraPositon;
     uint numberOfLights;
+    //uint texArrayPos;
+    //uint padding0;
+    //uint padding1;
+    //uint padding2;
+};
+
+cbuffer CBTextureSwitcher : register(b1)
+{
+    Material mat;
     uint texArrayPos;
     uint padding0;
     uint padding1;
     uint padding2;
-};
 
+}
 
 
 Texture2D SRVTexture0[3] : register(t0);
@@ -89,7 +97,6 @@ float4 main(PSstruct pin) : SV_TARGET
     toEye /= distToEye;
 
     float4 texColor = float4(1, 1, 1, 1);
-   // texColor = mul(SRVTexture0.Sample(tex0Sample, pin.Tex), SRVTexture1.Sample(tex0Sample, pin.Tex));
     if (texArrayPos == 0)
     {
         texColor = SRVTexture0[0].Sample(tex0Sample, pin.Tex);
