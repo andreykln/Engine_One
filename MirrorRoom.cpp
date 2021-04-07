@@ -117,21 +117,6 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 
 }
 
-DirectX::XMMATRIX MirrorRoom::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void MirrorRoom::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
-void MirrorRoom::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-}
-
 void MirrorRoom::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 

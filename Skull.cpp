@@ -122,31 +122,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 
 }
 
-DirectX::XMMATRIX Skull::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void Skull::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
-void Skull::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-}
-
-void Skull::UpdateLightDirection(Graphics& gfx)
-{
-
-}
-
-void Skull::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
-{
-	m_Matrix = in_matrix;
-}
-
 void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

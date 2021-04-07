@@ -157,15 +157,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 }
 
 
-DirectX::XMMATRIX Hills::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;;
-}
-
-void Hills::Update(float dt) noexcept
-{
-	alpha = dt;
-}
 
 DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
 {
@@ -189,11 +180,6 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 	n = in_vertDepth;
 }
 
-
-void Hills::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-}
 
 void Hills::UpdateConstantBuffers(Graphics& gfx,
 	DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos,

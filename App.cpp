@@ -14,12 +14,12 @@ App::App()
 
 
 
-// 	CreateBox();
+	CreateBox();
 // 	CreateShapes();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
-	CreateDepthComplexityStencil();
+// 	CreateDepthComplexityStencil();
 
 
 
@@ -36,9 +36,9 @@ void App::DoFrame()
 // 	DrawShapes();
 // 	DrawMirror();
 // 	DrawHillsWithWaves();
-// 	DrawBox();
+	DrawBox();
 // 	DrawLightning();
-	DrawDepthComplexityStencil();
+// 	DrawDepthComplexityStencil();
 
 	//Camera testing
 	/*pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
@@ -465,34 +465,36 @@ void App::DrawShapes()
 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
-// 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
-// 
-// 
-// 	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-// 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-// 
-// 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-// 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-// 
-// 	for (auto& x : cylinders)
-// 	{
-// 		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-// 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-// 		x->BindAndDrawIndexed(wnd.GetGraphics());
-//  	
-//  	}
-//  	shapes.GetCylinderWorldArray() -= 10; //reset array position
-// 
-// 	for (auto& x : geoSpheres)
-// 	{
-// 		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-// 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-// 		x->BindAndDrawIndexed(wnd.GetGraphics());
-// 	}
-// 	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	for (auto& x : cylinders)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+ 	
+ 	}
+ 	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
+
 }
 
 void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)

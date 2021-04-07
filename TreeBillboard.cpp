@@ -68,22 +68,7 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 	AddBind(pTopology);
 }
 
-DirectX::XMMATRIX TreeBillboard::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;;
-}
 
-void TreeBillboard::Update(float dt) noexcept
-{
-
-}
-
-void TreeBillboard::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-
-
-}
 
 void TreeBillboard::UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition)
 {
@@ -93,12 +78,12 @@ void TreeBillboard::UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyeP
 
 void TreeBillboard::UpdateGeometryConstBufer(Graphics& gfx, DirectX::XMFLOAT3& eyePosition)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyGSConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CBBillboardGeometry* geometry = reinterpret_cast<CBBillboardGeometry*> (mappedData.pData);
-	geometry->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-	geometry->cbEyePosition = eyePosition;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyGSConstBuffer, 0u);
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyGSConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CBBillboardGeometry* geometry = reinterpret_cast<CBBillboardGeometry*> (mappedData.pData);
+// 	geometry->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
+// 	geometry->cbEyePosition = eyePosition;
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyGSConstBuffer, 0u);
 }
 
 void TreeBillboard::UpdatePixelShaderConstBuffer(Graphics& gfx)

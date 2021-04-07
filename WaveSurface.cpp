@@ -89,16 +89,6 @@ WaveSurface::WaveSurface(Graphics& gfx)
 
 }
 
-DirectX::XMMATRIX WaveSurface::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void WaveSurface::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
 void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 {
 	alpha = dt;
@@ -128,11 +118,6 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDynamicVB, 0u);
 }
 
-void WaveSurface::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-
-}
 
 void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {

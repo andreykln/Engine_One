@@ -7,13 +7,7 @@ class Skull : public Shape
 {
 public:
 	Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	//updating only light for mirror demo
-	void UpdateLightDirection(Graphics& gfx);
-	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
-
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition);
 	void UpdatePSLightDirection(Graphics& gfx, DirectX::XMFLOAT3 lightDirection, UINT index);

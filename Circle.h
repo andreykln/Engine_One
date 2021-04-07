@@ -7,9 +7,6 @@ class Circle : public Shape
 {
 public:
 	Circle(Graphics& gfx);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX matrix);
 	UINT GetVertices() const;
 private:

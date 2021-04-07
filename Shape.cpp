@@ -1,14 +1,6 @@
 #include "Shape.h"
 
-float Shape::GetAlpha() const
-{
-	return alpha;
-}
 
-void Shape::Update(float dt) noexcept
-{
-	alpha = dt;
-}
 
 void Shape::AddBind(Bindable* in_bind)
 {
@@ -59,12 +51,4 @@ void Shape::DeleteObject() const noexcept
 	}
 }
 
-void Shape::SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept
-{
-	m_Matrix = in_matrix;
-}
 
-void Shape::SetVertexShader(Graphics& gfx, ID3D11VertexShader* pVertexShader,std::wstring& path)
-{
-	gfx.SetVertexShader(pVertexShader, path);
-}

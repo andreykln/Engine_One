@@ -10,10 +10,7 @@ class WaveSurface : public Shape
 {
 public:
 	WaveSurface(Graphics& gfx);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
 	void UpdateScene(float totalTime, float dt, Graphics& gfx);
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	DirectX::XMMATRIX GetWaveSurfaceOffset();

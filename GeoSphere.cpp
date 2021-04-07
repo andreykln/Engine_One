@@ -72,22 +72,6 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	AddBind(pTexSampler);
 }
 
-DirectX::XMMATRIX GeoSphere::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void GeoSphere::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
-void GeoSphere::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-
-}
-
 void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

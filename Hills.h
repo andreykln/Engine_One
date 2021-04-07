@@ -8,12 +8,9 @@ class Hills : public Shape
 {
 public:
 	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
 	DirectX::XMFLOAT3 GetHillNormal(float x, float z) const;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
 	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);

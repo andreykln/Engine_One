@@ -91,22 +91,6 @@ Cylinder::Cylinder(Graphics& gfx,
 
 }
 
-DirectX::XMMATRIX Cylinder::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void Cylinder::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
-void Cylinder::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-}
-
-
 void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

@@ -47,27 +47,6 @@ DepthComplexity::DepthComplexity(Graphics& gfx)
 	AddBind(pPSCBDepth);
 }
 
-DirectX::XMMATRIX DepthComplexity::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void DepthComplexity::Update(float dt) noexcept
-{
-	alpha = dt;
-}
-
-void DepthComplexity::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesDepth, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesDepth, 0u);
-}
-
 void DepthComplexity::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

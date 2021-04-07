@@ -111,21 +111,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 
 }
 
-DirectX::XMMATRIX Box::GetTransform() const noexcept
-{
-	return m_Matrix * m_Centered;
-}
-
-void Box::Update(float dt) noexcept
-{
-	alpha = dt;
-	
-}
-
-void Box::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-
-}
 
 DirectX::XMMATRIX Box::GetBoxForHillsOffset()
 {

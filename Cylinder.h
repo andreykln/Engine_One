@@ -7,14 +7,9 @@ class Cylinder : public Shape
 public:
 	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count,
 		DemoSwitch in_switch);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void IncrementTexArrPos() noexcept;
-
-
 private:
 	UINT GetTexArrPos() const noexcept;
 

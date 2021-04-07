@@ -52,32 +52,6 @@ Circle::Circle(Graphics& gfx)
 
 }
 
-DirectX::XMMATRIX Circle::GetTransform() const noexcept
-{
-	//using scaling for circumvent shitty matrix usage, it should fix itself later
-	return DirectX::XMMatrixScaling(0.75f, 1.0f, 1.0f);
-}
-
-void Circle::Update(float dt) noexcept
-{
-
-}
-
-void Circle::UpdateVertexConstantBuffer(Graphics& gfx)
-{
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCircle, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CBPerObject* object = reinterpret_cast<CBPerObject*>(mappedData.pData);
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	object->gWorld = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-
-// 	object->gWorld = GetTransform() * gfx.GetProjection();
-
-// 	object->gWorldInvTranspose = MathHelper::InverseTranspose(object->gWorld);
-// 	object->gWorldViewProj = DirectX::XMMatrixTranspose(GetTransform() * gfx.GetProjection());
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCircle, 0u);
-}
-
 void Circle::UpdateVSMatrices(Graphics& gfx, DirectX::XMMATRIX matrix)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

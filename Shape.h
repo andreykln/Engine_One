@@ -18,9 +18,6 @@ public:
 	}
 	Shape(const Shape&) = delete;
 	virtual ~Shape() = default;
-	virtual DirectX::XMMATRIX GetTransform() const noexcept = 0;
-	float GetAlpha() const;
-	virtual void Update(float dt) noexcept = 0;
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);
 	void BindAndDrawIndexed(Graphics& gfx) const noexcept;
@@ -28,10 +25,7 @@ public:
 	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
 	void DeleteObject() const noexcept;
 	//can be used for rotation around world axis
-	void SetCameraMatrix(DirectX::XMMATRIX in_matrix) noexcept;
-	virtual void UpdateVertexConstantBuffer(Graphics& gfx) = 0;
 
-	void SetVertexShader(Graphics& gfx, ID3D11VertexShader* pVertexShader,std::wstring& path);
 private:
 	std::vector<Bindable*> binds;
 	const IndexBuffer* pIndexBuffer = nullptr;

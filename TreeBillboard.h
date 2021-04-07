@@ -8,9 +8,6 @@ class TreeBillboard : public Shape
 {
 public:
 	TreeBillboard(Graphics& gfx);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition);
 private:
 	void UpdateGeometryConstBufer(Graphics& gfx, DirectX::XMFLOAT3& eyePosition);

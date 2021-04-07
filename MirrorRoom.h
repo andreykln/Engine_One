@@ -33,9 +33,6 @@ class MirrorRoom : public Shape
 {
 public:
 	MirrorRoom(Graphics& gfx);
-	DirectX::XMMATRIX GetTransform() const noexcept override;
-	void Update(float dt) noexcept override;
-	void UpdateVertexConstantBuffer(Graphics& gfx) override;
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void SwitchTexture(Graphics& gfx, UINT texArrPos);
