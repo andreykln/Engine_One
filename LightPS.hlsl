@@ -46,13 +46,7 @@ void ComputeDirectionalLight(Material mat, DirectionalLight L,
     }
 }
 
-/*cbuffer CBPSDirectionalLight_Fog : register(b0)
-{
-    DirectionalLight directLight[3];
-    Material mat;
-    float3 cameraPosition;
-    uint numberOfLights;
-};*/
+
 cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
     DirectionalLight directLight[3];
