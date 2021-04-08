@@ -12,7 +12,6 @@ struct GSOutput
     float3 posW : Position0;
     float3 normalW : Normal;
     float2 tex : TEXCOORD;
-    float3 gEyePosition : Position1;
     uint PrimID : SV_PrimitiveID;
 };
 
@@ -49,7 +48,7 @@ void main(point VertexOut gin[1],
     
     float2 gTexC[4] = //it can't be global for some reason, figure out why.
     {
-        float2(0.0f, 1.0f),
+    float2(0.0f, 1.0f),
     float2(0.0f, 0.0f),
     float2(1.0f, 1.0f),
     float2(1.0f, 0.0f)
@@ -64,7 +63,6 @@ void main(point VertexOut gin[1],
         gout.normalW = look;
         gout.tex = gTexC[i];
         gout.PrimID = primID;
-        gout.gEyePosition = eyePosition;
         triStream.Append(gout);
     }
 

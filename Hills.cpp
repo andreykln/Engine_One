@@ -185,67 +185,6 @@ void Hills::UpdateConstantBuffers(Graphics& gfx,
 	DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos,
 	DirectX::XMVECTOR& target)
 {
- 	using namespace DirectX;
-
-	if (currentDemo == DemoSwitch::HillsDemo)
-	{
-		// Circle light over the land surface.
-		/*pointLight.position.x = 70.0f * std::cosf(0.2f * GetAlpha());
-		pointLight.position.z = 70.0f * std::sinf(0.2f * GetAlpha());
-		pointLight.position.y = MathHelper::Max(GetHeight(pointLight.position.x, pointLight.position.z), -3.0f) + 10.0f;
-		// The spotlight takes on the camera position and is aimed in the
-		// same direction the camera is looking.  
-		spotLight.position = eyePosition;
-// 		DirectX::XMVECTOR tetEyeTarget = { eyePosition.x, eyePosition.y, eyePosition.z, 1.0f };
-// 		DirectX::XMVECTOR test_target = { 60.0f,	-70.0f,	70.0f, 1.0f };
-		DirectX::XMVECTOR flashLightvector = -DirectX::XMVector3Normalize(target - pos);
-		//to move light a bit up
-		flashLightvector.m128_f32[0] += 0.2f;
-		flashLightvector.m128_f32[2] += 0.03f;*/
-
-		//DirectX::XMStoreFloat3(&spotLight.direction, flashLightvector);
-
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-		if (GetAsyncKeyState('0') & 0x8000)
-			frame->numLights = 0;
-		if (GetAsyncKeyState('1') & 0x8000)
-			frame->numLights = 1;
-		if (GetAsyncKeyState('2') & 0x8000)
-			frame->numLights = 2;
-		if (GetAsyncKeyState('3') & 0x8000)
-			frame->numLights = 3;
-
-		frame->objectMaterial = landMat;
-		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
-		//SPOTLIGHT HERE
-// 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 		CBPerFrame* frame = reinterpret_cast<CBPerFrame*>(mappedData.pData);
-// 		frame->gPointLight.position.x = pointLight.position.x;
-// 		frame->gPointLight.position.y = pointLight.position.y;
-// 		frame->gPointLight.position.z = pointLight.position.z;
-// 		frame->gSpotLight.position = spotLight.position;
-// 		frame->gSpotLight.direction = spotLight.direction;
-// 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
-	}
-	if(currentDemo == DemoSwitch::Shapesdemo)
-	{
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-		CBPerFrame* frame = reinterpret_cast<CBPerFrame*> (mappedData.pData);
-		if (GetAsyncKeyState('0') & 0x8000)
-			frame->numLights = 0;
-		if (GetAsyncKeyState('1') & 0x8000)
-			frame->numLights = 1;
-		if (GetAsyncKeyState('2') & 0x8000)
-			frame->numLights = 2;
-		if (GetAsyncKeyState('3') & 0x8000)
-			frame->numLights = 3;
-		//frame->objectMaterial = landMat;
-		frame->objectMaterial = landMat;
-		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsHills, 0u);
- 	}
 }
 
 

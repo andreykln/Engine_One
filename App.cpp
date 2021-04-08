@@ -10,13 +10,12 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 	pShaders = new Shaders(wnd.GetGraphics());
 
-	pCircle = new Circle(wnd.GetGraphics());
 
 
 
-	CreateBox();
+// 	CreateBox();
 // 	CreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
@@ -35,8 +34,8 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-// 	DrawHillsWithWaves();
-	DrawBox();
+	DrawHillsWithWaves();
+// 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
 
@@ -99,59 +98,39 @@ void App::CalculateFrameStats()
 }
 
 
-
-void App::CameraMove()
-{
-
-
-}
-
-
-
-void App::TwoTestCubes()
-{
-	wnd.GetGraphics().TestDrawing(timer.TotalTime(), 0.0, 0.0f, 4.0f);
-// 	wnd.GetGraphics().TestDrawing((timer.TotalTime() * 0.5f), axis_x, axis_y, axis_z);
-}
-
-
-
-
 void App::DrawHillsWithWaves()
 {
- 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
-
+//  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
+// 
 // 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
-
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+// 
+// 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
-	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
-	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
+// 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+// 
+// 	//transparency for the box achieved with clip in PS, so this isn't necessary?
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+// 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
+// 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());;
+// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+// 
+// 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+// 	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
+// 	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+// 
 
-	//transparency for the box achieved with clip in PS, so this isn't necessary?
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
-	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());;
-	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-
-	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
-	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
-	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
-	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-
-
-// 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pBillboards->SetCameraMatrix(mCamera * CameraZoom());
-// 	pBillboards->Update(timer.TotalTime());
-// 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), wEyePosition);
-// 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPositionFloat());
+	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 
 
@@ -162,7 +141,7 @@ void App::CreateHillsWithWaves()
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
-// 	pBillboards = new TreeBillboard(wnd.GetGraphics());
+	pBillboards = new TreeBillboard(wnd.GetGraphics());
 }
 
 void App::CreateBox()

@@ -35,24 +35,20 @@ struct CB_PS_PerFrameUpdate
 {
 	CB_PS_PerFrameUpdate() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 cameraPositon;
-	unsigned int numberOfLights = 2u;
+	unsigned int numberOfLights = 3u;
 	unsigned int texArrayPos = 0u;
 	float padding0;
 	float padding1;
 	float padding2;
 };
 
+///hackjob
 struct CB_PS_MirrorRoom
 {
 	CB_PS_MirrorRoom() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLight dirLight[3];
-// 	Material mat;
 	DirectX::XMFLOAT3 cameraPosition;
 	unsigned int numberOfLights = 2u;
-// 	unsigned int texArrayPos = 0u;
-// 	const UINT padding0 = 0u;
-// 	const UINT padding1 = 0u;
-// 	const UINT padding2 = 0u;
 };
 
 struct CB_PS_Skull_Mirror
@@ -67,7 +63,7 @@ struct CB_PS_Skull_Mat
 {
 	Material mat;
 };
-
+//hackjob ends
 struct TreePointSprite
 {
 	TreePointSprite() : pos(0.0f, 0.0f, 0.0f), size(0.0f, 0.0f) {};
@@ -76,42 +72,23 @@ struct TreePointSprite
 };
 
 
-struct CBFog
-{
-	DirectX::XMFLOAT4 fogColor;
-	float fogStartandRange[2] = { 5.0f, 105.0f };
-	const float padding0[2] = { 0.0f, 0.0f};
-};
-
+// struct CBFog
+// {
+// 	DirectX::XMFLOAT4 fogColor;
+// 	float fogStartandRange[2] = { 5.0f, 105.0f };
+// 	const float padding0[2] = { 0.0f, 0.0f};
+// };
+// 
 struct CBPSDepth
 {
 	DirectX::XMFLOAT4 depthColor;
 };
 
-struct CBPerFrame
-{
-	CBPerFrame() { ZeroMemory(this, sizeof(this)); }
-	DirectionalLight dirLight[3];
-	Material objectMaterial;
-	DirectX::XMFLOAT3 cbEyePosition;
-	int numLights = { 3 };
-};
-
-struct CBPerFrameTexArray
-{
-	CBPerFrameTexArray() { ZeroMemory(this, sizeof(this)); }
-	DirectionalLight dirLight[3];
-	Material objectMaterial;
-	DirectX::XMFLOAT3 cbEyePosition;
-	int numLights = { 3 };
-	int arrayPos[4] = {0,0,0,0}; //padding array, only [0] is used
-};
-
 struct CBBillboardGeometry
 {
 	CBBillboardGeometry() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX gWorldViewProj;
-	DirectX::XMFLOAT3 cbEyePosition;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMFLOAT3 cameraPosition;
 	const int padding = 0;
 };
 
@@ -123,28 +100,28 @@ struct CBBillboardPixel
 	int numLights[4] = { 3,0,0,0 }; //padding array, only [0] is used
 };
 
-struct CBPerFrameMirrorRoom
-{
-	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }
-	DirectionalLight dirLight[3];
-};
+// struct CBPerFrameMirrorRoom
+// {
+// 	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }
+// 	DirectionalLight dirLight[3];
+// };
 
-struct CBPerObject
-{
-	CBPerObject() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX gWorld;
-	DirectX::XMMATRIX gWorldInvTranspose;
-	DirectX::XMMATRIX gWorldViewProj;
-};
-
-struct CBPerObjectTexture
-{
-	CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX gWorld;
-	DirectX::XMMATRIX gWorldInvTranspose;
-	DirectX::XMMATRIX gWorldViewProj;
-	DirectX::XMMATRIX gTexTransform;
-};
+// struct CBPerObject
+// {
+// 	CBPerObject() { ZeroMemory(this, sizeof(this)); }
+// 	DirectX::XMMATRIX gWorld;
+// 	DirectX::XMMATRIX gWorldInvTranspose;
+// 	DirectX::XMMATRIX gWorldViewProj;
+// };
+// 
+// struct CBPerObjectTexture
+// {
+// 	CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
+// 	DirectX::XMMATRIX gWorld;
+// 	DirectX::XMMATRIX gWorldInvTranspose;
+// 	DirectX::XMMATRIX gWorldViewProj;
+// 	DirectX::XMMATRIX gTexTransform;
+// };
 
 enum DemoSwitch
 {

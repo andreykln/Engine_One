@@ -32,7 +32,6 @@ private:
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
 
-	CBPerFrame constLights;
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
 	const DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);

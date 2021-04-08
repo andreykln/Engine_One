@@ -10,7 +10,6 @@ public:
 	void UpdateDepthComplexityColor(Graphics& gfx, DirectX::XMFLOAT3 color);
 private:
 	CBPSDepth depthColor;
-	CBPerObject matrices;
 	CB_VS_Transform transformMatrices;
 	ID3D11Buffer* pCopyVCBMatricesDepth = nullptr;
 	ID3D11Buffer* pCopyPSCBDepthColor = nullptr;

@@ -1,6 +1,6 @@
 #include "Skull.h"
 
-CBPerFrame Skull::constBuffPerFrame;
+// CBPerFrame Skull::constBuffPerFrame;
 
 Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	: currentDemo(in_currentDemo)
@@ -192,12 +192,12 @@ DirectX::XMMATRIX Skull::GetMirroredSkullTranslation() const
 
 void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
 {
-	constBuffPerFrame.dirLight[index].direction = lightDirection;
+// 	constBuffPerFrame.dirLight[index].direction = lightDirection;
 }
 
 void Skull::SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept
 {
-	constBuffPerFrame.dirLight[index].direction = lightDirection[index];
+// 	constBuffPerFrame.dirLight[index].direction = lightDirection[index];
 }
 
 void Skull::UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept

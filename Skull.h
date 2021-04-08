@@ -19,9 +19,6 @@ public:
 	DirectionalLight GetLightDirection(UINT index) const noexcept;
 	Material shadowMaterial;
 	Material skullMatData;
-	static CBPerFrame constBuffPerFrame;
-	CBPerObject constBuffPerObject;
-
 
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;

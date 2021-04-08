@@ -141,9 +141,6 @@
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="Circle.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -263,9 +260,6 @@
     <ClInclude Include="DrawableBase.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -274,13 +268,7 @@
     <FxCompile Include="CubeVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="HillsLightVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="CubePS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="HillsLightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="PyramidDistortedVS.hlsl">

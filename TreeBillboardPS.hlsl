@@ -1,16 +1,19 @@
 #include "LightHelper.hlsli"
 
-cbuffer CBBillboardPS : register(b0)
+cbuffer CB_PS_DirectionalL_Fog : register(b0)
 {
     DirectionalLight dirLight[3];
     Material mat;
-    int4 numLights;
+    float4 fogColor;
+    float fogStart;
+    float fogRange;
 };
 
-cbuffer CBFog : register(b1)
+cbuffer CB_PS_PerFrame : register(b1)
 {
-    float4 fogColor;
-    float2 fogStartandRange;
+    float3 cameraPositon;
+    uint numberOflights;
+   
 }
 struct GSOutput
 {
@@ -18,7 +21,6 @@ struct GSOutput
     float3 posW : Position0;
     float3 normalW : Normal;
     float2 tex : TEXCOORD;
-    float3 gEyePosition : Position1;
     uint PrimID : SV_PrimitiveID;
 };
 
@@ -31,7 +33,7 @@ float4 main(GSOutput pin) : SV_TARGET
     pin.normalW = normalize(pin.normalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = pin.gEyePosition - pin.posW;
+    float3 toEye = cameraPositon - pin.posW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -43,11 +45,12 @@ float4 main(GSOutput pin) : SV_TARGET
     float3 uvw = float3(pin.tex, pin.PrimID % 4);
     texColor = SRVTexture.Sample(tex0Sample, uvw);
     
-    clip(texColor.a - 0.5f); 
+    clip(texColor.a - 0.05f); 
 
+  
     float4 litColor = texColor;
 
-    if (numLights[0] > 0)
+    if (numberOflights > 0)
     {
     
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -55,7 +58,7 @@ float4 main(GSOutput pin) : SV_TARGET
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
         [unroll]
-        for (int i = 0; i < numLights.x; ++i)
+        for (uint i = 0; i < numberOflights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(mat, dirLight[i], pin.normalW, toEye, A, D, S);
@@ -68,10 +71,10 @@ float4 main(GSOutput pin) : SV_TARGET
         litColor = texColor * (ambient + diffuse) + specular;
     }
 
-     //fogging
-    float fogLerp = saturate((distToEye - fogStartandRange[0]) / fogStartandRange[1]);
+    //fogging
+    float fogLerp = saturate((distToEye - fogStart) / fogRange);
     litColor = lerp(litColor, fogColor, fogLerp);
-        // Common to take alpha from diffuse material and texture
+    // Common to take alpha from diffuse material and texture
     litColor.a = mat.diffuse.a * texColor.a;
 
     return litColor;

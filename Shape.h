@@ -10,12 +10,7 @@
 class Shape
 {
 public:
-	Shape()
-	{
-		fogObj.fogColor = { 0.75f, 0.75f, 0.75f, 1.00f };
-		fogObj.fogStartandRange[0] = { 25.0f };
-		fogObj.fogStartandRange[1] = { 105.0f };
-	}
+	Shape()	{}
 	Shape(const Shape&) = delete;
 	virtual ~Shape() = default;
 	void AddBind(Bindable* in_bind);
@@ -32,7 +27,6 @@ private:
 protected:
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 	float alpha{};
-	CBFog fogObj;
 	DirectX::XMMATRIX m_Matrix = DirectX::XMMatrixIdentity();
  	DirectX::XMMATRIX m_Centered = DirectX::XMMatrixTranslation(0.0f, 0.0f, -12.0f);
 	

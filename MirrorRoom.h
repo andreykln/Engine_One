@@ -48,10 +48,6 @@ private:
 	Material wallMaterial;
 
 
-	CBPerFrameMirrorRoom constLights;
-	CBPerObjectTexture constMatrices;
-
-
 
 	ID3D11Buffer* pCopyMirrorCBuffer = nullptr;
 
