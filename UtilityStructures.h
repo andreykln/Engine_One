@@ -26,8 +26,8 @@ struct CB_PS_DirectionalL_Fog
 	DirectionalLight dirLight[3];
 	Material mat;
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	float fogstart = 10.0f;
-	float fogRange = 130.0f;
+	float fogstart = 50.0f;
+	float fogRange = 200.0f;
 	float padding[2];
 };
 

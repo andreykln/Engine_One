@@ -7,13 +7,19 @@ cbuffer CB_PS_DirectionalL_Fog : register(b0)
     float4 fogColor;
     float fogStart;
     float fogRange;
+    float2 padding;
 };
 
 cbuffer CB_PS_PerFrame : register(b1)
 {
     float3 cameraPositon;
     uint numberOflights;
-   
+    uint texArrPos;
+    float padding0;
+    float padding1;
+    float padding2;
+    
+    
 }
 struct GSOutput
 {
@@ -76,7 +82,6 @@ float4 main(GSOutput pin) : SV_TARGET
     litColor = lerp(litColor, fogColor, fogLerp);
     // Common to take alpha from diffuse material and texture
     litColor.a = mat.diffuse.a * texColor.a;
-
     return litColor;
     
     

@@ -56,7 +56,7 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 
 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pPSPerFrame =
 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPSConstBuffer = pPSconstBuffer->GetPixelShaderConstantBuffer();
+	pCopyPSConstBuffer = pPSPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSPerFrame);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
@@ -89,7 +89,6 @@ void TreeBillboard::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camera
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPSConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* pixel = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-	auto test = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
 	pixel->cameraPositon = cameraPosition;
 	if (GetAsyncKeyState('0') & 0x8000)
 		pixel->numberOfLights = 0;
