@@ -4,89 +4,83 @@
 Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo)
 	: width(in_width), depth(in_depth), m(in_m), n(in_n), currentDemo(demo)
 {
-	if (currentDemo == DemoSwitch::HillsDemo)
-	{
-		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-
-		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
-
-		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-
-		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
-		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	}
-	if (currentDemo == DemoSwitch::Shapesdemo)
-	{
-		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-
-		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
-
-		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
-		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-
-		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
-		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	}
-
-
-	//point light .position will change every frame
-
-	/*if (!flatSurface) 
-	{
-		pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-		pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-		pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-		pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
-
-
-		pointLight.range = 25.0f;
-		pointLight.padding = 0.0f;
-		//position and direction will change every frame
-		spotLight.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-		spotLight.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-		spotLight.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		spotLight.attenuation = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-		spotLight.spot = 96.0f;
-		spotLight.range = 10000.0f;
-		spotLight.padding = 0.0f;
-	}*/
-	
-
-
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
-
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
 	treesPositions.resize(25);
-	size_t j = 0; //trees index
 
-
-	if (currentDemo == DemoSwitch::HillsDemo)
+	switch (currentDemo)
 	{
+	case Shapesdemo:
+	{
+		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
+
+		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
+		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
-			
+			DirectX::XMFLOAT3 p = grid.vertices[i].position;
+			vertices[i].pos = p;
+			vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f };
+			vertices[i].tex = grid.vertices[i].TexC;
+		}
+	}
+		break;
+	case HillsDemo:
+	case HillsAllLight:
+	{
+		allLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		allLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		allLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+		allLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		allLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		allLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		allLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+		allLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
+
+		allLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+		allLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		allLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+		allLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		allLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		allLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		allLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
+		allLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
+		allLight.pointLight.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+		allLight.pointLight.diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		allLight.pointLight.specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		allLight.pointLight.attenuation = DirectX::XMFLOAT3(0.0f, 0.1f, 0.0f);
+		allLight.pointLight.range = 25.0f;
+
+		allLight.spotLight.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		allLight.spotLight.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		allLight.spotLight.specular = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		allLight.spotLight.attenuation = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+		allLight.spotLight.range = 10000.0f;
+		allLight.spotLight.spot = 96.0f;
+
+		size_t j = 0; //trees index
+		for (size_t i = 0; i < grid.vertices.size(); ++i)
+		{
+
 			DirectX::XMFLOAT3 p = grid.vertices[i].position;
 			p.y = GetHeight(p.x, p.z);
 			vertices[i].pos = p;
@@ -101,17 +95,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 				j++;
 			}
 		}
-	}
-	else
-	{
-		for (size_t i = 0; i < grid.vertices.size(); ++i)
-		{
-			DirectX::XMFLOAT3 p = grid.vertices[i].position;
-			vertices[i].pos = p;
-			vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f};
-			vertices[i].tex = grid.vertices[i].TexC;
-		}
 
+	}
+		break;
+	default:
+		break;
 	}
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
@@ -128,25 +116,56 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
 	AddBind(pVSCB);
 
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
- 	AddBind(pLightsPS);
 
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
-	AddBind(pLightsCB);
+	switch (currentDemo)
+	{
+	case Shapesdemo:
+	case HillsDemo:
+	{
+		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		AddBind(pLightsPS);
+
+		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
+		AddBind(pLightsCB);
+	}
+	break;
+	case HillsAllLight:
+	{
+		PixelShaderConstantBuffer<CB_PS_Dir_Point_Spot_Fog_Lights>* pAllLightsb =
+			new PixelShaderConstantBuffer<CB_PS_Dir_Point_Spot_Fog_Lights>(gfx, allLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyAllLights = pAllLightsb->GetPixelShaderConstantBuffer();
+		AddBind(pAllLightsb);
+	}
+		break;
+	default:
+		break;
+	}
+
+
 
 
 	std::wstring directory[1];
-	if (currentDemo == DemoSwitch::HillsDemo)
+
+	switch (currentDemo)
 	{
-		directory[0] = L"Textures\\grass.dds";
-	}
-	else
+	case Shapesdemo:
 	{
 		directory[0] = L"Textures\\FloorTiles.dds";
 	}
+		break;
+	case HillsDemo:
+	case HillsAllLight:
+	{
+		directory[0] = L"Textures\\grass.dds";
+	}
+		break;
+	default:
+		break;
+	}
+
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
@@ -181,19 +200,10 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 }
 
 
-void Hills::UpdateConstantBuffers(Graphics& gfx,
-	DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos,
-	DirectX::XMVECTOR& target)
-{
-}
-
 
 void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj)
 {
-
-		//TODO spotlight
-
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
@@ -225,11 +235,36 @@ void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 
 }
 
+void Hills::UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT3 camDirection, float totalTime)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyAllLights, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_Dir_Point_Spot_Fog_Lights* frame = reinterpret_cast<CB_PS_Dir_Point_Spot_Fog_Lights*> (mappedData.pData);
+	frame->cameraPosition = camPosition;
+	frame->pointLight.position.x = 70.0f * cosf(0.2f * totalTime);
+	frame->pointLight.position.z = 70.0f * sinf(0.2f * totalTime);
+	frame->pointLight.position.y = MathHelper::Max(GetHeight(frame->pointLight.position.x, frame->pointLight.position.z), -3.0f) + 10.0f;
+	frame->spotLight.position = camPosition;
+	frame->spotLight.direction = camDirection;
+
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numberOfLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numberOfLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numberOfLights = 3;
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyAllLights, 0u);
+
+}
+
 DirectX::XMMATRIX Hills::GetHillsOffset() const
 {
 	return offsetForHillsWithWaves;
 }
-
 
 float Hills::GetHeight(float x, float z) const
 {

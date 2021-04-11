@@ -319,6 +319,9 @@
     <FxCompile Include="SkullMirrorPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="HillsAllLightPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

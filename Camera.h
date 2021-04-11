@@ -54,6 +54,13 @@ public:
 		 return pos;
 	 }
 
+	 DirectX::XMFLOAT3 GetCameraDirection()
+	 {
+		 DirectX::XMFLOAT3 dir;
+		 DirectX::XMStoreFloat3(&dir, front);
+		 return dir;
+	 }
+
 private:
 	DirectX::XMMATRIX GetViewMatrix()
 	{

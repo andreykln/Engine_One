@@ -26,6 +26,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
 
 	PS_Init(&pMirrorSkullPS, L"Shaders\\Pixel\\SkullMirrorPS.cso");
+	PS_Init(&pAllLightForHills, L"Shaders\\Pixel\\HillsAllLightPS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -137,6 +138,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::MirrorSkull_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pMirrorSkullPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::HillsAllLight_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pAllLightForHills, nullptr, 0u);
 		break;
 	}
 	default:

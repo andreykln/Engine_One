@@ -36,6 +36,7 @@ private:
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
 	ID3D11PixelShader* pLightAndTexturePS = nullptr;
 	ID3D11PixelShader* pLightAndTextureArrayPS = nullptr;
+	ID3D11PixelShader* pAllLightForHills = nullptr;
 
 	ID3D11VertexShader* pDepthComplexityVS = nullptr;
 	ID3D11InputLayout* pDepthCoplexityIL = nullptr;

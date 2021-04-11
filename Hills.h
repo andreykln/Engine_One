@@ -11,25 +11,15 @@ public:
 	DirectX::XMFLOAT3 GetHillNormal(float x, float z) const;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;
-	void UpdateConstantBuffers(Graphics& gfx, DirectX::XMFLOAT3& eyePosition, DirectX::XMVECTOR& pos, DirectX::XMVECTOR& target);
 	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
+	void UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT3 camDirection,float totalTime);
 	DirectX::XMMATRIX GetHillsOffset() const;
-private:
 
-	//TEMPORARY DISABLE IT, DON'T NEED SPOT LIGHTS
-// 	struct PerFrame
-// 	{
-// 		PerFrame() { ZeroMemory(this, sizeof(this)); }
-// 		DirectionalLight gDirLight;
-// 		PointLight gPointLight;
-// 		SpotLight gSpotLight;
-// 		DirectX::XMFLOAT3 gEyePosW;
-// 		float padding{};
-// 		Material gMaterial;
-// 	};
+private:
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;
+	CB_PS_Dir_Point_Spot_Fog_Lights allLight;
 	CB_PS_PerFrameUpdate pscBuffer;
 
 	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
@@ -46,15 +36,13 @@ private:
 
 	ID3D11Buffer* pCopyPCBLightsHills = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesHills = nullptr;
+	ID3D11Buffer* pCopyAllLights = nullptr;
 
 	ID3DBlob* pVertexShaderBlob = nullptr;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 	DirectionalLight dirLight;
-	PointLight pointLight;
-	SpotLight spotLight;
-	Material landMat;
-	Material wavesMat;
+// 	Material landMat;
 	std::vector<TreePointSprite> treesPositions;
 
 };

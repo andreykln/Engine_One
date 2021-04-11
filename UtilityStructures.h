@@ -31,6 +31,21 @@ struct CB_PS_DirectionalL_Fog
 	float padding[2];
 };
 
+struct CB_PS_Dir_Point_Spot_Fog_Lights
+{
+	CB_PS_Dir_Point_Spot_Fog_Lights() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLight dirLight[3];
+	PointLight pointLight;
+	SpotLight spotLight;
+	Material mat;
+	DirectX::XMFLOAT3 cameraPosition;
+	unsigned int numberOfLights;
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	float fogstart = 50.0f;
+	float fogRange = 200.0f;
+	float padding[2];
+};
+
 struct CB_PS_PerFrameUpdate
 {
 	CB_PS_PerFrameUpdate() { ZeroMemory(this, sizeof(this)); }
@@ -128,6 +143,7 @@ enum DemoSwitch
 	LightningCone,
 	Shapesdemo,
 	HillsDemo,
+	HillsAllLight,
 	DefaultBox,
 	MirrorSkull,
 };
@@ -143,5 +159,6 @@ enum ShaderPicker
 	TreeBillboardVS_PS_GS,
 	CircleToCylinderVS_GS_PS,
 	MirrorSkull_PS,
+	HillsAllLight_PS,
 	Keep
 };

@@ -15,9 +15,9 @@ App::App()
 
 // 	CreateBox();
 // 	CreateShapes();
-// 	CreateHillsWithWaves();
+	CreateHillsWithWaves();
 // 	CreateMirror();
-	CreateLightning();
+// 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 
 
@@ -34,22 +34,17 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-// 	DrawHillsWithWaves();
+	DrawHillsWithWaves();
 // 	DrawBox();
-	DrawLightning();
+// 	DrawLightning();
 // 	DrawDepthComplexityStencil();
 
-	//Camera testing
-	/*pShaders->BindVSandIA(ShaderPicker::CircleToCylinderVS_GS_PS);
-	pShaders->BindPS(ShaderPicker::CircleToCylinderVS_GS_PS);
-	viewProjectionMatrix = GetViewProjectionCamera();
-	pCircle->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix);
-	pCircle->BindAndDrawIndexed(wnd.GetGraphics());*/
+
 	
 
 	CalculateFrameStats();
 
-// 	DebugTextToTitle();
+	DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 
@@ -73,7 +68,7 @@ int App::Go()
 void App::DebugTextToTitle()
 {
 	std::ostringstream oss;
-	oss << "X: " << wnd.mouse.GetPosX() << " Y: " << wnd.mouse.GetPosY();
+	oss << "X: " << wnd.mouse.GetPosX();
 	wnd.SetTitle(oss.str().c_str());
 }
 
@@ -106,13 +101,15 @@ void App::DrawHillsWithWaves()
 	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::HillsAllLight_PS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
-	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	//pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pHills->UpdatePSAllLights(wnd.GetGraphics(), camera.GetCameraPositionFloat(), camera.GetCameraDirection(), timer.TotalTime());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	//transparency for the box achieved with clip in PS, so this isn't necessary?
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
@@ -139,7 +136,7 @@ void App::DrawHillsWithWaves()
 
 void App::CreateHillsWithWaves()
 {
- 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
+ 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsAllLight);
 	pWaves = new WaveSurface(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
 	pBillboards = new TreeBillboard(wnd.GetGraphics());
