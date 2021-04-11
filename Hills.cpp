@@ -6,7 +6,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 {
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 	std::vector<Vertex_IA> vertices(grid.vertices.size());
-	treesPositions.resize(25);
 
 	switch (currentDemo)
 	{
@@ -42,6 +41,29 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 		break;
 	case HillsDemo:
+	{
+		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
+
+		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		directionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
+		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	}
+	break;
 	case HillsAllLight:
 	{
 		allLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -77,6 +99,19 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		allLight.spotLight.range = 10000.0f;
 		allLight.spotLight.spot = 96.0f;
 
+
+	}
+		break;
+	default:
+		break;
+	}
+
+	switch (currentDemo)
+	{
+	case HillsDemo:
+	case HillsAllLight:
+	{
+		treesPositions.resize(25);
 		size_t j = 0; //trees index
 		for (size_t i = 0; i < grid.vertices.size(); ++i)
 		{
@@ -95,12 +130,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 				j++;
 			}
 		}
-
 	}
 		break;
 	default:
 		break;
 	}
+
 
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);

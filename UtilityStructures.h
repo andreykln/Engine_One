@@ -39,7 +39,7 @@ struct CB_PS_Dir_Point_Spot_Fog_Lights
 	SpotLight spotLight;
 	Material mat;
 	DirectX::XMFLOAT3 cameraPosition;
-	unsigned int numberOfLights;
+	unsigned int numberOfLights = 1u;
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	float fogstart = 50.0f;
 	float fogRange = 200.0f;
@@ -50,7 +50,7 @@ struct CB_PS_PerFrameUpdate
 {
 	CB_PS_PerFrameUpdate() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 cameraPositon;
-	unsigned int numberOfLights = 3u;
+	unsigned int numberOfLights = 1u;
 	unsigned int texArrayPos = 0u;
 	float padding0;
 	float padding1;

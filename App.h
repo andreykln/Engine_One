@@ -20,10 +20,13 @@ public:
 	void DebugTextToTitle();
 private:
 	void CalculateFrameStats();
-	void CameraMove();
-	void TwoTestCubes();
+// 	void CameraMove();
+// 	void TwoTestCubes();
+	void CreateHillsWithWavesAllLight();
+	void DrawHillsWithWavesAllLight();
 	void CreateHillsWithWaves();
 	void DrawHillsWithWaves();
+
 	void CreateBox();
 	void DrawBox();
 	void CreateMirror();
@@ -34,11 +37,11 @@ private:
 	void DrawDepthComplexityStencil();
 	void CreateShapes();
 	void DrawShapes();
-
-
-	DirectX::XMMATRIX CameraZoom() const noexcept;
-	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 	DirectX::XMMATRIX GetViewProjectionCamera();
+
+
+// 	DirectX::XMMATRIX CameraZoom() const noexcept;
+// 	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;
 
@@ -74,29 +77,29 @@ private:
 // 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;
 
-	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
+// 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
 // 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
-	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
+// 	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
 
 	//Camera from Frank Luna's book
-	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
+// 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
 	//from LearnOpenGL
-	float lastX = 0.0f;
-	float lastY = 0.0f;
-	float yaw = 45.5f;
-	float pitch = 0.0f;
-	bool firstMouse = true;
-	float GetYaw();
-	float GetPitch();
+// 	float lastX = 0.0f;
+// 	float lastY = 0.0f;
+// 	float yaw = 45.5f;
+// 	float pitch = 0.0f;
+// 	bool firstMouse = true;
+// 	float GetYaw();
+// 	float GetPitch();
 
 
 
-	DirectX::XMFLOAT3 wEyePosition;
-	DirectX::XMMATRIX mCamera;
-	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
-	DirectX::XMVECTOR pos;
-	DirectX::XMVECTOR target;
-	DirectX::XMVECTOR up;
+// 	DirectX::XMFLOAT3 wEyePosition;
+// 	DirectX::XMMATRIX mCamera;
+// 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
+// 	DirectX::XMVECTOR pos;
+// 	DirectX::XMVECTOR target;
+// 	DirectX::XMVECTOR up;
 
 	UINT stencilRef = 0;
 

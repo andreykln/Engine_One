@@ -11,18 +11,15 @@ App::App()
 	pShaders = new Shaders(wnd.GetGraphics());
 
 
-
-
 // 	CreateBox();
 // 	CreateShapes();
-	CreateHillsWithWaves();
+	CreateHillsWithWavesAllLight();
+// 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 
 
-
-//  	wnd.GetGraphics().SetProjection(GetPerspectiveProjection());
 }
 
 void App::DoFrame()
@@ -34,7 +31,8 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-	DrawHillsWithWaves();
+	DrawHillsWithWavesAllLight();
+// 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
@@ -44,7 +42,7 @@ void App::DoFrame()
 
 	CalculateFrameStats();
 
-	DebugTextToTitle();
+// 	DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 
@@ -93,7 +91,7 @@ void App::CalculateFrameStats()
 }
 
 
-void App::DrawHillsWithWaves()
+void App::DrawHillsWithWavesAllLight()
 {
  	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
@@ -106,7 +104,7 @@ void App::DrawHillsWithWaves()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
 	//pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
-	pHills->UpdatePSAllLights(wnd.GetGraphics(), camera.GetCameraPositionFloat(), camera.GetCameraDirection(), timer.TotalTime());
+	pHills->UpdatePSAllLights(wnd.GetGraphics(), camera.GetCameraPosition(), camera.GetCameraDirection(), timer.TotalTime());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
@@ -114,20 +112,20 @@ void App::DrawHillsWithWaves()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());;
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());;
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
-	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
 
 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
 	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
 	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
-	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPositionFloat());
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 
@@ -135,6 +133,51 @@ void App::DrawHillsWithWaves()
 }
 
 void App::CreateHillsWithWaves()
+{
+	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsDemo);
+	pWaves = new WaveSurface(wnd.GetGraphics());
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
+	pBillboards = new TreeBillboard(wnd.GetGraphics());
+}
+
+void App::DrawHillsWithWaves()
+{
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
+
+	pShaders->UnbindGS(); //call it first, so RenderDoc can capture GS
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+	viewProjectionMatrix = GetViewProjectionCamera();
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	//transparency for the box achieved with clip in PS, so this isn't necessary?
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());;
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
+	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::srsColor, blendFactorsZero, 0xffffffff);
+
+	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
+	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+
+}
+
+void App::CreateHillsWithWavesAllLight()
 {
  	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsAllLight);
 	pWaves = new WaveSurface(wnd.GetGraphics());
@@ -159,7 +202,7 @@ void App::DrawBox()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
 
@@ -182,11 +225,11 @@ void App::DrawMirror()
 
 	//floor
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 2u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 	//wall
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 0u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 18u, 6u);
 
@@ -195,7 +238,7 @@ void App::DrawMirror()
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorSkull_PS);
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	
 	// Do not write to render target
@@ -206,7 +249,7 @@ void App::DrawMirror()
 	// draw mirror
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 24u);
@@ -251,7 +294,7 @@ void App::DrawMirror()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), R, viewProjectionMatrix);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 2u);
 	pMirrorRoom->BindAndDraw(wnd.GetGraphics(), 6u, 0u);
 	//draw reflected skull
@@ -273,7 +316,7 @@ void App::DrawMirror()
 	// blending so the reflection shows through.
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::MirrorRoomPS);
-	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pMirrorRoom->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pMirrorRoom->SwitchTexture(wnd.GetGraphics(), 1u);
 	pMirrorRoom->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
@@ -293,7 +336,7 @@ void App::DrawMirror()
 
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), pSkull->GetMirroredSkullTranslation() * S * shadowOffsetY * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
 
-	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::NoDoubleBlendDSS, 0);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 	// Restore default states.
@@ -317,10 +360,9 @@ void App::DrawLightning()
 	pShaders->BindPS(ShaderPicker::LightAndTextureArrayPS);
 
 	pCylinder->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-// 	pCylinder->Update(timer.TotalTime());
 	
 	pCylinder->IncrementTexArrPos();
-	pCylinder->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pCylinder->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 
 	pCylinder->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -337,7 +379,7 @@ void App::DrawDepthComplexityStencil()
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
-	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 // disable transparency for overdraw counting
@@ -345,13 +387,13 @@ void App::DrawDepthComplexityStencil()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
 // 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
 	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
 	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
-	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 
 
 	pShaders->BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
@@ -361,7 +403,6 @@ void App::DrawDepthComplexityStencil()
 	pDepthArr[1]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 	pDepthArr[2]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 
-	////////////////
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 3);
 	pDepthArr[0]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.5f, 0.0f, 0.0f });
 	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
@@ -388,18 +429,18 @@ void App::CreateDepthComplexityStencil()
 
 }
 
-DirectX::XMMATRIX App::CameraZoom() const noexcept
-{
-	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
-}
+// DirectX::XMMATRIX App::CameraZoom() const noexcept
+// {
+// 	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
+// }
 
-DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
-{
-	return   DirectX::XMMatrixPerspectiveFovLH(0.25f * DirectX::XM_PI, screenAspect, 1.0f, 1000.0f);
-
-// 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
-
-}
+// DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
+// {
+// 	return   DirectX::XMMatrixPerspectiveFovLH(0.25f * DirectX::XM_PI, screenAspect, 1.0f, 1000.0f);
+// 
+// // 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
+// 
+// }
 
 
 
@@ -439,7 +480,7 @@ void App::DrawShapes()
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 
@@ -448,17 +489,17 @@ void App::DrawShapes()
 
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 	for (auto& x : cylinders)
 	{
 		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
  	
  	}
@@ -467,29 +508,29 @@ void App::DrawShapes()
 	for (auto& x : geoSpheres)
 	{
 		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPositionFloat());
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetSphereWorldArray() -= 10; //reset array position
 
 }
 
-void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
-{
-	// Convert Spherical to Cartesian coordinates.
-	float eyePosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * cosf(wnd.GetTheta());
-	float focusPosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * sinf(wnd.GetTheta());
-	float upDirection = wnd.GetRadius() * cosf(wnd.GetPhi());
-	// Build the view matrix.
-	wEyePosition = {eyePosition, focusPosition, upDirection};
-	pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
-
-	target = DirectX::XMVectorZero();
-	up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	mCamera = DirectX::XMMatrixLookAtLH(pos, target, up);
-
-}
+// void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
+// {
+// 	// Convert Spherical to Cartesian coordinates.
+// 	float eyePosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * cosf(wnd.GetTheta());
+// 	float focusPosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * sinf(wnd.GetTheta());
+// 	float upDirection = wnd.GetRadius() * cosf(wnd.GetPhi());
+// 	// Build the view matrix.
+// 	wEyePosition = {eyePosition, focusPosition, upDirection};
+// 	pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
+// 
+// 	target = DirectX::XMVectorZero();
+// 	up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+// 
+// 	mCamera = DirectX::XMMatrixLookAtLH(pos, target, up);
+// 
+// }
 
 
 App::~App()
