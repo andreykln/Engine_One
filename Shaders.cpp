@@ -85,7 +85,10 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 }
 
-
+//test
+//someting
+//else
+//here
 void Shaders::BindPS(ShaderPicker shader)
 {
 	switch (shader)
