@@ -57,6 +57,7 @@ struct CB_PS_PerFrameUpdate
 	float padding2;
 };
 
+
 ///hackjob
 struct CB_PS_MirrorRoom
 {
@@ -160,5 +161,7 @@ enum ShaderPicker
 	CircleToCylinderVS_GS_PS,
 	MirrorSkull_PS,
 	HillsAllLight_PS,
+	HorizontalBlur_CS,
+	BlurTexture_PS,
 	Keep
 };

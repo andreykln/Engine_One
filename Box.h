@@ -4,6 +4,7 @@
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
 //#include "directxpackedvector.h" //for XMCOLOR
+
 class Box : public Shape
 {
 public:

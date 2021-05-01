@@ -39,6 +39,8 @@ private:
 public:
 	Microsoft::WRL::ComPtr<ID3D11Device> pgfx_pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
 public:
 #ifdef MY_DEBUG
 	ID3D11Debug* debugDevice = nullptr;
@@ -47,10 +49,8 @@ private:
 	HWND windowHandle;
 	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDrawReflectionState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pMarkMirror;
 

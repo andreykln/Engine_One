@@ -175,6 +175,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClCompile>
     <ClCompile Include="DepthComplexity.cpp" />
     <ClCompile Include="Entry.cpp" />
+    <ClCompile Include="GaussianBlur.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GeoSphere.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -230,6 +231,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DepthComplexity.h" />
     <ClInclude Include="DrawableBase.h" />
+    <ClInclude Include="GaussianBlur.h" />
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="MirrorRoom.h" />
     <ClInclude Include="RenderStates.h" />
@@ -286,6 +288,14 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="WindowsEdited.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BlurTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Circle_CylinderGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -335,6 +345,17 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HorizontalGaussianBlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Compute\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="LightAndTextureArrayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -448,6 +469,17 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="VerticalGaussianBlurCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Compute\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

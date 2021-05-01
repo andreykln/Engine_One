@@ -9,3 +9,4 @@
 #include "DepthComplexity.h"
 #include "TreeBillboard.h"
 #include "WaveSurface.h"
+#include "GaussianBlur.h"

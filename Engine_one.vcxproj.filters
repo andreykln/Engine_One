@@ -43,6 +43,9 @@
     <Filter Include="Shaders\Geometry">
       <UniqueIdentifier>{c9e3aaad-33e7-44b3-9ee2-6887df964f5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Compute">
+      <UniqueIdentifier>{89f80250-35cd-487a-aba3-fbda678e86da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files\Bindable</Filter>
+    </ClCompile>
+    <ClCompile Include="GaussianBlur.cpp">
+      <Filter>Source Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -263,6 +269,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GaussianBlur.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -320,6 +329,15 @@
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="HillsAllLightPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="HorizontalGaussianBlurCS.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="VerticalGaussianBlurCS.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="BlurTexturePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

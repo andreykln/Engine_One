@@ -558,6 +558,30 @@ void GeometryGenerator::CreateCylinderNoCaps(float bottomRadius, float topRadius
 	}
 }
 
+void GeometryGenerator::CreateBlurQuad(MeshData& meshData)
+{
+	meshData.vertices.resize(4);
+	meshData.indices.resize(6);
+
+	meshData.indices.clear();
+	meshData.vertices.clear();
+
+	meshData.vertices[0] = Vertex(1.0f, 1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	meshData.vertices[1] = Vertex(1.0f, -1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	meshData.vertices[2] = Vertex(-1.0f, -1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	meshData.vertices[3] = Vertex(-1.0f, 1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
+	meshData.indices.push_back(0);
+	meshData.indices.push_back(1);
+	meshData.indices.push_back(2);
+
+	meshData.indices.push_back(0);
+	meshData.indices.push_back(2);
+	meshData.indices.push_back(3);
+
+
+}
+
 void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius, float height, UINT sliceCount, UINT stackCount, MeshData& meshData)
 {
 	UINT baseIndex = (UINT)meshData.vertices.size();

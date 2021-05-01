@@ -27,6 +27,9 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	PS_Init(&pMirrorSkullPS, L"Shaders\\Pixel\\SkullMirrorPS.cso");
 	PS_Init(&pAllLightForHills, L"Shaders\\Pixel\\HillsAllLightPS.cso");
+
+	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
+	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -82,19 +85,6 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 }
 
-void Shaders::BindPS(DemoSwitch demo)
-{
-	switch (demo)
-	{
-	case DemoSwitch::DefaultBox:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
-		break;
-	}
-	default:
-		break;
-	}
-}
 
 void Shaders::BindPS(ShaderPicker shader)
 {
@@ -145,6 +135,11 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pAllLightForHills, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::BlurTexture_PS :
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -169,9 +164,31 @@ void Shaders::BindGS(ShaderPicker shader)
 	}
 }
 
+void Shaders::BindCS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::HorizontalBlur_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pHorizontalBlurCS, nullptr, 0u);
+		break;
+	}
+	}
+}
+
+void Shaders::UnbindCS()
+{
+	pSgfx->pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
+}
+
 void Shaders::UnbindGS()
 {
 	pSgfx->pgfx_pDeviceContext->GSSetShader(0u, nullptr, 0u);
+}
+
+void Shaders::UnbindPS()
+{
+	pSgfx->pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
 }
 
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
@@ -257,6 +274,27 @@ void Shaders::GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path
 	if (GetDebug(*pSgfx) != nullptr)
 	{
 		pSgfx->SetDebugName(*pGSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Shaders::CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateComputeShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pCShader));
+#ifdef MY_DEBUG
+	if (GetDebug(*pSgfx) != nullptr)
+	{
+		pSgfx->SetDebugName(*pCShader, path.c_str());
 	}
 #endif
 	//for usage in other shaders;

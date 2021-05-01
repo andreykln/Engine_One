@@ -12,12 +12,14 @@ public:
 	Shaders& operator= (const Shaders&) = delete;
 
 	void BindVSandIA(DemoSwitch demo);
-	void BindPS(DemoSwitch demo);
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
 	void BindGS(ShaderPicker shader);
+	void BindCS(ShaderPicker shader);
 
+	void UnbindCS();
 	void UnbindGS();
+	void UnbindPS();
 private:
 	//most convenient to have this class to be a child of Bindable
 //but this function isn't needed
@@ -28,6 +30,7 @@ private:
 	void InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout, ID3D11InputLayout** pIL,
 		UINT nElements,ID3DBlob* pBlob, const std::wstring& name);
 	void GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
+	void CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path);
 
 	Graphics* pSgfx = nullptr;
 	InputLayout IL;
@@ -62,5 +65,8 @@ private:
 
 	ID3DBlob* pBlob = nullptr;
 
+	ID3D11ComputeShader* pHorizontalBlurCS = nullptr;
+	ID3D11ComputeShader* pVerticalBlurCS = nullptr;
+	ID3D11PixelShader* pBlurTexturePS = nullptr;
 };
 

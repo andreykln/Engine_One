@@ -76,7 +76,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 
 	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBMatricesBox = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+	pCopyVCBMatricesBox = pVCBPerObject->GetVertexConstantBuffer(); 
 	AddBind(pVCBPerObject);
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCBPerFrame =

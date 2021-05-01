@@ -20,13 +20,12 @@ public:
 	void DebugTextToTitle();
 private:
 	void CalculateFrameStats();
-// 	void CameraMove();
-// 	void TwoTestCubes();
 	void CreateHillsWithWavesAllLight();
 	void DrawHillsWithWavesAllLight();
 	void CreateHillsWithWaves();
 	void DrawHillsWithWaves();
 
+	void GaussBlur();
 	void CreateBox();
 	void DrawBox();
 	void CreateMirror();
@@ -59,6 +58,7 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;

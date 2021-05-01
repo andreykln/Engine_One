@@ -18,7 +18,7 @@ App::App()
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
-
+	pGaussianBlur = new GaussianBlur(wnd.GetGraphics());
 
 }
 
@@ -31,12 +31,12 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-	DrawHillsWithWavesAllLight();
+// 	DrawHillsWithWavesAllLight();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
-
+	GaussBlur();
 
 	
 
@@ -175,6 +175,32 @@ void App::DrawHillsWithWaves()
 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
+}
+
+void App::GaussBlur()
+{
+	viewProjectionMatrix = GetViewProjectionCamera();
+	ID3D11RenderTargetView* renderTargets[1] = { pGaussianBlur->GetRTV() };
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+
+	DrawHillsWithWavesAllLight();
+	//blur
+	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	pShaders->BindCS(ShaderPicker::HorizontalBlur_CS);
+	pGaussianBlur->PerformBlur(wnd.GetGraphics());
+	pShaders->UnbindCS();
+	//reset before drawing quad
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::BlurTexture_PS);
+	//quad
+	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
+	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
+	
 }
 
 void App::CreateHillsWithWavesAllLight()
