@@ -560,11 +560,12 @@ void GeometryGenerator::CreateCylinderNoCaps(float bottomRadius, float topRadius
 
 void GeometryGenerator::CreateBlurQuad(MeshData& meshData)
 {
+	meshData.indices.clear();
+	meshData.vertices.clear();
+
 	meshData.vertices.resize(4);
 	meshData.indices.resize(6);
 
-	meshData.indices.clear();
-	meshData.vertices.clear();
 
 	meshData.vertices[0] = Vertex(1.0f, 1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 	meshData.vertices[1] = Vertex(1.0f, -1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);

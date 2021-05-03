@@ -151,10 +151,16 @@ HWND Graphics::GetWindowHandle() const noexcept
 	return windowHandle;
 }
 
-void Graphics::SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path)
+void Graphics::SetViewport()
 {
-	pgfx_pDeviceContext->VSSetShader(pVertexShader, 0u, 0u);
+	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
+
 }
+
+// void Graphics::SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path)
+// {
+// 	pgfx_pDeviceContext->VSSetShader(pVertexShader, 0u, 0u);
+// }
 
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)

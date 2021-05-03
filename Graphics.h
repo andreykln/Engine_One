@@ -25,7 +25,8 @@ public:
 	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 	HWND GetWindowHandle() const noexcept;
-	void SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path);
+// 	void SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path);
+	void SetViewport();
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);

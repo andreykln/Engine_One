@@ -18,6 +18,12 @@ RWTexture2D<float4> Output;
 [numthreads(nThreads, 1, 1)]
 void main( int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_DispatchThreadID )
 {
+    uint width;
+    uint heigth;
+    uint numOfLevels;
+    Input.GetDimensions(0u, width, heigth, numOfLevels);
+    
+    
     float Weights[11] =
     {
         0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f,
@@ -31,10 +37,10 @@ void main( int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_Disp
     }
     if(groupThreadID.x >= nThreads - blurRadius)
     {
-        int x = min(dispathThreadID.x + blurRadius, Input[(dispathThreadID.x) - 1]);
+        int x = min(dispathThreadID.x + blurRadius, (width - 1));
         cache[groupThreadID.x + 2 * blurRadius] = Input[int2(x, dispathThreadID.y)];
     }
-    cache[groupThreadID.x + blurRadius] = Input[min(dispathThreadID.xy, Input[dispathThreadID.xy - 1])];
+    cache[groupThreadID.x + blurRadius] = Input[dispathThreadID.xy];
     
     GroupMemoryBarrierWithGroupSync();
     

@@ -39,10 +39,40 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	gfx.pgfx_pDevice->CreateRenderTargetView(pTextureToBlur, 0u, &pRTVtoBlur);
 	gfx.pgfx_pDevice->CreateUnorderedAccessView(pTextureToBlur, 0u, &pUAV);
 	gfx.pgfx_pDevice->CreateShaderResourceView(pTextureToBlur, 0u, &pSRV);
-	
+	pTextureToBlur->Release();
 	
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
+
+
+	D3D11_TEXTURE2D_DESC blurredTexDesc;
+	blurredTexDesc.Width = resolution_width;
+	blurredTexDesc.Height = resolution_height;
+	blurredTexDesc.MipLevels = 1;
+	blurredTexDesc.ArraySize = 1;
+	blurredTexDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	blurredTexDesc.SampleDesc.Count = 1;
+	blurredTexDesc.SampleDesc.Quality = 0;
+	blurredTexDesc.Usage = D3D11_USAGE_DEFAULT;
+	blurredTexDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	blurredTexDesc.CPUAccessFlags = 0;
+	blurredTexDesc.MiscFlags = 0;
+	ID3D11Texture2D* blurredTex = nullptr;
+	gfx.pgfx_pDevice->CreateTexture2D(&blurredTexDesc, 0u, &blurredTex);
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1u;
+	srvDesc.Texture2D.MostDetailedMip = 0u;
+	gfx.pgfx_pDevice->CreateShaderResourceView(blurredTex, &srvDesc, &pBlurredOutputSRV);
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+	uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	uavDesc.Texture2D.MipSlice = 0;
+	gfx.pgfx_pDevice->CreateUnorderedAccessView(blurredTex, &uavDesc, &pBlurredOutputUAV);
+
 
 // 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCBPerFrame =
 // 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -63,7 +93,7 @@ ID3D11RenderTargetView* GaussianBlur::GetRTV() const
 void GaussianBlur::PerformBlur(Graphics& gfx)
 {
 	gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pSRV);
-	gfx.pgfx_pDeviceContext->CSGetUnorderedAccessViews(0u, 1u, &pUAV);
+	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pBlurredOutputUAV, 0u);
 
 	UINT numGroupsX = ceilf(resolution_width / 256.0f);
 	gfx.pgfx_pDeviceContext->Dispatch(numGroupsX, resolution_height, 1);
@@ -71,9 +101,9 @@ void GaussianBlur::PerformBlur(Graphics& gfx)
 	ID3D11UnorderedAccessView* nullUAV = nullptr;
 	ID3D11ShaderResourceView* nullSRV = nullptr;
 	gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &nullSRV);
-	gfx.pgfx_pDeviceContext->CSGetUnorderedAccessViews(0u, 1u, &nullUAV);
+	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
 
-	gfx.pgfx_pDeviceContext->PSGetShaderResources(0u, 1u, &pSRV);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pBlurredOutputSRV);
 }
 
 ID3D11Texture2D* GaussianBlur::GetBlurredtexture()

@@ -27,5 +27,10 @@ private:
 	ID3D11UnorderedAccessView* pUAV = nullptr;
 	ID3D11ShaderResourceView* pSRV = nullptr;
 
+// 	ID3D11Texture2D* pBlurredOutputTex = nullptr;
+	ID3D11UnorderedAccessView* pBlurredOutputUAV = nullptr;
+	ID3D11ShaderResourceView* pBlurredOutputSRV = nullptr;
+
+
 	ID3D11Buffer* pCopyVCBBlur = nullptr;
 };
