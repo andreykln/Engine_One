@@ -29,6 +29,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pAllLightForHills, L"Shaders\\Pixel\\HillsAllLightPS.cso");
 
 	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
+	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
 	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
 }
 
@@ -174,6 +175,11 @@ void Shaders::BindCS(ShaderPicker shader)
 	case ShaderPicker::HorizontalBlur_CS:
 	{
 		pSgfx->pgfx_pDeviceContext->CSSetShader(pHorizontalBlurCS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::VerticalBlur_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pVerticalBlurCS, nullptr, 0u);
 		break;
 	}
 	}

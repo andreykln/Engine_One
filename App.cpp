@@ -196,7 +196,10 @@ void App::GaussBlur()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
 	pShaders->BindCS(ShaderPicker::HorizontalBlur_CS);
-	pGaussianBlur->PerformBlur(wnd.GetGraphics());
+	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
+	pShaders->UnbindCS();
+	pShaders->BindCS(ShaderPicker::VerticalBlur_CS);
+	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
 	pShaders->UnbindCS();
 	//reset before drawing quad
 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
@@ -206,7 +209,10 @@ void App::GaussBlur()
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
-	
+
+	//clear resource so it can be used for RTV in a new frame
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &nullSRV);
 }
 
 void App::CreateHillsWithWavesAllLight()

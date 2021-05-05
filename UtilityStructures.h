@@ -163,5 +163,6 @@ enum ShaderPicker
 	HillsAllLight_PS,
 	HorizontalBlur_CS,
 	BlurTexture_PS,
+	VerticalBlur_CS,
 	Keep
 };

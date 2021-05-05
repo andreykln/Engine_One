@@ -4,17 +4,8 @@ static const int cacheSize = (nThreads + 2 * blurRadius);
 groupshared float4 cache[cacheSize];
 
 Texture2D Input : register(t0);
-Texture2D test : register(t1);
 RWTexture2D<float4> Output : register(u0);
 
-
-/*struct Weights
-{
-    float weight[11] =
-    {
-        0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f,
-    };
-};*/
 
 [numthreads(nThreads, 1, 1)]
 void main( int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_DispatchThreadID )
@@ -25,7 +16,7 @@ void main( int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_Disp
     Input.GetDimensions(0u, width, heigth, numOfLevels);
     
     
-    float Weights[11] =
+    const float Weights[11] =
     {
         0.05f, 0.05f, 0.1f, 0.1f, 0.1f, 0.2f, 0.1f, 0.1f, 0.1f, 0.05f, 0.05f,
     };

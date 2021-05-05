@@ -8,7 +8,8 @@ class GaussianBlur : public Shape
 public:
 	GaussianBlur(Graphics& gfx);
 	ID3D11RenderTargetView* GetRTV() const;
-	void PerformBlur(Graphics& gfx);
+	void PerformHorizontalBlur(Graphics& gfx);
+	void PerformVerticalBlur(Graphics& gfx);
 	ID3D11Texture2D* GetBlurredtexture();
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 
