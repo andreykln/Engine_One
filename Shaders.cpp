@@ -194,6 +194,11 @@ void Shaders::UnbindPS()
 	pSgfx->pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
 }
 
+void Shaders::UnbindVS()
+{
+	pSgfx->pgfx_pDeviceContext->VSSetShader(0u, nullptr, 0u);
+}
+
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
 						const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 						ID3D11InputLayout** pIL,

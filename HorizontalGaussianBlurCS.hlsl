@@ -1,10 +1,11 @@
-static const uint blurRadius = 5u;
+static const int blurRadius = 5u;
 static const uint nThreads = 256u;
 static const uint cacheSize = (nThreads + 2 * blurRadius);
 groupshared float4 cache[cacheSize];
 
-Texture2D Input;
-RWTexture2D<float4> Output;
+Texture2D Input : register(t0);
+Texture2D test : register(t1);
+RWTexture2D<float4> Output : register(u0);
 
 
 /*struct Weights

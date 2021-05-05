@@ -29,7 +29,7 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
-	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 
@@ -37,9 +37,9 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	//null description means to create view to all mipmap levels using
 	// the format the texture was created with
 	gfx.pgfx_pDevice->CreateRenderTargetView(pTextureToBlur, 0u, &pRTVtoBlur);
-	gfx.pgfx_pDevice->CreateUnorderedAccessView(pTextureToBlur, 0u, &pUAV);
+// 	gfx.pgfx_pDevice->CreateUnorderedAccessView(pTextureToBlur, 0u, &pUAV);
 	gfx.pgfx_pDevice->CreateShaderResourceView(pTextureToBlur, 0u, &pSRV);
-	pTextureToBlur->Release();
+// 	pTextureToBlur->Release();
 	
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
@@ -92,10 +92,25 @@ ID3D11RenderTargetView* GaussianBlur::GetRTV() const
 
 void GaussianBlur::PerformBlur(Graphics& gfx)
 {
+	////////////////
+	DirectX::TexMetadata textureMetaData;
+	DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
+	LoadFromDDSFile(L"Textures\\flare.dds", DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
+	textureMetaData = pImageData->GetMetadata();
+	DXGI_FORMAT textureFormat = textureMetaData.format;
+	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
+	DirectX::CreateShaderResourceView(
+	gfx.pgfx_pDevice.Get(),
+		image, textureMetaData.mipLevels,
+		textureMetaData,
+		&pTESTSRV);
+	////////////////
 	gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pSRV);
+	gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &pTESTSRV);
+
 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pBlurredOutputUAV, 0u);
 
-	UINT numGroupsX = ceilf(resolution_width / 256.0f);
+	UINT numGroupsX = (UINT)(ceil(resolution_width / 256.0f));
 	gfx.pgfx_pDeviceContext->Dispatch(numGroupsX, resolution_height, 1);
 
 	ID3D11UnorderedAccessView* nullUAV = nullptr;

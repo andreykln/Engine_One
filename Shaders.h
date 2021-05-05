@@ -20,6 +20,7 @@ public:
 	void UnbindCS();
 	void UnbindGS();
 	void UnbindPS();
+	void UnbindVS();
 private:
 	//most convenient to have this class to be a child of Bindable
 //but this function isn't needed

@@ -11,9 +11,9 @@ App::App()
 	pShaders = new Shaders(wnd.GetGraphics());
 
 
-// 	CreateBox();
+	CreateBox();
 // 	CreateShapes();
-	CreateHillsWithWavesAllLight();
+// 	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
@@ -128,8 +128,8 @@ void App::DrawHillsWithWavesAllLight()
 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
 
 	pShaders->UnbindGS(); 
-
-
+	pShaders->UnbindPS();
+	pShaders->UnbindVS();
 }
 
 void App::CreateHillsWithWaves()
@@ -190,16 +190,18 @@ void App::GaussBlur()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	wnd.GetGraphics().SetViewport();
-	DrawHillsWithWavesAllLight();
+	//DrawHillsWithWavesAllLight();
+	DrawBox();
 	//set default render target
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+
 	pShaders->BindCS(ShaderPicker::HorizontalBlur_CS);
 	pGaussianBlur->PerformBlur(wnd.GetGraphics());
 	pShaders->UnbindCS();
 	//reset before drawing quad
 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+// 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
