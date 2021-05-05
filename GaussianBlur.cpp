@@ -117,9 +117,9 @@ void GaussianBlur::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_w
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBBlur, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-	pMatrices->world = in_world;
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world);
+	pMatrices->world = DirectX::XMMatrixIdentity();
+	pMatrices->worldInvTranspose = DirectX::XMMatrixIdentity();
+	pMatrices->worldViewProjection = DirectX::XMMatrixIdentity();
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBBlur, 0u);
 }

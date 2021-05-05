@@ -78,7 +78,7 @@ struct PSstruct
 
 float4 main(PSstruct pin) : SV_TARGET
 {
-    // Interpolating normal can unnormalize it
+   // Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.

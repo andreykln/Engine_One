@@ -567,10 +567,29 @@ void GeometryGenerator::CreateBlurQuad(MeshData& meshData)
 	meshData.indices.resize(6);
 
 
-	meshData.vertices[0] = Vertex(1.0f, 1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	meshData.vertices[1] = Vertex(1.0f, -1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-	meshData.vertices[2] = Vertex(-1.0f, -1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	meshData.vertices[3] = Vertex(-1.0f, 1.0f, 0.0f, 0.0, 0.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	meshData.vertices[0] = Vertex(
+		-1.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f);
+
+	meshData.vertices[1] = Vertex(
+		-1.0f, +1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f);
+
+	meshData.vertices[2] = Vertex(
+		+1.0f, +1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f);
+
+	meshData.vertices[3] = Vertex(
+		+1.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f);
 
 	meshData.indices.push_back(0);
 	meshData.indices.push_back(1);

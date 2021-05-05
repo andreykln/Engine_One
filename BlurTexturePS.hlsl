@@ -1,5 +1,5 @@
 Texture2D SRVTexture : register(t0);
-SamplerState tex0Sample : register(s0);
+SamplerState Sampler : register(s0);
 
 
 struct PSstruct
@@ -13,7 +13,7 @@ struct PSstruct
 float4 main(PSstruct pin) : SV_TARGET
 {
     float4 texColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    texColor = SRVTexture.Sample(tex0Sample, pin.Tex);
+    texColor = SRVTexture.Sample(Sampler, pin.Tex);
 
     return texColor;
 }
