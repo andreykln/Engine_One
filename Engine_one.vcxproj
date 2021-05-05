@@ -112,6 +112,8 @@ xcopy /E /D /Y  "$(ProjectDir)Shaders\Pixel\*" "$(OutDir)Shaders\Pixel\"
 
 xcopy /E /D /Y "$(ProjectDir)Shaders\Geometry\*" "$(OutDir)Shaders\Geometry\"
 
+xcopy /E /D /Y "$(ProjectDir)Shaders\Compute\*" "$(OutDir)Shaders\Compute\"
+
 xcopy /E /D /Y "$(ProjectDir)models\*" "$(OutDir)models\"
 
 xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>

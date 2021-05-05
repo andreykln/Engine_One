@@ -11,9 +11,9 @@ App::App()
 	pShaders = new Shaders(wnd.GetGraphics());
 
 
-	CreateBox();
+// 	CreateBox();
 // 	CreateShapes();
-// 	CreateHillsWithWavesAllLight();
+	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
@@ -190,8 +190,7 @@ void App::GaussBlur()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	wnd.GetGraphics().SetViewport();
-	//DrawHillsWithWavesAllLight();
-	DrawBox();
+	DrawHillsWithWavesAllLight();
 	//set default render target
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());

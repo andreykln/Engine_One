@@ -92,22 +92,8 @@ ID3D11RenderTargetView* GaussianBlur::GetRTV() const
 
 void GaussianBlur::PerformBlur(Graphics& gfx)
 {
-	////////////////
-	DirectX::TexMetadata textureMetaData;
-	DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
-	LoadFromDDSFile(L"Textures\\flare.dds", DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
-	textureMetaData = pImageData->GetMetadata();
-	DXGI_FORMAT textureFormat = textureMetaData.format;
-	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
-	DirectX::CreateShaderResourceView(
-	gfx.pgfx_pDevice.Get(),
-		image, textureMetaData.mipLevels,
-		textureMetaData,
-		&pTESTSRV);
-	////////////////
-	gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pSRV);
-	gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &pTESTSRV);
 
+	gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pSRV);
 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pBlurredOutputUAV, 0u);
 
 	UINT numGroupsX = (UINT)(ceil(resolution_width / 256.0f));
@@ -133,7 +119,7 @@ void GaussianBlur::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_w
 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
 	pMatrices->world = in_world;
 	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBBlur, 0u);
 }
