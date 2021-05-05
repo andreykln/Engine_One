@@ -1,6 +1,6 @@
 static const int blurRadius = 5u;
-static const uint nThreads = 256u;
-static const uint cacheSize = (nThreads + 2 * blurRadius);
+static const int nThreads = 256u;
+static const int cacheSize = (nThreads + 2 * blurRadius);
 groupshared float4 cache[cacheSize];
 
 Texture2D Input : register(t0);
