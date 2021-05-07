@@ -25,7 +25,11 @@ private:
 	void CreateHillsWithWaves();
 	void DrawHillsWithWaves();
 
-	void GaussBlur();
+	void CreateBilateralHillsBlur();
+	void DrawBilateralHillsBlur();
+	void CreateGaussBlur();
+	
+	void DrawGaussBlur();
 	void CreateBox();
 	void DrawBox();
 	void CreateMirror();

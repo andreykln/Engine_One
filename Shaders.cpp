@@ -31,6 +31,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
 	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
 	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
+
+	CS_Init(&pHorizontalBilateralBlur, L"Shaders\\Compute\\HorizontalBilateralBlur.cso");
+	CS_Init(&pVerticalBilateralBlur, L"Shaders\\Compute\\VerticalBilateralBlur.cso");
+
 }
 
 void Shaders::BindVSandIA(DemoSwitch demo)
@@ -180,6 +184,16 @@ void Shaders::BindCS(ShaderPicker shader)
 	case ShaderPicker::VerticalBlur_CS:
 	{
 		pSgfx->pgfx_pDeviceContext->CSSetShader(pVerticalBlurCS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::HorizontalBilateralBlur_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pHorizontalBilateralBlur, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::VerticalBilateralBlur_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pVerticalBilateralBlur, nullptr, 0u);
 		break;
 	}
 	}

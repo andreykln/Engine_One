@@ -340,6 +340,12 @@
     <FxCompile Include="BlurTexturePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="HorizontalBilateralBlur.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="VerticalBilateralBlur.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

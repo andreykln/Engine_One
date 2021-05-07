@@ -69,5 +69,9 @@ private:
 	ID3D11ComputeShader* pHorizontalBlurCS = nullptr;
 	ID3D11ComputeShader* pVerticalBlurCS = nullptr;
 	ID3D11PixelShader* pBlurTexturePS = nullptr;
+
+	ID3D11ComputeShader* pHorizontalBilateralBlur = nullptr;
+	ID3D11ComputeShader* pVerticalBilateralBlur = nullptr;
+
 };
 
