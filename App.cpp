@@ -10,10 +10,10 @@ App::App()
 	rStates.InitializeAll(wnd.GetGraphics());
 	pShaders = new Shaders(wnd.GetGraphics());
 
-	CreateBilateralHillsBlur();
+// 	CreateBilateralHillsBlur();
 // 	CreateBox();
 // 	CreateShapes();
-// 	CreateHillsWithWavesAllLight();
+	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
@@ -31,13 +31,13 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-// 	DrawHillsWithWavesAllLight();
+	DrawHillsWithWavesAllLight();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
-	DrawBilateralHillsBlur();
+// 	DrawBilateralHillsBlur();
 
 	
 
@@ -121,13 +121,13 @@ void App::DrawHillsWithWavesAllLight()
 	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
 
-// 	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
-// 	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
-// 	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
-// 
-// 	pShaders->UnbindGS(); 
+	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
+	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+
+	pShaders->UnbindGS(); 
 	pShaders->UnbindPS();
 	pShaders->UnbindVS();
 }

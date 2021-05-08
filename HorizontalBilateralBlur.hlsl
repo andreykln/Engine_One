@@ -29,7 +29,7 @@ void main(int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_Dispa
     float x = Input[groupThreadID.xy].x;
     float y = Input[groupThreadID.xy].y;
     float z = Input[groupThreadID.xy].z;
-    float3 centerLabColor = LABcolor(x, y, z);
+    float3 centerRGBcolor = float3(x, y, z);
     float normalizationCoefficient = 0.0f;
     
     for (int i = 0; i < numOfIntensityWeights; ++i)
@@ -37,14 +37,14 @@ void main(int3 groupThreadID : SV_GroupThreadID, int3 dispathThreadID : SV_Dispa
         float x0 = Input[int2(groupThreadID.x - blurRadius + i, groupThreadID.y)].x;
         float y0 = Input[int2(groupThreadID.x - blurRadius + i, groupThreadID.y)].y;
         float z0 = Input[int2(groupThreadID.x - blurRadius + i, groupThreadID.y)].z;
-        float3 sampledLabColor = LABcolor(x0, y0, z0);
-        float intensityOfSampledPixelLab = sampledLabColor.x;
-        float LABlength = GaussianFunction1D(length(centerLabColor - sampledLabColor));
-        intensityWeights[i] = LABlength * intensityOfSampledPixelLab * rangeWeights[i];
+        float3 sampledRGBcolor = float3(x0, y0, z0);
+        float intensityRGB = CalcLuminance(sampledRGBcolor);
+        float LABlength = GaussianFunction1D(length(centerRGBcolor - sampledRGBcolor));
+        intensityWeights[i] = LABlength * intensityRGB * rangeWeights[i];
         normalizationCoefficient += LABlength * rangeWeights[i];
     }
     
-        for (int j = 0; j < numOfIntensityWeights; ++j)
+    for (int j = 0; j < numOfIntensityWeights; ++j)
     {        
         intensityWeights[j] = (intensityWeights[j] / normalizationCoefficient);
     }
