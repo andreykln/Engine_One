@@ -351,5 +351,8 @@
     <None Include="LightHelper.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="BilateralHelper.hlsli">
+      <Filter>Shaders\Compute</Filter>
+    </None>
   </ItemGroup>
 </Project>

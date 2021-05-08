@@ -507,6 +507,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="BilateralHelper.hlsli" />
     <None Include="LightHelper.hlsli" />
   </ItemGroup>
   <ItemGroup>
