@@ -25,10 +25,13 @@ private:
 	void CreateHillsWithWaves();
 	void DrawHillsWithWaves();
 
+	void CreateHillsWithGPUWaves();
+	void DrawHillsWithGPUWaves();
+
+
 	void CreateBilateralHillsBlur();
 	void DrawBilateralHillsBlur();
 	void CreateGaussBlur();
-	
 	void DrawGaussBlur();
 	void CreateBox();
 	void DrawBox();
@@ -62,6 +65,7 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;

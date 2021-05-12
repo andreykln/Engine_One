@@ -147,6 +147,12 @@
     <ClCompile Include="GaussianBlur.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="GPUWaves.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveSurfaceGPU.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -272,6 +278,15 @@
     <ClInclude Include="GaussianBlur.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="GPUWaves.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveSurfaceGPU.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShaderConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -345,6 +360,15 @@
     </FxCompile>
     <FxCompile Include="VerticalBilateralBlur.hlsl">
       <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="UpdateWavesCS.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="DisturbWavesCS.hlsl">
+      <Filter>Shaders\Compute</Filter>
+    </FxCompile>
+    <FxCompile Include="GPUWavesVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -35,20 +35,26 @@ Shaders::Shaders(Graphics& in_gfx)
 	CS_Init(&pHorizontalBilateralBlur, L"Shaders\\Compute\\HorizontalBilateralBlur.cso");
 	CS_Init(&pVerticalBilateralBlur, L"Shaders\\Compute\\VerticalBilateralBlur.cso");
 
+	CS_Init(&pDisturbWaves, L"Shaders\\Compute\\DisturbWavesCS.cso");
+	CS_Init(&pUpdateWaves, L"Shaders\\Compute\\UpdateWavesCS.cso");
+	VS_IL_Init(&pGPUWavesVS, IL.lightTexture, &pLightAndTextureIL,
+		IL.nLightTextureElements, L"Shaders\\Vertex\\GPUWavesVS.cso");
+
+
 }
 
-void Shaders::BindVSandIA(DemoSwitch demo)
-{
-	switch (demo)
-	{
-	case DemoSwitch::DefaultBox:
-		{
-			pSgfx->pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
-			GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
-			break;
-		}
-	}
-}
+// void Shaders::BindVSandIA(DemoSwitch demo)
+// {
+// 	switch (demo)
+// 	{
+// 	case DemoSwitch::DefaultBox:
+// 		{
+// 			pSgfx->pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
+// 			GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+// 			break;
+// 		}
+// 	}
+// }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
 {
@@ -83,6 +89,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pCirletoCylinderIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pCirletoCylinderVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::GPUWaves_VS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pGPUWavesVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -194,6 +206,16 @@ void Shaders::BindCS(ShaderPicker shader)
 	case ShaderPicker::VerticalBilateralBlur_CS:
 	{
 		pSgfx->pgfx_pDeviceContext->CSSetShader(pVerticalBilateralBlur, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisturbWaves_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pDisturbWaves, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::UpdateWaves_CS:
+	{
+		pSgfx->pgfx_pDeviceContext->CSSetShader(pUpdateWaves, nullptr, 0u);
 		break;
 	}
 	}

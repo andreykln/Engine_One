@@ -10,3 +10,5 @@
 #include "TreeBillboard.h"
 #include "WaveSurface.h"
 #include "GaussianBlur.h"
+#include "GPUWaves.h"
+#include "WaveSurfaceGPU.h"

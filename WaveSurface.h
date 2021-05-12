@@ -1,7 +1,6 @@
 #pragma once
 #include "Shape.h"
 #include "Waves.h"
-#include "BindableBase.h"
 #include "MathHelper.h"
 #include "GeometryGenerator.h"
 

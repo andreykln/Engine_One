@@ -72,7 +72,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pPSCB);
 
-	;	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pCopyPixelConstantBuffer = pLightsCB->GetPixelShaderConstantBuffer();
 	AddBind(pLightsCB);

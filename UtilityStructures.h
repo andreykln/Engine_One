@@ -57,6 +57,17 @@ struct CB_PS_PerFrameUpdate
 	float padding2;
 };
 
+struct CB_CS_GPUWaves
+{
+	CB_CS_GPUWaves() { ZeroMemory(this, sizeof(this)); }
+	float waveConstant0;
+	float waveConstant1;
+	float waveConstant2;
+	float disturbMagnitute;
+
+	int disturbIndex[2];
+	int padding[2];
+};
 
 ///hackjob
 struct CB_PS_MirrorRoom
@@ -116,28 +127,6 @@ struct CBBillboardPixel
 	int numLights[4] = { 3,0,0,0 }; //padding array, only [0] is used
 };
 
-// struct CBPerFrameMirrorRoom
-// {
-// 	CBPerFrameMirrorRoom() { ZeroMemory(this, sizeof(this)); }
-// 	DirectionalLight dirLight[3];
-// };
-
-// struct CBPerObject
-// {
-// 	CBPerObject() { ZeroMemory(this, sizeof(this)); }
-// 	DirectX::XMMATRIX gWorld;
-// 	DirectX::XMMATRIX gWorldInvTranspose;
-// 	DirectX::XMMATRIX gWorldViewProj;
-// };
-// 
-// struct CBPerObjectTexture
-// {
-// 	CBPerObjectTexture() { ZeroMemory(this, sizeof(this)); }
-// 	DirectX::XMMATRIX gWorld;
-// 	DirectX::XMMATRIX gWorldInvTranspose;
-// 	DirectX::XMMATRIX gWorldViewProj;
-// 	DirectX::XMMATRIX gTexTransform;
-// };
 
 enum DemoSwitch
 {
@@ -166,5 +155,8 @@ enum ShaderPicker
 	VerticalBlur_CS,
 	VerticalBilateralBlur_CS,
 	HorizontalBilateralBlur_CS,
+	UpdateWaves_CS,
+	DisturbWaves_CS,
+	GPUWaves_VS,
 	Keep
 };

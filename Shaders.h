@@ -11,7 +11,7 @@ public:
 	Shaders(const Shaders&) = delete;
 	Shaders& operator= (const Shaders&) = delete;
 
-	void BindVSandIA(DemoSwitch demo);
+// 	void BindVSandIA(DemoSwitch demo);
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
 	void BindGS(ShaderPicker shader);
@@ -72,6 +72,10 @@ private:
 
 	ID3D11ComputeShader* pHorizontalBilateralBlur = nullptr;
 	ID3D11ComputeShader* pVerticalBilateralBlur = nullptr;
+
+	ID3D11ComputeShader* pDisturbWaves = nullptr;
+	ID3D11ComputeShader* pUpdateWaves = nullptr;
+	ID3D11VertexShader* pGPUWavesVS = nullptr;
 
 };
 

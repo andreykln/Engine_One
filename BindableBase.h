@@ -11,4 +11,5 @@
 #include "TextureSampler.h"
 #include "RenderStates.h"
 #include "GeometryShaderConstantBuffer.h"
+#include "ComputeShaderConstantBuffer.h"
 #include "Shaders.h"

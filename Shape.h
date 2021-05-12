@@ -1,7 +1,7 @@
 #pragma once
 #include "Bindable.h"
-#include "LightHelper.h"
-#include "IndexBuffer.h"
+#include "GeometryGenerator.h"
+#include "BindableBase.h"
 #include "MathHelper.h"
 #include <memory>
 #include <typeinfo>

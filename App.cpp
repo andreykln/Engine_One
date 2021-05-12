@@ -14,6 +14,7 @@ App::App()
 // 	CreateBox();
 // 	CreateShapes();
 	CreateHillsWithWavesAllLight();
+// 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
@@ -32,6 +33,7 @@ void App::DoFrame()
 // 	DrawShapes();
 // 	DrawMirror();
 	DrawHillsWithWavesAllLight();
+// 	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
@@ -174,6 +176,43 @@ void App::DrawHillsWithWaves()
 	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
 	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
+
+}
+
+void App::CreateHillsWithGPUWaves()
+{
+	pWaveSurfaceGPU = new WaveSurfaceGPU(wnd.GetGraphics());
+}
+
+void App::DrawHillsWithGPUWaves()
+{
+	viewProjectionMatrix = GetViewProjectionCamera();
+
+	/*wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+	pWaves->BindAndDrawIndexed(wnd.GetGraphics());
+	pWaves->UpdateScene(timer.TotalTime(), timer.DeltaTime(), wnd.GetGraphics());
+	pWaves->UpdateVSMatrices(wnd.GetGraphics(), pWaves->GetWaveSurfaceOffset(), viewProjectionMatrix);
+	pWaves->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);*/
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
+	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
+// 	pShaders->UnbindCS();
+	// every quarter second, generate a random wave
+// 	if ((timer.TotalTime() - pWaveSurfaceGPU->t_base) >= 0.25f)
+// 	{
+// 		pShaders->BindCS(ShaderPicker::DisturbWaves_CS);
+// 		pWaveSurfaceGPU->t_base += 0.25f;
+// 		pWaveSurfaceGPU->Disturb(wnd.GetGraphics());
+// 		pShaders->UnbindCS();
+// 	}
+	pShaders->BindVSandIA(ShaderPicker::GPUWaves_VS);
+	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix);
+	pWaveSurfaceGPU->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pWaveSurfaceGPU->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pWaveSurfaceGPU->ClearVertexShaderResource(wnd.GetGraphics());
 
 }
 
