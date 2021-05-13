@@ -24,9 +24,9 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 
-	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.0f, 0.427f, 0.557f, 0.5f);
-	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.0f, 0.427f, 0.557f, 0.5f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 64.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
 	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	vertices.resize(mesh.vertices.size());
@@ -189,7 +189,6 @@ void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)
 {
 	time += dt;
 // 	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerClamp);
-	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerWrap);
 
 	if (time >= wave.TimeStep())
 	{
@@ -204,7 +203,7 @@ void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)
 		ID3D11UnorderedAccessView* nullUAV = nullptr;
 		ID3D11ShaderResourceView* nullSRV = nullptr;
 		gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &nullSRV);
-// 		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &nullSRV);
+		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &nullSRV);
 		gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
 
 		ID3D11ShaderResourceView* srvTemp = pPreviousSolutionSRV;
@@ -232,7 +231,7 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
 	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_CS_GPUWaves* data = reinterpret_cast<CB_CS_GPUWaves*> (mappedData.pData);
 	data->disturbIndex[0] = i;
 	data->disturbIndex[1] = j;
@@ -250,6 +249,8 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 
 void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
+	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerWrap);
+
 	waterTextureOffset.y += 0.05f * alpha;
 	waterTextureOffset.x += 0.1f * alpha;
 	wavesOffset = DirectX::XMMatrixTranslation(waterTextureOffset.x, waterTextureOffset.y, 0.0f);
@@ -260,8 +261,8 @@ void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	object->world = in_world;
 	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	object->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-// 	object->texTransform = wavesScale * wavesOffset;
-	object->texTransform = DirectX::XMMatrixIdentity();
+	object->texTransform = wavesScale * wavesOffset;
+// 	object->texTransform = DirectX::XMMatrixIdentity();
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 

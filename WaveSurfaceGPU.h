@@ -12,7 +12,7 @@ public:
 	void UpdateSolution(Graphics& gfx, float dt);
 	void Disturb(Graphics& gfx);
 
-	float t_base = 0.0f;
+// 	static float t_base = 0.0f;
 
 private:
 	std::vector<Vertex_IA> vertices;

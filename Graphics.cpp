@@ -157,10 +157,6 @@ void Graphics::SetViewport()
 
 }
 
-// void Graphics::SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path)
-// {
-// 	pgfx_pDeviceContext->VSSetShader(pVertexShader, 0u, 0u);
-// }
 
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
