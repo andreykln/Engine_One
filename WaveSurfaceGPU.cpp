@@ -2,7 +2,8 @@
 
 WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 {
-	wave.Initialize(256, 256, 0.8f, 0.03f, 3.25f, 0.4f);
+	geoGen.CreateGrid(numColumns, numRows, 60, 60, mesh);
+	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.25f, 0.4f);
 
 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
@@ -28,8 +29,13 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 64.0f);
 	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	vertices.resize(wave.GetVertexCount());
-
+	vertices.resize(mesh.vertices.size());
+	for (UINT i = 0; i < mesh.vertices.size(); ++i)
+	{
+		vertices[i].pos = mesh.vertices[i].position;
+		vertices[i].normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+		vertices[i].tex = mesh.vertices[i].TexC;
+	}
 
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"GPU_Waves.");
 	AddBind(pVB);
@@ -38,7 +44,7 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 // 	pCopyDynamicVB = pDynamicVB->Get_p_DynamicVertexBuffer();
 // 	AddBind(pDynamicVB);
 
-	std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face
+	/*std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face
 	// Iterate over each quad.
 	UINT m = wave.GetRowCount();
 	UINT n = wave.GetColumnCount();
@@ -57,12 +63,12 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 
 			k += 6; // next quad
 		}
-	}
+	}*/
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"WaveSurfaceIndexBuffer");
+	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"WaveSurfaceIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
 	VertexConstantBuffer<CB_VS_Transform>* pVCB =
@@ -89,7 +95,7 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 
 
 	//vertex shader clamp sampler
-	D3D11_SAMPLER_DESC samplerDesc;
+	/*D3D11_SAMPLER_DESC samplerDesc;
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -104,11 +110,11 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pVSSamplerClamp));
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pVSSamplerClamp));*/
 
 	//vertex shader linear wrap sampler
 	D3D11_SAMPLER_DESC samplerDesc0;
-	samplerDesc0.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc0.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	samplerDesc0.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc0.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc0.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -126,11 +132,11 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 
 
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width = 256;
-	texDesc.Height = 256;
+	texDesc.Width = numColumns;
+	texDesc.Height = numRows;
 	texDesc.MipLevels = 1u;
 	texDesc.ArraySize = 1u;
-	texDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	texDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -138,47 +144,35 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 
-	D3D11_TEXTURE2D_DESC texDesc0;
-	texDesc0.Width = 256;
-	texDesc0.Height = 256;
-	texDesc0.MipLevels = 1u;
-	texDesc0.ArraySize = 1u;
-	texDesc0.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	texDesc0.SampleDesc.Count = 1;
-	texDesc0.SampleDesc.Quality = 0;
-	texDesc0.Usage = D3D11_USAGE_DEFAULT;
-	texDesc0.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	texDesc0.CPUAccessFlags = 0;
-	texDesc0.MiscFlags = 0;
+	std::vector<float> zero(numRows* numColumns, 0.0f);
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = &zero[0];
+	initData.SysMemPitch = numColumns * sizeof(float);
 
-	D3D11_TEXTURE2D_DESC texDesc1;
-	texDesc1.Width = 256;
-	texDesc1.Height = 256;
-	texDesc1.MipLevels = 1u;
-	texDesc1.ArraySize = 1u;
-	texDesc1.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	texDesc1.SampleDesc.Count = 1;
-	texDesc1.SampleDesc.Quality = 0;
-	texDesc1.Usage = D3D11_USAGE_DEFAULT;
-	texDesc1.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	texDesc1.CPUAccessFlags = 0;
-	texDesc1.MiscFlags = 0;
+	gfx.pgfx_pDevice->CreateTexture2D(&texDesc, &initData, &previousSolutionTex);
+	gfx.pgfx_pDevice->CreateTexture2D(&texDesc, &initData, &currentSolutionTex);
+	gfx.pgfx_pDevice->CreateTexture2D(&texDesc, &initData, &nextWaveSolutionTex);
 
-	gfx.pgfx_pDevice->CreateTexture2D(&texDesc, 0u, &pCurrSolution);
-	gfx.pgfx_pDevice->CreateTexture2D(&texDesc0, 0u, &pPrevSolution);
-	gfx.pgfx_pDevice->CreateTexture2D(&texDesc1, 0u, &pOutput);
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = 1;
+	gfx.pgfx_pDevice->CreateShaderResourceView(previousSolutionTex, &srvDesc, &pPreviousSolutionSRV);
+	gfx.pgfx_pDevice->CreateShaderResourceView(currentSolutionTex, &srvDesc, &pCurrentSolutionSRV);
+	gfx.pgfx_pDevice->CreateShaderResourceView(nextWaveSolutionTex, &srvDesc, &pNextSolutionSRV);
 
-	gfx.pgfx_pDevice->CreateShaderResourceView(pCurrSolution, 0u, &pCurrSolutionSRV);
-	gfx.pgfx_pDevice->CreateShaderResourceView(pPrevSolution, 0u, &pPrevSolutionSRV);
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+	uavDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	uavDesc.Texture2D.MipSlice = 0;
+	gfx.pgfx_pDevice->CreateUnorderedAccessView(previousSolutionTex, &uavDesc, &pPreviousSolutionUAV);
+	gfx.pgfx_pDevice->CreateUnorderedAccessView(currentSolutionTex, &uavDesc, &pCurrentSolutionUAV);
+	gfx.pgfx_pDevice->CreateUnorderedAccessView(nextWaveSolutionTex, &uavDesc, &pNextSolutionUAV);
 
-// 	gfx.pgfx_pDevice->CreateUnorderedAccessView(pCurrSolution, 0u, &pCurrSolutionUAV);
-// 	gfx.pgfx_pDevice->CreateUnorderedAccessView(pPrevSolution, 0u, &pPrevSolutionUAV);
-	gfx.pgfx_pDevice->CreateUnorderedAccessView(pOutput, 0u, &pOutputUAV);
-
-// 	gfx.pgfx_pDevice->CreateShaderResourceView(pCurrSolution, 0u, &pCurrSolutionSRV);
-// 	gfx.pgfx_pDevice->CreateShaderResourceView(pPrevSolution, 0u, &pPrevSolutionSRV);
-	gfx.pgfx_pDevice->CreateShaderResourceView(pOutput, 0u, &pOutputSRV);
-
+	previousSolutionTex->Release();
+	currentSolutionTex->Release();
+	nextWaveSolutionTex->Release();
 
 	gpuWavesCbuffer.waveConstant0 = wave.waveConstant[0];
 	gpuWavesCbuffer.waveConstant1 = wave.waveConstant[1];
@@ -194,48 +188,49 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)
 {
 	time += dt;
-	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerClamp);
-	gfx.pgfx_pDeviceContext->VSSetSamplers(1u, 1u, &pVSSamplerWrap);
+// 	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerClamp);
+	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerWrap);
 
-// 	if (time >= wave.timeStep)
-// 	{
-		gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pPrevSolutionSRV);
-		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &pCurrSolutionSRV);
-		gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pOutputUAV, 0u);
+	if (time >= wave.TimeStep())
+	{
+		gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pPreviousSolutionSRV);
+		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &pCurrentSolutionSRV);
+		gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pNextSolutionUAV, 0u);
 		
-
 		UINT numGroupsX = wave.GetColumnCount() / 16;
-		UINT numGroupsY = wave.GetRowCount() / 16;
+		UINT numGroupsY = wave.GetColumnCount() / 16;
 		gfx.pgfx_pDeviceContext->Dispatch(numGroupsX, numGroupsY, 1);
 
 		ID3D11UnorderedAccessView* nullUAV = nullptr;
 		ID3D11ShaderResourceView* nullSRV = nullptr;
 		gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &nullSRV);
-		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &nullSRV);
+// 		gfx.pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &nullSRV);
 		gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
 
+		ID3D11ShaderResourceView* srvTemp = pPreviousSolutionSRV;
+		pPreviousSolutionSRV = pCurrentSolutionSRV;
+		pCurrentSolutionSRV = pNextSolutionSRV;
+		pNextSolutionSRV = srvTemp;
 
-		gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pOutputSRV);
+		ID3D11UnorderedAccessView* uavTemp = pPreviousSolutionUAV;
+		pPreviousSolutionUAV = pCurrentSolutionUAV;
+		pCurrentSolutionUAV = pNextSolutionUAV;
+		pNextSolutionUAV = uavTemp;
 
-		auto srvTemp = pCurrSolutionSRV;
-		pCurrSolutionSRV = pPrevSolutionSRV;
-		pPrevSolutionSRV = srvTemp;
-// 		pOutputUAV = uavTemp;
-
-// 		time = 0.0f;
-// 	}
-
-
-		
-
+		time = 0.0f;
+	}
+	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pCurrentSolutionSRV);
 }
 
 void WaveSurfaceGPU::Disturb(Graphics& gfx)
 {
-	unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (wave.GetRowCount() - 10);
-	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (wave.GetColumnCount() - 10);
-	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
+// 	ID3D11ShaderResourceView* nullSRV = nullptr;
+// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
 
+
+	unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numColumns - 10);
+	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
+	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_CS_GPUWaves* data = reinterpret_cast<CB_CS_GPUWaves*> (mappedData.pData);
@@ -243,6 +238,13 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	data->disturbIndex[1] = j;
 	data->disturbMagnitute = magnitute;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyCScbuffer, 0u);
+	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pCurrentSolutionUAV, 0u);
+	gfx.pgfx_pDeviceContext->Dispatch(1, 1, 1);
+	ID3D11UnorderedAccessView* nullUAV = nullptr;
+
+	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
+// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pCurrentSolutionSRV);
+
 }
 
 

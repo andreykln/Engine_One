@@ -59,3 +59,8 @@ float GPUWaves::SpatialStep() const
 {
 	return spatialStep;
 }
+
+float GPUWaves::TimeStep() const
+{
+	return timeStep;
+}

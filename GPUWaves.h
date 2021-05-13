@@ -15,6 +15,7 @@ public:
 	float Width() const;
 	float Depth() const;
 	float SpatialStep() const;
+	float TimeStep() const;
 private:
 	UINT numRows = 0u;
 	UINT numColumns = 0u;

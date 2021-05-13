@@ -30,16 +30,16 @@ private:
 	ID3D11SamplerState* pVSSamplerClamp = nullptr;
 	ID3D11SamplerState* pVSSamplerWrap = nullptr;
 
-	ID3D11Texture2D* pPrevSolution = nullptr;
-	ID3D11Texture2D* pCurrSolution = nullptr;
-	ID3D11Texture2D* pOutput = nullptr;
-// 	ID3D11UnorderedAccessView* pCurrSolutionUAV = nullptr;
-// 	ID3D11UnorderedAccessView* pPrevSolutionUAV = nullptr;
-	ID3D11UnorderedAccessView* pOutputUAV = nullptr;
+	ID3D11Texture2D* previousSolutionTex = nullptr;
+	ID3D11Texture2D* currentSolutionTex = nullptr;
+	ID3D11Texture2D* nextWaveSolutionTex = nullptr;
+	ID3D11UnorderedAccessView* pPreviousSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pCurrentSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pNextSolutionUAV = nullptr;
 
-	ID3D11ShaderResourceView* pCurrSolutionSRV = nullptr;
-	ID3D11ShaderResourceView* pPrevSolutionSRV = nullptr;
-	ID3D11ShaderResourceView* pOutputSRV = nullptr;
+	ID3D11ShaderResourceView* pPreviousSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pCurrentSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pNextSolutionSRV = nullptr;
 
 	float time = 0.0f;
 	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 0.0f);
@@ -48,5 +48,8 @@ private:
 	DirectX::XMMATRIX wavesSurfaceOffset = DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f);
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
+	const UINT numColumns = 256u;
+	const UINT numRows = 256u;
+
 
 };

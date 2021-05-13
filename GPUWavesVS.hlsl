@@ -7,8 +7,7 @@ cbuffer CBPerObject : register(b0)
 };
 
 Texture2D displacementMap : register(t0);
-SamplerState samplerPointClamp : register(s0);
-SamplerState samplerPointWrap : register(s1);
+SamplerState samplerClamp : register(s0);
 struct VertexIn
 {
     float3 position : Position;
@@ -30,18 +29,18 @@ PSstruct main(VertexIn vin)
 {
     PSstruct vout;
 	
-    float gGridSpatialStep = 1.0f;
-    float2 displacementMapTexelSize = { 1.0f, 1.0f };
+    float gGridSpatialStep = 0.5f;
+    float2 displacementMapTexelSize = { 0.00390625f, 0.00390625f };
 	// Sample the displacement map using non-transformed [0,1]^2 tex-coords.
-    vin.position.y = displacementMap.SampleLevel(samplerPointClamp, vin.texCoord, 1.0f).r;
+    vin.position.y = displacementMap.SampleLevel(samplerClamp, vin.texCoord, 1.0f).r;
 	
 	// Estimate normal using finite difference.
 	float du = displacementMapTexelSize.x;
 	float dv = displacementMapTexelSize.y;
-    float l = displacementMap.SampleLevel(samplerPointClamp, vin.texCoord - float2(du, 0.0f), 0.0f).r;
-    float r = displacementMap.SampleLevel(samplerPointClamp, vin.texCoord + float2(du, 0.0f), 0.0f).r;
-    float t = displacementMap.SampleLevel(samplerPointClamp, vin.texCoord - float2(0.0f, dv), 0.0f).r;
-    float b = displacementMap.SampleLevel(samplerPointClamp, vin.texCoord + float2(0.0f, dv), 0.0f).r;
+    float l = displacementMap.SampleLevel(samplerClamp, vin.texCoord - float2(du, 0.0f), 0.0f).r;
+    float r = displacementMap.SampleLevel(samplerClamp, vin.texCoord + float2(du, 0.0f), 0.0f).r;
+    float t = displacementMap.SampleLevel(samplerClamp, vin.texCoord - float2(0.0f, dv), 0.0f).r;
+    float b = displacementMap.SampleLevel(samplerClamp, vin.texCoord + float2(0.0f, dv), 0.0f).r;
     vin.normal = normalize(float3(-r + l, 2.0f * gGridSpatialStep, b - t));
 	
 
