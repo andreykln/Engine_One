@@ -2,8 +2,8 @@
 
 WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 {
-	geoGen.CreateGrid(numColumns, numRows, 60, 60, mesh);
-	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.25f, 0.4f);
+	geoGen.CreateGrid(numColumns, numRows, 200, 200, mesh);
+	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.85f, 0.4f);
 
 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
@@ -188,8 +188,6 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)
 {
 	time += dt;
-// 	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerClamp);
-
 	if (time >= wave.TimeStep())
 	{
 		gfx.pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pPreviousSolutionSRV);
@@ -223,9 +221,6 @@ void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)
 
 void WaveSurfaceGPU::Disturb(Graphics& gfx)
 {
-// 	ID3D11ShaderResourceView* nullSRV = nullptr;
-// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
-
 
 	unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numColumns - 10);
 	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
@@ -242,21 +237,20 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	ID3D11UnorderedAccessView* nullUAV = nullptr;
 
 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
-// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pCurrentSolutionSRV);
 
 }
 
 
-void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,	const DirectX::XMMATRIX& in_ViewProj, float dt)
 {
 	gfx.pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &pVSSamplerWrap);
 
-	waterTextureOffset.y += 0.05f * alpha;
-	waterTextureOffset.x += 0.1f * alpha;
-	wavesOffset = DirectX::XMMatrixTranslation(waterTextureOffset.x, waterTextureOffset.y, 0.0f);
+	waterTextureOffset.y += 0.05f * dt;
+	waterTextureOffset.x += 0.1f * dt;
+	wavesOffset = DirectX::XMMatrixTranslation(0.0f, waterTextureOffset.x, waterTextureOffset.y);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVertexConstantBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_VS_Transform* object = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
 	object->world = in_world;
 	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);

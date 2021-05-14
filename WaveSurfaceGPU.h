@@ -6,7 +6,7 @@ class WaveSurfaceGPU : public Shape
 {
 public:
 	WaveSurfaceGPU(Graphics& gfx);
-	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void ClearVertexShaderResource(Graphics& gfx);
 	void UpdateSolution(Graphics& gfx, float dt);
@@ -42,14 +42,14 @@ private:
 	ID3D11ShaderResourceView* pNextSolutionSRV = nullptr;
 
 	float time = 0.0f;
-	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 0.0f);
+	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 1.0f);
 	DirectX::XMFLOAT2 waterTextureOffset;
 	DirectX::XMMATRIX wavesOffset;
 	DirectX::XMMATRIX wavesSurfaceOffset = DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f);
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
-	const UINT numColumns = 256u;
-	const UINT numRows = 256u;
+	const UINT numColumns = 512u;
+	const UINT numRows = 512u;
 
 
 };

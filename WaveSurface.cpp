@@ -121,8 +121,8 @@ void WaveSurface::UpdateScene(float totalTime, float dt, Graphics& gfx)
 
 void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
-	waterTextureOffset.y += 0.05f * alpha;
-	waterTextureOffset.x += 0.1f * alpha;
+// 	waterTextureOffset.y += 0.05f * dt;
+// 	waterTextureOffset.x += 0.1f * dt;
 	wavesOffset = DirectX::XMMatrixTranslation(waterTextureOffset.x, waterTextureOffset.y, 0.0f);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -131,7 +131,7 @@ void WaveSurface::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_wo
 	object->world = in_world;
 	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	object->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	object->texTransform = wavesScale * wavesOffset;
+	object->texTransform = wavesScale ;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 
 }
