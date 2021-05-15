@@ -69,6 +69,14 @@ struct CB_CS_GPUWaves
 	int padding[2];
 };
 
+struct CB_VS_GPUWaves_consts
+{
+	CB_VS_GPUWaves_consts() { ZeroMemory(this, sizeof(this)); }
+	float spatialStep;
+	float displacementMapTexelSize[2];
+	float padding;
+};
+
 ///hackjob
 struct CB_PS_MirrorRoom
 {

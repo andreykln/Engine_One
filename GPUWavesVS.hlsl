@@ -6,6 +6,13 @@ cbuffer CBPerObject : register(b0)
     float4x4 texTransform;
 };
 
+cbuffer CBVSConst : register(b1)
+{
+    float cbGridSpatialStep;
+    float2 cbDisplacementMapTexelSize;
+    float padding;
+}
+
 Texture2D displacementMap : register(t0);
 SamplerState samplerClamp : register(s0);
 struct VertexIn
@@ -29,8 +36,8 @@ PSstruct main(VertexIn vin)
 {
     PSstruct vout;
 	
-    float gGridSpatialStep = 0.5f;
-    float2 displacementMapTexelSize = { 0.00390625f, 0.00390625f };
+    float gGridSpatialStep = cbGridSpatialStep;
+    float2 displacementMapTexelSize = cbDisplacementMapTexelSize;
 	// Sample the displacement map using non-transformed [0,1]^2 tex-coords.
     vin.position.y = displacementMap.SampleLevel(samplerClamp, vin.texCoord, 1.0f).r;
 	

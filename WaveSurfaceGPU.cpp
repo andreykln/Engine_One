@@ -51,6 +51,14 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer();
 	AddBind(pVCB);
 
+	vsConsts.spatialStep = wave.SpatialStep();
+	vsConsts.displacementMapTexelSize[0] = 1.0f / numColumns;
+	vsConsts.displacementMapTexelSize[1] = 1.0f / numRows;
+
+	VertexConstantBuffer<CB_VS_GPUWaves_consts>* pVCB0 =
+		new VertexConstantBuffer<CB_VS_GPUWaves_consts>(gfx, vsConsts, 1u, 1u);
+	AddBind(pVCB0);
+
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCB =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pPSCB);
@@ -134,6 +142,7 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	gpuWavesCbuffer.waveConstant0 = wave.waveConstant[0];
 	gpuWavesCbuffer.waveConstant1 = wave.waveConstant[1];
 	gpuWavesCbuffer.waveConstant2 = wave.waveConstant[2];
+
 
 	ComputeShaderConstantBuffer<CB_CS_GPUWaves>* pCSBuf = new ComputeShaderConstantBuffer<CB_CS_GPUWaves>(gfx, gpuWavesCbuffer,
 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);

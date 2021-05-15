@@ -22,6 +22,7 @@ private:
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
 	CB_CS_GPUWaves gpuWavesCbuffer;
+	CB_VS_GPUWaves_consts vsConsts;
 
 	GPUWaves wave;
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
