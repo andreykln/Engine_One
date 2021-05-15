@@ -48,8 +48,8 @@ private:
 	DirectX::XMMATRIX wavesSurfaceOffset = DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f);
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
-	const UINT numColumns = 512u;
-	const UINT numRows = 512u;
+	const UINT numColumns = 256u;
+	const UINT numRows = 256u;
 
 
 };

@@ -40,31 +40,6 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"GPU_Waves.");
 	AddBind(pVB);
 
-// 	pDynamicVB = new VertexBufferDynamic(gfx, vertices, L"GPU_Waves");
-// 	pCopyDynamicVB = pDynamicVB->Get_p_DynamicVertexBuffer();
-// 	AddBind(pDynamicVB);
-
-	/*std::vector<UINT> indices(3 * (long long)wave.GetTriangleCount()); // 3 indices per face
-	// Iterate over each quad.
-	UINT m = wave.GetRowCount();
-	UINT n = wave.GetColumnCount();
-	int k = 0;
-	for (UINT i = 0; i < m - 1; ++i)
-	{
-		for (DWORD j = 0; j < n - 1; ++j)
-		{
-			indices[k] = i * n + j;
-			indices[(long long)k + 1] = i * n + j + 1;
-			indices[(long long)k + 2] = (i + 1) * n + j;
-
-			indices[(long long)k + 3] = (i + 1) * n + j;
-			indices[(long long)k + 4] = i * n + j + 1;
-			indices[(long long)k + 5] = (i + 1) * n + j + 1;
-
-			k += 6; // next quad
-		}
-	}*/
-
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
@@ -93,24 +68,6 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
 
-
-	//vertex shader clamp sampler
-	/*D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.BorderColor[0] = 0.0f;
-	samplerDesc.BorderColor[1] = 0.0f;
-	samplerDesc.BorderColor[2] = 0.0f;
-	samplerDesc.BorderColor[3] = 0.0f;
-
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pVSSamplerClamp));*/
 
 	//vertex shader linear wrap sampler
 	D3D11_SAMPLER_DESC samplerDesc0;
@@ -225,6 +182,7 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numColumns - 10);
 	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
 	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_CS_GPUWaves* data = reinterpret_cast<CB_CS_GPUWaves*> (mappedData.pData);
@@ -232,10 +190,11 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	data->disturbIndex[1] = j;
 	data->disturbMagnitute = magnitute;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyCScbuffer, 0u);
+
 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pCurrentSolutionUAV, 0u);
 	gfx.pgfx_pDeviceContext->Dispatch(1, 1, 1);
-	ID3D11UnorderedAccessView* nullUAV = nullptr;
 
+	ID3D11UnorderedAccessView* nullUAV = nullptr;
 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
 
 }
@@ -256,11 +215,7 @@ void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	object->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 	object->texTransform = wavesScale * wavesOffset;
-// 	object->texTransform = DirectX::XMMatrixIdentity();
-
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
-
-
 }
 
 void WaveSurfaceGPU::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
@@ -286,5 +241,4 @@ void WaveSurfaceGPU::ClearVertexShaderResource(Graphics& gfx)
 {
 	ID3D11ShaderResourceView* nullSRV = nullptr;
 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
-
 }

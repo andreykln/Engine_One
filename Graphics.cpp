@@ -141,8 +141,6 @@ void Graphics::Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept
 void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept
 {
 	pgfx_pDeviceContext->DrawIndexed(count, StartIndexLocation, BaseVertexLocation);
-// 	pgfx_pDeviceContext->DrawIndexed(36u, 0u,0u);
-
 }
 
 
@@ -154,7 +152,6 @@ HWND Graphics::GetWindowHandle() const noexcept
 void Graphics::SetViewport()
 {
 	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
-
 }
 
 

@@ -13,8 +13,8 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 // 	CreateShapes();
-	CreateHillsWithWavesAllLight();
-// 	CreateHillsWithGPUWaves();
+// 	CreateHillsWithWavesAllLight();
+	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
@@ -32,8 +32,8 @@ void App::DoFrame()
 // 
 // 	DrawShapes();
 // 	DrawMirror();
-	DrawHillsWithWavesAllLight();
-// 	DrawHillsWithGPUWaves();
+// 	DrawHillsWithWavesAllLight();
+	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
@@ -183,18 +183,37 @@ void App::CreateHillsWithGPUWaves()
 {
 	pWaveSurfaceGPU = new WaveSurfaceGPU(wnd.GetGraphics());
 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u, DemoSwitch::HillsAllLight);
+	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
+	pBillboards = new TreeBillboard(wnd.GetGraphics());
 
 }
 
 void App::DrawHillsWithGPUWaves()
 {
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 	viewProjectionMatrix = GetViewProjectionCamera();
+
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::HillsAllLight_PS);
-
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix);
 	pHills->UpdatePSAllLights(wnd.GetGraphics(), camera.GetCameraPosition(), camera.GetCameraDirection(), timer.TotalTime());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	//billboard
+	pShaders->BindVSandIA(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindGS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pShaders->BindPS(ShaderPicker::TreeBillboardVS_PS_GS);
+	pBillboards->UpdateConstantBuffers(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
+	pBillboards->BindAndDraw(wnd.GetGraphics(), 25u, 0u);
+	pShaders->UnbindGS();
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	//for drawing backside of the wire box
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());;
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//GPU waves
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
@@ -217,9 +236,6 @@ void App::DrawHillsWithGPUWaves()
 	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
 	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
 	pShaders->UnbindCS();
-
-
-
 
 }
 
