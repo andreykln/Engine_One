@@ -40,21 +40,12 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pGPUWavesVS, IL.lightTexture, &pLightAndTextureIL,
 		IL.nLightTextureElements, L"Shaders\\Vertex\\GPUWavesVS.cso");
 
+	VS_IL_Init(&pQuadTessellationVS, IL.positonIL, &pPositonIL, IL.nPositon, L"Shaders\\Vertex\\QuadTessellationPassVS.cso");
+	PS_Init(&pQuadTessellationPS, L"Shaders\\Pixel\\QuadTessPS.cso");
+	HS_Init(&pQuadTesselationHS, L"Shaders\\Hull\\QuadTessHS.cso");
+	DS_Init(&pQuadTesselationDS, L"Shaders\\Domain\\QuadTessDS.cso");
 
 }
-
-// void Shaders::BindVSandIA(DemoSwitch demo)
-// {
-// 	switch (demo)
-// 	{
-// 	case DemoSwitch::DefaultBox:
-// 		{
-// 			pSgfx->pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
-// 			GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
-// 			break;
-// 		}
-// 	}
-// }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
 {
@@ -97,15 +88,17 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pGPUWavesVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::QuadTessellation_VS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pPositonIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pQuadTessellationVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
 }
 
-//test
-//someting
-//else
-//here
 void Shaders::BindPS(ShaderPicker shader)
 {
 	switch (shader)
@@ -158,6 +151,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::BlurTexture_PS :
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::QuadTessellation_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pQuadTessellationPS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -221,6 +219,30 @@ void Shaders::BindCS(ShaderPicker shader)
 	}
 }
 
+void Shaders::BindHS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::QuadTessellation_HS:
+	{
+		pSgfx->pgfx_pDeviceContext->HSSetShader(pQuadTesselationHS, 0u, 0u);
+		break;
+	}
+	}
+}
+
+void Shaders::BindDS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::QuadTessellation_DS:
+	{
+		pSgfx->pgfx_pDeviceContext->DSSetShader(pQuadTesselationDS, 0u, 0u);
+		break;
+	}
+	}
+}
+
 void Shaders::UnbindCS()
 {
 	pSgfx->pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
@@ -239,6 +261,16 @@ void Shaders::UnbindPS()
 void Shaders::UnbindVS()
 {
 	pSgfx->pgfx_pDeviceContext->VSSetShader(0u, nullptr, 0u);
+}
+
+void Shaders::UnbindHS()
+{
+	pSgfx->pgfx_pDeviceContext->HSSetShader(0u, nullptr, 0u);
+}
+
+void Shaders::UnbindDS()
+{
+	pSgfx->pgfx_pDeviceContext->DSSetShader(0u, nullptr, 0u);
 }
 
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
@@ -349,6 +381,50 @@ void Shaders::CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path)
 #endif
 	//for usage in other shaders;
 	pBlob->Release();
+}
+
+void Shaders::HS_Init(ID3D11HullShader** pHShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateHullShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pHShader));
+#ifdef MY_DEBUG
+	if (GetDebug(*pSgfx) != nullptr)
+	{
+		pSgfx->SetDebugName(*pHShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+
+}
+
+void Shaders::DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateDomainShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pDshader));
+#ifdef MY_DEBUG
+	if (GetDebug(*pSgfx) != nullptr)
+	{
+		pSgfx->SetDebugName(*pDshader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+
 }
 
 void Shaders::Bind(Graphics& gfx) noexcept

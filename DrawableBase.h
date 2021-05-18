@@ -12,3 +12,4 @@
 #include "GaussianBlur.h"
 #include "GPUWaves.h"
 #include "WaveSurfaceGPU.h"
+#include "QuadTessellation.h"

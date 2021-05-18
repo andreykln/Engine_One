@@ -46,6 +46,12 @@
     <Filter Include="Shaders\Compute">
       <UniqueIdentifier>{89f80250-35cd-487a-aba3-fbda678e86da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Hull">
+      <UniqueIdentifier>{70d35c08-977c-454b-9f0a-c78471293ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Domain">
+      <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -151,6 +157,9 @@
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="WaveSurfaceGPU.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="QuadTessellation.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,6 +296,15 @@
     <ClInclude Include="ComputeShaderConstantBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="QuadTessellation.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="HullShaderConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainShaderConstantBuffer.h">
+      <Filter>Header Files\Bindable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -369,6 +387,18 @@
     </FxCompile>
     <FxCompile Include="GPUWavesVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadTessellationPassVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadTessHS.hlsl">
+      <Filter>Shaders\Hull</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadTessDS.hlsl">
+      <Filter>Shaders\Domain</Filter>
+    </FxCompile>
+    <FxCompile Include="QuadTessPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

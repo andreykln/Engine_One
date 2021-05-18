@@ -14,12 +14,14 @@ App::App()
 // 	CreateBox();
 // 	CreateShapes();
 // 	CreateHillsWithWavesAllLight();
-	CreateHillsWithGPUWaves();
+// 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
+
+	pQuadTess = new QuadTessellation(wnd.GetGraphics());
 
 }
 
@@ -33,7 +35,7 @@ void App::DoFrame()
 // 	DrawShapes();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
-	DrawHillsWithGPUWaves();
+// 	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
@@ -41,6 +43,13 @@ void App::DoFrame()
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 
+	viewProjectionMatrix = GetViewProjectionCamera();
+	pShaders->BindVSandIA(QuadTessellation_VS);
+	pShaders->BindHS(QuadTessellation_HS);
+	pShaders->BindDS(QuadTessellation_DS);
+	pShaders->BindPS(QuadTessellation_PS);
+	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixIdentity(), camera.GetCameraPosition());
+	pQuadTess->BindAndDraw(wnd.GetGraphics(), 4u, 0u);
 	
 
 	CalculateFrameStats();

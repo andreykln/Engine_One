@@ -106,14 +106,6 @@ struct TreePointSprite
 	DirectX::XMFLOAT2 size;
 };
 
-
-// struct CBFog
-// {
-// 	DirectX::XMFLOAT4 fogColor;
-// 	float fogStartandRange[2] = { 5.0f, 105.0f };
-// 	const float padding0[2] = { 0.0f, 0.0f};
-// };
-// 
 struct CBPSDepth
 {
 	DirectX::XMFLOAT4 depthColor;
@@ -135,6 +127,18 @@ struct CBBillboardPixel
 	int numLights[4] = { 3,0,0,0 }; //padding array, only [0] is used
 };
 
+struct CB_QuadTess_DS_WVP
+{
+	CB_QuadTess_DS_WVP() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX worldViewProjection;
+};
+
+struct CB_QuadTess_HS
+{
+	CB_QuadTess_HS() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMFLOAT3 cameraPosition;
+};
 
 enum DemoSwitch
 {
@@ -166,5 +170,9 @@ enum ShaderPicker
 	UpdateWaves_CS,
 	DisturbWaves_CS,
 	GPUWaves_VS,
+	QuadTessellation_VS,
+	QuadTessellation_PS,
+	QuadTessellation_DS,
+	QuadTessellation_HS,
 	Keep
 };

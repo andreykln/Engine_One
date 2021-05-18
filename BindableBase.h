@@ -12,4 +12,6 @@
 #include "RenderStates.h"
 #include "GeometryShaderConstantBuffer.h"
 #include "ComputeShaderConstantBuffer.h"
+#include "HullShaderConstantBuffer.h"
+#include "DomainShaderConstantBuffer.h"
 #include "Shaders.h"

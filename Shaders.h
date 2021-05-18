@@ -11,16 +11,19 @@ public:
 	Shaders(const Shaders&) = delete;
 	Shaders& operator= (const Shaders&) = delete;
 
-// 	void BindVSandIA(DemoSwitch demo);
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
 	void BindGS(ShaderPicker shader);
 	void BindCS(ShaderPicker shader);
+	void BindHS(ShaderPicker shader);
+	void BindDS(ShaderPicker shader);
 
 	void UnbindCS();
 	void UnbindGS();
 	void UnbindPS();
 	void UnbindVS();
+	void UnbindHS();
+	void UnbindDS();
 private:
 	//most convenient to have this class to be a child of Bindable
 //but this function isn't needed
@@ -32,6 +35,8 @@ private:
 		UINT nElements,ID3DBlob* pBlob, const std::wstring& name);
 	void GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
 	void CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path);
+	void HS_Init(ID3D11HullShader** pHShader, const std::wstring& path);
+	void DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path);
 
 	Graphics* pSgfx = nullptr;
 	InputLayout IL;
@@ -76,6 +81,15 @@ private:
 	ID3D11ComputeShader* pDisturbWaves = nullptr;
 	ID3D11ComputeShader* pUpdateWaves = nullptr;
 	ID3D11VertexShader* pGPUWavesVS = nullptr;
+
+	ID3D11VertexShader* pQuadTessellationVS = nullptr;
+	ID3D11PixelShader* pQuadTessellationPS = nullptr;
+	ID3D11HullShader* pQuadTesselationHS = nullptr;
+	ID3D11DomainShader* pQuadTesselationDS = nullptr;
+
+
+
+	ID3D11InputLayout* pPositonIL = nullptr;
 
 };
 

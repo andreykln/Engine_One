@@ -79,7 +79,7 @@ private:
 	MirrorRoom* pMirrorRoom = nullptr;
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
-
+	QuadTessellation* pQuadTess = nullptr;
 
 
 // 	Pyramid* pPyramid = nullptr;
