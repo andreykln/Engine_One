@@ -15,7 +15,7 @@ struct VertexOut
 struct PatchTess
 {
 	float EdgeTessFactor[4]			: SV_TessFactor;
-	float InsideTessFactor[1]		: SV_InsideTessFactor;
+	float InsideTessFactor[2]		: SV_InsideTessFactor;
 };
 
 
