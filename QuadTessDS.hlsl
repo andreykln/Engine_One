@@ -3,18 +3,18 @@ cbuffer Matrices
     float4x4 worldViewProjection;
 };
 
-struct DS_OUTPUT
+struct DomainOut
 {
-	float4 vPosition  : SV_POSITION;
+    float4 vPosition : SV_Position;
 };
 
 // Output control point
-struct HS_CONTROL_POINT_OUTPUT
+struct HullOut
 {
     float3 vPosition : Position;
 };
 
-struct HS_CONSTANT_DATA_OUTPUT
+struct PatchTess
 {
     float EdgeTessFactor[4] : SV_TessFactor;
     float InsideTessFactor[2] : SV_InsideTessFactor;
@@ -22,12 +22,12 @@ struct HS_CONSTANT_DATA_OUTPUT
 
 
 [domain("quad")]
-DS_OUTPUT main(
-	HS_CONSTANT_DATA_OUTPUT input,
+DomainOut main(
+	PatchTess input,
 	float2 uv : SV_DomainLocation,
-	const OutputPatch<HS_CONTROL_POINT_OUTPUT, 4> quad)
+	const OutputPatch<HullOut, 4> quad)
 {
-	DS_OUTPUT Output;
+    DomainOut Output;
 
 	//bilinear interpolation
     float3 v1 = lerp(quad[0].vPosition, quad[1].vPosition, 1 - uv.y);

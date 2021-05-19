@@ -42,13 +42,15 @@ void App::DoFrame()
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
+	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixIdentity(), camera.GetCameraPosition());
+
 	pShaders->BindVSandIA(QuadTessellation_VS);
 	pShaders->BindHS(QuadTessellation_HS);
 	pShaders->BindDS(QuadTessellation_DS);
 	pShaders->BindPS(QuadTessellation_PS);
-	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixIdentity(), camera.GetCameraPosition());
 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 4u, 0u);
 	
 

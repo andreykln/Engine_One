@@ -12,19 +12,19 @@ struct VertexOut
 
 
 
-struct HS_CONSTANT_DATA_OUTPUT
+struct PatchTess
 {
 	float EdgeTessFactor[4]			: SV_TessFactor;
-	float InsideTessFactor[2]		: SV_InsideTessFactor;
+	float InsideTessFactor[1]		: SV_InsideTessFactor;
 };
 
 
 // Patch Constant Function
-HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
+PatchTess ConstantHS(
 	InputPatch<VertexOut, 4> patch,
 	uint patchID : SV_PrimitiveID)
 {
-	HS_CONSTANT_DATA_OUTPUT Output;
+    PatchTess Output;
 	
 	//find center of the patch in world space
     float3 centerL = 0.25f * (patch[0].posLocal + patch[1].posLocal + patch[2].posLocal + patch[3].posLocal);
@@ -50,7 +50,7 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 
 
 // Output control point
-struct HS_CONTROL_POINT_OUTPUT
+struct HullOut
 {
     float3 vPosition : Position;
 };
@@ -59,14 +59,14 @@ struct HS_CONTROL_POINT_OUTPUT
 [partitioning("integer")]
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(4)]
-[patchconstantfunc("CalcHSPatchConstants")]
+[patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
-HS_CONTROL_POINT_OUTPUT main( 
+HullOut main( 
 	InputPatch<VertexOut, 4> ip,
 	uint i : SV_OutputControlPointID,
 	uint PatchID : SV_PrimitiveID )
 {
-	HS_CONTROL_POINT_OUTPUT Output;
+	HullOut Output;
 
 	Output.vPosition = ip[i].posLocal;
 

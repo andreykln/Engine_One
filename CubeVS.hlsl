@@ -4,11 +4,6 @@ cbuffer world : register(b0)
     float4x4 transform;
 };
 
-/*cbuffer world1 : register(b1)
-{
-    float4x4 transform1;
-};*/
-
 struct VertexOut
 {
     float4 col : Color;

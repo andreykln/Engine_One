@@ -42,7 +42,7 @@ void QuadTessellation::UpdateTessellationShaderBuffers(Graphics& gfx,
 	D3D11_MAPPED_SUBRESOURCE mappedData0;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCBDS, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData0));
 	CB_QuadTess_DS_WVP* pWorld = reinterpret_cast<CB_QuadTess_DS_WVP*>(mappedData0.pData);
-	pWorld->worldViewProjection = WVP;
+	pWorld->worldViewProjection = DirectX::XMMatrixTranspose(WVP);
 	gfx.pgfx_pDeviceContext->Unmap(pCopyCBDS, 0u);
 
 }

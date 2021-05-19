@@ -33,8 +33,7 @@ PSstruct main(VertexIn vin)
 	// Transform to homogeneous clip space.
     vout.PosH = mul(float4(vin.position, 1.0f), worldViewProjection);
     vout.Tex = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform).xy;
-    //vout.Tex = vin.texCoord;
-    
+   
 
     return vout;
 }
