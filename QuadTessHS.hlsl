@@ -37,10 +37,10 @@ PatchTess ConstantHS(
 	
     float tess = 64.0f * saturate((d1 - d) / (d1 - d0));
 	
-    Output.EdgeTessFactor[0] = tess;
-    Output.EdgeTessFactor[1] = tess;
-    Output.EdgeTessFactor[2] = tess;
-    Output.EdgeTessFactor[3] = tess;
+    Output.EdgeTessFactor[0] = 3;
+    Output.EdgeTessFactor[1] = 3;
+    Output.EdgeTessFactor[2] = 3;
+    Output.EdgeTessFactor[3] = 3;
 	
     Output.InsideTessFactor[0] = tess;
     Output.InsideTessFactor[1] = tess;
