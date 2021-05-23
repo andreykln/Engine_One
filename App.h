@@ -24,11 +24,8 @@ private:
 	void DrawHillsWithWavesAllLight();
 	void CreateHillsWithWaves();
 	void DrawHillsWithWaves();
-
 	void CreateHillsWithGPUWaves();
 	void DrawHillsWithGPUWaves();
-
-
 	void CreateBilateralHillsBlur();
 	void DrawBilateralHillsBlur();
 	void CreateGaussBlur();
@@ -43,6 +40,8 @@ private:
 	void DrawDepthComplexityStencil();
 	void CreateShapes();
 	void DrawShapes();
+	void CreateBezierPatchTess();
+	void DrawBezierPatchTess();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 

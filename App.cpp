@@ -20,8 +20,7 @@ App::App()
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
-
-	pQuadTess = new QuadTessellation(wnd.GetGraphics());
+	CreateBezierPatchTess();
 
 }
 
@@ -42,16 +41,7 @@ void App::DoFrame()
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
-
-	viewProjectionMatrix = GetViewProjectionCamera();
-	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -5.0f, 25.0f), camera.GetCameraPosition());
-
-	pShaders->BindVSandIA(QuadTessellation_VS);
-	pShaders->BindHS(QuadTessellation_HS);
-	pShaders->BindDS(QuadTessellation_DS);
-	pShaders->BindPS(QuadTessellation_PS);
-	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
+	DrawBezierPatchTess();
 	
 
 	CalculateFrameStats();
@@ -676,6 +666,25 @@ void App::DrawShapes()
 	}
 	shapes.GetSphereWorldArray() -= 10; //reset array position
 
+}
+
+void App::CreateBezierPatchTess()
+{
+	pQuadTess = new QuadTessellation(wnd.GetGraphics());
+}
+
+void App::DrawBezierPatchTess()
+{
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+
+	viewProjectionMatrix = GetViewProjectionCamera();
+	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -5.0f, 25.0f), camera.GetCameraPosition());
+
+	pShaders->BindVSandIA(QuadTessellation_VS);
+	pShaders->BindHS(QuadTessellation_HS);
+	pShaders->BindDS(QuadTessellation_DS);
+	pShaders->BindPS(QuadTessellation_PS);
+	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
 }
 
 // void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
