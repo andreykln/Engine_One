@@ -45,13 +45,13 @@ void App::DoFrame()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
-	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixIdentity(), camera.GetCameraPosition());
+	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -5.0f, 25.0f), camera.GetCameraPosition());
 
 	pShaders->BindVSandIA(QuadTessellation_VS);
 	pShaders->BindHS(QuadTessellation_HS);
 	pShaders->BindDS(QuadTessellation_DS);
 	pShaders->BindPS(QuadTessellation_PS);
-	pQuadTess->BindAndDraw(wnd.GetGraphics(), 4u, 0u);
+	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
 	
 
 	CalculateFrameStats();
