@@ -7,6 +7,8 @@ QuadTessellation::QuadTessellation(Graphics& gfx)
 		DirectX::XMFLOAT3(-10.0f, -10.0f, 0.0f),
 		DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f),
 		DirectX::XMFLOAT3(10.0f, -10.0f, 0.0f),
+		DirectX::XMFLOAT3(20.0f, 10.0f, 0.0f),
+
 // 		DirectX::XMFLOAT3(10.0f, -10.0f, 0.0f)
 	};
 
@@ -15,6 +17,13 @@ QuadTessellation::QuadTessellation(Graphics& gfx)
 
 	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	AddBind(topology);
+
+	std::vector<UINT> indices{ 
+		0,1,2,
+		2,1,3 };
+
+	IndexBuffer* pIB = new IndexBuffer(gfx, indices, L"QuadTessIndices");
+	AddIndexBuffer(pIB);
 
 	HullShaderConstantBuffer<CB_QuadTess_HS>* pHSCB = 
 		new HullShaderConstantBuffer(gfx, cbHullShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
