@@ -2,28 +2,39 @@
 
 QuadTessellation::QuadTessellation(Graphics& gfx)
 {
+
 	std::vector<DirectX::XMFLOAT3> vertices
 	{
-		DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f),
-		DirectX::XMFLOAT3(10.0f, 0.0f, 10.0f),
-		DirectX::XMFLOAT3(-10.0f, 0.0f, -10.0f),
-		DirectX::XMFLOAT3(10.0f, 0.0f, -10.0f),
+		// Row 0
+		DirectX::XMFLOAT3(-10.0f, -10.0f, +15.0f),
+		DirectX::XMFLOAT3(-5.0f,  0.0f, +15.0f),
+		DirectX::XMFLOAT3(+5.0f,  0.0f, +15.0f),
+		DirectX::XMFLOAT3(+10.0f, 0.0f, +15.0f),
 
-// 		DirectX::XMFLOAT3(10.0f, -10.0f, 0.0f)
+		// Row 1
+		DirectX::XMFLOAT3(-15.0f, 0.0f, +5.0f),
+		DirectX::XMFLOAT3(-5.0f,  0.0f, +5.0f),
+		DirectX::XMFLOAT3(+5.0f,  20.0f, +5.0f),
+		DirectX::XMFLOAT3(+15.0f, 0.0f, +5.0f),
+
+		// Row 2
+		DirectX::XMFLOAT3(-15.0f, 0.0f, -5.0f),
+		DirectX::XMFLOAT3(-5.0f,  0.0f, -5.0f),
+		DirectX::XMFLOAT3(+5.0f,  0.0f, -5.0f),
+		DirectX::XMFLOAT3(+15.0f, 0.0f, -5.0f),
+
+		// Row 3
+		DirectX::XMFLOAT3(-10.0f, 10.0f, -15.0f),
+		DirectX::XMFLOAT3(-5.0f,  0.0f, -15.0f),
+		DirectX::XMFLOAT3(+5.0f,  0.0f, -15.0f),
+		DirectX::XMFLOAT3(+25.0f, 10.0f, -15.0f)
 	};
-
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"QuadTessellation.");
 	AddBind(pVB);
 
-	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST);
 	AddBind(topology);
 
-	std::vector<UINT> indices{ 
-		0,1,2,
-		2,1,3 };
-
-	IndexBuffer* pIB = new IndexBuffer(gfx, indices, L"QuadTessIndices");
-	AddIndexBuffer(pIB);
 
 	HullShaderConstantBuffer<CB_QuadTess_HS>* pHSCB = 
 		new HullShaderConstantBuffer(gfx, cbHullShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
