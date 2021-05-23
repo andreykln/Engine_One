@@ -51,8 +51,7 @@ void App::DoFrame()
 	pShaders->BindHS(QuadTessellation_HS);
 	pShaders->BindDS(QuadTessellation_DS);
 	pShaders->BindPS(QuadTessellation_PS);
-	pQuadTess->BindAndDrawIndexed(wnd.GetGraphics());
-	//pQuadTess->BindAndDraw(wnd.GetGraphics(), 4u, 0u);
+	pQuadTess->BindAndDraw(wnd.GetGraphics(), 4u, 0u);
 	
 
 	CalculateFrameStats();

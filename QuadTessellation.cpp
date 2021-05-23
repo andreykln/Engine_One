@@ -4,10 +4,10 @@ QuadTessellation::QuadTessellation(Graphics& gfx)
 {
 	std::vector<DirectX::XMFLOAT3> vertices
 	{
-		DirectX::XMFLOAT3(-10.0f, -10.0f, 0.0f),
-		DirectX::XMFLOAT3(0.0f, 10.0f, 0.0f),
-		DirectX::XMFLOAT3(10.0f, -10.0f, 0.0f),
-		DirectX::XMFLOAT3(20.0f, 10.0f, 0.0f),
+		DirectX::XMFLOAT3(-10.0f, 0.0f, 10.0f),
+		DirectX::XMFLOAT3(10.0f, 0.0f, 10.0f),
+		DirectX::XMFLOAT3(-10.0f, 0.0f, -10.0f),
+		DirectX::XMFLOAT3(10.0f, 0.0f, -10.0f),
 
 // 		DirectX::XMFLOAT3(10.0f, -10.0f, 0.0f)
 	};
@@ -15,7 +15,7 @@ QuadTessellation::QuadTessellation(Graphics& gfx)
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"QuadTessellation.");
 	AddBind(pVB);
 
-	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	AddBind(topology);
 
 	std::vector<UINT> indices{ 

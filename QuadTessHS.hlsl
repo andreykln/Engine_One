@@ -14,20 +14,20 @@ struct VertexOut
 
 struct PatchTess
 {
-	float EdgeTessFactor[3]			: SV_TessFactor;
-	float InsideTessFactor[1]		: SV_InsideTessFactor;
+	float EdgeTessFactor[4]			: SV_TessFactor;
+	float InsideTessFactor[2]		: SV_InsideTessFactor;
 };
 
 
 // Patch Constant Function
 PatchTess ConstantHS(
-	InputPatch<VertexOut, 3> patch,
+	InputPatch<VertexOut, 4> patch,
 	uint patchID : SV_PrimitiveID)
 {
     PatchTess Output;
 	
 	//find center of the patch in world space
-    float3 centerL = 0.33f * (patch[0].posLocal + patch[1].posLocal + patch[2].posLocal);
+    float3 centerL = 0.25f * (patch[0].posLocal + patch[1].posLocal + patch[2].posLocal + patch[3].posLocal);
     float3 centerW = mul(float4(centerL, 1.0f), World).xyz;
     float d = distance(centerW, cameraPosition);
 	
@@ -40,8 +40,12 @@ PatchTess ConstantHS(
     Output.EdgeTessFactor[0] = tess;
     Output.EdgeTessFactor[1] = tess;
     Output.EdgeTessFactor[2] = tess;
+    Output.EdgeTessFactor[3] = tess;
+	
 	
     Output.InsideTessFactor[0] = tess;
+    Output.InsideTessFactor[1] = tess;
+	
 	
 	return Output;
 }
@@ -53,14 +57,14 @@ struct HullOut
     float3 vPosition : Position;
 };
 
-[domain("tri")]
+[domain("quad")]
 [partitioning("integer")]
 [outputtopology("triangle_cw")]
-[outputcontrolpoints(3)]
+[outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
 HullOut main( 
-	InputPatch<VertexOut, 3> ip,
+	InputPatch<VertexOut, 4> ip,
 	uint i : SV_OutputControlPointID,
 	uint PatchID : SV_PrimitiveID )
 {
