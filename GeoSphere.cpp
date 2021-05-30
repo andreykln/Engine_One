@@ -72,15 +72,21 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 	AddBind(pTexSampler);
 }
 
-void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt)
 {
+	sphereTextureOffset.y += 0.05f * dt;
+	sphereTextureOffset.x += 0.1f * dt;
+	sphereOffset = DirectX::XMMatrixTranslation(0.0f, sphereTextureOffset.x, sphereTextureOffset.y);
+
+
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesGeoSphere, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
 	pMatrices->world = in_world;
 	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	pMatrices->texTransform = DirectX::XMMatrixRotationY((dt));
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
 }
 

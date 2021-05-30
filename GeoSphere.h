@@ -7,9 +7,12 @@ class GeoSphere : public Shape
 {
 public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions);
-	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 private:
+	DirectX::XMFLOAT2 sphereTextureOffset;
+	DirectX::XMMATRIX sphereOffset;
+
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
 

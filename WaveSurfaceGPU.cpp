@@ -223,7 +223,8 @@ void WaveSurfaceGPU::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	object->world = in_world;
 	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	object->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	object->texTransform = wavesScale * wavesOffset;
+	object->texTransform = DirectX::XMMatrixTranspose (wavesOffset + wavesScale);
+
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVertexConstantBuffer, 0u);
 }
 

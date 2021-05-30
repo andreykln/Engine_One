@@ -14,13 +14,13 @@ App::App()
 // 	CreateBox();
 // 	CreateShapes();
 // 	CreateHillsWithWavesAllLight();
-// 	CreateHillsWithGPUWaves();
+	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
-	CreateBezierPatchTess();
+// 	CreateBezierPatchTess();
 
 }
 
@@ -34,14 +34,14 @@ void App::DoFrame()
 // 	DrawShapes();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
-// 	DrawHillsWithGPUWaves();
+	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
-	DrawBezierPatchTess();
+// 	DrawBezierPatchTess();
 	
 
 	CalculateFrameStats();
@@ -660,7 +660,8 @@ void App::DrawShapes()
 
 	for (auto& x : geoSpheres)
 	{
-		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdateVSMatrices(wnd.GetGraphics(),
+			*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix, sin(timer.TotalTime()));
 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
