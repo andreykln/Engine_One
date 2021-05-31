@@ -2,7 +2,7 @@
 
 WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 {
-	geoGen.CreateGrid(numColumns, numRows, 200, 200, mesh);
+	geoGen.CreateGrid((float)numColumns, (float)numRows, 200, 200, mesh);
 	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.85f, 0.4f);
 
 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);

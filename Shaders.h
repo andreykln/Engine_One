@@ -4,6 +4,7 @@
 #include "Shape.h"
 #include "BindableBase.h"
 #include "InputLayout.h"
+
 class Shaders : public Bindable
 {
 public:
@@ -87,7 +88,10 @@ private:
 	ID3D11HullShader* pQuadTesselationHS = nullptr;
 	ID3D11DomainShader* pQuadTesselationDS = nullptr;
 
-
+	//instanced skull
+	ID3D11VertexShader* pInstancedSkullVS = nullptr;
+	ID3D11PixelShader* pInstancedSkullPS = nullptr;
+	ID3D11InputLayout* pInstancedSkullIL = nullptr;
 
 	ID3D11InputLayout* pPositonIL = nullptr;
 

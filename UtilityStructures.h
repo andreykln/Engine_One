@@ -20,6 +20,7 @@ struct CB_VS_Transform
 	DirectX::XMMATRIX texTransform;
 };
 
+
 struct CB_PS_DirectionalL_Fog
 {
 	CB_PS_DirectionalL_Fog() { ZeroMemory(this, sizeof(this)); }
@@ -174,5 +175,7 @@ enum ShaderPicker
 	QuadTessellation_PS,
 	QuadTessellation_DS,
 	QuadTessellation_HS,
+	InstancedSkull_VS,
+	InstancedSkull_PS,
 	Keep
 };

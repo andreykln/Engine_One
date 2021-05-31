@@ -194,6 +194,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="InstancedSkull.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="MirrorRoom.cpp" />
     <ClCompile Include="QuadTessellation.cpp" />
@@ -220,6 +221,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="TreeBillboard.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexBufferDynamic.cpp" />
+    <ClCompile Include="VertexBufferInstancedDynamic.cpp" />
     <ClCompile Include="VertexConstantBuffer.cpp" />
     <ClCompile Include="Waves.cpp" />
     <ClCompile Include="WaveSurface.cpp">
@@ -246,6 +248,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="GPUWaves.h" />
     <ClInclude Include="HullShaderConstantBuffer.h" />
+    <ClInclude Include="InstancedSkull.h" />
     <ClInclude Include="MirrorRoom.h" />
     <ClInclude Include="QuadTessellation.h" />
     <ClInclude Include="RenderStates.h" />
@@ -292,6 +295,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="Topology.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexBufferDynamic.h" />
+    <ClInclude Include="VertexBufferInstancedDynamic.h" />
     <ClInclude Include="VertexConstantBuffer.h" />
     <ClInclude Include="Waves.h" />
     <ClInclude Include="WaveSurface.h">
@@ -401,6 +405,22 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Compute\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="InstancedSkullPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="InstancedSkullVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="LightAndTextureArrayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

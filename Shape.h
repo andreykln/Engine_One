@@ -18,6 +18,7 @@ public:
 	void BindAndDrawIndexed(Graphics& gfx) const noexcept;
 	void BindAndDraw(Graphics& gfx, UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
+	void BindAndDrawInstancedIndexed(Graphics& gfx, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	void DeleteObject() const noexcept;
 	//can be used for rotation around world axis
 

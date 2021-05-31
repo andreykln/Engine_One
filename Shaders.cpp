@@ -45,6 +45,9 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pQuadTesselationHS, L"Shaders\\Hull\\QuadTessHS.cso");
 	DS_Init(&pQuadTesselationDS, L"Shaders\\Domain\\QuadTessDS.cso");
 
+	VS_IL_Init(&pInstancedSkullVS, IL.instancedSkull, &pInstancedSkullIL, IL.nInstancedSkull, L"Shaders\\Vertex\\InstancedSkullVS.cso");
+	PS_Init(&pInstancedSkullPS, L"Shaders\\Pixel\\InstancedSkullPS.cso");
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -92,6 +95,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pPositonIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pQuadTessellationVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::InstancedSkull_VS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pInstancedSkullIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pInstancedSkullVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -156,6 +165,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::QuadTessellation_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pQuadTessellationPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::InstancedSkull_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pInstancedSkullPS, nullptr, 0u);
 		break;
 	}
 	default:

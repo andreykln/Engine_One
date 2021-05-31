@@ -14,14 +14,14 @@ App::App()
 // 	CreateBox();
 // 	CreateShapes();
 // 	CreateHillsWithWavesAllLight();
-	CreateHillsWithGPUWaves();
+// 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
 // 	CreateMirror();
 // 	CreateLightning();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
-
+	pInstancedSkulls = new InstancedSkull(wnd.GetGraphics());
 }
 
 void App::DoFrame()
@@ -34,7 +34,7 @@ void App::DoFrame()
 // 	DrawShapes();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
-	DrawHillsWithGPUWaves();
+// 	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawLightning();
@@ -42,7 +42,15 @@ void App::DoFrame()
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
-	
+	viewProjectionMatrix = GetViewProjectionCamera();
+
+	pShaders->BindVSandIA(ShaderPicker::InstancedSkull_VS);
+	pShaders->BindPS(ShaderPicker::InstancedSkull_PS);
+	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix);
+	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 125, 0u, 0u, 0u);
+
+
 
 	CalculateFrameStats();
 

@@ -24,6 +24,7 @@ public:
 	void DrawIndexed(UINT count) const noexcept;
 	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
+	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
 // 	void SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path);
 	void SetViewport();

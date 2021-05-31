@@ -13,3 +13,4 @@
 #include "GPUWaves.h"
 #include "WaveSurfaceGPU.h"
 #include "QuadTessellation.h"
+#include "InstancedSkull.h"

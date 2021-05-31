@@ -14,4 +14,5 @@
 #include "ComputeShaderConstantBuffer.h"
 #include "HullShaderConstantBuffer.h"
 #include "DomainShaderConstantBuffer.h"
+#include "VertexBufferInstancedDynamic.h"
 #include "Shaders.h"

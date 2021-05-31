@@ -64,6 +64,8 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	InstancedSkull* pInstancedSkulls = nullptr;
+
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];

@@ -43,6 +43,16 @@ void Shape::BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocatio
 
 }
 
+void Shape::BindAndDrawInstancedIndexed(Graphics& gfx, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation)
+{
+	for (auto& b : binds)
+	{
+		b->Bind(gfx);
+	}
+	gfx.DrawInstancedIndexed(pIndexBuffer->GetCount(), instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
+
+}
+
 void Shape::DeleteObject() const noexcept
 {
 	for (auto& b : binds)

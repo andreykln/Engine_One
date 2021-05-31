@@ -144,6 +144,11 @@ void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVerte
 }
 
 
+void Graphics::DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation)
+{
+	pgfx_pDeviceContext->DrawIndexedInstanced(count, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
+}
+
 HWND Graphics::GetWindowHandle() const noexcept
 {
 	return windowHandle;
