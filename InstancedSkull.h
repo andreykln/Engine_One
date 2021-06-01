@@ -1,6 +1,8 @@
 #pragma once
 #include "Shape.h"
 #include <fstream>
+#include "DirectXCollision.h"
+
 
 struct InstancedData
 {
@@ -12,10 +14,11 @@ class InstancedSkull : public Shape
 {
 public:
 	InstancedSkull(Graphics& gfx);
-	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj,
+		const DirectX::XMMATRIX& in_viewMatrix, const DirectX::XMMATRIX& in_Projection);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition);
-
-
+	void ComputeFrustumFromProjection(DirectX::XMMATRIX* projection);
+	int GetAmountOfVisible() const;
 private:
 	void BuildInstancedBuffer(std::vector<InstancedData>& data);
 
@@ -27,4 +30,16 @@ private:
 	ID3D11Buffer* pCopyInstancedBuffer = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesSkull = nullptr;
 	ID3D11Buffer* pCopyPCBLightsSkull = nullptr;
+
+	//culling
+	DirectX::XMFLOAT3 minF3 = { FLT_MAX, FLT_MAX, FLT_MAX };
+	DirectX::XMFLOAT3 maxF3 = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+	DirectX::XMVECTOR vMin = DirectX::XMLoadFloat3(&minF3);
+	DirectX::XMVECTOR vMax = DirectX::XMLoadFloat3(&maxF3);
+
+	DirectX::BoundingBox skullBox;
+	int visibleObjectsCount = 0;
+	DirectX::BoundingFrustum cameraFrustum;
+	
+
 };

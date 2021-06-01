@@ -46,9 +46,9 @@ void App::DoFrame()
 
 	pShaders->BindVSandIA(ShaderPicker::InstancedSkull_VS);
 	pShaders->BindPS(ShaderPicker::InstancedSkull_PS);
-	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix);
+	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
 	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 125, 0u, 0u, 0u);
+	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
 
 
 
@@ -95,7 +95,8 @@ void App::CalculateFrameStats()
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
 			oss << "FPS:" << fps
-				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. ";
+				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. "
+				<< " visible skulls: " << pInstancedSkulls->GetAmountOfVisible();
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;

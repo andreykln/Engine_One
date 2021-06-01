@@ -42,7 +42,19 @@ InstancedSkull::InstancedSkull(Graphics& gfx)
 	{
 		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
 			verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
+
+		DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&verticesFromTXT[i].position);
+		vMin = DirectX::XMVectorMin(vMin, P);
+		vMax = DirectX::XMVectorMax(vMax, P);
+
 	}
+	using namespace DirectX;
+	//fill bounding box
+	DirectX::XMStoreFloat3(&skullBox.Center, 0.5f * (vMin + vMax));
+	DirectX::XMStoreFloat3(&skullBox.Extents, 0.5f * (vMax - vMin));
+
+	
+
 	file >> ignore >> ignore >> ignore;
 	UINT indexCount = 3 * triangles;
 	std::vector<UINT> indices(indexCount);
@@ -83,7 +95,8 @@ InstancedSkull::InstancedSkull(Graphics& gfx)
 
 }
 
-void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj)
+void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj,
+	const DirectX::XMMATRIX& in_viewMatrix, const DirectX::XMMATRIX& in_Projection)
 {
 	DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -95,18 +108,48 @@ void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
 
-
-
-
+	//culling
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyInstancedBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	InstancedData* pInstanced = reinterpret_cast<InstancedData*>(mappedData.pData);
 
-	for (int i = 0; i < instanced.size(); ++i)
-	{
-		pInstanced[i] = instanced[i];
+	visibleObjectsCount = 0;
+	DirectX::XMVECTOR detView = DirectX::XMMatrixDeterminant(in_viewMatrix);
+	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&detView, in_viewMatrix);
 
+	DirectX::BoundingFrustum::CreateFromMatrix(cameraFrustum, in_Projection);
+	for (int n = 0; n < instanced.size(); ++n)
+	{
+		DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instanced[n].world);
+		DirectX::XMVECTOR detW = DirectX::XMMatrixDeterminant(W);
+		DirectX::XMMATRIX invWorld = DirectX::XMMatrixInverse(&detW, W);
+
+		//view space to the object's local space
+		DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
+
+		// Transform the camera frustum from view space to the object's local space.
+		DirectX::BoundingFrustum localSpaceFrustum;
+
+		cameraFrustum.Transform(localSpaceFrustum, toLocal);
+
+		//perform box/frustum intersection test in local space
+		if (localSpaceFrustum.Contains(skullBox) != DirectX::DISJOINT)
+		{
+			pInstanced[visibleObjectsCount++] = instanced[n];
+		}
 	}
 
+// 	if (GetAsyncKeyState('6') & 0x8000)
+// 
+// 	{
+// 		for (int i = 0; i < instanced.size(); ++i)
+// 		{
+// 			pInstanced[i] = instanced[i];
+// 
+// 		}
+// 		visibleObjectsCount = 125;
+// 
+// 	}
+// 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyInstancedBuffer, 0u);
 
 
@@ -131,6 +174,58 @@ void InstancedSkull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPo
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 
+}
+
+void InstancedSkull::ComputeFrustumFromProjection(DirectX::XMMATRIX* projection)
+{
+	/*//corners of the projection frustum in homogenous space
+	static DirectX::XMVECTOR homogenousPoints[6] =
+	{
+		{1.0f, 0.0f, 1.0f, 1.0f}, //right (at far plane)
+		{-1.0f, 0.0f, 1.0f, 1.0f}, //left
+		{0.0f, 1.0f, 1.0f, 1.0f,}, //top
+		{0.0f, -1.0f, 1.0f, 1.0f}, //bottom
+
+		{0.0f, 0.0f, 0.0f, 1.0f}, //near
+		{0.0f, 0.0f, 1.0f, 1.0f} //far
+	};
+
+	DirectX::XMVECTOR determinant;
+	DirectX::XMMATRIX matInverse = DirectX::XMMatrixInverse(&determinant, *projection);
+
+	//compute the frustum corners on the world space
+	DirectX::XMVECTOR points[6];
+	for (int i = 0; i < 6; i++)
+	{
+		points[i] = DirectX::XMVector4Transform(homogenousPoints[i], matInverse);
+	}
+
+	skullBoundingFrustum.Origin = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	skullBoundingFrustum.Orientation = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//compute slopes
+	using namespace DirectX;
+	points[0] = points[0] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[0]));
+	points[1] = points[1] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[1]));
+	points[2] = points[2] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[2]));
+	points[3] = points[3] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[3]));
+
+	skullBoundingFrustum.RightSlope = DirectX::XMVectorGetX(points[0]);
+	skullBoundingFrustum.LeftSlope = DirectX::XMVectorGetX(points[1]);
+	skullBoundingFrustum.TopSlope = DirectX::XMVectorGetY(points[2]);
+	skullBoundingFrustum.BottomSlope = DirectX::XMVectorGetY(points[3]);
+
+	//compute near and far
+	points[4] = points[4] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatW(points[4]));
+	points[5] = points[5] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatW(points[5]));
+
+	skullBoundingFrustum.Near = DirectX::XMVectorGetZ(points[4]);
+	skullBoundingFrustum.Far = DirectX::XMVectorGetZ(points[5]);*/
+}
+
+int InstancedSkull::GetAmountOfVisible() const
+{
+	return visibleObjectsCount;
 }
 
 void InstancedSkull::BuildInstancedBuffer(std::vector<InstancedData>& data)

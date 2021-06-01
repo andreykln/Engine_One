@@ -55,13 +55,17 @@ public:
 		 return dir;
 	 }
 
-private:
 	DirectX::XMMATRIX GetViewMatrix()
 	{
 		using namespace DirectX;
 		return DirectX::XMMatrixLookAtLH(positon, positon + front, up);
 	}
+	DirectX::XMMATRIX GetProjecion()
+	{
+		return perspectiveProjection;
+	}
 
+private:
 	void ProcessMouseMovement(int xPos, int yPos, bool isLeftPressed)
 	{
 		if (firstMouse)
