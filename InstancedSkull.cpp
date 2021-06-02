@@ -115,21 +115,22 @@ void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	visibleObjectsCount = 0;
 	DirectX::XMVECTOR detView = DirectX::XMMatrixDeterminant(in_viewMatrix);
 	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&detView, in_viewMatrix);
-
 	DirectX::BoundingFrustum::CreateFromMatrix(cameraFrustum, in_Projection);
+
+	DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instanced[n].world);
+	DirectX::XMVECTOR detW = DirectX::XMMatrixDeterminant(W);
+	DirectX::XMMATRIX invWorld = DirectX::XMMatrixInverse(&detW, W);
+
+	//view space to the object's local space
+	DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
+
+	// Transform the camera frustum from view space to the object's local space.
+	DirectX::BoundingFrustum localSpaceFrustum;
+
+	cameraFrustum.Transform(localSpaceFrustum, toLocal);
+
 	for (int n = 0; n < instanced.size(); ++n)
 	{
-		DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instanced[n].world);
-		DirectX::XMVECTOR detW = DirectX::XMMatrixDeterminant(W);
-		DirectX::XMMATRIX invWorld = DirectX::XMMatrixInverse(&detW, W);
-
-		//view space to the object's local space
-		DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
-
-		// Transform the camera frustum from view space to the object's local space.
-		DirectX::BoundingFrustum localSpaceFrustum;
-
-		cameraFrustum.Transform(localSpaceFrustum, toLocal);
 
 		//perform box/frustum intersection test in local space
 		if (localSpaceFrustum.Contains(skullBox) != DirectX::DISJOINT)
