@@ -117,20 +117,19 @@ void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&detView, in_viewMatrix);
 	DirectX::BoundingFrustum::CreateFromMatrix(cameraFrustum, in_Projection);
 
-	DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instanced[n].world);
-	DirectX::XMVECTOR detW = DirectX::XMMatrixDeterminant(W);
-	DirectX::XMMATRIX invWorld = DirectX::XMMatrixInverse(&detW, W);
-
-	//view space to the object's local space
-	DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
-
-	// Transform the camera frustum from view space to the object's local space.
-	DirectX::BoundingFrustum localSpaceFrustum;
-
-	cameraFrustum.Transform(localSpaceFrustum, toLocal);
-
 	for (int n = 0; n < instanced.size(); ++n)
 	{
+		DirectX::XMMATRIX W = DirectX::XMLoadFloat4x4(&instanced[n].world);
+		DirectX::XMVECTOR detW = DirectX::XMMatrixDeterminant(W);
+		DirectX::XMMATRIX invWorld = DirectX::XMMatrixInverse(&detW, W);
+
+		//view space to the object's local space
+		DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
+
+		// Transform the camera frustum from view space to the object's local space.
+		DirectX::BoundingFrustum localSpaceFrustum;
+
+		cameraFrustum.Transform(localSpaceFrustum, toLocal);
 
 		//perform box/frustum intersection test in local space
 		if (localSpaceFrustum.Contains(skullBox) != DirectX::DISJOINT)
@@ -177,52 +176,6 @@ void InstancedSkull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPo
 
 }
 
-void InstancedSkull::ComputeFrustumFromProjection(DirectX::XMMATRIX* projection)
-{
-	/*//corners of the projection frustum in homogenous space
-	static DirectX::XMVECTOR homogenousPoints[6] =
-	{
-		{1.0f, 0.0f, 1.0f, 1.0f}, //right (at far plane)
-		{-1.0f, 0.0f, 1.0f, 1.0f}, //left
-		{0.0f, 1.0f, 1.0f, 1.0f,}, //top
-		{0.0f, -1.0f, 1.0f, 1.0f}, //bottom
-
-		{0.0f, 0.0f, 0.0f, 1.0f}, //near
-		{0.0f, 0.0f, 1.0f, 1.0f} //far
-	};
-
-	DirectX::XMVECTOR determinant;
-	DirectX::XMMATRIX matInverse = DirectX::XMMatrixInverse(&determinant, *projection);
-
-	//compute the frustum corners on the world space
-	DirectX::XMVECTOR points[6];
-	for (int i = 0; i < 6; i++)
-	{
-		points[i] = DirectX::XMVector4Transform(homogenousPoints[i], matInverse);
-	}
-
-	skullBoundingFrustum.Origin = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	skullBoundingFrustum.Orientation = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	//compute slopes
-	using namespace DirectX;
-	points[0] = points[0] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[0]));
-	points[1] = points[1] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[1]));
-	points[2] = points[2] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[2]));
-	points[3] = points[3] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatZ(points[3]));
-
-	skullBoundingFrustum.RightSlope = DirectX::XMVectorGetX(points[0]);
-	skullBoundingFrustum.LeftSlope = DirectX::XMVectorGetX(points[1]);
-	skullBoundingFrustum.TopSlope = DirectX::XMVectorGetY(points[2]);
-	skullBoundingFrustum.BottomSlope = DirectX::XMVectorGetY(points[3]);
-
-	//compute near and far
-	points[4] = points[4] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatW(points[4]));
-	points[5] = points[5] * DirectX::XMVectorReciprocal(DirectX::XMVectorSplatW(points[5]));
-
-	skullBoundingFrustum.Near = DirectX::XMVectorGetZ(points[4]);
-	skullBoundingFrustum.Far = DirectX::XMVectorGetZ(points[5]);*/
-}
 
 int InstancedSkull::GetAmountOfVisible() const
 {
