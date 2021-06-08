@@ -21,7 +21,7 @@ App::App()
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
-	pInstancedSkulls = new InstancedSkull(wnd.GetGraphics());
+
 }
 
 void App::DoFrame()
@@ -42,13 +42,7 @@ void App::DoFrame()
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
-	viewProjectionMatrix = GetViewProjectionCamera();
 
-	pShaders->BindVSandIA(ShaderPicker::InstancedSkull_VS);
-	pShaders->BindPS(ShaderPicker::InstancedSkull_PS);
-	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
-	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
 
 
 
@@ -95,8 +89,7 @@ void App::CalculateFrameStats()
 		float ms_per_frame = 1000.0f / fps;
 			std::ostringstream oss;
 			oss << "FPS:" << fps
-				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime()) << " s. "
-				<< " visible skulls: " << pInstancedSkulls->GetAmountOfVisible();
+				<< "; Frame Time: " << ms_per_frame << " ms., TotalTime: " << static_cast<UINT>(timer.TotalTime());
 			wnd.SetTitle(oss.str().c_str());
 		frameCount = 0;
 		timeElapsed += 1.0f;
@@ -363,7 +356,36 @@ void App::DrawBox()
 	}
 	viewProjectionMatrix = GetViewProjectionCamera();
 
-	pBox->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
+	DirectX::XMFLOAT4X4 test;
+	test._11 = 1.0f;
+	test._12 = 0.0f;
+	test._13 = 0.0f;
+	test._14 = 0.0f;
+
+	test._21 = 0.0f;
+	test._22 = 1.0f;
+	test._23 = 0.0f;
+	test._24 = 0.0f;
+
+	test._31 = 0.0f;
+	test._32 = 0.0f;
+	test._33 = 1.0f;
+	test._34 = 0.0f;
+
+	test._41 = 0.0f;
+	test._42 = 0.0f;
+	test._43 = 50.0f;
+	test._44 = 1.0f;
+	
+	DirectX::XMMATRIX worldTest = DirectX::XMLoadFloat4x4(&test);
+	DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(timer.TotalTime());
+	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(9.0f, 6.0f, 15.0f);
+
+	DirectX::XMMATRIX rotationThenTranlastion = rotation * worldTest;
+	DirectX::XMMATRIX translationThenRotation = worldTest * rotation;
+
+
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), rotationThenTranlastion, viewProjectionMatrix);
 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
@@ -695,6 +717,21 @@ void App::DrawBezierPatchTess()
 	pShaders->BindDS(QuadTessellation_DS);
 	pShaders->BindPS(QuadTessellation_PS);
 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
+}
+
+void App::InstancingCreate()
+{
+	pInstancedSkulls = new InstancedSkull(wnd.GetGraphics());
+}
+
+void App::DrawInstancingDraw()
+{
+	viewProjectionMatrix = GetViewProjectionCamera();
+	pShaders->BindVSandIA(ShaderPicker::InstancedSkull_VS);
+	pShaders->BindPS(ShaderPicker::InstancedSkull_PS);
+	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
+	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
 }
 
 // void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)

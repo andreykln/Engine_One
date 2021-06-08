@@ -138,8 +138,7 @@ void InstancedSkull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in
 		}
 	}
 
-// 	if (GetAsyncKeyState('6') & 0x8000)
-// 
+
 // 	{
 // 		for (int i = 0; i < instanced.size(); ++i)
 // 		{

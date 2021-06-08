@@ -42,6 +42,8 @@ private:
 	void DrawShapes();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
+	void InstancingCreate();
+	void DrawInstancingDraw();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 
