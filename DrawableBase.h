@@ -14,3 +14,4 @@
 #include "WaveSurfaceGPU.h"
 #include "QuadTessellation.h"
 #include "InstancedSkull.h"
+#include "Picking.h"

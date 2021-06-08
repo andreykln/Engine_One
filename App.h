@@ -44,6 +44,8 @@ private:
 	void DrawBezierPatchTess();
 	void InstancingCreate();
 	void DrawInstancingDraw();
+	void CreatePicking();
+	void DrawPicking();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 
@@ -83,7 +85,7 @@ private:
  	Skull* pSkull = nullptr;
  	WaveSurface* pWaves = nullptr;
 	QuadTessellation* pQuadTess = nullptr;
-
+	Picking* pPicking = nullptr;
 
 // 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;

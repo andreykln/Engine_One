@@ -21,7 +21,7 @@ App::App()
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
-
+	CreatePicking();
 }
 
 void App::DoFrame()
@@ -42,7 +42,7 @@ void App::DoFrame()
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
-
+	DrawPicking();
 
 
 
@@ -734,22 +734,21 @@ void App::DrawInstancingDraw()
 	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
 }
 
-// void App::SetObjectMatrix(DirectX::XMMATRIX in_matrix)
-// {
-// 	// Convert Spherical to Cartesian coordinates.
-// 	float eyePosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * cosf(wnd.GetTheta());
-// 	float focusPosition = wnd.GetRadius() * sinf(wnd.GetPhi()) * sinf(wnd.GetTheta());
-// 	float upDirection = wnd.GetRadius() * cosf(wnd.GetPhi());
-// 	// Build the view matrix.
-// 	wEyePosition = {eyePosition, focusPosition, upDirection};
-// 	pos = DirectX::XMVectorSet(eyePosition, focusPosition, upDirection, 1.0f);
-// 
-// 	target = DirectX::XMVectorZero();
-// 	up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-// 
-// 	mCamera = DirectX::XMMatrixLookAtLH(pos, target, up);
-// 
-// }
+void App::CreatePicking()
+{
+	pPicking = new Picking(wnd.GetGraphics());
+}
+
+void App::DrawPicking()
+{
+	viewProjectionMatrix = GetViewProjectionCamera();
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+
+	pPicking->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
+	pPicking->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pPicking->BindAndDrawIndexed(wnd.GetGraphics());
+}
 
 
 App::~App()

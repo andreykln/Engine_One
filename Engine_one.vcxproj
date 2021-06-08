@@ -197,6 +197,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="InstancedSkull.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="MirrorRoom.cpp" />
+    <ClCompile Include="Picking.cpp" />
     <ClCompile Include="QuadTessellation.cpp" />
     <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ShaderResourceView.cpp" />
@@ -250,6 +251,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="HullShaderConstantBuffer.h" />
     <ClInclude Include="InstancedSkull.h" />
     <ClInclude Include="MirrorRoom.h" />
+    <ClInclude Include="Picking.h" />
     <ClInclude Include="QuadTessellation.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="Shaders.h" />
