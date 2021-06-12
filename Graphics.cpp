@@ -133,6 +133,11 @@ void Graphics::DrawIndexed(UINT count) const noexcept
 	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
 }
 
+void Graphics::DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation)
+{
+	pgfx_pDeviceContext->DrawIndexed(count, startIndexLocation, startVertexLocation);
+}
+
 void Graphics::Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept
 {
 	pgfx_pDeviceContext->Draw(VertexCount, StartVertexLocation);

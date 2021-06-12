@@ -24,6 +24,15 @@ void Shape::BindAndDrawIndexed(Graphics& gfx) const noexcept
 	gfx.DrawIndexed(pIndexBuffer->GetCount());
 }
 
+void Shape::BindAndDrawIndexed(Graphics& gfx, UINT count, UINT startIndexLocation, UINT startVertexLocation)
+{
+	for (auto& b : binds)
+	{
+		b->Bind(gfx);
+	}
+	gfx.DrawIndexed(count, startIndexLocation, startVertexLocation);
+}
+
 void Shape::BindAndDraw(Graphics& gfx, UINT VertexCount, UINT StartVertexLocation) const noexcept
 {
 	for (auto& b : binds)

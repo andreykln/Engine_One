@@ -22,6 +22,7 @@ public:
 	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
+	void DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation);
 	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);

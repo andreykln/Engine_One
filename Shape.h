@@ -16,6 +16,7 @@ public:
 	void AddBind(Bindable* in_bind);
 	void AddIndexBuffer(IndexBuffer* in_bind);
 	void BindAndDrawIndexed(Graphics& gfx) const noexcept;
+	void BindAndDrawIndexed(Graphics& gfx, UINT count, UINT startIndexLocation, UINT startVertexLocation);
 	void BindAndDraw(Graphics& gfx, UINT VertexCount, UINT StartVertexLocation) const noexcept;
 	void BindAndDrawSeveral(Graphics& gfx, UINT count, UINT startIndexLocation, INT baseVertexLocation) noexcept;
 	void BindAndDrawInstancedIndexed(Graphics& gfx, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);

@@ -21,6 +21,7 @@ ID3D11DepthStencilState* RenderStates::DrawReflectionDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityCountDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityReadDSS = nullptr;
+ID3D11DepthStencilState* RenderStates::LessEqualDSS = nullptr;
 
 
 
@@ -282,6 +283,19 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplReadDesc, &DepthComplexityReadDSS));
 
 
+	//
+	//lessEqualDss
+	D3D11_DEPTH_STENCIL_DESC lessEqualDSSDesc;
+	lessEqualDSSDesc.DepthEnable = true;
+	lessEqualDSSDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	lessEqualDSSDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	lessEqualDSSDesc.StencilEnable = false;
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&lessEqualDSSDesc, &LessEqualDSS));
+
+
+
 }
 
 void RenderStates::DestroyAll()
@@ -301,6 +315,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(NoDoubleBlendDSS);
 	ReleaseID3D(DepthComplexityCountDSS);
 	ReleaseID3D(DepthComplexityReadDSS);
+	ReleaseID3D(LessEqualDSS);
 
 }
 

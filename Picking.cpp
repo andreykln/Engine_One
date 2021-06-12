@@ -2,11 +2,7 @@
 
 Picking::Picking(Graphics& gfx)
 {
-	struct Vertices
-	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 normal;
-	};
+
 	UINT vertices = 0;
 	UINT triangles = 0;
 
@@ -18,22 +14,38 @@ Picking::Picking(Graphics& gfx)
 	file >> ignore >> ignore >> ignore >> ignore;
 
 	std::vector<Vertices> verticesFromTXT(vertices);
-
+	verticesCopy.resize(vertices);
 	for (size_t i = 0; i < vertices; i++)
 	{
 		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
 			verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
+
+		DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&verticesFromTXT[i].position);
+		vMin = DirectX::XMVectorMin(vMin, P);
+		vMax = DirectX::XMVectorMax(vMax, P);
+
 	}
+	using namespace DirectX;
+	//fill bounding box
+	DirectX::XMStoreFloat3(&carBox.Center, 0.5f * (vMin + vMax));
+	DirectX::XMStoreFloat3(&carBox.Extents, 0.5f * (vMax - vMin));
+
 	file >> ignore >> ignore >> ignore;
 	UINT indexCount = 3 * triangles;
 	std::vector<UINT> indices(indexCount);
-
+	indicesCopy.resize(indexCount);
 	for (size_t i = 0; i < triangles; ++i)
 	{
 		file >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
 	}
 	file.close();
-	
+	verticesCopy = verticesFromTXT;
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
+	AddBind(pVertexBuffer);
+
+
+
+
 	carPSBuffer.mat.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	carPSBuffer.mat.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	carPSBuffer.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 32.0f);
@@ -52,10 +64,7 @@ Picking::Picking(Graphics& gfx)
 	carPSBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 
 
-
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
-	AddBind(pVertexBuffer);
-
+	indicesCopy = indices;
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
@@ -93,11 +102,12 @@ void Picking::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 
 void Picking::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition)
 {
+
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPosition;
-
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numberOfLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)
@@ -106,6 +116,103 @@ void Picking::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition)
 		frame->numberOfLights = 2;
 	if (GetAsyncKeyState('3') & 0x8000)
 		frame->numberOfLights = 3;
-
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsPerFrame, 0u);
+
+
+	//back to default
+	carPSBuffer.mat.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	carPSBuffer.mat.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	carPSBuffer.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 32.0f);
+	
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCarMaterial, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_DirectionalL_Fog* frame0 = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
+	frame0->mat = carPSBuffer.mat;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyCarMaterial, 0u);
+
+
 }
+
+void Picking::Pick(DirectX::XMMATRIX view, DirectX::XMMATRIX projection, int mX, int mY)
+{
+	DirectX::XMFLOAT4X4 P;
+	DirectX::XMStoreFloat4x4(&P, projection);
+	using namespace DirectX;
+	//compute picking ray in view space
+	float vx = (2.0f * mX / resolution_width - 1.0f) / P(0, 0);
+	float vy = (-2.0f * mY / resolution_height + 1.0f) / P(1, 1);
+
+	//ray definition in view space
+	DirectX::XMVECTOR rayOrigin = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR rayDirection = DirectX::XMVectorSet(vx, vy, 0.0f, 1.0f);
+
+	//Transform ray to local space of mesh
+	DirectX::XMMATRIX V = view;
+	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(V), V);
+
+	//mesh is only at the center anyway
+	DirectX::XMMATRIX invWorld = DirectX::XMMatrixIdentity();
+
+	DirectX::XMMATRIX toLocal = DirectX::XMMatrixMultiply(invView, invWorld);
+
+	rayOrigin = DirectX::XMVector3TransformCoord(rayOrigin, toLocal);
+	rayDirection = DirectX::XMVector3TransformNormal(rayDirection, toLocal);
+
+	rayDirection = DirectX::XMVector3Normalize(rayDirection);
+
+	//assume not picked anything, init to -1;
+	pickedTriangle = -1;
+	float tmin = 0.0f;
+
+	//inline bool XM_CALLCONV BoundingBox::Intersects( FXMVECTOR Origin, FXMVECTOR Direction, float& Dist ) const
+	if (carBox.Intersects(rayOrigin, rayDirection, tmin))
+	{
+		tmin = FLT_MAX;
+		for (UINT i = 0; i < indicesCopy.size() / 3; ++i)
+		{
+			//indices for this triangle
+			UINT i0 = indicesCopy[i * 3];
+			UINT i1 = indicesCopy[i * 3 + 1];
+			UINT i2 = indicesCopy[i * 3 + 2];
+
+			//vertices for this triangle
+			DirectX::XMVECTOR v0 = DirectX::XMLoadFloat3(&verticesCopy[i0].position);
+			DirectX::XMVECTOR v1 = DirectX::XMLoadFloat3(&verticesCopy[i1].position);
+			DirectX::XMVECTOR v2 = DirectX::XMLoadFloat3(&verticesCopy[i2].position);
+
+			//iterate over all the triangles in order to find the nearest intersection.
+			float t = 0.0f;
+			if (DirectX::TriangleTests::Intersects(rayOrigin, rayDirection, v0, v1, v2, t))
+			{
+				if (t < tmin)
+				{
+					//this is the new nearest picked triangle
+					tmin = t;
+					pickedTriangle = i;
+				}
+
+			}
+		}
+	}
+}
+
+void Picking::SetPickedMaterial(Graphics& gfx)
+{
+
+	carPSBuffer.mat.ambient = DirectX::XMFLOAT4(0.9f, 0.9f, 0.0f, 1.0f);
+	carPSBuffer.mat.diffuse = DirectX::XMFLOAT4(0.9f, 0.9f, 0.0f, 1.0f);
+	carPSBuffer.mat.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.0f, 32.0f);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCarMaterial, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_DirectionalL_Fog* frame0 = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
+	frame0->mat = carPSBuffer.mat;
+	gfx.pgfx_pDeviceContext->Unmap(pCopyCarMaterial, 0u);
+
+}
+
+int Picking::GetPickedTriangleIndex()
+{
+	return pickedTriangle;
+}
+
+

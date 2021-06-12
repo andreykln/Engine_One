@@ -31,15 +31,7 @@ public:
 		UpdateCameraVectors();
 	}
 
-	 DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, Window& wnd)
-	 {
-		 ProcessMouseMovement(xMouse, yMouse, isLeftPressed);
-		 ProcessKeyboard(deltaTime);
-		 ProcessMouseScroll(wnd);
-		 viewMatrix = GetViewMatrix();
-		 perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
-		 return viewMatrix * perspectiveProjection;
-	 }
+
 
 	 DirectX::XMFLOAT3 GetCameraPosition()
 	 {
@@ -60,13 +52,26 @@ public:
 		using namespace DirectX;
 		return DirectX::XMMatrixLookAtLH(positon, positon + front, up);
 	}
-	DirectX::XMMATRIX GetProjecion()
+	DirectX::XMMATRIX GetProjecion() const
 	{
 		return perspectiveProjection;
 	}
+	DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, Window& wnd)
+	{
+		if (GetAsyncKeyState(0x01) & 0x8000)
+		{
+			ProcessMouseMovement(xMouse, yMouse, isLeftPressed);
+
+		}
+		ProcessKeyboard(deltaTime);
+		ProcessMouseScroll(wnd);
+		viewMatrix = GetViewMatrix();
+		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
+		return viewMatrix * perspectiveProjection;
+	}
 
 private:
-	void ProcessMouseMovement(int xPos, int yPos, bool isLeftPressed)
+	void ProcessMouseMovement(int xPos, int yPos, bool isReset)
 	{
 		if (firstMouse)
 		{
@@ -95,7 +100,7 @@ private:
 		}
 
 		//reset to original position
-		if (isLeftPressed)
+		if (GetAsyncKeyState('R'))
 		{
 			yaw = YAW;
 			pitch = PITCH;
