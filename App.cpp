@@ -751,21 +751,21 @@ void App::DrawPicking()
 	pPicking->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pPicking->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pPicking->BindAndDrawIndexed(wnd.GetGraphics());
-	if (GetAsyncKeyState(VK_RBUTTON))
-	{
-		pPicking->Pick(camera.GetViewMatrix(), camera.GetProjecion(), wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
-		if (pPicking->GetPickedTriangleIndex() != -1)
-		{
+// 	if (GetAsyncKeyState(VK_RBUTTON))
+// 	{
+// 		pPicking->Pick(camera.GetViewMatrix(), camera.GetProjecion(), wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+// 		if (pPicking->GetPickedTriangleIndex() != -1)
+// 		{
 			// Change depth test from < to <= so that if we draw the same triangle twice, it will still pass
 			// the depth test.  This is because we redraw the picked triangle with a different material
 			// to highlight it. 
 			wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
 			pPicking->SetPickedMaterial(wnd.GetGraphics());
-			pPicking->BindAndDrawIndexed(wnd.GetGraphics(), 3, 3 * pPicking->GetPickedTriangleIndex(), 0u);
+			pPicking->BindAndDrawIndexed(wnd.GetGraphics(), 3, 3 * 25, 0u);
 
-		}
+// 		}
 
-	}
+// 	}
 
 
 
