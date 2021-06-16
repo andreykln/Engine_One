@@ -171,6 +171,9 @@
     <ClCompile Include="Picking.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -323,6 +326,9 @@
     <ClInclude Include="Picking.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -422,6 +428,12 @@
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="InstancedSkullPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>

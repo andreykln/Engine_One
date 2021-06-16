@@ -12,7 +12,7 @@ App::App()
 
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
-// 	CreateShapes();
+	CreateShapes();
 // 	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
@@ -21,7 +21,7 @@ App::App()
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
-	CreatePicking();
+// 	CreatePicking();
 }
 
 void App::DoFrame()
@@ -31,7 +31,7 @@ void App::DoFrame()
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
-// 	DrawShapes();
+	DrawShapes();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
 // 	DrawHillsWithGPUWaves();
@@ -42,7 +42,7 @@ void App::DoFrame()
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
-	DrawPicking();
+// 	DrawPicking();
 
 
 
@@ -645,6 +645,7 @@ DirectX::XMMATRIX App::GetViewProjectionCamera()
 
 void App::CreateShapes()
 {
+	pSky = new Sky(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
  	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
@@ -665,6 +666,8 @@ void App::DrawShapes()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+
+
 
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -700,6 +703,20 @@ void App::DrawShapes()
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
+	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
+
+	pSky->UpdateVSMatricesAndCubeMap(wnd.GetGraphics(), viewProjectionMatrix);
+	pSky->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+
+	//for sky, cull mode none, Depth stenctil less equal, rasterizer cull none
 
 }
 

@@ -15,3 +15,4 @@
 #include "QuadTessellation.h"
 #include "InstancedSkull.h"
 #include "Picking.h"
+#include "Sky.h"

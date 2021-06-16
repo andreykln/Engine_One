@@ -20,6 +20,11 @@ struct CB_VS_Transform
 	DirectX::XMMATRIX texTransform;
 };
 
+struct CB_VS_WorldViewProjection
+{
+	CB_VS_WorldViewProjection() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX worldViewProjection;
+};
 
 struct CB_PS_DirectionalL_Fog
 {
@@ -177,5 +182,6 @@ enum ShaderPicker
 	QuadTessellation_HS,
 	InstancedSkull_VS,
 	InstancedSkull_PS,
+	Sky_VS_PS,
 	Keep
 };

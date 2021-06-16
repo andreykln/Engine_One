@@ -48,6 +48,8 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pInstancedSkullVS, IL.instancedSkull, &pInstancedSkullIL, IL.nInstancedSkull, L"Shaders\\Vertex\\InstancedSkullVS.cso");
 	PS_Init(&pInstancedSkullPS, L"Shaders\\Pixel\\InstancedSkullPS.cso");
 
+	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
+	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -101,6 +103,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pInstancedSkullIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pInstancedSkullVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Sky_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pSkyIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pSkyVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -170,6 +178,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::InstancedSkull_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pInstancedSkullPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Sky_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkyPS, nullptr, 0u);
 		break;
 	}
 	default:

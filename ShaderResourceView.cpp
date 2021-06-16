@@ -117,6 +117,74 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 
 }
 
+ID3D11ShaderResourceView* ShaderResourceView::CreateCubeMap(Graphics& gfx, std::wstring* in_path)
+{
+	std::wstring path = *in_path;
+	DirectX::TexMetadata texMetadata;
+	DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
+	LoadFromDDSFile(path.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
+	texMetadata = pImageData->GetMetadata();
+	DXGI_FORMAT textureFormat = texMetadata.format;
+	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
+
+	/////automatic creation of shader resource view including texture.
+// 	DirectX::CreateShaderResourceView(
+// 		GetDevice(gfx),
+// 		image, textureMetaData.mipLevels,
+// 		textureMetaData,
+// 		&pShaderResourceView);
+	////end of automatic
+
+
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Format = textureFormat;
+	texDesc.Width = (UINT)texMetadata.width;
+	texDesc.Height = (UINT)texMetadata.height;
+	texDesc.ArraySize = (UINT)texMetadata.arraySize;
+	texDesc.MipLevels = (UINT)texMetadata.mipLevels;
+	texDesc.SampleDesc.Count = 1u;
+	texDesc.SampleDesc.Quality = 0u;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0u;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	const size_t amountOfTextures = texMetadata.mipLevels * texMetadata.arraySize;
+	D3D11_SUBRESOURCE_DATA* textureInitData = new D3D11_SUBRESOURCE_DATA[amountOfTextures];
+
+	size_t idx = 0;
+	for (size_t item = 0; item < texMetadata.arraySize; ++item)
+	{
+		for (size_t level = 0; level < texMetadata.mipLevels; ++level)
+		{
+			size_t index = texMetadata.ComputeIndex(level, item, 0);
+			const Image& img = image[index];
+			assert(idx < (texMetadata.mipLevels* texMetadata.arraySize));
+
+			textureInitData[idx].pSysMem = img.pixels;
+			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
+			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
+			++idx;
+		}
+	}
+	ID3D11Texture2D* pTexture;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateTexture2D(&texDesc, textureInitData, &pTexture));
+
+	ID3D11ShaderResourceView* pSrv;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
+	shaderResDesc.Format = texMetadata.format;
+	shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	shaderResDesc.Texture2D.MipLevels = (UINT)texMetadata.mipLevels;
+	shaderResDesc.Texture2D.MostDetailedMip = 0u;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateShaderResourceView(
+		reinterpret_cast<ID3D11Resource*>(pTexture),
+		&shaderResDesc,
+		&pSrv));
+	delete[] textureInitData;
+	pImageData->Release();
+	return pSrv;
+}
+
 void ShaderResourceView::Bind(Graphics& gfx) noexcept
 {
 	if (!textureArray)

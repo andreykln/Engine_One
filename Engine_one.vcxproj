@@ -216,6 +216,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Sky.cpp" />
     <ClCompile Include="TextureSampler.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
@@ -255,6 +256,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="QuadTessellation.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="Sky.h" />
     <ClInclude Include="TreeBillboard.h" />
     <ClInclude Include="UtilityStructures.h" />
     <ClInclude Include="CustomException.h" />
@@ -546,6 +548,22 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="SkyPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="SkyVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="TreeBillboardGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

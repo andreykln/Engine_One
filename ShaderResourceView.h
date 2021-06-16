@@ -10,6 +10,7 @@ public:
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumSRVs);
 	//create texture array
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr);
+	static ID3D11ShaderResourceView* CreateCubeMap(Graphics& gfx, std::wstring* in_path);
 	void Bind(Graphics& gfx) noexcept override;
 	~ShaderResourceView()
 	{

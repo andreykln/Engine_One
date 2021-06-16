@@ -119,9 +119,6 @@ DirectX::XMMATRIX Box::GetBoxForHillsOffset()
 
 void Box::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
-
-
-
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesBox, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);

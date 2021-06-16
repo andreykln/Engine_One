@@ -86,7 +86,7 @@ private:
  	WaveSurface* pWaves = nullptr;
 	QuadTessellation* pQuadTess = nullptr;
 	Picking* pPicking = nullptr;
-
+	Sky* pSky = nullptr;
 // 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;
 

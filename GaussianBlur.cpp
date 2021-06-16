@@ -73,16 +73,6 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	uavDesc.Texture2D.MipSlice = 0;
 	gfx.pgfx_pDevice->CreateUnorderedAccessView(blurredTex, &uavDesc, &pBlurredOutputUAV);
 
-
-// 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCBPerFrame =
-// 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-// 	AddBind(pPSCBPerFrame);
-// 
-// 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-// 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-// 	pCopyBlurPSBuffer = pLightsCB->GetPixelShaderConstantBuffer();
-// 	AddBind(pLightsCB);
-
 }
 
 ID3D11RenderTargetView* GaussianBlur::GetRTV() const

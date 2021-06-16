@@ -95,5 +95,9 @@ private:
 
 	ID3D11InputLayout* pPositonIL = nullptr;
 
+	//sky
+	ID3D11VertexShader* pSkyVS = nullptr;
+	ID3D11InputLayout* pSkyIL = nullptr;
+	ID3D11PixelShader* pSkyPS = nullptr;
 };
 
