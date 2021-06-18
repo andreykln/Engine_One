@@ -180,6 +180,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DepthComplexity.cpp" />
+    <ClCompile Include="DynamicCubeMap.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GaussianBlur.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
@@ -246,6 +247,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="DepthComplexity.h" />
     <ClInclude Include="DomainShaderConstantBuffer.h" />
     <ClInclude Include="DrawableBase.h" />
+    <ClInclude Include="DynamicCubeMap.h" />
     <ClInclude Include="GaussianBlur.h" />
     <ClInclude Include="GeometryShaderConstantBuffer.h" />
     <ClInclude Include="GPUWaves.h" />

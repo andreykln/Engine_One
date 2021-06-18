@@ -6,7 +6,7 @@
 class GeoSphere : public Shape
 {
 public:
-	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions);
+	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere);
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 private:
@@ -15,6 +15,7 @@ private:
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
+	bool centerSphere;
 
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_VS_Transform transformMatrices;

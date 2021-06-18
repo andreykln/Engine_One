@@ -10,7 +10,7 @@ const float YAW = 45.5f;
 const float PITCH = 0.0f;
 const float SPEED = 20.5f;
 const float SENSITIVITY = 0.009f;
-const float FOV_max = DirectX::XM_PI * 0.25;
+const float FOV_max = DirectX::XM_PI * 0.33f;
 const float FOV_min = DirectX::XM_PI / 180.0f;
 const DirectX::XMVECTOR defaultFront{ 0.0f, 0.0f, 5.0f };
 const DirectX::XMVECTOR defaultPositon{ 0.0f, 0.0f, -6.0f };
@@ -20,19 +20,22 @@ const DirectX::XMVECTOR defaultUp{ 0.0f, 1.0f, 0.0f };
 class Camera
 {
 public:
-	 Camera(DirectX::XMVECTOR _pos = DirectX::XMVECTOR{ 0.0f, 0.0f, -6.0f }, DirectX::XMVECTOR _up = DirectX::XMVECTOR{ 0.0f, 1.0f, 0.0f },
-	 	float _yaw = YAW, float _pitch = PITCH)
-	 	: front(DirectX::XMVECTOR{ 0.0f, 0.0f, 5.0f }), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV_max)
-{
-		positon = _pos;
-		worldUp = _up;
-		yaw = _yaw;
-		pitch = _pitch;
+	 Camera()
+	 	: front(defaultFront), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV_max),
+		 positon(defaultPositon), worldUp(defaultUp), yaw(YAW), pitch(PITCH)
+	{
 		UpdateCameraVectors();
 	}
 
-
-
+	 void LookAt(DirectX::XMVECTOR _pos, DirectX::XMVECTOR _up, DirectX::XMVECTOR _target)
+	 {
+		 positon = _pos;
+		 worldUp = _up;
+		 front = _target;
+		 yaw = YAW;
+		 pitch = PITCH;
+		 UpdateCameraVectors();
+	 }
 	 DirectX::XMFLOAT3 GetCameraPosition()
 	 {
 		 DirectX::XMFLOAT3 pos;
@@ -56,7 +59,8 @@ public:
 	{
 		return perspectiveProjection;
 	}
-	DirectX::XMMATRIX GetViewProjection(int xMouse, int yMouse, bool isLeftPressed, float deltaTime, Window& wnd)
+	DirectX::XMMATRIX GetViewProjectionWithMovement(int xMouse, int yMouse, float aspectRatio, float in_nearZ,
+		bool isLeftPressed, float deltaTime, Window& wnd)
 	{
 		if (GetAsyncKeyState(0x01) & 0x8000)
 		{
@@ -66,7 +70,14 @@ public:
 		ProcessKeyboard(deltaTime);
 		ProcessMouseScroll(wnd);
 		viewMatrix = GetViewMatrix();
-		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, (float)resolution_width / (float)resolution_height, 1.0f, 1000.0f);
+		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, in_nearZ, 1000.0f);
+		return viewMatrix * perspectiveProjection;
+	}
+
+	DirectX::XMMATRIX GetViewProjection(float aspectRatio, float in_nearZ, Window& wnd)
+	{
+		viewMatrix = GetViewMatrix();
+		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, in_nearZ, 1000.0f);
 		return viewMatrix * perspectiveProjection;
 	}
 

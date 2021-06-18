@@ -1,7 +1,8 @@
 #include "GeoSphere.h"
 #include "App.h"
 
-GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
+GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere)
+	: centerSphere(in_centerSphere)
 {
 
 
@@ -64,7 +65,18 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 
 
 	std::wstring directory[1];
-	directory[0] = L"Textures\\ice.dds";
+
+	if (centerSphere)
+	{
+		directory[0] = L"Textures\\grass.dds";
+
+	}
+	if (!centerSphere)
+	{
+		directory[0] = L"Textures\\ice.dds";
+
+	}
+
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 	AddBind(pSRV);
 
@@ -86,7 +98,7 @@ void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_worl
 	pMatrices->world = in_world;
 	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixRotationY((dt));
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
 }
 

@@ -635,9 +635,11 @@ DirectX::XMMATRIX App::GetViewProjectionCamera()
 	bool reset = false;
 
 
-	return 	viewProjectionMatrix = camera.GetViewProjection(
+	return 	viewProjectionMatrix = camera.GetViewProjectionWithMovement(
 		wnd.mouse.GetPosX(),
 		wnd.mouse.GetPosY(),
+		(float)resolution_width / (float)resolution_height,
+		0.1f,
 		reset,
 		timer.DeltaTime(),
 		wnd);
@@ -647,7 +649,7 @@ void App::CreateShapes()
 {
 	pSky = new Sky(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
- 	//pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 20u);
+ 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
@@ -657,25 +659,32 @@ void App::CreateShapes()
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u));
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
 	}
 }
 
 void App::DrawShapes()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
-	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
-	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 
 
 
-	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
-	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+// 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+
+	pGeoSphere->UpdateVSMatrices(wnd.GetGraphics(),
+		 DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.0f),
+		viewProjectionMatrix, 0.0f);
+	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
@@ -716,7 +725,6 @@ void App::DrawShapes()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 
-	//for sky, cull mode none, Depth stenctil less equal, rasterizer cull none
 
 }
 
