@@ -16,3 +16,4 @@
 #include "InstancedSkull.h"
 #include "Picking.h"
 #include "Sky.h"
+#include "DynamicCubeMap.h"

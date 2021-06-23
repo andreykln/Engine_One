@@ -12,7 +12,8 @@ App::App()
 
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
-	CreateShapes();
+	//CreateShapes();
+	CreateShapesWithDynamicCubeMap();
 // 	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
@@ -31,7 +32,8 @@ void App::DoFrame()
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
-	DrawShapes();
+	//DrawShapes();
+	DrawShapesWithDynamicCubeMap();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
 // 	DrawHillsWithGPUWaves();
@@ -661,6 +663,177 @@ void App::CreateShapes()
 	{
 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
 	}
+}
+
+void App::CreateShapesWithDynamicCubeMap()
+{
+	pSky = new Sky(wnd.GetGraphics());
+	pDynamicCubeMap = new DynamicCubeMap(wnd.GetGraphics());
+	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
+	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
+	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
+	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
+	for (int i = 0; i < 10; i++)
+	{
+		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
+	}
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
+	}
+}
+
+void App::DrawShapesWithDynamicCubeMap()
+{
+	viewProjectionMatrix = GetViewProjectionCamera();
+	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
+
+	/*ID3D11RenderTargetView* renderTargets[1];
+
+	//generate CubeMaps
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetViewports(1u, &pDynamicCubeMap->GetViewPort());
+	for (int i = 0; i < 6; ++i)
+	{
+		//clear cubemap face and depth buffer
+		wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(pDynamicCubeMap->pDynamicCubeMapRTV[i], color);
+		wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(pDynamicCubeMap->GetCubeMapDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		//bind cube map face as render target
+		renderTargets[0] = pDynamicCubeMap->pDynamicCubeMapRTV[i];
+		wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, pDynamicCubeMap->GetCubeMapDSV());
+		DrawShapesWithoutCenterSphere(pDynamicCubeMap->dynamicCubeCamera[i]);
+	}
+	//restore default viewport and RTV
+	wnd.GetGraphics().SetViewport();
+	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+
+	//have hardware generate lower mipmap levels of cube map
+	wnd.GetGraphics().pgfx_pDeviceContext->GenerateMips(pDynamicCubeMap->GetCubeMapSRV());
+
+	//draw scene as normal with center sphere
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	*/
+
+	//don't draw skull for now
+	///////////////////////
+	// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+// 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+// 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	/////////////////////////
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+
+	pGeoSphere->UpdateVSMatrices(wnd.GetGraphics(),
+		DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.0f),
+		viewProjectionMatrix, 0.0f);
+	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
+
+
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	for (auto& x : cylinders)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(),
+			*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix, sin(timer.TotalTime()));
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
+	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
+
+	pSky->UpdateVSMatricesAndCubeMap(wnd.GetGraphics(), viewProjectionMatrix);
+	pSky->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+}
+
+void App::DrawShapesWithoutCenterSphere(Camera& cam)
+{
+	// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	// 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
+
+	DirectX::XMMATRIX view = cam.GetViewMatrix();
+	DirectX::XMMATRIX projection = cam.GetProjecion();
+	viewProjectionMatrix = view * projection;
+
+
+	// 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix);
+	// 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	// 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
+
+
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	for (auto& x : cylinders)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
+
+	for (auto& x : geoSpheres)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(),
+			*(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix, sin(timer.TotalTime()));
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
+	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
+
+	pSky->UpdateVSMatricesAndCubeMap(wnd.GetGraphics(), viewProjectionMatrix);
+	pSky->BindAndDrawIndexed(wnd.GetGraphics());
+
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+
 }
 
 void App::DrawShapes()

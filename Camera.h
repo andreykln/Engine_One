@@ -27,11 +27,11 @@ public:
 		UpdateCameraVectors();
 	}
 
-	 void LookAt(DirectX::XMVECTOR _pos, DirectX::XMVECTOR _up, DirectX::XMVECTOR _target)
+	 void SetLookAt(DirectX::XMFLOAT3* _pos, DirectX::XMFLOAT3* _up, DirectX::XMFLOAT3* _target)
 	 {
-		 positon = _pos;
-		 worldUp = _up;
-		 front = _target;
+		 positon = DirectX::XMLoadFloat3(_pos);
+		 worldUp = DirectX::XMLoadFloat3(_up);
+		 front = DirectX::XMLoadFloat3(_target);
 		 yaw = YAW;
 		 pitch = PITCH;
 		 UpdateCameraVectors();
@@ -59,6 +59,7 @@ public:
 	{
 		return perspectiveProjection;
 	}
+
 	DirectX::XMMATRIX GetViewProjectionWithMovement(int xMouse, int yMouse, float aspectRatio, float in_nearZ,
 		bool isLeftPressed, float deltaTime, Window& wnd)
 	{
@@ -74,7 +75,7 @@ public:
 		return viewMatrix * perspectiveProjection;
 	}
 
-	DirectX::XMMATRIX GetViewProjection(float aspectRatio, float in_nearZ, Window& wnd)
+	DirectX::XMMATRIX SetAndGetViewProjection(float aspectRatio, float in_nearZ, Window& wnd)
 	{
 		viewMatrix = GetViewMatrix();
 		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, in_nearZ, 1000.0f);

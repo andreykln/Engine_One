@@ -3,7 +3,7 @@
 #include "Timer.h"
 #include "DrawableBase.h"
 #include "Shaders.h"
-#include "Camera.h"
+// #include "Camera.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -39,6 +39,9 @@ private:
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
 	void CreateShapes();
+	void CreateShapesWithDynamicCubeMap();
+	void DrawShapesWithDynamicCubeMap();
+	void DrawShapesWithoutCenterSphere(Camera& cam);
 	void DrawShapes();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
@@ -64,13 +67,12 @@ private:
 	Shape* pShapes;
 
 	Camera camera;
-	Camera dynamicCubeCamera;
 
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
 	InstancedSkull* pInstancedSkulls = nullptr;
-
+	DynamicCubeMap* pDynamicCubeMap = nullptr;
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
@@ -90,30 +92,6 @@ private:
 	Sky* pSky = nullptr;
 // 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;
-
-// 	const DirectX::XMMATRIX offsetForHills = DirectX::XMMatrixTranslation(0.0f, -4.0f, 10.0f);
-// 	const DirectX::XMMATRIX offsetForWavesWithHills = DirectX::XMMatrixTranslation(0.0f, -8.0f, 10.0f);
-// 	DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
-
-	//Camera from Frank Luna's book
-// 	void SetObjectMatrix(DirectX::XMMATRIX in_matrix);
-	//from LearnOpenGL
-// 	float lastX = 0.0f;
-// 	float lastY = 0.0f;
-// 	float yaw = 45.5f;
-// 	float pitch = 0.0f;
-// 	bool firstMouse = true;
-// 	float GetYaw();
-// 	float GetPitch();
-
-
-
-// 	DirectX::XMFLOAT3 wEyePosition;
-// 	DirectX::XMMATRIX mCamera;
-// 	DirectX::XMMATRIX objectMatrix = DirectX::XMMatrixIdentity();
-// 	DirectX::XMVECTOR pos;
-// 	DirectX::XMVECTOR target;
-// 	DirectX::XMVECTOR up;
 
 	UINT stencilRef = 0;
 
