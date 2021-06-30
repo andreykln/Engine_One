@@ -18,9 +18,10 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
@@ -68,17 +69,18 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 
 	if (centerSphere)
 	{
-		directory[0] = L"Textures\\grass.dds";
+//		directory[0] = L"Textures\\grass.dds";
 
 	}
 	if (!centerSphere)
 	{
 		directory[0] = L"Textures\\ice.dds";
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+		AddBind(pSRV);
 
 	}
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
-	AddBind(pSRV);
+
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);

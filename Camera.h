@@ -75,7 +75,7 @@ public:
 		return viewMatrix * perspectiveProjection;
 	}
 
-	DirectX::XMMATRIX SetAndGetViewProjection(float aspectRatio, float in_nearZ, Window& wnd)
+	DirectX::XMMATRIX SetAndGetViewProjection(float aspectRatio, float in_nearZ)
 	{
 		viewMatrix = GetViewMatrix();
 		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, in_nearZ, 1000.0f);

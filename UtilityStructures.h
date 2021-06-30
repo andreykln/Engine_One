@@ -183,5 +183,6 @@ enum ShaderPicker
 	InstancedSkull_VS,
 	InstancedSkull_PS,
 	Sky_VS_PS,
+	CubeMap_PS,
 	Keep
 };

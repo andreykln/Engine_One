@@ -686,10 +686,11 @@ void App::CreateShapesWithDynamicCubeMap()
 
 void App::DrawShapesWithDynamicCubeMap()
 {
-	viewProjectionMatrix = GetViewProjectionCamera();
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
-
-	/*ID3D11RenderTargetView* renderTargets[1];
+	pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	ID3D11RenderTargetView* renderTargets[1];
 
 	//generate CubeMaps
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetViewports(1u, &pDynamicCubeMap->GetViewPort());
@@ -711,12 +712,12 @@ void App::DrawShapesWithDynamicCubeMap()
 
 	//have hardware generate lower mipmap levels of cube map
 	wnd.GetGraphics().pgfx_pDeviceContext->GenerateMips(pDynamicCubeMap->GetCubeMapSRV());
-
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDynamicCubeMap->pDynamicCubeMapSRV);
 	//draw scene as normal with center sphere
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	*/
-
+	
+	viewProjectionMatrix = GetViewProjectionCamera();
 	//don't draw skull for now
 	///////////////////////
 	// 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
@@ -727,15 +728,22 @@ void App::DrawShapesWithDynamicCubeMap()
 	/////////////////////////
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::CubeMap_PS);
+
+
+// 	pGeoSphere->UpdateVSMatrices(wnd.GetGraphics(),
+// 		DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.0f),
+// 		viewProjectionMatrix, 0.0f);
 
 
 	pGeoSphere->UpdateVSMatrices(wnd.GetGraphics(),
-		DirectX::XMMatrixTranslation(0.0f, -0.5f, 0.0f),
+		DirectX::XMMatrixIdentity(),
 		viewProjectionMatrix, 0.0f);
 	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
 
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());

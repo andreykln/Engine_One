@@ -50,6 +50,8 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
 	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
+
+	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -183,6 +185,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::Sky_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkyPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CubeMap_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
 		break;
 	}
 	default:

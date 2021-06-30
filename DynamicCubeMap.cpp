@@ -83,7 +83,7 @@ DynamicCubeMap::DynamicCubeMap(Graphics& gfx)
 
 }
 
-void DynamicCubeMap::BuildCubeFaceCamera(float x, float y, float z, Window& wnd)
+void DynamicCubeMap::BuildCubeFaceCamera(float x, float y, float z)
 {
 	// Generate the cube map about the given position.
 	DirectX::XMFLOAT3 center(x, y, z);
@@ -116,7 +116,7 @@ void DynamicCubeMap::BuildCubeFaceCamera(float x, float y, float z, Window& wnd)
 	for (int i = 0; i < 6; ++i)
 	{
 		dynamicCubeCamera[i].SetLookAt(&center, &ups[i], &targets[i]);
-		cubeFaceProjection[i] = dynamicCubeCamera[i].SetAndGetViewProjection(1.0f, 0.1f, wnd);
+		cubeFaceProjection[i] = dynamicCubeCamera[i].SetAndGetViewProjection(1.0f, 0.1f);
 		
 	}
 
