@@ -25,9 +25,6 @@ Sky::Sky(Graphics& gfx)
 	directory[0] = L"Textures\\snowcube1024.dds";
 	pCubeMapSRV = ShaderResourceView::CreateCubeMap(gfx, directory);
 
-// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
-// 	AddBind(pSRV);
-
 
 	VertexConstantBuffer<CB_VS_WorldViewProjection>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_WorldViewProjection>(gfx, WVPmatrix, 0u, 1u);

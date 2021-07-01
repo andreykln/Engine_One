@@ -41,7 +41,7 @@ private:
 	void CreateShapes();
 	void CreateShapesWithDynamicCubeMap();
 	void DrawShapesWithDynamicCubeMap();
-	void DrawShapesWithoutCenterSphere(Camera& cam);
+	void DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP);
 	void DrawShapes();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();

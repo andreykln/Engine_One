@@ -112,12 +112,12 @@ void DynamicCubeMap::BuildCubeFaceCamera(float x, float y, float z)
 		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)	 // -Z
 	};
 
-
+	DirectX::XMMATRIX test;
 	for (int i = 0; i < 6; ++i)
 	{
 		dynamicCubeCamera[i].SetLookAt(&center, &ups[i], &targets[i]);
 		cubeFaceProjection[i] = dynamicCubeCamera[i].SetAndGetViewProjection(1.0f, 0.1f);
-		
+		test = dynamicCubeCamera[i].SetAndGetViewProjection(1.0f, 0.1f);
 	}
 
 

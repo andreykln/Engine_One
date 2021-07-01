@@ -64,7 +64,6 @@ cbuffer PS_Per_Frame : register(b1)
     unsigned int numberOfLights;
 }
 
-//Texture2D SRVTexture : register(t0);
 TextureCube cubeMap : register(t0);
 SamplerState tex0Sample : register(s0);
 

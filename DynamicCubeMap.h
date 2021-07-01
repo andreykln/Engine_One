@@ -11,12 +11,12 @@ public:
 	ID3D11DepthStencilView* GetCubeMapDSV();
 	ID3D11ShaderResourceView* GetCubeMapSRV();
 	ID3D11RenderTargetView* pDynamicCubeMapRTV[6];
-	Camera dynamicCubeCamera[6];
 	ID3D11ShaderResourceView* pDynamicCubeMapSRV = nullptr;
+	DirectX::XMMATRIX cubeFaceProjection[6];
 
 private:
 	const int cubeMapSize = 256;
-	DirectX::XMMATRIX cubeFaceProjection[6];
+	Camera dynamicCubeCamera[6];
 
 
 	ID3D11DepthStencilView* pDynamicCubeMapDSV = nullptr;
