@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 #include "Camera.h"
-
+#include "CubeMapCamera.h"
 class DynamicCubeMap : public Shape
 {
 public:
@@ -14,10 +14,12 @@ public:
 	ID3D11ShaderResourceView* pDynamicCubeMapSRV = nullptr;
 	DirectX::XMMATRIX cubeFaceProjection[6];
 
-private:
-	const int cubeMapSize = 256;
-	Camera dynamicCubeCamera[6];
 
+	CubeMapCamera DCcamera[6];
+
+private:
+	const int cubeMapSize = 512;
+	Camera dynamicCubeCamera[6];
 
 	ID3D11DepthStencilView* pDynamicCubeMapDSV = nullptr;
 	D3D11_VIEWPORT dynamicCubeMapViewport;

@@ -188,7 +188,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	{
 	case Shapesdemo:
 	{
-		directory[0] = L"Textures\\FloorTiles.dds";
+		directory[0] = L"Textures\\floor.dds";
 	}
 		break;
 	case HillsDemo:

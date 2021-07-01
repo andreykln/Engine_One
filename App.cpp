@@ -704,7 +704,12 @@ void App::DrawShapesWithDynamicCubeMap()
 		renderTargets[0] = pDynamicCubeMap->pDynamicCubeMapRTV[i];
 		wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, pDynamicCubeMap->GetCubeMapDSV());
 
-		DrawShapesWithoutCenterSphere(pDynamicCubeMap->cubeFaceProjection[i]);
+		DirectX::XMMATRIX view = pDynamicCubeMap->DCcamera[i].View();
+		DirectX::XMMATRIX proj = pDynamicCubeMap->DCcamera[i].Proj();
+		DirectX::XMMATRIX viewProj = pDynamicCubeMap->DCcamera[i].ViewProj();
+
+
+		DrawShapesWithoutCenterSphere(viewProj);
 
 	}
 	//restore default viewport and RTV
@@ -720,18 +725,15 @@ void App::DrawShapesWithDynamicCubeMap()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
 	viewProjectionMatrix = GetViewProjectionCamera();
-	///////////////////////
-	/*pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+
+	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	DirectX::XMMATRIX skullOrbiting;
-//	skullOrbiting = shapes.Get_m_CenterSphere() * shapes.GetCameraOffset()
-
 	skullOrbiting = shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f) 
 		* DirectX::XMMatrixRotationY(timer.TotalTime());
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), skullOrbiting * DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f), viewProjectionMatrix);
 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());*/
-	/////////////////////////
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::CubeMap_PS);
@@ -744,7 +746,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
 
-	/*pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
@@ -783,14 +785,11 @@ void App::DrawShapesWithDynamicCubeMap()
 	pSky->BindAndDrawIndexed(wnd.GetGraphics());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);*/
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 }
 
 void App::DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP)
 {
-
-// 	DirectX::XMMATRIX view = cam.GetViewMatrix();
-// 	DirectX::XMMATRIX projection = cam.GetProjecion();
 	DirectX::XMMATRIX VPCubeMapMatrix;
 	VPCubeMapMatrix = cubeFaceVP;
 

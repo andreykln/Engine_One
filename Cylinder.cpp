@@ -25,9 +25,9 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	
 
-	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 16.0f);
+	directionalLight.mat.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
 
 	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);

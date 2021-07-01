@@ -177,6 +177,9 @@
     <ClCompile Include="DynamicCubeMap.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
+    <ClCompile Include="CubeMapCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -334,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="DynamicCubeMap.h">
       <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMapCamera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

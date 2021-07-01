@@ -36,9 +36,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.984f, 0.565f, 0.384f, 1.0f);
-		directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.984f, 0.565f, 0.384f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		directionalLight.mat.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
 		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	} 
 	if (currentDemo == DemoSwitch::HillsDemo)
@@ -92,7 +92,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	std::wstring directory[1];
 	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
-		directory[0] = L"Textures\\LightGreenMarble.dds";
+		directory[0] = L"Textures\\brick01.dds";
 	}
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
