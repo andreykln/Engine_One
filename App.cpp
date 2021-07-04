@@ -23,6 +23,7 @@ App::App()
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
 // 	CreatePicking();
+
 }
 
 void App::DoFrame()
@@ -615,22 +616,6 @@ void App::CreateDepthComplexityStencil()
 
 }
 
-// DirectX::XMMATRIX App::CameraZoom() const noexcept
-// {
-// 	return DirectX::XMMatrixTranslation(0.0f, -zoom, zoom);
-// }
-
-// DirectX::XMMATRIX App::GetPerspectiveProjection(float in_FOV) noexcept
-// {
-// 	return   DirectX::XMMatrixPerspectiveFovLH(0.25f * DirectX::XM_PI, screenAspect, 1.0f, 1000.0f);
-// 
-// // 	return DirectX::XMMatrixOrthographicLH(resolution_width, resolution_height, 0.1f, 100.0f);
-// 
-// }
-
-
-
-
 
 DirectX::XMMATRIX App::GetViewProjectionCamera()
 {
@@ -704,9 +689,12 @@ void App::DrawShapesWithDynamicCubeMap()
 		renderTargets[0] = pDynamicCubeMap->pDynamicCubeMapRTV[i];
 		wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, pDynamicCubeMap->GetCubeMapDSV());
 
-		DirectX::XMMATRIX view = pDynamicCubeMap->DCcamera[i].View();
-		DirectX::XMMATRIX proj = pDynamicCubeMap->DCcamera[i].Proj();
-		DirectX::XMMATRIX viewProj = pDynamicCubeMap->DCcamera[i].ViewProj();
+		//Camera from texbook, keep it just in case
+// 		DirectX::XMMATRIX view = pDynamicCubeMap->DCcamera[i].View();
+// 		DirectX::XMMATRIX proj = pDynamicCubeMap->DCcamera[i].Proj();
+// 		DirectX::XMMATRIX viewProj = pDynamicCubeMap->DCcamera[i].ViewProj();
+
+		DirectX::XMMATRIX viewProj = pDynamicCubeMap->cubeFaceProjection[i];
 
 
 		DrawShapesWithoutCenterSphere(viewProj);

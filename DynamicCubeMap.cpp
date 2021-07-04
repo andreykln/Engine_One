@@ -115,11 +115,12 @@ void DynamicCubeMap::BuildCubeFaceCamera(float x, float y, float z)
 	for (int i = 0; i < 6; ++i)
 	{
 		dynamicCubeCamera[i].SetLookAt(&center, &ups[i], &targets[i]);
-		cubeFaceProjection[i] = dynamicCubeCamera[i].SetAndGetViewProjection(1.0f, 0.1f);
+		cubeFaceProjection[i] = dynamicCubeCamera[i].GetViewProjectionCubeMatrix(1.0f, 0.1f);
 
-		DCcamera[i].LookAt(center, targets[i], ups[i]);
-		DCcamera[i].SetLens(0.5f * XM_PI, 1.0f, 0.1f, 1000.0f);
-		DCcamera[i].UpdateViewMatrix();
+	//textbook camera, keep it in case
+// 		DCcamera[i].LookAt(center, targets[i], ups[i]);
+// 		DCcamera[i].SetLens(0.5f * XM_PI, 1.0f, 0.1f, 1000.0f);
+// 		DCcamera[i].UpdateViewMatrix();
 	}
 
 

@@ -216,7 +216,7 @@ void CubeMapCamera::UpdateViewMatrix()
 
 	// Fill in the view matrix entries.
 	float x = -XMVectorGetX(XMVector3Dot(P, R));
-	float y = -XMVectorGetX(XMVector3Dot(P, U));
+	float y = -XMVectorGetX(XMVector3Dot(P, U)); 
 	float z = -XMVectorGetX(XMVector3Dot(P, L));
 
 	XMStoreFloat3(&mRight, R);

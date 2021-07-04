@@ -24,7 +24,7 @@ public:
 	 	: front(defaultFront), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), fov(FOV_max),
 		 positon(defaultPositon), worldUp(defaultUp), yaw(YAW), pitch(PITCH)
 	{
-		UpdateCameraVectors();
+		UpdateCameraVectorsEulerAngles();
 	}
 
 	 void SetLookAt(DirectX::XMFLOAT3* _pos, DirectX::XMFLOAT3* _up, DirectX::XMFLOAT3* _target)
@@ -32,10 +32,55 @@ public:
 		 positon = DirectX::XMLoadFloat3(_pos);
 		 worldUp = DirectX::XMLoadFloat3(_up);
 		 front = DirectX::XMLoadFloat3(_target);
-		 yaw = YAW;
-		 pitch = PITCH;
-		 UpdateCameraVectors();
+		 fov = 0.5f * DirectX::XM_PI;
+		 UpdateCameraVectorsNoAngle();
 	 }
+
+	 void UpdateCameraVectorsNoAngle()
+	 {
+		 DirectX::XMVECTOR L = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(front, positon));
+		 DirectX::XMVECTOR R = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(worldUp, L));
+		 DirectX::XMVECTOR U = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(L, R));
+		 DirectX::XMVECTOR P = positon;
+
+		 float x = -DirectX::XMVectorGetX(DirectX::XMVector3Dot(P, R));
+		 float y = -DirectX::XMVectorGetX(DirectX::XMVector3Dot(P, U));
+		 float z = -DirectX::XMVectorGetX(DirectX::XMVector3Dot(P, L));
+
+
+		 DirectX::XMFLOAT3 mRight;
+		 DirectX::XMFLOAT3 mUp;
+		 DirectX::XMFLOAT3 mLook;
+		 DirectX::XMFLOAT4X4 mView;
+
+		 XMStoreFloat3(&mRight, R);
+		 XMStoreFloat3(&mUp, U);
+		 XMStoreFloat3(&mLook, L);
+
+		 mView(0, 0) = mRight.x;
+		 mView(1, 0) = mRight.y;
+		 mView(2, 0) = mRight.z;
+		 mView(3, 0) = x;
+
+		 mView(0, 1) = mUp.x;
+		 mView(1, 1) = mUp.y;
+		 mView(2, 1) = mUp.z;
+		 mView(3, 1) = y;
+
+		 mView(0, 2) = mLook.x;
+		 mView(1, 2) = mLook.y;
+		 mView(2, 2) = mLook.z;
+		 mView(3, 2) = z;
+
+		 mView(0, 3) = 0.0f;
+		 mView(1, 3) = 0.0f;
+		 mView(2, 3) = 0.0f;
+		 mView(3, 3) = 1.0f;
+
+		 viewMatrix = DirectX::XMLoadFloat4x4(&mView);
+
+	 }
+
 	 DirectX::XMFLOAT3 GetCameraPosition()
 	 {
 		 DirectX::XMFLOAT3 pos;
@@ -82,6 +127,12 @@ public:
 		return viewMatrix * perspectiveProjection;
 	}
 
+	DirectX::XMMATRIX GetViewProjectionCubeMatrix(float aspectRatio, float in_nearZ)
+	{
+		perspectiveProjection = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, in_nearZ, 1000.0f);
+		return viewMatrix * perspectiveProjection;
+	}
+
 private:
 	void ProcessMouseMovement(int xPos, int yPos, bool isReset)
 	{
@@ -121,7 +172,7 @@ private:
 			up = defaultUp;
 			fov = FOV_max;
 		}
-		UpdateCameraVectors();
+		UpdateCameraVectorsEulerAngles();
 	}
 
 	void ProcessKeyboard(float deltaTime)
@@ -188,7 +239,7 @@ private:
 		}*/
 	}
 
-	void UpdateCameraVectors()
+	void UpdateCameraVectorsEulerAngles()
 	{
 		//calculate the new front vector
 		front = DirectX::XMVECTOR{ -cos(yaw) * cos(pitch), -sin(pitch), sin(yaw) * cos(pitch) };
