@@ -22,9 +22,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 // 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 // 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
 
-	directionalLight.mat.ambient =  DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.mat.diffuse =  DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 32.0f);
+	directionalLight.mat.ambient =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
+	directionalLight.mat.diffuse =  DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
+	directionalLight.mat.specular = DirectX::XMFLOAT4(0.86f, 0.862f, 0.863f, 64.0f);
 
 
 	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -55,9 +55,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	mirrorBuffer.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	mirrorBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
-	skullMatData.ambient = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
-	skullMatData.diffuse = DirectX::XMFLOAT4(0.99f, 0.99f, 0.99f, 1.0f);
-	skullMatData.specular = DirectX::XMFLOAT4(0.89f, 0.85f, 0.788f, 16.0f);
+	skullMatData.ambient = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
+	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
+	skullMatData.specular = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 16.0f);
 
 	std::fstream file(path);
 	std::string ignore;

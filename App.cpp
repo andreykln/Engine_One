@@ -717,7 +717,10 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	DirectX::XMMATRIX skullOrbiting;
-	skullOrbiting = shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f) 
+	DirectX::XMMATRIX axisRotation;
+	axisRotation = DirectX::XMMatrixRotationY(timer.TotalTime());
+
+	skullOrbiting = axisRotation * shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f)
 		* DirectX::XMMatrixRotationY(timer.TotalTime());
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), skullOrbiting * DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f), viewProjectionMatrix);
 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -785,7 +788,10 @@ void App::DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP)
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	DirectX::XMMATRIX skullOrbiting;
-	skullOrbiting = shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f)
+	DirectX::XMMATRIX axisRotation;
+	axisRotation = DirectX::XMMatrixRotationY(timer.TotalTime());
+
+	skullOrbiting = axisRotation * shapes.Get_m_CenterSphere() * shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(25.0f, 0.0f, 0.0f)
 		* DirectX::XMMatrixRotationY(timer.TotalTime());
 	pSkull->UpdateVSMatrices(wnd.GetGraphics(), skullOrbiting * DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f), VPCubeMapMatrix);
 	pSkull->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
