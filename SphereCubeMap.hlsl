@@ -117,10 +117,10 @@ float4 main(PSstruct pin) : SV_TARGET
         litColor = texColor * (ambient + diffuse) + specular;
         
         float3 incident = -toEye;
-        float3 refractionVector = refract(incident, pin.NormalW, 0.97f);
-       // float3 reflectionVector = reflect(incident, pin.NormalW);
-      //  float4 reflectionColor = cubeMap.Sample(tex0Sample, reflectionVector);
-        float4 reflectionColor = cubeMap.Sample(tex0Sample, refractionVector);
+     //   float3 refractionVector = refract(incident, pin.NormalW, 0.97f);
+        float3 reflectionVector = reflect(incident, pin.NormalW);
+        float4 reflectionColor = cubeMap.Sample(tex0Sample, reflectionVector);
+       // float4 reflectionColor = cubeMap.Sample(tex0Sample, refractionVector);
 
         litColor += objectMaterial.reflect * reflectionColor;
     }

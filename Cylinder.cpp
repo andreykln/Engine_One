@@ -81,7 +81,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	if(currentDemo == DemoSwitch::Shapesdemo)
 	{
 		std::wstring directory[1];
-		directory[0] = L"Textures\\brick01.dds";
+		directory[0] = L"Textures\\bricks.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
 		AddBind(pSRV);
 	}

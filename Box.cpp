@@ -92,7 +92,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	std::wstring directory[1];
 	if (currentDemo == DemoSwitch::Shapesdemo)
 	{
-		directory[0] = L"Textures\\brick01.dds";
+		directory[0] = L"Textures\\bricks.dds";
 	}
 	if (currentDemo == DemoSwitch::HillsDemo)
 	{
