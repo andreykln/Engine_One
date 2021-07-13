@@ -87,7 +87,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	if (!centerSphere)
 	{
 		directory[0] = L"Textures\\stone.dds";
-		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory));
 		AddBind(pSRV);
 
 	}

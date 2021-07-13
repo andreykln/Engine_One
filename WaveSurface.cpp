@@ -81,7 +81,7 @@ WaveSurface::WaveSurface(Graphics& gfx)
 
 	std::wstring directory[1];
 	directory[0] = L"Textures\\water2.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory));
 	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);

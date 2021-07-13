@@ -5,7 +5,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	: width(in_width), depth(in_depth), m(in_m), n(in_n), currentDemo(demo)
 {
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
-	std::vector<Vertex_IA> vertices(grid.vertices.size());
+	std::vector<Vertices_Full> vertices(grid.vertices.size());
 
 	switch (currentDemo)
 	{
@@ -37,6 +37,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			vertices[i].pos = p;
 			vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f };
 			vertices[i].tex = grid.vertices[i].TexC;
+			vertices[i].tangent = grid.vertices[i].tangentU;
 		}
 	}
 		break;
@@ -183,12 +184,14 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 	std::wstring directory[1];
+	std::wstring normalMap[1];
 
 	switch (currentDemo)
 	{
 	case Shapesdemo:
 	{
 		directory[0] = L"Textures\\stones.dds";
+		normalMap[0] = L"Textures\\stones_nmap.dds";
 	}
 		break;
 	case HillsDemo:
@@ -202,8 +205,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory));
 	AddBind(pSRV);
+
+	ShaderResourceView* pSRVnMap = new ShaderResourceView(gfx, normalMap, 1u, (UINT)std::size(normalMap));
+	AddBind(pSRVnMap);
+
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);

@@ -11,6 +11,18 @@ struct Vertex_IA
 	DirectX::XMFLOAT2 tex;
 };
 
+struct Vertices_Full
+{
+	Vertices_Full() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f) {};
+	Vertices_Full(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v,
+		float tX, float tY, float tZ)
+		: pos(posX, posY, posZ), normal(normX, normY, normZ), tex(u, v), tangent(tX, tY, tZ) {}
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 tex;
+	DirectX::XMFLOAT3 tangent;
+};
+
 struct CB_VS_Transform
 {
 	CB_VS_Transform() { ZeroMemory(this, sizeof(this)); }
@@ -184,5 +196,6 @@ enum ShaderPicker
 	InstancedSkull_PS,
 	Sky_VS_PS,
 	CubeMap_PS,
+	LightAndTextureNormalMapping_VS_PS,
 	Keep
 };

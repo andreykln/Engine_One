@@ -101,5 +101,10 @@ private:
 	ID3D11PixelShader* pSkyPS = nullptr;
 
 	ID3D11PixelShader* pCubeMapsPS = nullptr;
+
+	//normalMapping
+	ID3D11VertexShader* pNormalMappingVS = nullptr;
+	ID3D11PixelShader* pNormalMappingPS = nullptr;
+	ID3D11InputLayout* pNormalMappingIL = nullptr;
 };
 

@@ -6,8 +6,8 @@
 #include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
 
 //create SRV for each texture
-ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumSRVs)
-	: numSRVs{in_NumSRVs}, path{in_path}
+ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_startSlot, UINT in_NumSRVs)
+	: numSRVs{in_NumSRVs}, path{in_path}, startSlot(in_startSlot)
 {
 #ifdef MY_DEBUG
 	for (size_t i = 0; i < numSRVs; i++)
@@ -189,7 +189,7 @@ void ShaderResourceView::Bind(Graphics& gfx) noexcept
 {
 	if (!textureArray)
 	{
-		GetContext(gfx)->PSSetShaderResources(0u, numSRVs, pSRVArray);
+		GetContext(gfx)->PSSetShaderResources(startSlot, numSRVs, pSRVArray);
 	}
 	else
 	{

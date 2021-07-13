@@ -103,7 +103,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		directory[0] = L"Textures\\WoodCrate01.dds";
 	}
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, (UINT)std::size(directory));
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory));
 	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx);

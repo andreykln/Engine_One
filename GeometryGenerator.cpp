@@ -138,45 +138,6 @@ void GeometryGenerator::CreateBox(float width, float depth, float height, MeshDa
 
 	meshData.indices.assign(&i[0], &i[36]);
 
-
-
-
-
-	/*meshData.vertices.clear();
-	meshData.indices.clear();
-	std::vector<DirectX::XMFLOAT3> cubeCoord
-	{
-		{DirectX::XMFLOAT3(-width, -height, -depth)},
-		{DirectX::XMFLOAT3(width, -height, -depth)},
-		{DirectX::XMFLOAT3(width, height, -depth)},
-
-		{DirectX::XMFLOAT3(-width, height, -depth)},
-		{DirectX::XMFLOAT3(-width, height, depth)},
-		{DirectX::XMFLOAT3(width, height, depth)},
-
-		{DirectX::XMFLOAT3(-width, -height, depth)},
-		{DirectX::XMFLOAT3(width, -height, depth)}
-	};
-	meshData.indices = 
-	{
-		//front
-		0,2,1, 0,3,2,
-		//back
-		7,5,6, 6,5,4,
-		//right side
-		1,2,7, 2,5,7,
-		//left side
-		6,3,0, 6,4,3,
-		//up
-		2,4,5, 3,4,2,
-		//down
-		1,7,6, 1,6,0
-	};
-	meshData.vertices.resize(cubeCoord.size());
-	for (size_t i = 0; i < cubeCoord.size(); i++)
-	{
-		meshData.vertices[i].position =  cubeCoord[i];
-	}*/
 }
 
 void GeometryGenerator::CreatePyramid(float bottom_side, float height, MeshData& meshData)
@@ -187,11 +148,6 @@ void GeometryGenerator::CreatePyramid(float bottom_side, float height, MeshData&
 	float halfHeight = height / 2.0f;
 	float halfSide = bottom_side / 2;
 
-// 	DirectX::XMFLOAT3 zero_toFirstCoord = {-halfSide, -halfHeight , -halfSide };
-// 	DirectX::XMFLOAT3 zero_toOppositeCoord = {halfSide, -halfHeight , halfSide };
-// 	DirectX::XMFLOAT3 top = (zero_toFirstCoord.x + zero_toOppositeCoord.x,
-// 		zero_toFirstCoord.y + zero_toOppositeCoord.y,
-// 		zero_toFirstCoord.z + zero_toOppositeCoord.z);
 	std::vector<DirectX::XMFLOAT3> pyramidCoord
 	{
 		{DirectX::XMFLOAT3(-halfSide, -halfHeight, -halfSide)},

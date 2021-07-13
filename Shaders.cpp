@@ -52,6 +52,9 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
 
 	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
+
+	VS_IL_Init(&pNormalMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping,L"Shaders\\Vertex\\MainLightVS.cso");
+	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -111,6 +114,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSkyIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSkyVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pNormalMappingVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -190,6 +199,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::CubeMap_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
 		break;
 	}
 	default:

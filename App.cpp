@@ -744,9 +744,21 @@ void App::DrawShapesWithDynamicCubeMap()
 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
+	if (GetAsyncKeyState('7') & 0x8000)
+	{
+		pShaders->BindVSandIA(ShaderPicker::LightAndTextureNormalMapping_VS_PS);
+		pShaders->BindPS(ShaderPicker::LightAndTextureNormalMapping_VS_PS);
+
+	}
+
+
+
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	for (auto& x : cylinders)
 	{
