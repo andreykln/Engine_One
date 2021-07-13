@@ -757,8 +757,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+
 
 	for (auto& x : cylinders)
 	{
@@ -769,6 +768,8 @@ void App::DrawShapesWithDynamicCubeMap()
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	for (auto& x : geoSpheres)
 	{
 		x->UpdateVSMatrices(wnd.GetGraphics(),

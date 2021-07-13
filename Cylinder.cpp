@@ -13,18 +13,36 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
-	for (UINT i = 0; i < mesh.vertices.size(); i++)
+	if (in_switch == DemoSwitch::LightningCone)
 	{
-		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
-		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
-		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
+		for (UINT i = 0; i < mesh.vertices.size(); i++)
+		{
+			DirectX::XMFLOAT3 p = mesh.vertices[i].position;
+			DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
+			DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
 
-		vertices[i].pos = p;
-		vertices[i].normal = n;
-		vertices[i].tex = t;
+			vertices[i].pos = p;
+			vertices[i].normal = n;
+			vertices[i].tex = t;
+		}
 	}
-	
+	std::vector<Vertices_Full> verticesWithNormals(mesh.vertices.size());
 
+	if (in_switch == DemoSwitch::Shapesdemo)
+	{
+		for (UINT i = 0; i < mesh.vertices.size(); i++)
+		{
+			DirectX::XMFLOAT3 p = mesh.vertices[i].position;
+			DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
+			DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
+			DirectX::XMFLOAT3 tg = mesh.vertices[i].tangentU;
+
+			verticesWithNormals[i].pos = p;
+			verticesWithNormals[i].normal = n;
+			verticesWithNormals[i].tex = t;
+			verticesWithNormals[i].tangent = tg;
+		}
+	}
 	directionalLight.mat.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
@@ -44,9 +62,17 @@ Cylinder::Cylinder(Graphics& gfx,
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
+	if (in_switch == DemoSwitch::LightningCone)
+	{
+		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Cylinder");
+		AddBind(pVertexBuffer);
+	}
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Cylinder");
-	AddBind(pVertexBuffer);
+	if (in_switch == DemoSwitch::Shapesdemo)
+	{
+		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesWithNormals, L"CylinderNormals");
+		AddBind(pVertexBuffer);
+	}
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -81,9 +107,14 @@ Cylinder::Cylinder(Graphics& gfx,
 	if(currentDemo == DemoSwitch::Shapesdemo)
 	{
 		std::wstring directory[1];
+		std::wstring normalMap[1];
 		directory[0] = L"Textures\\bricks.dds";
+		normalMap[0] = L"Textures\\bricks_nmap.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory));
 		AddBind(pSRV);
+
+		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u);
+		AddBind(pSRVN);
 	}
 	TextureSampler* pTexSampler = new TextureSampler(gfx);
 	AddBind(pTexSampler);
