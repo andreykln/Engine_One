@@ -20,25 +20,40 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		vertices[i].tex = t;
 	}
 
+	std::vector<Vertices_Full> verticesNormal(mesh.vertices.size());
+	for (UINT i = 0; i < mesh.vertices.size(); i++)
+	{
+		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
+		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
+		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
+		DirectX::XMFLOAT3 tg = mesh.vertices[i].tangentU;
+
+		verticesNormal[i].pos = p;
+		verticesNormal[i].normal = n;
+		verticesNormal[i].tex = t;
+		verticesNormal[i].tangent = tg;
+	}
+
+
 	if (currentDemo == DemoSwitch::Shapesdemo || DemoSwitch::DefaultBox)
 	{
 		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+		directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 
 		directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 		directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 		directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
+		directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 
 		directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
 		directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 		directionalLight.mat.ambient = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
+		directionalLight.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
 		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	} 
 	if (currentDemo == DemoSwitch::HillsDemo)
@@ -64,9 +79,16 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 
 	}
 
-
-	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
-	AddBind(pVB);
+	if (currentDemo == DemoSwitch::DefaultBox || DemoSwitch::HillsDemo)
+	{
+		VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
+		AddBind(pVB);
+	}
+	if (currentDemo == DemoSwitch::Shapesdemo)
+	{
+		VertexBuffer* pVB = new VertexBuffer(gfx, verticesNormal, L"BoxNormal.");
+		AddBind(pVB);
+	}
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);

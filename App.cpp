@@ -740,9 +740,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+
 
 	if (GetAsyncKeyState('7') & 0x8000)
 	{
@@ -751,7 +749,9 @@ void App::DrawShapesWithDynamicCubeMap()
 
 	}
 
-
+	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
+	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
