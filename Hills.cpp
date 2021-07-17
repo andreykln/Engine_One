@@ -147,10 +147,27 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(pTopology);
 
+	switch (currentDemo)
+	{
+	case Shapesdemo:
+	{
+		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVSCB = 
+			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, transformMatricesWithCameraPos, 0u, 1u);
+		pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
+		AddBind(pVSCB);
+		break;
+	}
 
-	VertexConstantBuffer<CB_VS_Transform>* pVSCB = new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
-	AddBind(pVSCB);
+	case HillsAllLight:
+	case HillsDemo:
+	{
+		VertexConstantBuffer<CB_VS_Transform>* pVSCB = new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+		pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
+		AddBind(pVSCB);
+	}
+	break;
+	}
+
 
 
 	switch (currentDemo)
@@ -180,7 +197,20 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		break;
 	}
 
+	switch (currentDemo)
+	{
 
+	case HillsDemo:
+	{
+		DomainShaderConstantBuffer<CB_CameraPosition>* pDSCamPos =
+			new DomainShaderConstantBuffer<CB_CameraPosition>(gfx, dsBufferCameraPosition, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyDomainShaderBuffer = pDSCamPos->GetDomainShaderConstantBuffer();
+		AddBind(pDSCamPos);
+		break;
+	}
+	default:
+		break;
+	}
 
 
 	std::wstring directory[1];
@@ -244,16 +274,43 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 
 
 void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj)
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-	pMatrices->world = in_world;
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = grassScaling;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+	switch (currentDemo)
+	{
+	case Shapesdemo:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = in_world;
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = grassScaling;
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+		break;
+	}
+
+	case HillsAllLight:
+	case HillsDemo:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+		pMatrices->world = in_world;
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = grassScaling;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+	}
+	break;
+	}
+
+
+
+
+
 
 }
 

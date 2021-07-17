@@ -32,10 +32,27 @@ struct CB_VS_Transform
 	DirectX::XMMATRIX texTransform;
 };
 
+struct CB_VS_TransformWithCameraPosition
+{
+	CB_VS_TransformWithCameraPosition() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMFLOAT3 cameraPosition;
+};
+
 struct CB_VS_WorldViewProjection
 {
 	CB_VS_WorldViewProjection() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMMATRIX worldViewProjection;
+};
+
+struct CB_CameraPosition
+{
+	CB_CameraPosition() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX viewProjection;
+	DirectX::XMFLOAT3 cameraPosition;
 };
 
 struct CB_PS_DirectionalL_Fog

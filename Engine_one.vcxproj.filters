@@ -457,6 +457,12 @@
     <FxCompile Include="MainLightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="DisplacementMappingHS.hlsl">
+      <Filter>Shaders\Hull</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementMappingDS.hlsl">
+      <Filter>Shaders\Domain</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">
