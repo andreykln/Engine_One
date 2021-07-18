@@ -29,5 +29,5 @@ int CALLBACK WinMain(
 
 	}
 
-	return -1;
+	return 0;
 }

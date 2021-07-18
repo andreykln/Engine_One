@@ -1,6 +1,5 @@
 #pragma once
 #include "Shape.h"
-#include "BindableBase.h"
 
 class DepthComplexity : public Shape 
 {

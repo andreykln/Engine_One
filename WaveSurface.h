@@ -2,7 +2,6 @@
 #include "Shape.h"
 #include "Waves.h"
 #include "MathHelper.h"
-#include "GeometryGenerator.h"
 
 
 class WaveSurface : public Shape

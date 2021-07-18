@@ -1,7 +1,5 @@
 #pragma once
 #include "Shape.h"
-#include "GeometryGenerator.h"
-#include "BindableBase.h"
 
 
 class TreeBillboard : public Shape 

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Shape.h"
-#include "BindableBase.h"
-
 
 struct MirrorRoomCB
 {

@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Shape.h"
-#include "GeometryGenerator.h"
-#include "BindableBase.h"
-//#include "directxpackedvector.h" //for XMCOLOR
 
 class Box : public Shape
 {

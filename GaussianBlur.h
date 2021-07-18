@@ -1,7 +1,5 @@
 #pragma once
 #include "Shape.h"
-#include "DrawableBase.h"
-#include "GeometryGenerator.h"
 
 class GaussianBlur : public Shape 
 {
