@@ -77,13 +77,14 @@ Cylinder::Cylinder(Graphics& gfx,
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
 
-	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+
+	VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVCBPerObject =
+			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, disMappingVSCB, 0u, 1u);
 	pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer();
 	AddBind(pVCBPerObject);
+
+
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -94,6 +95,21 @@ Cylinder::Cylinder(Graphics& gfx,
 	pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
 	AddBind(pLightsCB);
 
+
+	switch (currentDemo)
+	{
+	case Shapesdemo:
+	{
+		DomainShaderConstantBuffer<CB_CameraPosition_ViewProj>* pDSCamPos =
+			new DomainShaderConstantBuffer<CB_CameraPosition_ViewProj>(
+				gfx, displacementMappingCylinderCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyDomainShaderBuffer = pDSCamPos->GetDomainShaderConstantBuffer();
+		AddBind(pDSCamPos);
+		break;
+	}
+	default:
+		break;
+	}
 	if (currentDemo == DemoSwitch::LightningCone)
 	{
 		std::wstring LightningArray[60];
@@ -115,23 +131,62 @@ Cylinder::Cylinder(Graphics& gfx,
 
 		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
 		AddBind(pSRVN);
+
+		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
+		AddBind(pSRVHeightMap);
 	}
+
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 
+	TextureSampler* pDomainTexSampler = new TextureSampler(gfx, ShaderType::Domain);
+	AddBind(pDomainTexSampler);
 
 }
 
-void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-	pMatrices->world = in_world;
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+	switch (currentDemo)
+	{
+	case Shapesdemo:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDomainShaderBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+		pDSBuffer->cameraPosition = in_camera;
+		pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+		gfx.pgfx_pDeviceContext->Unmap(pCopyDomainShaderBuffer, 0u);
+		break;
+	}
+
+	case HillsAllLight:
+	case HillsDemo:
+	{
+// 		D3D11_MAPPED_SUBRESOURCE mappedData;
+// 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 		CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+// 		pMatrices->world = in_world;
+// 		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+// 		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+// 		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+// 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+	}
+	break;
+	}
+
+
+
 }
 
 void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)

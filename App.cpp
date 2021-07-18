@@ -546,7 +546,7 @@ void App::DrawLightning()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTextureArrayPS);
 
-	pCylinder->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
+	pCylinder->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix, camera.GetCameraPosition());
 	
 	pCylinder->IncrementTexArrPos();
 	pCylinder->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -674,7 +674,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
+	/*pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	ID3D11RenderTargetView* renderTargets[1];
@@ -713,7 +713,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	//draw scene as normal with center sphere
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	
+	*/
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
@@ -754,9 +754,18 @@ void App::DrawShapesWithDynamicCubeMap()
 		pShaders->BindPS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 	}
 
+	for (auto& x : cylinders)
+	{
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
+			viewProjectionMatrix, camera.GetCameraPosition());
+		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
 
+	}
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
-	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(), viewProjectionMatrix, camera.GetCameraPosition());
+	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
+		viewProjectionMatrix, camera.GetCameraPosition());
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 	pShaders->UnbindDS();
@@ -773,14 +782,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 
-	for (auto& x : cylinders)
-	{
-		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
-		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-		x->BindAndDrawIndexed(wnd.GetGraphics());
 
-	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
 	for (auto& x : geoSpheres)
 	{
@@ -836,7 +838,7 @@ void App::DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP)
 
 	for (auto& x : cylinders)
 	{
-		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), VPCubeMapMatrix);
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), VPCubeMapMatrix, camera.GetCameraPosition());
 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -900,7 +902,7 @@ void App::DrawShapes()
 
 	for (auto& x : cylinders)
 	{
-		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix);
+		x->UpdateVSMatrices(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(), viewProjectionMatrix, camera.GetCameraPosition());
 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
  	

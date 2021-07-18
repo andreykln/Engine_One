@@ -143,9 +143,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
-// 
-// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-// 	AddBind(pTopology);
+
 
 	switch (currentDemo)
 	{
@@ -224,7 +222,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		directory[0] = L"Textures\\stones.dds";
 		normalMap[0] = L"Textures\\stones_nmap.dds";
 
-		//another SRV to the resource, check later if it's necessary.
 		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
 								gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
 		AddBind(pSRVHeightMap);
