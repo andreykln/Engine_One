@@ -207,6 +207,7 @@ void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPositon;
+
 	if (currentDemo == DemoSwitch::LightningCone)
 	{
 		frame->texArrayPos = GetTexArrPos();

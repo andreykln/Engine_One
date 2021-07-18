@@ -23,7 +23,9 @@ cbuffer PS_Per_Frame : register(b1)
 {
     float3 camPositon;
     unsigned int numberOfLights;
+    unsigned int texArrayPosition;
 }
+
 
 Texture2D SRVTexture : register(t0);
 Texture2D SRVNormalMap : register(t1);
@@ -53,6 +55,7 @@ float4 main(PSstruct pin) : SV_TARGET
     //normal mapping
     float3 normalMapSample = SRVNormalMap.Sample(tex0Sample, pin.Tex).rgb;
     float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.tangentW);
+
     
     
     

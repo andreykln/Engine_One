@@ -23,6 +23,7 @@ private:
 	CB_CameraPosition_ViewProj displacementMappingCylinderCB;
 	CB_VS_TransformWithCameraPosition disMappingVSCB;
 
+
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyLightTextureCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;

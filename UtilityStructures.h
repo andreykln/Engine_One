@@ -42,6 +42,12 @@ struct CB_VS_TransformWithCameraPosition
 	DirectX::XMFLOAT3 cameraPosition;
 };
 
+struct CB_PS_NormalMappingState
+{
+	bool normalMapping;
+	int padding[3] = { 0,0,0 };
+};
+
 struct CB_VS_WorldViewProjection
 {
 	CB_VS_WorldViewProjection() { ZeroMemory(this, sizeof(this)); }
@@ -90,6 +96,7 @@ struct CB_PS_PerFrameUpdate
 	float padding0;
 	float padding1;
 	float padding2;
+
 };
 
 struct CB_CS_GPUWaves

@@ -34,15 +34,13 @@ private:
 	void DrawBox();
 	void CreateMirror();
 	void DrawMirror();
-	void CreateLightning();
-	void DrawLightning();
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
-	void CreateShapes();
+// 	void CreateShapes();
 	void CreateShapesWithDynamicCubeMap();
 	void DrawShapesWithDynamicCubeMap();
 	void DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP);
-	void DrawShapes();
+// 	void DrawShapes();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
 	void InstancingCreate();

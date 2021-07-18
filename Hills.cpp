@@ -336,7 +336,6 @@ void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPositon;
-
 	if (GetAsyncKeyState('0') & 0x8000)
 		frame->numberOfLights = 0;
 	if (GetAsyncKeyState('1') & 0x8000)
