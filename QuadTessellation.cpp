@@ -54,7 +54,7 @@ void QuadTessellation::UpdateTessellationShaderBuffers(Graphics& gfx,
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCBHS, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	CB_QuadTess_HS* pMatrices = reinterpret_cast<CB_QuadTess_HS*>(mappedData.pData);
-	pMatrices->world = world;
+	pMatrices->world = DirectX::XMMatrixTranspose(world);
 	pMatrices->cameraPosition = cameraPos;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyCBHS, 0u);
 

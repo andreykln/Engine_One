@@ -12,11 +12,11 @@ App::App()
 
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
-	//CreateShapes();
-// 	CreateShapesWithDynamicCubeMap();
+	//CreateShapes(); //delete?
+	CreateShapesWithDynamicCubeMap();
 // 	CreateHillsWithWavesAllLight();
-	CreateHillsWithGPUWaves();
-// 	CreateHillsWithWaves();
+// 	CreateHillsWithGPUWaves();
+// 	CreateHillsWithWaves(); //delete?
 // 	CreateMirror();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -33,10 +33,10 @@ void App::DoFrame()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
 	//DrawShapes();
-// 	DrawShapesWithDynamicCubeMap();
+	DrawShapesWithDynamicCubeMap();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
-	DrawHillsWithGPUWaves();
+// 	DrawHillsWithGPUWaves();
 // 	DrawHillsWithWaves();
 // 	DrawBox();
 // 	DrawDepthComplexityStencil();
@@ -148,6 +148,7 @@ void App::CreateHillsWithWaves()
 
 void App::DrawHillsWithWaves()
 {
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//hills
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
@@ -196,6 +197,7 @@ void App::DrawHillsWithGPUWaves()
 {
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 	viewProjectionMatrix = GetViewProjectionCamera();
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::HillsAllLight_PS);
@@ -245,7 +247,7 @@ void App::DrawHillsWithGPUWaves()
 
 void App::CreateBilateralHillsBlur()
 {
-	CreateHillsWithWavesAllLight();
+	CreateHillsWithGPUWaves();
 	pGaussianBlur = new GaussianBlur(wnd.GetGraphics());
 
 }
@@ -253,6 +255,7 @@ void App::CreateBilateralHillsBlur()
 void App::DrawBilateralHillsBlur()
 {
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
 	//offscreen render target
@@ -263,7 +266,7 @@ void App::DrawBilateralHillsBlur()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	wnd.GetGraphics().SetViewport();
-	DrawHillsWithWavesAllLight();
+	DrawHillsWithGPUWaves();
 	//set default render target
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
@@ -291,13 +294,16 @@ void App::DrawBilateralHillsBlur()
 
 void App::CreateGaussBlur()
 {
-	CreateHillsWithWavesAllLight();
+// 	CreateHillsWithWavesAllLight();
+	CreateHillsWithGPUWaves();
+
 	pGaussianBlur = new GaussianBlur(wnd.GetGraphics());
 }
 
 void App::DrawGaussBlur()
 {
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
 	//offscreen render target
@@ -308,7 +314,9 @@ void App::DrawGaussBlur()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	wnd.GetGraphics().SetViewport();
-	DrawHillsWithWavesAllLight();
+// 	DrawHillsWithWavesAllLight();
+	DrawHillsWithGPUWaves();
+
 	//set default render target
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
@@ -535,6 +543,8 @@ void App::DrawMirror()
 
 void App::DrawDepthComplexityStencil()
 {
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
@@ -928,7 +938,7 @@ void App::DrawBezierPatchTess()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
-	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -5.0f, 25.0f), camera.GetCameraPosition());
+	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -25.0f, 0.0f), camera.GetCameraPosition());
 
 	pShaders->BindVSandIA(QuadTessellation_VS);
 	pShaders->BindHS(QuadTessellation_HS);
