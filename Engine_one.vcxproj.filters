@@ -111,9 +111,6 @@
     <ClCompile Include="VertexBufferDynamic.cpp">
       <Filter>Source Files\Bindable</Filter>
     </ClCompile>
-    <ClCompile Include="WaveSurface.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="GeoSphere.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -241,9 +238,6 @@
     </ClInclude>
     <ClInclude Include="VertexBufferDynamic.h">
       <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveSurface.h">
-      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="GeoSphere.h">
       <Filter>Header Files\Drawable</Filter>

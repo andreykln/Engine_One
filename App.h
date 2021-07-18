@@ -20,10 +20,6 @@ public:
 	void DebugTextToTitle();
 private:
 	void CalculateFrameStats();
-	void CreateHillsWithWavesAllLight();
-	void DrawHillsWithWavesAllLight();
-	void CreateHillsWithWaves();
-	void DrawHillsWithWaves();
 	void CreateHillsWithGPUWaves();
 	void DrawHillsWithGPUWaves();
 	void CreateBilateralHillsBlur();
@@ -36,11 +32,9 @@ private:
 	void DrawMirror();
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
-// 	void CreateShapes();
 	void CreateShapesWithDynamicCubeMap();
 	void DrawShapesWithDynamicCubeMap();
 	void DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP);
-// 	void DrawShapes();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
 	void InstancingCreate();
@@ -86,7 +80,6 @@ private:
   	Hills* pHills = nullptr;
 	MirrorRoom* pMirrorRoom = nullptr;
  	Skull* pSkull = nullptr;
- 	WaveSurface* pWaves = nullptr;
 	QuadTessellation* pQuadTess = nullptr;
 	Picking* pPicking = nullptr;
 	Sky* pSky = nullptr;
