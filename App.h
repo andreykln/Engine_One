@@ -77,6 +77,7 @@ private:
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;
+	Box* pDisplacementMappingBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;
  	Cylinder* pCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;

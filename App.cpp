@@ -13,7 +13,7 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 	//CreateShapes();
-	CreateShapesWithDynamicCubeMap();
+// 	CreateShapesWithDynamicCubeMap();
 // 	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithGPUWaves();
 // 	CreateHillsWithWaves();
@@ -34,7 +34,7 @@ void App::DoFrame()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
 	//DrawShapes();
-	DrawShapesWithDynamicCubeMap();
+// 	DrawShapesWithDynamicCubeMap();
 // 	DrawMirror();
 // 	DrawHillsWithWavesAllLight();
 // 	DrawHillsWithGPUWaves();
@@ -658,6 +658,7 @@ void App::CreateShapesWithDynamicCubeMap()
 	pSky = new Sky(wnd.GetGraphics());
 	pDynamicCubeMap = new DynamicCubeMap(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
+// 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::DisplacementMapping);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
@@ -665,10 +666,10 @@ void App::CreateShapesWithDynamicCubeMap()
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
 	}
-	for (int i = 0; i < 10; i++)
-	{
-		displacementCylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::DisplacementMapping));
-	}
+// 	for (int i = 0; i < 10; i++)
+// 	{
+// 		displacementCylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::DisplacementMapping));
+// 	}
 	for (size_t i = 0; i < 10; i++)
 	{
 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
@@ -680,7 +681,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
+	/*pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	ID3D11RenderTargetView* renderTargets[1];
@@ -719,7 +720,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	//draw scene as normal with center sphere
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	
+	*/
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
@@ -760,35 +761,32 @@ void App::DrawShapesWithDynamicCubeMap()
 		pShaders->BindPS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 	}
 
-	for (auto& x : displacementCylinders)
-	{
-		x->UpdateDisplacementCBuffers(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, camera.GetCameraPosition());
-		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-		x->BindAndDrawIndexed(wnd.GetGraphics());
-
-	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
+// 	for (auto& x : displacementCylinders)
+// 	{
+// 		x->UpdateDisplacementCBuffers(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
+// 			viewProjectionMatrix, camera.GetCameraPosition());
+// 		x->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+// 		x->BindAndDrawIndexed(wnd.GetGraphics());
+// 
+// 	}
+// 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, camera.GetCameraPosition());
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+// 	pDisplacementMappingBox->UpdateDisplacementCBuffers(wnd.GetGraphics(),
+// 		shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix, camera.GetCameraPosition());
+// 	pDisplacementMappingBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+// 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
-
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
-
-	pBox->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix);
-	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-
-
-
 
 	for (auto& x : geoSpheres)
 	{
