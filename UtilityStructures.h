@@ -183,6 +183,7 @@ enum DemoSwitch
 	HillsAllLight,
 	DefaultBox,
 	MirrorSkull,
+	DisplacementMapping
 };
 
 

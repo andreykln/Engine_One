@@ -80,6 +80,7 @@ private:
 	TreeBillboard* pBillboards = nullptr;
  	Cylinder* pCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;
+	std::vector<Cylinder*> displacementCylinders;
  	GeoSphere* pGeoSphere = nullptr;
  	std::vector<GeoSphere*> geoSpheres;
 //  Sphere* pSphere = nullptr;
