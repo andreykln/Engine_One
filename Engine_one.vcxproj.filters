@@ -451,9 +451,6 @@
     <FxCompile Include="SphereCubeMap.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="MainLightVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="MainLightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
@@ -462,6 +459,9 @@
     </FxCompile>
     <FxCompile Include="DisplacementMappingDS.hlsl">
       <Filter>Shaders\Domain</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementMappingVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

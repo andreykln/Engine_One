@@ -3,11 +3,22 @@ struct DomainOut
     float4 PosH : SV_POSITION;
     float3 PosW : POSITION;
     float3 NormalW : NORMAL;
-    float3 TangentW : TANGENT;
     float2 Tex : TEXCOORD;
+    float3 TangentW : TANGENT;
+};
+//static float4x4 test = float4(float4(1.0f, 0.0f, 0.0f, 0.0f), float4(0.0f, 1.0f, 0.0f, 4.0f),
+//float4(0.0f, 0.0f, 1.0f, 0.0f), float4(0.0f, 0.0f, 0.0f, 1.0f));
+
+static float4x4 test0 =
+{
+    1.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, -4.0f,
+    0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f
 };
 
 
+//static float4x4 test0 = float4({1,2,3,4}, {1,2,3,4}, {1,2,3,4}, {1,2,3,4} );
 struct PatchTess
 {
     float EdgeTessFactor[3] : SV_TessFactor; 
@@ -22,11 +33,16 @@ struct HullOut
     float3 tangentW : TANGENT;
 };
 
-cbuffer CamPos : register(d0)
+cbuffer CamPos : register(b0)
 {
     float4x4 ViewProjection;
     float3 cameraPosition;
 };
+
+SamplerState samplerLinear;
+Texture2D normalMap : register(t0);
+
+static float heightScale = 0.07f;
 
 [domain("tri")]
 DomainOut main(
@@ -55,13 +71,15 @@ DomainOut main(
     float mipLevel = clamp((distance(dout.PosW, cameraPosition) - MipInterval) / MipInterval, 0.0f, 6.0f);
 	
 	// Sample height map (stored in alpha channel).
-    float h = gNormalMap.SampleLevel(samLinear, dout.Tex, mipLevel).a;
+    float h = normalMap.SampleLevel(samplerLinear, dout.Tex, mipLevel).a;
 	
 	// Offset vertex along normal.
-    dout.PosW += (gHeightScale * (h - 1.0)) * dout.NormalW;
+    dout.PosW += (heightScale * (h - 1.0)) * dout.NormalW;
 	
 	// Project to homogeneous clip space.
+
     dout.PosH = mul(float4(dout.PosW, 1.0f), ViewProjection);
-	
+
+
     return dout;
 }

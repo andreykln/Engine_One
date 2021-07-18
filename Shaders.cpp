@@ -53,8 +53,15 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
 
-	VS_IL_Init(&pNormalMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping,L"Shaders\\Vertex\\MainLightVS.cso");
+	//remove?
+	VS_IL_Init(&pNormalMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+	///
 	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
+
+	VS_IL_Init(&pDisplacementMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
+	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -117,9 +124,10 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		break;
 	}
 	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pNormalMappingVS, nullptr, 0u);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -202,6 +210,7 @@ void Shaders::BindPS(ShaderPicker shader)
 		break;
 	}
 	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
 		break;
@@ -276,6 +285,12 @@ void Shaders::BindHS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->HSSetShader(pQuadTesselationHS, 0u, 0u);
 		break;
 	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pSgfx->pgfx_pDeviceContext->HSSetShader(pDisplacementMappingHS, 0u, 0u);
+		break;
+
+	}
 	}
 }
 
@@ -286,6 +301,11 @@ void Shaders::BindDS(ShaderPicker shader)
 	case ShaderPicker::QuadTessellation_DS:
 	{
 		pSgfx->pgfx_pDeviceContext->DSSetShader(pQuadTesselationDS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pSgfx->pgfx_pDeviceContext->DSSetShader(pDisplacementMappingDS, 0u, 0u);
 		break;
 	}
 	}

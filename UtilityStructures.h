@@ -48,9 +48,9 @@ struct CB_VS_WorldViewProjection
 	DirectX::XMMATRIX worldViewProjection;
 };
 
-struct CB_CameraPosition
+struct CB_CameraPosition_ViewProj
 {
-	CB_CameraPosition() { ZeroMemory(this, sizeof(this)); }
+	CB_CameraPosition_ViewProj() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMMATRIX viewProjection;
 	DirectX::XMFLOAT3 cameraPosition;
 };
@@ -214,5 +214,6 @@ enum ShaderPicker
 	Sky_VS_PS,
 	CubeMap_PS,
 	LightAndTextureNormalMapping_VS_PS,
+	DisplacementMapping_VS_DS_HS,
 	Keep
 };

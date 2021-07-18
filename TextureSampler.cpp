@@ -1,6 +1,7 @@
 #include "TextureSampler.h"
 
-TextureSampler::TextureSampler(Graphics& gfx)
+TextureSampler::TextureSampler(Graphics& gfx, ShaderType type)
+	: sType(type)
 {
 	D3D11_SAMPLER_DESC samplerDesc;
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; //D3D11_FILTER_MIN_MAG_MIP_LINEAR D3D11_FILTER_ANISOTROPIC
@@ -22,5 +23,29 @@ TextureSampler::TextureSampler(Graphics& gfx)
 
 void TextureSampler::Bind(Graphics& gfx) noexcept
 {
-	GetContext(gfx)->PSSetSamplers(0u, 1u, &pSamplerState);
+	switch (sType)
+	{
+	case ShaderType::Pixel:
+	{
+		GetContext(gfx)->PSSetSamplers(0u, 1u, &pSamplerState);
+	}
+		break;
+	case ShaderType::Vertex:
+		break;
+	case ShaderType::Compute:
+		break;
+	case ShaderType::Domain:
+	{
+		GetContext(gfx)->DSSetSamplers(0u, 1u, &pSamplerState);
+	}
+		break;
+	case ShaderType::Hull:
+		break;
+	case ShaderType::Geometry:
+		break;
+	default:
+		break;
+	}
+
+
 }

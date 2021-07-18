@@ -143,9 +143,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
-
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
+// 
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pTopology);
 
 	switch (currentDemo)
 	{
@@ -200,10 +200,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	switch (currentDemo)
 	{
 
-	case HillsDemo:
+	case Shapesdemo:
 	{
-		DomainShaderConstantBuffer<CB_CameraPosition>* pDSCamPos =
-			new DomainShaderConstantBuffer<CB_CameraPosition>(gfx, dsBufferCameraPosition, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		DomainShaderConstantBuffer<CB_CameraPosition_ViewProj>* pDSCamPos =
+			new DomainShaderConstantBuffer<CB_CameraPosition_ViewProj>(
+				gfx, dsBufferCameraPosition, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pCopyDomainShaderBuffer = pDSCamPos->GetDomainShaderConstantBuffer();
 		AddBind(pDSCamPos);
 		break;
@@ -222,6 +223,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	{
 		directory[0] = L"Textures\\stones.dds";
 		normalMap[0] = L"Textures\\stones_nmap.dds";
+
+		//another SRV to the resource, check later if it's necessary.
+		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+								gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
+		AddBind(pSRVHeightMap);
 	}
 		break;
 	case HillsDemo:
@@ -235,15 +241,21 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory));
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
 	AddBind(pSRV);
 
-	ShaderResourceView* pSRVnMap = new ShaderResourceView(gfx, normalMap, 1u, (UINT)std::size(normalMap));
+	ShaderResourceView* pSRVnMap = new ShaderResourceView(gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
 	AddBind(pSRVnMap);
 
 
-	TextureSampler* pTexSampler = new TextureSampler(gfx);
+
+
+
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
+
+	TextureSampler* pDomainTexSampler = new TextureSampler(gfx, ShaderType::Domain);
+	AddBind(pDomainTexSampler);
 
 }
 
@@ -283,12 +295,18 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
-		pMatrices->world = in_world;
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
 		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 		pMatrices->texTransform = grassScaling;
 		pMatrices->cameraPosition = in_camera;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDomainShaderBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+		pDSBuffer->cameraPosition = in_camera;
+		pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+		gfx.pgfx_pDeviceContext->Unmap(pCopyDomainShaderBuffer, 0u);
 		break;
 	}
 
@@ -303,6 +321,7 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 		pMatrices->texTransform = grassScaling;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+
 	}
 	break;
 	}

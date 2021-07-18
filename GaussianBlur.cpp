@@ -41,7 +41,7 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	gfx.pgfx_pDevice->CreateShaderResourceView(pTextureToBlur, 0u, &pSRV);
 	pTextureToBlur->Release();
 	
-	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 
 

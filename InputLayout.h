@@ -13,6 +13,7 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
+
 	static const UINT nlightTextureNormalMapping = 4;
 	const D3D11_INPUT_ELEMENT_DESC lightTextureNormalMapping[nlightTextureNormalMapping] =
 	{

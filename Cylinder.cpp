@@ -110,13 +110,13 @@ Cylinder::Cylinder(Graphics& gfx,
 		std::wstring normalMap[1];
 		directory[0] = L"Textures\\bricks.dds";
 		normalMap[0] = L"Textures\\bricks_nmap.dds";
-		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory));
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory), ShaderType::Pixel);
 		AddBind(pSRV);
 
-		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u);
+		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
 		AddBind(pSRVN);
 	}
-	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 
 

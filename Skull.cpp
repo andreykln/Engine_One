@@ -23,7 +23,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 // 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 16.0f);
 
 	directionalLight.mat.ambient =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
-	directionalLight.mat.diffuse =  DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
+	directionalLight.mat.diffuse =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.86f, 0.862f, 0.863f, 64.0f);
 
 

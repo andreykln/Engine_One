@@ -59,7 +59,7 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 	pCopyPSConstBuffer = pPSPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pPSPerFrame);
 
-	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 
 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);

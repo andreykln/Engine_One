@@ -1,6 +1,17 @@
 #pragma once
 #include "Graphics.h"
 
+enum class ShaderType
+{
+	Pixel,
+	Vertex,
+	Compute,
+	Domain,
+	Hull,
+	Geometry
+};
+
+
 class Bindable
 {
 public:

@@ -106,5 +106,11 @@ private:
 	ID3D11VertexShader* pNormalMappingVS = nullptr;
 	ID3D11PixelShader* pNormalMappingPS = nullptr;
 	ID3D11InputLayout* pNormalMappingIL = nullptr;
+
+	//displacement mapping. 
+	ID3D11VertexShader* pDisplacementMappingVS = nullptr;
+	ID3D11DomainShader* pDisplacementMappingDS = nullptr;
+	ID3D11HullShader* pDisplacementMappingHS = nullptr;
+
 };
 

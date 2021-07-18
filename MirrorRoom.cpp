@@ -109,10 +109,10 @@ MirrorRoom::MirrorRoom(Graphics& gfx)
 	directory[1] = L"Textures\\ice.dds";
 	directory[2] = L"Textures\\checkboard.dds";
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u ,(UINT)std::size(directory));
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u ,(UINT)std::size(directory), ShaderType::Pixel);
 	AddBind(pSRV);
 
-	TextureSampler* pTexSampler = new TextureSampler(gfx);
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 
 }
