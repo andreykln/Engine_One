@@ -12,7 +12,7 @@ struct VertexIn
     float3 position : Position;
     float3 normal : Normal;
     float2 texCoord : TexCoordinate;
-    float3 tangentLocal : TangentL;
+    float3 tangentLocal : Tangent;
 };
 static float maxTessDistance = 1.0f;
 static float minTessDistance = 25.0f;
@@ -22,7 +22,7 @@ static float maxTessFactor = 5.0f;
 
 struct VSout
 {
-    float3 PosW : Position;
+    float3 PosW : Position; 
     float3 NormalW : Normal;
     float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
@@ -35,7 +35,8 @@ VSout main(VertexIn vin)
     VSout vout;
     // Transform to world space.
     vout.PosW = mul(float4(vin.position, 1.0f), world).xyz;
-    vout.NormalW = mul(vin.normal, (float3x3) worldInverseTranspose);
+   // vout.NormalW = mul(vin.normal, (float3x3) worldInverseTranspose);
+    vout.NormalW = mul(float4(vin.normal, 1.0f), worldInverseTranspose).xyz;
     vout.tangentW = mul(vin.tangentLocal, (float3x3)world);
     
 	// Transform to homogeneous clip space.
@@ -48,7 +49,6 @@ VSout main(VertexIn vin)
     // 0 if d >= minTessDistance
     // 1 if d <= maxTessDistance
     float tess = saturate((minTessDistance - d) / (minTessDistance - maxTessFactor));
-    
     //rescale [0,1] --> [minTessfactor, maxTessFactor]
     vout.tessFactor = minTessFactor + tess * (maxTessFactor - minTessFactor);
     

@@ -177,6 +177,9 @@
     <ClCompile Include="CubeMapCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DisplacementWaves.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsEdited.h">
@@ -335,6 +338,9 @@
     <ClInclude Include="CubeMapCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DisplacementWaves.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CubeVS.hlsl">
@@ -456,6 +462,18 @@
     </FxCompile>
     <FxCompile Include="DisplacementMappingVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementWavesVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementWavesPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementWavesHS.hlsl">
+      <Filter>Shaders\Hull</Filter>
+    </FxCompile>
+    <FxCompile Include="DisplacementWavesDS.hlsl">
+      <Filter>Shaders\Domain</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

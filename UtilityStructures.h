@@ -32,6 +32,21 @@ struct CB_VS_Transform
 	DirectX::XMMATRIX texTransform;
 };
 
+struct CB_VS_DisplacementWavesPerFrame
+{
+	CB_VS_DisplacementWavesPerFrame() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX waveDispTexTransform0;
+	DirectX::XMMATRIX waveDispTexTransform1;
+	DirectX::XMMATRIX waveNormalTexTransform0;
+	DirectX::XMMATRIX waveNormalTexTransform1;
+	DirectX::XMFLOAT3 cameraPosition;
+
+};
+
 struct CB_VS_TransformWithCameraPosition
 {
 	CB_VS_TransformWithCameraPosition() { ZeroMemory(this, sizeof(this)); }
@@ -223,5 +238,6 @@ enum ShaderPicker
 	CubeMap_PS,
 	LightAndTextureNormalMapping_VS_PS,
 	DisplacementMapping_VS_DS_HS,
+	DisplacementWaves_VS_HS_DS_PS,
 	Keep
 };

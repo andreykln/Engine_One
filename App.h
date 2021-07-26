@@ -63,6 +63,7 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;
 	DynamicCubeMap* pDynamicCubeMap = nullptr;
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;

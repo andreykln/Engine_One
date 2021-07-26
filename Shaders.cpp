@@ -54,13 +54,21 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
 
 	//remove?
-	VS_IL_Init(&pNormalMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+// 	VS_IL_Init(&pNormalMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
 	///
 	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
 
-	VS_IL_Init(&pDisplacementMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+	VS_IL_Init(&pDisplacementMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL,
+		IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
 	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
+
+	VS_IL_Init(&pDisplacementWavesVS, IL.lightTextureNormalMapping, &pNormalMappingIL,
+		IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementWavesVS.cso");
+	PS_Init(&pDisplacementWavesPS, L"Shaders\\Pixel\\DisplacementWavesPS.cso");
+	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\DisplacementWavesHS.cso");
+	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\DisplacementWavesDS.cso");
+
 
 }
 
@@ -130,6 +138,14 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementWavesVS, nullptr, 0u);
+		break;
+
+	}
+
 	default:
 	break;
 	}
@@ -215,6 +231,12 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pDisplacementWavesPS, nullptr, 0u);
+		break;
+	}
+
 	default:
 		break;
 	}
@@ -289,7 +311,11 @@ void Shaders::BindHS(ShaderPicker shader)
 	{
 		pSgfx->pgfx_pDeviceContext->HSSetShader(pDisplacementMappingHS, 0u, 0u);
 		break;
-
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->HSSetShader(pDisplacementWavesHS, 0u, 0u);
+		break;
 	}
 	}
 }
@@ -306,6 +332,11 @@ void Shaders::BindDS(ShaderPicker shader)
 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
 		pSgfx->pgfx_pDeviceContext->DSSetShader(pDisplacementMappingDS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->DSSetShader(pDisplacementWavesDS, 0u, 0u);
 		break;
 	}
 	}

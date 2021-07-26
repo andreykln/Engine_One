@@ -27,8 +27,9 @@ public:
 	void UnbindDS();
 private:
 	//most convenient to have this class to be a child of Bindable
-//but this function isn't needed
+	//but this function isn't needed
 	void Bind(Graphics& gfx) noexcept override; 
+
 	void VS_IL_Init(ID3D11VertexShader** pVShader, const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 		ID3D11InputLayout** pIL, UINT nElements, const std::wstring& path);
 	void PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path);
@@ -41,6 +42,7 @@ private:
 
 	Graphics* pSgfx = nullptr;
 	InputLayout IL;
+	ID3DBlob* pBlob = nullptr;
 
 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
@@ -70,7 +72,6 @@ private:
 
 	ID3D11PixelShader* pMirrorSkullPS = nullptr;
 
-	ID3DBlob* pBlob = nullptr;
 
 	ID3D11ComputeShader* pHorizontalBlurCS = nullptr;
 	ID3D11ComputeShader* pVerticalBlurCS = nullptr;
@@ -111,6 +112,12 @@ private:
 	ID3D11VertexShader* pDisplacementMappingVS = nullptr;
 	ID3D11DomainShader* pDisplacementMappingDS = nullptr;
 	ID3D11HullShader* pDisplacementMappingHS = nullptr;
+
+	//displacement waves
+	ID3D11VertexShader* pDisplacementWavesVS = nullptr;
+	ID3D11PixelShader* pDisplacementWavesPS = nullptr;
+	ID3D11HullShader* pDisplacementWavesHS = nullptr;
+	ID3D11DomainShader* pDisplacementWavesDS = nullptr;
 
 };
 

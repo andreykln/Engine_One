@@ -16,3 +16,4 @@
 #include "Picking.h"
 #include "Sky.h"
 #include "DynamicCubeMap.h"
+#include "DisplacementWaves.h"
