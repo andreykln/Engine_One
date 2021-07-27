@@ -8,6 +8,9 @@ class ShaderResourceView : public Bindable
 public:
 	//create SRV for each texture
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_startSlot, UINT in_NumSRVs, ShaderType target);
+	//return SRV ptr to bind inside of a Drawable
+	ShaderResourceView(Graphics& gfx, const wchar_t* path);
+	ID3D11ShaderResourceView* GetSRV() const;
 	//create texture array
 	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr);
 	static ID3D11ShaderResourceView* CreateCubeMap(Graphics& gfx, std::wstring* in_path);
@@ -31,6 +34,7 @@ private:
 	//ID3D11ShaderResourceView* pShaderResourceView = nullptr;
 	ID3D11ShaderResourceView** pSRVArray = new ID3D11ShaderResourceView*[numSRVs];
 	ID3D11ShaderResourceView* pSRVTexArray = nullptr;
+	ID3D11ShaderResourceView* pSRVReturn = nullptr;
 
 	ID3D11SamplerState* pSamplerState = nullptr;
 

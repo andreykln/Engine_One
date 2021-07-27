@@ -548,6 +548,7 @@ void App::DrawShapesWithDynamicCubeMap()
 {
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	viewProjectionMatrix = GetViewProjectionCamera();
 
 	pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
@@ -674,7 +675,7 @@ void App::DrawShapesWithDynamicCubeMap()
 
 
 
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	/*wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
@@ -698,7 +699,7 @@ void App::DrawShapesWithDynamicCubeMap()
 	pSky->BindAndDrawIndexed(wnd.GetGraphics());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);*/
 }
 
 void App::DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP)

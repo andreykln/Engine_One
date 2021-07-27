@@ -31,6 +31,12 @@ private:
 	DirectX::XMMATRIX waveNormalTransform0;
 	DirectX::XMMATRIX waveNormalTransform1;
 
+	ID3D11ShaderResourceView* pSRVPSNormalMap0 = nullptr;
+	ID3D11ShaderResourceView* pSRVPSNormalMap1 = nullptr;
+	ID3D11ShaderResourceView* pSRVDSHeightMap0 = nullptr;
+	ID3D11ShaderResourceView* pSRVDSHeightMap1 = nullptr;
+
+
 
 
 };

@@ -60,27 +60,27 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 
 
 	std::wstring waterTexture[1];
-
+	const wchar_t* filePath = L"Textures\\water1.dds";
 	waterTexture[0] = L"Textures\\water1.dds";
 	//diffuse map to PS
 	ShaderResourceView* pSRV0 = new ShaderResourceView(gfx, waterTexture, 0u, 1u, ShaderType::Pixel);
 	AddBind(pSRV0);
 
-	waterTexture[0] = L"Textures\\waves0.dds";
+	filePath = L"Textures\\waves0.dds";
 	//normal map to pixel
-	ShaderResourceView* pSRV1 = new ShaderResourceView(gfx, waterTexture, 1u, 1u, ShaderType::Pixel);
-	AddBind(pSRV0);
+	ShaderResourceView* pSRV1 = new ShaderResourceView(gfx, filePath);
+	pSRVPSNormalMap0 = pSRV1->GetSRV();
 	//height map to domain
-	ShaderResourceView* pSRV2 = new ShaderResourceView(gfx, waterTexture, 0u, 1u, ShaderType::Domain);
-	AddBind(pSRV0);
+	ShaderResourceView* pSRV2 = new ShaderResourceView(gfx, filePath);
+	pSRVDSHeightMap0 = pSRV2->GetSRV();
 
-	waterTexture[0] = L"Textures\\waves1.dds";
+	filePath = L"Textures\\waves1.dds";
 	//normal map 2 to pixel
-	ShaderResourceView* pSRV3 = new ShaderResourceView(gfx, waterTexture, 2u, 1u, ShaderType::Pixel);
-	AddBind(pSRV0);
+	ShaderResourceView* pSRV3 = new ShaderResourceView(gfx, filePath);
+	pSRVPSNormalMap1 = pSRV3->GetSRV();
 	//height map 2 to domain
-	ShaderResourceView* pSRV4 = new ShaderResourceView(gfx, waterTexture, 1u, 1u, ShaderType::Domain);
-	AddBind(pSRV0);
+	ShaderResourceView* pSRV4 = new ShaderResourceView(gfx, filePath);
+	pSRVDSHeightMap1 = pSRV4->GetSRV();
 
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
@@ -158,5 +158,15 @@ void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX world, Direct
 	frameDS->cameraPosition = cameraPosition;
 	frameDS->viewProjection = viewProjection;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDSCBPerFrame, 0u);
+
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pSRVPSNormalMap0);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pSRVPSNormalMap1);
+
+	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pSRVDSHeightMap0);
+	gfx.pgfx_pDeviceContext->DSSetShaderResources(1u, 1u, &pSRVDSHeightMap1);
+
+
+
+
 
 }
