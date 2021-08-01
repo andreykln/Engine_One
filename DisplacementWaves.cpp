@@ -21,8 +21,8 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 	cbVSPerObject.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
 	cbVSPerObject.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.mat.diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 16.0f);
+	cbVSPerObject.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	cbVSPerObject.mat.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 128.0f);
 	cbVSPerObject.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	for (int i = 0; i < mesh.vertices.size(); ++i)
@@ -135,8 +135,7 @@ void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX in_world, Dir
 	pVSCB->world = DirectX::XMMatrixTranspose(in_world);
 	pVSCB->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	pVSCB->worldViewProjection = DirectX::XMMatrixTranspose(in_world * viewProjection);
-   	pVSCB->waveDispTexTransform0 = DirectX::XMMatrixTranspose(waveDispTexTransform0);
-
+	pVSCB->waveDispTexTransform0 = DirectX::XMMatrixTranspose(waveDispTexTransform0);
 	pVSCB->waveDispTexTransform1 = DirectX::XMMatrixTranspose(waveDispTexTransform1);
 	pVSCB->waveNormalTexTransform0 = DirectX::XMMatrixTranspose(waveNormalTransform0);
 	pVSCB->waveNormalTexTransform1 = DirectX::XMMatrixTranspose(waveNormalTransform1);
