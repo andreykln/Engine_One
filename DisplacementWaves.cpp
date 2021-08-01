@@ -2,7 +2,7 @@
 
 DisplacementWaves::DisplacementWaves(Graphics& gfx)
 {
-	geoGen.CreateGrid(50, 50, 50, 50, mesh);
+	geoGen.CreateGrid(25.0f, 25.0f, 65, 45, mesh);
 	std::vector<Vertices_Full> vertices(mesh.vertices.size());
 
 	cbVSPerObject.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -34,6 +34,7 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 	}
 
 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"DisplacementWaves");
+	AddBind(pVB);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"DisplWavesIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -93,9 +94,11 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 
 }
 
-void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX world, DirectX::XMMATRIX viewProjection,
+void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX in_world, DirectX::XMMATRIX viewProjection,
 	DirectX::XMFLOAT3 cameraPosition, float dt)
 {
+
+
 	waveDispOffset0.x += 0.01f * dt;
 	waveDispOffset0.y += 0.03f * dt;
 
@@ -125,15 +128,16 @@ void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX world, Direct
 	waveNormalTransform1 = DirectX::XMMatrixMultiply(waveScale1, waveOffset1);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVSCBPerFrame, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVSCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_VS_DisplacementWavesPerFrame* pVSCB = reinterpret_cast<CB_VS_DisplacementWavesPerFrame*>(mappedData.pData);
 	pVSCB->cameraPosition = cameraPosition;
-	pVSCB->texTransform = DirectX::XMMatrixIdentity();
-	pVSCB->world = world;
-	pVSCB->worldInvTranspose = MathHelper::InverseTranspose(world);
-	pVSCB->worldViewProjection = DirectX::XMMatrixTranspose(world * viewProjection);
-	pVSCB->waveDispTexTransform0 =   DirectX::XMMatrixTranspose(waveDispTexTransform0);
-	pVSCB->waveDispTexTransform1 =   DirectX::XMMatrixTranspose(waveDispTexTransform1);
+	pVSCB->texTransform = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	pVSCB->world = DirectX::XMMatrixTranspose(in_world);
+	pVSCB->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	pVSCB->worldViewProjection = DirectX::XMMatrixTranspose(in_world * viewProjection);
+   	pVSCB->waveDispTexTransform0 = DirectX::XMMatrixTranspose(waveDispTexTransform0);
+
+	pVSCB->waveDispTexTransform1 = DirectX::XMMatrixTranspose(waveDispTexTransform1);
 	pVSCB->waveNormalTexTransform0 = DirectX::XMMatrixTranspose(waveNormalTransform0);
 	pVSCB->waveNormalTexTransform1 = DirectX::XMMatrixTranspose(waveNormalTransform1);
 	gfx.pgfx_pDeviceContext->Unmap(pCopyVSCBPerFrame, 0u);
@@ -156,7 +160,7 @@ void DisplacementWaves::UpdateCBs(Graphics& gfx, DirectX::XMMATRIX world, Direct
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDSCBPerFrame, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_CameraPosition_ViewProj* frameDS = reinterpret_cast<CB_CameraPosition_ViewProj*> (mappedData.pData);
 	frameDS->cameraPosition = cameraPosition;
-	frameDS->viewProjection = viewProjection;
+	frameDS->viewProjection = DirectX::XMMatrixTranspose(viewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pCopyDSCBPerFrame, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pSRVPSNormalMap0);

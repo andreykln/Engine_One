@@ -43,6 +43,14 @@ cbuffer cameraVP
     float3 cameraPosition;
 };
 
+static float4x4 test =
+{
+    3.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 3.0f, 0.0f,
+    0.0f, -5.0f, 0.0f, 1.0f
+};
+
 [domain("tri")]
 DS_OUTPUT main(
 	HS_CONSTANT_DATA_OUTPUT input,
@@ -69,11 +77,11 @@ DS_OUTPUT main(
     const float mipInterval = 20.0f;
     float mipLevel = clamp((distance(Output.posW, cameraPosition) - mipInterval) / mipInterval, 0.0f, 6.0f);
     
-    float height0 = heightMap0.SampleLevel(samplerLinear, Output.texCoord, mipLevel).a;
-    float height1 = heightMap1.SampleLevel(samplerLinear, Output.texCoord, mipLevel).a;
+    float height0 = heightMap0.SampleLevel(samplerLinear, Output.waveDisplacementTex0, mipLevel).a;
+    float height1 = heightMap1.SampleLevel(samplerLinear, Output.waveDisplacementTex1, mipLevel).a;
     
-    const float heightScale0 = 0.05f;
-    const float heightScale1 = 0.09f;
+    const float heightScale0 = 0.4f;
+    const float heightScale1 = 1.2f;
     
     Output.posW.y += heightScale0 * height0;
     Output.posW.y += heightScale1 * height1;

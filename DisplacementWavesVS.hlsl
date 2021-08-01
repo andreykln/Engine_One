@@ -1,4 +1,4 @@
-cbuffer perFrame
+cbuffer perFrame : register(b0)
 {
     float4x4 world;
     float4x4 worldViewProjection;
@@ -46,9 +46,10 @@ VertexOut main(VertexIn vin)
     vout.tangentW = mul(vin.tangentL, (float3x3) world);
     vout.waveDisplacementTex0 = mul(float4(vin.texCoord, 0.0f, 1.0f), waveDisplacementTexTransform0).xy;
     vout.waveDisplacementTex1 = mul(float4(vin.texCoord, 0.0f, 1.0f), waveDisplacementTexTransform1).xy;
+
     vout.waveNormalTex0 = mul(float4(vin.texCoord, 0.0f, 1.0f), waveNormalTexTransf0).xy;
     vout.waveNormalTex1 = mul(float4(vin.texCoord, 0.0f, 1.0f), waveNormalTexTransf1).xy;
-    
+
     
     // Transform to homogeneous clip space.
     vout.texCoord = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform).xy;
@@ -63,8 +64,6 @@ VertexOut main(VertexIn vin)
     
     //rescale [0,1] --> [minTessfactor, maxTessFactor]
     vout.tessFactor = minTessFactor + tess * (maxTessFactor - minTessFactor);
-    
-    
     
     return vout;
 }

@@ -523,13 +523,13 @@ DirectX::XMMATRIX App::GetViewProjectionCamera()
 void App::CreateShapesWithDynamicCubeMap()
 {
 	pDisplacementWaves = new DisplacementWaves(wnd.GetGraphics());
-	pSky = new Sky(wnd.GetGraphics());
+	/*pSky = new Sky(wnd.GetGraphics());
 	pDynamicCubeMap = new DynamicCubeMap(wnd.GetGraphics());
-	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
-	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::DisplacementMapping);
-	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
+	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);*/
+	//pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::DisplacementMapping);
+	/*pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
-	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
+// 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
@@ -541,7 +541,7 @@ void App::CreateShapesWithDynamicCubeMap()
 	for (size_t i = 0; i < 10; i++)
 	{
 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
-	}
+	}*/
 }
 
 void App::DrawShapesWithDynamicCubeMap()
@@ -550,14 +550,14 @@ void App::DrawShapesWithDynamicCubeMap()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
 
-	pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
+	/*pDynamicCubeMap->BuildCubeFaceCamera(0.0f, 0.0f, 0.0f);
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	ID3D11RenderTargetView* renderTargets[1];
 
 	//generate CubeMaps
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetViewports(1u, &pDynamicCubeMap->GetViewPort());
-	for (int i = 0; i < 6; ++i)
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetViewports(1u, &pDynamicCubeMap->GetViewPort());*/
+	/*for (int i = 0; i < 6; ++i)
 	{
 		//clear cubemap face and depth buffer
 		wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(pDynamicCubeMap->pDynamicCubeMapRTV[i], color);
@@ -577,9 +577,9 @@ void App::DrawShapesWithDynamicCubeMap()
 
 		DrawShapesWithoutCenterSphere(viewProj);
 
-	}
+	}*/
 	//restore default viewport and RTV
-	wnd.GetGraphics().SetViewport();
+	/*wnd.GetGraphics().SetViewport();
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
@@ -589,10 +589,9 @@ void App::DrawShapesWithDynamicCubeMap()
 	//draw scene as normal with center sphere
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	
-	viewProjectionMatrix = GetViewProjectionCamera();
+	*/
 
-	pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
+	/*pShaders->BindVSandIA(ShaderPicker::Light_VS_PS);
 	pShaders->BindPS(ShaderPicker::Light_VS_PS);
 	DirectX::XMMATRIX skullOrbiting;
 	DirectX::XMMATRIX axisRotation;
@@ -613,13 +612,13 @@ void App::DrawShapesWithDynamicCubeMap()
 		DirectX::XMMatrixIdentity(),
 		viewProjectionMatrix, 0.0f);
 	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
+	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());*/
 
 
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	/*pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);*/
 
-	if (GetAsyncKeyState('7') & 0x8000)
+	/*if (GetAsyncKeyState('7') & 0x8000)
 	{
 		wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 		pShaders->BindVSandIA(ShaderPicker::DisplacementMapping_VS_DS_HS);
@@ -630,13 +629,13 @@ void App::DrawShapesWithDynamicCubeMap()
 	if (GetAsyncKeyState('6') & 0x8000)
 	{
 		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
-	}
+	}*/
 
 
 
 
 
-	for (auto& x : displacementCylinders)
+	/*for (auto& x : displacementCylinders)
 	{
 		x->UpdateDisplacementCBuffers(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
 			viewProjectionMatrix, camera.GetCameraPosition());
@@ -644,19 +643,19 @@ void App::DrawShapesWithDynamicCubeMap()
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 
 	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	shapes.GetCylinderWorldArray() -= 10; //reset array position*/
 
 // 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 // 		viewProjectionMatrix, camera.GetCameraPosition());
 // 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 // 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pDisplacementMappingBox->UpdateDisplacementCBuffers(wnd.GetGraphics(),
+	/*pDisplacementMappingBox->UpdateDisplacementCBuffers(wnd.GetGraphics(),
 		shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix, camera.GetCameraPosition());
 	pDisplacementMappingBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 	pShaders->UnbindDS();
-	pShaders->UnbindHS();
+	pShaders->UnbindHS();*/
 
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
@@ -664,8 +663,11 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->BindHS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindDS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindPS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+
+
 	pDisplacementWaves->UpdateCBs(wnd.GetGraphics(), shapes.Get_m_GridWorld()* shapes.GetCameraOffset(),
-		viewProjectionMatrix, camera.GetCameraPosition(), timer.TotalTime());
+		viewProjectionMatrix, camera.GetCameraPosition(), timer.DeltaTime());
+
 	pDisplacementWaves->BindAndDrawIndexed(wnd.GetGraphics());
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();

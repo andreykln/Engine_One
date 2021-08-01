@@ -44,7 +44,6 @@ struct CB_VS_DisplacementWavesPerFrame
 	DirectX::XMMATRIX waveNormalTexTransform0;
 	DirectX::XMMATRIX waveNormalTexTransform1;
 	DirectX::XMFLOAT3 cameraPosition;
-
 };
 
 struct CB_VS_TransformWithCameraPosition
