@@ -15,6 +15,7 @@ struct DS_OUTPUT
 Texture2D diffuseMap : register(t0);
 Texture2D normalMap0 : register(t1);
 Texture2D normalMap1 : register(t2);
+TextureCube cubeMap : register(t3);
 
 SamplerState samplerLinear : register(s0);
 
@@ -86,6 +87,15 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
     
     
         litColor = texColor * (ambient + diffuse) + specular;
+        
+        float3 incident = -toEye;
+     //   float3 refractionVector = refract(incident, pin.NormalW, 0.97f);
+        float3 reflectionVector = reflect(incident, pin.normalW);
+        float4 reflectionColor = cubeMap.Sample(samplerLinear, reflectionVector);
+       // float4 reflectionColor = cubeMap.Sample(tex0Sample, refractionVector);
+
+        litColor += objectMaterial.reflect * reflectionColor;
+
     }
 
      //fogging

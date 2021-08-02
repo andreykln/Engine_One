@@ -546,6 +546,7 @@ void App::CreateShapesWithDynamicCubeMap()
 
 void App::DrawShapesWithDynamicCubeMap()
 {
+	ID3D11ShaderResourceView* pNULLSrv = nullptr;
 	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
@@ -585,7 +586,6 @@ void App::DrawShapesWithDynamicCubeMap()
 
 	//have hardware generate lower mipmap levels of cube map
 	wnd.GetGraphics().pgfx_pDeviceContext->GenerateMips(pDynamicCubeMap->GetCubeMapSRV());
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDynamicCubeMap->pDynamicCubeMapSRV);
 	//draw scene as normal with center sphere
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(wnd.GetGraphics().pgfx_RenderTargetView.Get(), color);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -606,26 +606,27 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::CubeMap_PS);
 
-
-
+	//generated cubemap SRV
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDynamicCubeMap->pDynamicCubeMapSRV);
 	pGeoSphere->UpdateVSMatrices(wnd.GetGraphics(),
 		DirectX::XMMatrixIdentity(),
 		viewProjectionMatrix, 0.0f);
 	pGeoSphere->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pGeoSphere->BindAndDrawIndexed(wnd.GetGraphics());
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNULLSrv);
 
 
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-	if (GetAsyncKeyState('7') & 0x8000)
-	{
+// 	if (GetAsyncKeyState('7') & 0x8000)
+// 	{
 		wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 		pShaders->BindVSandIA(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindPS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-	}
+// 	}
 	if (GetAsyncKeyState('6') & 0x8000)
 	{
 		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
@@ -659,10 +660,12 @@ void App::DrawShapesWithDynamicCubeMap()
 
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
+
 	pShaders->BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindHS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindDS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindPS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, pSky->GetSkyCubeMap());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
 
@@ -673,6 +676,9 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->UnbindHS();
 	pShaders->UnbindVS();
 	pShaders->UnbindPS();
+
+	//unbind for reusing in generation new cubemap
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNULLSrv);
 
 
 

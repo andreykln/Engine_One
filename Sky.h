@@ -6,7 +6,7 @@ class Sky : public Shape
 public:
 	Sky(Graphics& gfx);
 	void UpdateVSMatricesAndCubeMap(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj);
-
+	ID3D11ShaderResourceView** GetSkyCubeMap();
 
 private:
 	GeometryGenerator geoGen;

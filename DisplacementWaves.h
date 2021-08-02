@@ -13,7 +13,7 @@ private:
 	GeometryGenerator::MeshData mesh;
 
 	CB_VS_DisplacementWavesPerFrame cbVSPerFrame;
-	CB_PS_DirectionalL_Fog cbVSPerObject;
+	CB_PS_DirectionalL_Fog cbPSPerObject;
 	CB_CameraPosition_ViewProj cbDSCameraViewProj;
 	CB_PS_PerFrameUpdate cbPSPerFrame;
 

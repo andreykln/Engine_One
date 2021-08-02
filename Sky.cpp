@@ -62,3 +62,8 @@ void Sky::UpdateVSMatricesAndCubeMap(Graphics& gfx, const DirectX::XMMATRIX& wor
 
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pCubeMapSRV);
 }
+
+ID3D11ShaderResourceView** Sky::GetSkyCubeMap()
+{
+	return &pCubeMapSRV;
+}

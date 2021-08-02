@@ -5,25 +5,25 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 	geoGen.CreateGrid(25.0f, 25.0f, 65, 45, mesh);
 	std::vector<Vertices_Full> vertices(mesh.vertices.size());
 
-	cbVSPerObject.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	cbVSPerObject.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	cbPSPerObject.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	cbPSPerObject.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	cbPSPerObject.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	cbPSPerObject.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	cbVSPerObject.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	cbVSPerObject.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	cbVSPerObject.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	cbVSPerObject.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
+	cbPSPerObject.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	cbPSPerObject.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	cbPSPerObject.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	cbPSPerObject.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
 
-	cbVSPerObject.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	cbVSPerObject.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	cbVSPerObject.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+	cbPSPerObject.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+	cbPSPerObject.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	cbPSPerObject.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	cbPSPerObject.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	cbVSPerObject.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbVSPerObject.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	cbVSPerObject.mat.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 128.0f);
-	cbVSPerObject.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	cbPSPerObject.mat.ambient = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	cbPSPerObject.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	cbPSPerObject.mat.specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 128.0f);
+	cbPSPerObject.mat.reflect = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
 
 	for (int i = 0; i < mesh.vertices.size(); ++i)
 	{
@@ -40,7 +40,7 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 	AddIndexBuffer(pIndexBuffer);
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pVSCB =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, cbVSPerObject, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, cbPSPerObject, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pVSCB);
 
 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pPSCB =
