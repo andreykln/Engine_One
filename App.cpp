@@ -12,7 +12,7 @@ App::App()
 
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
-	CreateShapesWithDynamicCubeMap();
+// 	CreateShapesWithDynamicCubeMap();
 // 	CreateHillsWithWavesAllLight();
 // 	CreateHillsWithGPUWaves();
 // 	CreateMirror();
@@ -30,7 +30,7 @@ void App::DoFrame()
 	timer.Tick();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
-	DrawShapesWithDynamicCubeMap();
+// 	DrawShapesWithDynamicCubeMap();
 // 	DrawMirror();
 // 	DrawHillsWithGPUWaves();
 // 	DrawBox();
@@ -619,14 +619,14 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
-// 	if (GetAsyncKeyState('7') & 0x8000)
-// 	{
+	if (GetAsyncKeyState('7') & 0x8000)
+	{
 		wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 		pShaders->BindVSandIA(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 		pShaders->BindPS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-// 	}
+	}
 	if (GetAsyncKeyState('6') & 0x8000)
 	{
 		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
@@ -658,10 +658,10 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
 
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	//wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 
-	pShaders->BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	/*pShaders->BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindHS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindDS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindPS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
@@ -675,10 +675,10 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
 	pShaders->UnbindVS();
-	pShaders->UnbindPS();
+	pShaders->UnbindPS();*/
 
 	//unbind for reusing in generation new cubemap
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNULLSrv);
+//	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNULLSrv);
 
 
 
