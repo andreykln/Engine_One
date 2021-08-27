@@ -1,6 +1,5 @@
 #pragma once
 #include "Shape.h"
-#include <fstream>
 
 class Skull : public Shape
 {

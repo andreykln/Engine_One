@@ -41,6 +41,7 @@ private:
 	void DrawInstancingDraw();
 	void CreatePicking();
 	void DrawPicking();
+	void CreateTerrain();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 
@@ -63,6 +64,7 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	Terrain* pTerrain = nullptr;
 	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;
 	DynamicCubeMap* pDynamicCubeMap = nullptr;

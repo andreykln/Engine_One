@@ -20,6 +20,7 @@ App::App()
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
 // 	CreatePicking();
+	CreateTerrain();
 
 }
 
@@ -841,6 +842,11 @@ void App::DrawPicking()
 
 }
 
+
+void App::CreateTerrain()
+{
+	pTerrain = new Terrain(wnd.GetGraphics());
+}
 
 App::~App()
 {

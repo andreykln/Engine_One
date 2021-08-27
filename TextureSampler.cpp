@@ -31,6 +31,9 @@ void TextureSampler::Bind(Graphics& gfx) noexcept
 	}
 		break;
 	case ShaderType::Vertex:
+	{
+		GetContext(gfx)->VSSetSamplers(0u, 1u, &pSamplerState);
+	}
 		break;
 	case ShaderType::Compute:
 		break;

@@ -3,6 +3,7 @@
 #include "GeometryGenerator.h"
 #include "BindableBase.h"
 #include "MathHelper.h"
+#include <fstream>
 #include <memory>
 #include <typeinfo>
 #include <cassert>

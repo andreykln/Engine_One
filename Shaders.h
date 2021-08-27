@@ -119,5 +119,11 @@ private:
 	ID3D11HullShader* pDisplacementWavesHS = nullptr;
 	ID3D11DomainShader* pDisplacementWavesDS = nullptr;
 
+	//terrain with height map
+	ID3D11VertexShader* pTerrainVS = nullptr;
+	ID3D11InputLayout* pTerrainIL = nullptr;
+	ID3D11HullShader* pTerrainHS = nullptr;
+	ID3D11DomainShader* pTerrainDS = nullptr;
+	ID3D11PixelShader* pTerrainPS = nullptr;
 };
 

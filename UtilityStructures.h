@@ -62,6 +62,15 @@ struct CB_PS_NormalMappingState
 	int padding[3] = { 0,0,0 };
 };
 
+struct CB_HS_TerrainPerFrame
+{
+	CB_HS_TerrainPerFrame() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMFLOAT3 cameraPosition;
+	DirectX::XMFLOAT4 worldFrustumPlanes[4];
+
+};
+
+
 struct CB_VS_WorldViewProjection
 {
 	CB_VS_WorldViewProjection() { ZeroMemory(this, sizeof(this)); }
@@ -238,5 +247,6 @@ enum ShaderPicker
 	LightAndTextureNormalMapping_VS_PS,
 	DisplacementMapping_VS_DS_HS,
 	DisplacementWaves_VS_HS_DS_PS,
+	TerrainHeightMap_VS_PS_DS_HS_PS,
 	Keep
 };
