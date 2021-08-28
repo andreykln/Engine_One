@@ -36,7 +36,7 @@ cbuffer PS_Per_Frame : register(b1)
 float4 main(DS_OUTPUT pin) : SV_TARGET
 {
    // Interpolating normal can unnormalize it
-    pin.normalW = normalize(pin.normalW);
+   /* pin.normalW = normalize(pin.normalW);
     
     // The toEye vector is used in lighting.
     float3 toEye = camPositon - pin.posW;
@@ -100,5 +100,6 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
         // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
 
-    return litColor;
+    return litColor;*/
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

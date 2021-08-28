@@ -12,7 +12,8 @@ public:
 	ShaderResourceView(Graphics& gfx, const wchar_t* path);
 	ID3D11ShaderResourceView* GetSRV() const;
 	//create texture array
-	ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr);
+	ShaderResourceView(std::wstring* in_path, UINT in_NumofTextures);
+	ID3D11ShaderResourceView* GetTextureArray(Graphics& gfx);
 	static ID3D11ShaderResourceView* CreateCubeMap(Graphics& gfx, std::wstring* in_path);
 	void Bind(Graphics& gfx) noexcept override;
 	~ShaderResourceView()
@@ -29,6 +30,7 @@ private:
 	UINT startSlot = 0;
 	bool textureArray = false;
 	DirectX::TexMetadata textureMetaData;
+	std::vector<DirectX::Image> ImagesArray;
 	ID3D11Resource* pResource = nullptr;
 	ID3D11Texture2D* pTexture = nullptr;
 	//ID3D11ShaderResourceView* pShaderResourceView = nullptr;

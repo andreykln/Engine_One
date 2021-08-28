@@ -65,8 +65,10 @@ struct CB_PS_NormalMappingState
 struct CB_HS_TerrainPerFrame
 {
 	CB_HS_TerrainPerFrame() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMFLOAT3 cameraPosition;
 	DirectX::XMFLOAT4 worldFrustumPlanes[4];
+	DirectX::XMFLOAT3 cameraPosition;
+	float padding = 0.0f;
+	
 
 };
 

@@ -2,16 +2,22 @@ float CalculateTessFactor(float3 p);
 bool AabbBehindPlaneTest(float3 center, float3 extents, float4 plane);
 bool AabbOutsideFrustumTest(float3 center, float3 extents, float4 frustumPlanes[6]);
 
+static float minDist = 5.0f;
+static float maxDist = 50.0f;
+static float minTess = 1.0f;
+float maxTess = 64.0f;
 
-cbuffer perFrame : register(c0)
+
+cbuffer perFrame : register(b0)
 {
    /*float minDist;
     float maxDist;
     float minTess;
     float maxTess;*/
 	
+    float4 worldFrustumPlanes[6];
     float3 camPosition;
-    float4 worldFrustumPlanes[4];
+    float padding;
 }
 
 struct VertexOut
@@ -125,7 +131,7 @@ float CalculateTessFactor(float3 p)
     //(in negative half space) of plane
 bool AabbBehindPlaneTest(float3 center, float3 extents, float4 plane)
 {
-    float n = abs(plane.xyz);
+    float3 n = abs(plane.xyz);
     
     //this is always positive
     float r = dot(extents, n);

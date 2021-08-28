@@ -131,8 +131,8 @@ Cylinder::Cylinder(Graphics& gfx,
 		{
 			LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
 		}
-		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
-		AddBind(pSRV);
+// 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
+// 		AddBind(pSRV);
 	}
 
 	std::wstring directory[1];

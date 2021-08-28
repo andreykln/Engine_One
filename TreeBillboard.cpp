@@ -47,8 +47,8 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 	{
 		treesTex[i] = L"Textures\\Trees\\tree" + std::to_wstring(i + 1) + L".dds";
 	}
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, treesTex, (UINT)std::size(treesTex), 1, true);
-	AddBind(pSRV);
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, treesTex, (UINT)std::size(treesTex), 1, true);
+// 	AddBind(pSRV);
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSconstBuffer =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);

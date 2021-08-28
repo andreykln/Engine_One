@@ -14,8 +14,9 @@ Terrain::Terrain(Graphics& gfx)
 	terrainInitInfo.HeightMapWidth = 2049;
 	terrainInitInfo.HeightScale = 50.0f;
 
-
-
+	numPatchVertRows = ((terrainInitInfo.HeightMapHeight - 1) / cellsPerPatch) + 1;
+	numPatchVertCols = ((terrainInitInfo.HeightMapWidth - 1) / cellsPerPatch) + 1;
+	numPatchQuadFaces = (numPatchVertRows - 1) * (numPatchVertCols - 1);
 	std::vector<unsigned char> in(terrainInitInfo.HeightMapWidth * terrainInitInfo.HeightMapHeight);
 
 	std::ifstream inFile;
@@ -64,7 +65,7 @@ Terrain::Terrain(Graphics& gfx)
 	hMapTex->Release();
 
 	//Vertex buffer
-	std::vector<TerrainVB> patchVertices(numPatchVertCols * numPatchVertRows);
+	std::vector<TerrainVB> patchVertices((int)numPatchVertCols * (int)numPatchVertRows);
 	float halfWidth = 0.5f * GetWidth();
 	float halfDepth = 0.5f * GetDepth();
 
@@ -84,14 +85,17 @@ Terrain::Terrain(Graphics& gfx)
 			patchVertices[i * numPatchVertCols + j].tex.y = j * dv;
 		}
 	}
-
+	CalculateAllPatchBoundsY();
 	//store axis-aligned bounding box y-bounds in upper left patch-corner
-	for (UINT i = 0; i < numPatchVertRows; ++i)
+
+	auto a = std::size(patchBoundsY);
+	auto b = std::size(patchVertices);
+	for (UINT i = 0; i < numPatchVertRows - 1; ++i)
 	{
-		for (UINT j = 0; j < numPatchVertCols; ++j)
+		for (UINT j = 0; j < numPatchVertCols - 1; ++j)
 		{
 			UINT patchID = i * (numPatchVertCols - 1) + j;
-			patchVertices[i * numPatchVertCols + j].boundsY = patchBoundsY[patchID];
+			patchVertices[(int)i * (int)numPatchVertCols + (int)j].boundsY = patchBoundsY[patchID];
 		}
 	}
 
@@ -106,9 +110,9 @@ Terrain::Terrain(Graphics& gfx)
 	std::vector<UINT> indices(numPatchQuadFaces * 4u); //4 indices per quad face
 
 	int k = 0;
-	for (UINT i = 0; i < numPatchVertRows; ++i)
+	for (UINT i = 0; i < numPatchVertRows - 1; ++i)
 	{
-		for (UINT j = 0; j < numPatchVertCols; ++j)
+		for (UINT j = 0; j < numPatchVertCols - 1; ++j)
 		{
 			//top row of 2x2 quad patch
 			indices[k] = i * numPatchVertCols + j;
@@ -139,9 +143,22 @@ Terrain::Terrain(Graphics& gfx)
 	pDSBufferCopy = pDSCB->GetDomainShaderConstantBuffer();
 	AddBind(pDSCB);
 
+	std::wstring layers[5];
+	layers[0] = terrainInitInfo.LayerMapFilename0;
+	layers[1] = terrainInitInfo.LayerMapFilename1;
+	layers[2] = terrainInitInfo.LayerMapFilename2;
+	layers[3] = terrainInitInfo.LayerMapFilename3;
+	layers[4] = terrainInitInfo.LayerMapFilename4;
+
+
+
+	ShaderResourceView* pLayerMaps = new ShaderResourceView(layers, std::size(layers));
+	pTerrainLayerMaps = pLayerMaps->GetTextureArray(gfx);
+
+
 }
 
-void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[4], 
+void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[6], 
 	DirectX::XMMATRIX WVP)
 {
 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapSRV);
@@ -154,6 +171,9 @@ void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, Di
 	pHullShader->worldFrustumPlanes[1] = worldFrustumPlanes[1];
 	pHullShader->worldFrustumPlanes[2] = worldFrustumPlanes[2];
 	pHullShader->worldFrustumPlanes[3] = worldFrustumPlanes[3];
+	pHullShader->worldFrustumPlanes[4] = worldFrustumPlanes[4];
+	pHullShader->worldFrustumPlanes[5] = worldFrustumPlanes[5];
+
 	gfx.pgfx_pDeviceContext->Unmap(pHSBufferCopy, 0u);
 
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pDSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));

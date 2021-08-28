@@ -32,7 +32,7 @@ public:
 	};
 
 	Terrain(Graphics& gfx);
-	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[4],
+	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[6],
 		DirectX::XMMATRIX WVP);
 
 private:
@@ -60,4 +60,5 @@ private:
 
 	ID3D11Buffer* pHSBufferCopy = nullptr;
 	ID3D11Buffer* pDSBufferCopy = nullptr;
+	ID3D11ShaderResourceView* pTerrainLayerMaps = nullptr;
 };

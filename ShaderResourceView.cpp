@@ -57,7 +57,7 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 				size_t index = textureMetaData.ComputeIndex(level, item, 0);
 				const Image& img = image[index];
 				assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
-
+				
 				textureInitData[idx].pSysMem = img.pixels;
 				textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
 				textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
@@ -80,18 +80,17 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 	}
 }
 //create texture array
-ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_NumofTextures, UINT in_NumSRVs, bool texarr)
-: arrPath{in_path}, numTextures (in_NumofTextures), numSRVs{in_NumSRVs}, textureArray{texarr}
+ShaderResourceView::ShaderResourceView(std::wstring* in_path, UINT in_NumofTextures)
+: arrPath{in_path}, numTextures (in_NumofTextures)
 {
 #ifdef MY_DEBUG
-	for (size_t i = 0; i < numTextures; i++)
-	{
-		gfx.CheckFileExistence(gfx, arrPath[i]);
-	}
+// 	for (size_t i = 0; i < numTextures; i++)
+// 	{
+// 		gfx.CheckFileExistence(gfx, arrPath[i]);
+// 	}
 
 #endif // MY_DEBUG
 
-	std::vector<DirectX::Image> ImagesArray;
 	for (size_t i = 0; i < numTextures; ++i)
 	{
 		DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
@@ -111,9 +110,9 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 	}
 	textureMetaData.arraySize = numTextures;
 
-	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray.data(),
-										numTextures * textureMetaData.mipLevels,
-										textureMetaData, &pSRVTexArray);
+// 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray.data(),
+// 										numTextures * textureMetaData.mipLevels,
+// 										textureMetaData, &pSRVTexArray);
 
 }
 
@@ -185,6 +184,14 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const wchar_t* path)
 	pImageData->Release();
 
 
+}
+
+ID3D11ShaderResourceView* ShaderResourceView::GetTextureArray(Graphics& gfx)
+{
+	 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray.data(),
+	 										numTextures * textureMetaData.mipLevels,
+	 										textureMetaData, &pSRVTexArray);
+		return pSRVTexArray;
 }
 
 ID3D11ShaderResourceView* ShaderResourceView::GetSRV() const
