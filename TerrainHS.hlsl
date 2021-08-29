@@ -2,10 +2,7 @@ float CalculateTessFactor(float3 p);
 bool AabbBehindPlaneTest(float3 center, float3 extents, float4 plane);
 bool AabbOutsideFrustumTest(float3 center, float3 extents, float4 frustumPlanes[6]);
 
-static float minDist = 5.0f;
-static float maxDist = 50.0f;
-static float minTess = 1.0f;
-float maxTess = 64.0f;
+
 
 
 cbuffer perFrame : register(b0)
@@ -121,6 +118,11 @@ HS_CONTROL_POINT_OUTPUT main(
 
 float CalculateTessFactor(float3 p)
 {
+    const float minDist = 5.0f;
+    const float maxDist = 50.0f;
+    const float minTess = 1.0f;
+    const float maxTess = 64.0f;
+    
     float d = distance(p, camPosition);
     float s = saturate((d - minDist) / (maxDist - minDist));
 	

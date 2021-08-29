@@ -47,7 +47,7 @@ Terrain::Terrain(Graphics& gfx)
 	CB_PS_PerFrameUpdate;
 
 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pCBPSPerFrame =
-		new PixelShaderConstantBuffer(gfx, cbPsPerFrame, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		new PixelShaderConstantBuffer(gfx, cbPsPerFrame, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pPSBufferCopy = pCBPSPerFrame->GetPixelShaderConstantBuffer();
 	AddBind(pCBPSPerFrame);
 
@@ -147,7 +147,7 @@ Terrain::Terrain(Graphics& gfx)
 	numPatchQuadFaces = (numPatchVertCols - 1) * (numPatchVertRows - 1);
 	std::vector<UINT> indices(numPatchQuadFaces * 4u); //4 indices per quad face
 
-	int k = 0;
+	UINT k = 0;
 	for (UINT i = 0; i < numPatchVertRows - 1; ++i)
 	{
 		for (UINT j = 0; j < numPatchVertCols - 1; ++j)
