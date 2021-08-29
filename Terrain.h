@@ -32,8 +32,8 @@ public:
 	};
 
 	Terrain(Graphics& gfx);
-	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[6],
-		DirectX::XMMATRIX WVP);
+	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP);
+	int GetNumQuadFaces();
 
 private:
 	bool InBounds(int i, int j);
@@ -43,10 +43,13 @@ private:
 	void Smooth();
 	void CalculateAllPatchBoundsY();
 	void CalculatePatchBoundsY(UINT i, UINT j);
+	void ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M);
 
 	CB_HS_TerrainPerFrame HullShaderCB;
 	CB_VS_WorldViewProjection DomainShaderCB; 
-
+	CB_PS_DirectionalL_Fog cbDirectionalLight;
+	CB_PS_PerFrameUpdate cbPsPerFrame;
+	CB_PS_Terrain terrainConstants;
 
 	InitInfo terrainInitInfo;
 	std::vector<float> heightMap;
@@ -60,5 +63,7 @@ private:
 
 	ID3D11Buffer* pHSBufferCopy = nullptr;
 	ID3D11Buffer* pDSBufferCopy = nullptr;
+	ID3D11Buffer* pPSBufferCopy = nullptr;
 	ID3D11ShaderResourceView* pTerrainLayerMaps = nullptr;
+	ID3D11ShaderResourceView* pTerrainHeightMap = nullptr;
 };

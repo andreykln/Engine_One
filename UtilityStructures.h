@@ -65,13 +65,21 @@ struct CB_PS_NormalMappingState
 struct CB_HS_TerrainPerFrame
 {
 	CB_HS_TerrainPerFrame() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMFLOAT4 worldFrustumPlanes[4];
+	DirectX::XMFLOAT4 worldFrustumPlanes[6];
 	DirectX::XMFLOAT3 cameraPosition;
 	float padding = 0.0f;
 	
 
 };
 
+struct CB_PS_Terrain
+{
+	CB_PS_Terrain() { ZeroMemory(this, sizeof(this)); }
+	float texelCellSpaceU;
+	float texelCellSpaceV;
+	float worldCellSpace;
+	float padding;
+};
 
 struct CB_VS_WorldViewProjection
 {
@@ -92,8 +100,8 @@ struct CB_PS_DirectionalL_Fog
 	DirectionalLight dirLight[3];
 	Material mat;
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	float fogstart = 50.0f;
-	float fogRange = 200.0f;
+	const float fogstart = 50.0f;
+	const float fogRange = 200.0f;
 	float padding[2];
 };
 

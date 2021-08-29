@@ -42,6 +42,7 @@ private:
 	void CreatePicking();
 	void DrawPicking();
 	void CreateTerrain();
+	void DrawTerrain();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 

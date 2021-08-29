@@ -2,6 +2,30 @@
 
 Terrain::Terrain(Graphics& gfx)
 {
+	cbDirectionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	cbDirectionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	cbDirectionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	cbDirectionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+	cbDirectionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+	cbDirectionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	cbDirectionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	cbDirectionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
+
+	cbDirectionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
+	cbDirectionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
+	cbDirectionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+	cbDirectionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+
+	cbDirectionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	cbDirectionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	cbDirectionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
+	cbDirectionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pCBDirLight =
+		new PixelShaderConstantBuffer(gfx, cbDirectionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pCBDirLight);
+
 	terrainInitInfo.BlendMapFilename = L"Textures\\Terrain\\blend.dds";
 	terrainInitInfo.LayerMapFilename0 = L"Textures\\Terrain\\grass.dds";
 	terrainInitInfo.LayerMapFilename1 = L"Textures\\Terrain\\darkdirt.dds";
@@ -13,6 +37,19 @@ Terrain::Terrain(Graphics& gfx)
 	terrainInitInfo.HeightMapHeight = 2049;
 	terrainInitInfo.HeightMapWidth = 2049;
 	terrainInitInfo.HeightScale = 50.0f;
+
+	terrainConstants.texelCellSpaceU = 1.0f / terrainInitInfo.HeightMapWidth;
+	terrainConstants.texelCellSpaceV = 1.0f / terrainInitInfo.HeightMapHeight;
+	terrainConstants.worldCellSpace = terrainInitInfo.cellSpacing;
+	PixelShaderConstantBuffer<CB_PS_Terrain>* pCBPSTerrainContants =
+		new PixelShaderConstantBuffer(gfx, terrainConstants, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	AddBind(pCBPSTerrainContants);
+	CB_PS_PerFrameUpdate;
+
+	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pCBPSPerFrame =
+		new PixelShaderConstantBuffer(gfx, cbPsPerFrame, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pPSBufferCopy = pCBPSPerFrame->GetPixelShaderConstantBuffer();
+	AddBind(pCBPSPerFrame);
 
 	numPatchVertRows = ((terrainInitInfo.HeightMapHeight - 1) / cellsPerPatch) + 1;
 	numPatchVertCols = ((terrainInitInfo.HeightMapWidth - 1) / cellsPerPatch) + 1;
@@ -61,6 +98,7 @@ Terrain::Terrain(Graphics& gfx)
 	srvDesc.Texture2D.MipLevels = -1;
 	srvDesc.Texture2D.MostDetailedMip = 0u;
 	gfx.pgfx_pDevice->CreateShaderResourceView(hMapTex, &srvDesc, &pHeightMapSRV);
+	gfx.pgfx_pDevice->CreateShaderResourceView(hMapTex, &srvDesc, &pTerrainHeightMap);
 
 	hMapTex->Release();
 
@@ -132,6 +170,8 @@ Terrain::Terrain(Graphics& gfx)
 	TextureSampler* pTexSamplerVS = new TextureSampler(gfx, ShaderType::Vertex);
 	AddBind(pTexSamplerVS);
 
+	TextureSampler* pTexSamplerPS = new TextureSampler(gfx, ShaderType::Pixel);
+	AddBind(pTexSamplerPS);
 
 	HullShaderConstantBuffer<CB_HS_TerrainPerFrame>* pHSCB = 
 		new HullShaderConstantBuffer(gfx, HullShaderCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -150,6 +190,10 @@ Terrain::Terrain(Graphics& gfx)
 	layers[3] = terrainInitInfo.LayerMapFilename3;
 	layers[4] = terrainInitInfo.LayerMapFilename4;
 
+	std::wstring blendMap[1];
+	blendMap[0]= terrainInitInfo.BlendMapFilename;
+	ShaderResourceView* pBlendMap = new ShaderResourceView(gfx, blendMap, 2u, 1u, ShaderType::Pixel);
+	AddBind(pBlendMap);
 
 
 	ShaderResourceView* pLayerMaps = new ShaderResourceView(layers, std::size(layers));
@@ -158,21 +202,25 @@ Terrain::Terrain(Graphics& gfx)
 
 }
 
-void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT4 worldFrustumPlanes[6], 
-	DirectX::XMMATRIX WVP)
+void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP)
 {
+	DirectX::XMFLOAT4 worldPlanes[6];
+	ExtractFrustumPlanes(worldPlanes, WVP);
 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapSRV);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pTerrainLayerMaps);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pTerrainHeightMap);
+
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pHSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_HS_TerrainPerFrame* pHullShader = reinterpret_cast<CB_HS_TerrainPerFrame*>(mappedData.pData);
 	pHullShader->cameraPosition = camPosition;
-	pHullShader->worldFrustumPlanes[0] = worldFrustumPlanes[0];
-	pHullShader->worldFrustumPlanes[1] = worldFrustumPlanes[1];
-	pHullShader->worldFrustumPlanes[2] = worldFrustumPlanes[2];
-	pHullShader->worldFrustumPlanes[3] = worldFrustumPlanes[3];
-	pHullShader->worldFrustumPlanes[4] = worldFrustumPlanes[4];
-	pHullShader->worldFrustumPlanes[5] = worldFrustumPlanes[5];
+	pHullShader->worldFrustumPlanes[0] = worldPlanes[0];
+	pHullShader->worldFrustumPlanes[1] = worldPlanes[1];
+	pHullShader->worldFrustumPlanes[2] = worldPlanes[2];
+	pHullShader->worldFrustumPlanes[3] = worldPlanes[3];
+	pHullShader->worldFrustumPlanes[4] = worldPlanes[4];
+	pHullShader->worldFrustumPlanes[5] = worldPlanes[5];
 
 	gfx.pgfx_pDeviceContext->Unmap(pHSBufferCopy, 0u);
 
@@ -181,8 +229,26 @@ void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, Di
 	pDomainShader->worldViewProjection = WVP;
 	gfx.pgfx_pDeviceContext->Unmap(pDSBufferCopy, 0u);
 
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+	frame->cameraPositon = camPosition;
 
+	if (GetAsyncKeyState('0') & 0x8000)
+		frame->numberOfLights = 0;
+	if (GetAsyncKeyState('1') & 0x8000)
+		frame->numberOfLights = 1;
+	if (GetAsyncKeyState('2') & 0x8000)
+		frame->numberOfLights = 2;
+	if (GetAsyncKeyState('3') & 0x8000)
+		frame->numberOfLights = 3;
 
+	gfx.pgfx_pDeviceContext->Unmap(pPSBufferCopy, 0u);
+
+}
+
+int Terrain::GetNumQuadFaces()
+{
+	return numPatchQuadFaces;
 }
 
 bool Terrain::InBounds(int i, int j)
@@ -274,3 +340,64 @@ float Terrain::GetDepth()
 	return (terrainInitInfo.HeightMapHeight - 1) * terrainInitInfo.cellSpacing;
 }
 
+void Terrain::ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M)
+{
+	using namespace DirectX;
+	//
+	// Left
+	//
+	DirectX::XMFLOAT4X4 M;
+	DirectX::XMStoreFloat4x4(&M, _M);
+
+	planes[0].x = M(0, 3) + M(0, 0);
+	planes[0].y = M(1, 3) + M(1, 0);
+	planes[0].z = M(2, 3) + M(2, 0);
+	planes[0].w = M(3, 3) + M(3, 0);
+
+	//
+	// Right
+	//
+	planes[1].x = M(0, 3) - M(0, 0);
+	planes[1].y = M(1, 3) - M(1, 0);
+	planes[1].z = M(2, 3) - M(2, 0);
+	planes[1].w = M(3, 3) - M(3, 0);
+
+	//
+	// Bottom
+	//
+	planes[2].x = M(0, 3) + M(0, 1);
+	planes[2].y = M(1, 3) + M(1, 1);
+	planes[2].z = M(2, 3) + M(2, 1);
+	planes[2].w = M(3, 3) + M(3, 1);
+
+	//
+	// Top
+	//
+	planes[3].x = M(0, 3) - M(0, 1);
+	planes[3].y = M(1, 3) - M(1, 1);
+	planes[3].z = M(2, 3) - M(2, 1);
+	planes[3].w = M(3, 3) - M(3, 1);
+
+	//
+	// Near
+	//
+	planes[4].x = M(0, 2);
+	planes[4].y = M(1, 2);
+	planes[4].z = M(2, 2);
+	planes[4].w = M(3, 2);
+
+	//
+	// Far
+	//
+	planes[5].x = M(0, 3) - M(0, 2);
+	planes[5].y = M(1, 3) - M(1, 2);
+	planes[5].z = M(2, 3) - M(2, 2);
+	planes[5].w = M(3, 3) - M(3, 2);
+
+	// Normalize the plane equations.
+	for (int i = 0; i < 6; ++i)
+	{
+		DirectX::XMVECTOR v = DirectX::XMPlaneNormalize(DirectX::XMLoadFloat4(&planes[i]));
+		DirectX::XMStoreFloat4(&planes[i], v);
+	}
+}

@@ -40,7 +40,7 @@ void App::DoFrame()
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
 // 	DrawPicking();
-
+	DrawTerrain();
 
 
 	CalculateFrameStats();
@@ -846,6 +846,21 @@ void App::DrawPicking()
 void App::CreateTerrain()
 {
 	pTerrain = new Terrain(wnd.GetGraphics());
+}
+
+void App::DrawTerrain()
+{
+	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindPS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	viewProjectionMatrix = GetViewProjectionCamera();
+
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+
+
+	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
+	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
 }
 
 App::~App()
