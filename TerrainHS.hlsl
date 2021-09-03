@@ -80,8 +80,8 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 		//compute midpoint on edges, and patch center
         float3 e0 = 0.5f * (ip[0].posW + ip[2].posW);
         float3 e1 = 0.5f * (ip[0].posW + ip[1].posW);
-        float3 e2 = 0.5f * (ip[1].posW + ip[2].posW);
-        float3 e3 = 0.5f * (ip[2].posW + ip[1].posW);
+        float3 e2 = 0.5f * (ip[1].posW + ip[3].posW);
+        float3 e3 = 0.5f * (ip[2].posW + ip[3].posW);
         float3 center = 0.25f * (ip[0].posW + ip[1].posW + ip[2].posW + ip[3].posW);
         Output.EdgeTessFactor[0] = CalculateTessFactor(e0);
         Output.EdgeTessFactor[1] = CalculateTessFactor(e1);
@@ -118,10 +118,10 @@ HS_CONTROL_POINT_OUTPUT main(
 
 float CalculateTessFactor(float3 p)
 {
-    const float minDist = 5.0f;
-    const float maxDist = 50.0f;
-    const float minTess = 1.0f;
-    const float maxTess = 64.0f;
+    const float minDist = 20.0f;
+    const float maxDist = 500.0f;
+    const float minTess = 0.0f;
+    const float maxTess = 6.0f;
     
     float d = distance(p, camPosition);
     float s = saturate((d - minDist) / (maxDist - minDist));

@@ -659,10 +659,10 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
 
-	//wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 
-	/*pShaders->BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	pShaders->BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindHS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindDS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindPS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
@@ -676,10 +676,10 @@ void App::DrawShapesWithDynamicCubeMap()
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
 	pShaders->UnbindVS();
-	pShaders->UnbindPS();*/
+	pShaders->UnbindPS();
 
 	//unbind for reusing in generation new cubemap
-//	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNULLSrv);
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNULLSrv);
 
 
 
@@ -857,7 +857,10 @@ void App::DrawTerrain()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-
+	if (GetAsyncKeyState('6') & 0x8000)
+	{
+		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+	}
 
 	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
 	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);

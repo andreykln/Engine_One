@@ -190,8 +190,8 @@ ID3D11ShaderResourceView* ShaderResourceView::GetTextureArray(Graphics& gfx)
 {
 	 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray.data(),
 	 										numTextures * textureMetaData.mipLevels,
-	 										textureMetaData, &pSRVTexArray);
-		return pSRVTexArray;
+	 										textureMetaData, &pSRVArray[0]);
+		return *pSRVArray;
 }
 
 ID3D11ShaderResourceView* ShaderResourceView::GetSRV() const

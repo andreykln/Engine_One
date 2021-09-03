@@ -87,8 +87,6 @@ DS_OUTPUT main(
     Output.posW.y += heightScale1 * height1;
     
     Output.posH = mul(float4(Output.posW, 1.0f), viewProjection);
-    
-    
-    
+
 	return Output;
 }

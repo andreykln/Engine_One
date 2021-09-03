@@ -54,7 +54,6 @@ private:
 	InitInfo terrainInitInfo;
 	std::vector<float> heightMap;
 	std::vector<DirectX::XMFLOAT2> patchBoundsY;
-	ID3D11ShaderResourceView* pHeightMapSRV = nullptr;
 	const int cellsPerPatch = 64;
 	int numPatchVertRows = 0;
 	int numPatchVertCols = 0;
@@ -64,6 +63,11 @@ private:
 	ID3D11Buffer* pHSBufferCopy = nullptr;
 	ID3D11Buffer* pDSBufferCopy = nullptr;
 	ID3D11Buffer* pPSBufferCopy = nullptr;
+	ID3D11ShaderResourceView* pHeightMapVS = nullptr;
+	ID3D11ShaderResourceView* pHeightMapDS = nullptr;
+	ID3D11ShaderResourceView* pHeightMapPS = nullptr;
 	ID3D11ShaderResourceView* pTerrainLayerMaps = nullptr;
-	ID3D11ShaderResourceView* pTerrainHeightMap = nullptr;
+
+	ID3D11SamplerState* pTESTSAMPLER = nullptr;
+
 };

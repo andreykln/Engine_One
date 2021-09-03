@@ -42,18 +42,18 @@ cbuffer PS_Terrain : register(b2)
 float4 main(DS_OUTPUT pin) : SV_TARGET
 {
     //estimate normal and tangent using central differences
-    float2 leftTex = pin.tex + float2(-texelCellSpaceU, 0.0f);
-    float2 rightTex = pin.tex + float2(texelCellSpaceU, 0.0f);
-    float2 bottomTex = pin.tex + float2(texelCellSpaceV, 0.0f);
-    float2 topTex = pin.tex + float2(-texelCellSpaceV, 0.0f);
+    float2 leftTex   = pin.tex + float2(-texelCellSpaceU, 0.0f);
+    float2 rightTex  = pin.tex + float2(texelCellSpaceU, 0.0f);
+    float2 bottomTex = pin.tex + float2(0.0f, texelCellSpaceV);
+    float2 topTex    = pin.tex + float2(0.0f, -texelCellSpaceV);
     
-    float leftY = heightMap.SampleLevel(samplerLinear, leftTex, 0).r;
-    float rightY = heightMap.SampleLevel(samplerLinear, rightTex, 0).r;
+    float leftY   = heightMap.SampleLevel(samplerLinear, leftTex, 0).r;
+    float rightY  = heightMap.SampleLevel(samplerLinear, rightTex, 0).r;
     float bottomY = heightMap.SampleLevel(samplerLinear, bottomTex, 0).r;
-    float topY = heightMap.SampleLevel(samplerLinear, topTex, 0).r;
+    float topY    = heightMap.SampleLevel(samplerLinear, topTex, 0).r;
     
     float3 tangent = normalize(float3(2.0f * worldCellSpace, rightY - leftY, 0.0f));
-    float3 bitan = normalize(float3(0.0f, bottomY - topY, -2.0f * worldCellSpace));
+    float3 bitan   = normalize(float3(0.0f, bottomY - topY, -2.0f * worldCellSpace));
     float3 normalW = cross(tangent, bitan);
     
     
@@ -85,7 +85,6 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
     
   
     float4 litColor = texColor;
-    clip(texColor.a - 0.1f);
     
     //normal mapping
     /*float3 normalMapSample0 = normalMap0.Sample(samplerLinear, pin.texCoord).rgb;
@@ -124,7 +123,7 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
         float4 reflectionColor = cubeMap.Sample(samplerLinear, reflectionVector);
        // float4 reflectionColor = cubeMap.Sample(tex0Sample, refractionVector);*/
 
-       /* litColor += objectMaterial.reflect * reflectionColor;*/
+        //litColor += objectMaterial.reflect * reflectionColor;
 
     }
 
@@ -135,4 +134,6 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
     litColor.a = objectMaterial.diffuse.a * texColor.a;
 
     return litColor;
+    
+
 }

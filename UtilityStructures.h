@@ -85,6 +85,7 @@ struct CB_VS_WorldViewProjection
 {
 	CB_VS_WorldViewProjection() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX world;
 };
 
 struct CB_CameraPosition_ViewProj

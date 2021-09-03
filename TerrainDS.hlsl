@@ -1,7 +1,12 @@
+
 cbuffer perFrame
 {
     float4x4 viewProjection;
+    float4x4 world;
 };
+
+Texture2D heightMap : register(t0);
+SamplerState samLinear : register(s0);
 
 struct DS_OUTPUT
 {
@@ -24,8 +29,7 @@ struct HS_CONSTANT_DATA_OUTPUT
     float InsideTessFactor[2] : SV_InsideTessFactor; // e.g. would be Inside[2] for a quad domain
 };
 
-Texture2D heightMap : register(t0);
-SamplerState samLinear : register(s0);
+
 
 #define NUM_CONTROL_POINTS 4
 
@@ -40,21 +44,23 @@ DS_OUTPUT main(
 
 	//bilinear interpolation
     Output.posW = lerp(
-    (patch[0].pos, patch[1].pos),
-    (patch[2].pos, patch[3].pos),
+    lerp(patch[0].pos, patch[1].pos, uv.x),
+    lerp(patch[2].pos, patch[3].pos, uv.x),
     uv.y);
     Output.tex = lerp(
-    (patch[0].tex, patch[1].tex),
-    (patch[2].tex, patch[3].tex),
+    lerp(patch[0].tex, patch[1].tex, uv.x),
+    lerp(patch[2].tex, patch[3].tex, uv.x),
     uv.y);
     
     //Tile layer textures over terrain
     Output.tiledTex = Output.tex * texScale;
     
     //displacement mapping
-    Output.posH.y = heightMap.SampleLevel(samLinear, Output.tex, 0);
+    Output.posW.y = heightMap.SampleLevel(samLinear, Output.tex, 0).r;
     
+    Output.posW = mul(float4(Output.posW, 1.0f), world);
     Output.posH = mul(float4(Output.posW, 1.0f), viewProjection);
+    
     
 	return Output;
 }
