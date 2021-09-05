@@ -188,15 +188,18 @@ Terrain::Terrain(Graphics& gfx)
 	AddBind(pDSCB);
 
 	std::wstring layers[4];
+	std::wstring snowLayer[1];
 	layers[0] = terrainInitInfo.LayerMapFilename0;
 	layers[1] = terrainInitInfo.LayerMapFilename1;
 	layers[2] = terrainInitInfo.LayerMapFilename2;
 	layers[3] = terrainInitInfo.LayerMapFilename3;
-// 	layers[4] = terrainInitInfo.LayerMapFilename4;
+	snowLayer[0] = terrainInitInfo.LayerMapFilename4;
 
 	ShaderResourceView* pLayerMaps = new ShaderResourceView(layers, std::size(layers));
 	pTerrainLayerMaps = pLayerMaps->GetTextureArray(gfx);
 
+	ShaderResourceView* pSnowLayer = new ShaderResourceView(gfx, snowLayer, 3u, 1u, ShaderType::Pixel);
+	AddBind(pSnowLayer);
 
 	std::wstring blendMap[1];
 	blendMap[0]= terrainInitInfo.BlendMapFilename;
@@ -207,8 +210,9 @@ Terrain::Terrain(Graphics& gfx)
 
 void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP)
 {
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(-10.0f, -20.0f, 0.0f);
 	DirectX::XMFLOAT4 worldPlanes[6];
-	ExtractFrustumPlanes(worldPlanes, WVP);
+	ExtractFrustumPlanes(worldPlanes, world * WVP);
 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapVS);
 	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pHeightMapDS);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pHeightMapPS);
@@ -231,7 +235,7 @@ void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, Di
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pDSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_VS_WorldViewProjection* pDomainShader = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
 	pDomainShader->worldViewProjection = DirectX::XMMatrixTranspose(WVP);
-	pDomainShader->world = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(-10.0f, -20.0f, 0.0f));
+	pDomainShader->world = DirectX::XMMatrixTranspose(world);
 
 	gfx.pgfx_pDeviceContext->Unmap(pDSBufferCopy, 0u);
 

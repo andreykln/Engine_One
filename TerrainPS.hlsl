@@ -11,6 +11,7 @@ struct DS_OUTPUT
 Texture2DArray LayerMapSRV : register(t0);
 Texture2D heightMap : register(t1);
 Texture2D blendMap : register(t2);
+Texture2D snowLayer : register(t3);
 //TextureCube cubeMap : register(t3);
 
 SamplerState samplerLinear : register(s0);
@@ -71,7 +72,7 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
     float4 c1 = LayerMapSRV.Sample(samplerLinear, float3(pin.tiledTex, 1.0f));
     float4 c2 = LayerMapSRV.Sample(samplerLinear, float3(pin.tiledTex, 2.0f));
     float4 c3 = LayerMapSRV.Sample(samplerLinear, float3(pin.tiledTex, 3.0f));
-    float4 c4 = LayerMapSRV.Sample(samplerLinear, float3(pin.tiledTex, 4.0f));
+    float4 c4 = snowLayer.Sample(samplerLinear, float2(pin.tiledTex));
     
     float4 t = blendMap.Sample(samplerLinear, pin.tex);
     
