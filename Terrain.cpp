@@ -107,7 +107,7 @@ Terrain::Terrain(Graphics& gfx)
 	hMapTex->Release();
 
 	//Vertex buffer
-	std::vector<TerrainVB> patchVertices((__int32)numPatchVertCols * (__int32)numPatchVertRows);
+	std::vector<TerrainVB> patchVertices((uint64_t)numPatchVertCols * (uint64_t)numPatchVertRows);
 	float halfWidth = 0.5f * GetWidth();
 	float halfDepth = 0.5f * GetDepth();
 
@@ -122,9 +122,9 @@ Terrain::Terrain(Graphics& gfx)
 		for (UINT j = 0; j < numPatchVertCols; ++j)
 		{
 			float x = -halfWidth + j * patchWidth;
-			patchVertices[i * numPatchVertCols + j].pos = DirectX::XMFLOAT3(x, 0.0f, z);
-			patchVertices[i * numPatchVertCols + j].tex.x = j * du;
-			patchVertices[i * numPatchVertCols + j].tex.y = i * dv;
+			patchVertices[(uint64_t)i * numPatchVertCols + j].pos = DirectX::XMFLOAT3(x, 0.0f, z);
+			patchVertices[(uint64_t)i * numPatchVertCols + j].tex.x = j * du;
+			patchVertices[(uint64_t)i * numPatchVertCols + j].tex.y = i * dv;
 		}
 	}
 
@@ -136,7 +136,7 @@ Terrain::Terrain(Graphics& gfx)
 		for (UINT j = 0; j < numPatchVertCols - 1; ++j)
 		{
 			UINT patchID = i * (numPatchVertCols - 1) + j;
-			patchVertices[i * numPatchVertCols + j].boundsY = patchBoundsY[patchID];
+			patchVertices[(uint64_t)i * numPatchVertCols + j].boundsY = patchBoundsY[patchID];
 		}
 	}
 
@@ -148,7 +148,7 @@ Terrain::Terrain(Graphics& gfx)
 
 	//Index buffer
 	numPatchQuadFaces = (numPatchVertCols - 1) * (numPatchVertRows - 1);
-	std::vector<UINT> indices(numPatchQuadFaces * 4u); //4 indices per quad face
+	std::vector<UINT> indices((uint64_t)numPatchQuadFaces * 4u); //4 indices per quad face
 
 	UINT k = 0;
 	for (UINT i = 0; i < numPatchVertRows - 1; ++i)
@@ -157,11 +157,11 @@ Terrain::Terrain(Graphics& gfx)
 		{
 			//top row of 2x2 quad patch
 			indices[k] = i * numPatchVertCols + j;
-			indices[k+1u] = i * numPatchVertCols + j + 1;
+			indices[(uint64_t)k+1u] = i * numPatchVertCols + j + 1;
 
 			//bottom row of 2x2 quad patch
-			indices[k + 2u] = (i+1u) * numPatchVertCols + j;
-			indices[k + 3u] = (i + 1u) * numPatchVertCols + j + 1;
+			indices[(uint64_t)k + 2u] = (i+1u) * numPatchVertCols + j;
+			indices[(uint64_t)k + 3u] = (i + 1u) * numPatchVertCols + j + 1;
 			k += 4; //next quad
 		}
 	}
@@ -261,6 +261,43 @@ int Terrain::GetNumQuadFaces()
 	return numPatchQuadFaces;
 }
 
+float Terrain::GetHeight(float camX, float camZ)
+{
+	//transform from terrain local space to "cell" space
+	float c = (camX + 0.5f * GetWidth()) / terrainInitInfo.cellSpacing;
+	float d = (camZ - 0.5f * GetWidth()) / -terrainInitInfo.cellSpacing;
+
+	//get the row and column we are in
+	int row = (float)std::floorf(d);
+	int col = (float)std::floorf(c);
+
+	// Grab the heights of the cell we are in.
+	// A*--*B
+	//  | /|
+	//  |/ |
+	// C*--*D
+	float A = heightMap[(uint64_t)row * terrainInitInfo.HeightMapWidth + col];
+	float B = heightMap[(uint64_t)row * terrainInitInfo.HeightMapWidth + col + 1];
+	float C = heightMap[(uint64_t)(row + 1) * terrainInitInfo.HeightMapWidth + col];
+	float D = heightMap[(uint64_t)(row + 1) * terrainInitInfo.HeightMapWidth + col + 1];
+
+	float s = c - (float)col;
+	float t = d - (float)row;
+	//if upper triangle ABC
+	if (s + t <= 1.0f)
+	{
+		float uy = B - C;
+		float vy = C - A;
+		return A + s * uy + t * vy;
+	} 
+	else
+	{
+		float uy = C - D;
+		float vy = B - D;
+		return D + (1.0f - s) * uy + (1.0 - t) * vy;
+	}
+}
+
 bool Terrain::InBounds(int i, int j)
 {
 	bool inBounds = 
@@ -279,7 +316,7 @@ float Terrain::Average(int i, int j)
 		{
 			if (InBounds(m, n))
 			{
-				total += heightMap[m * terrainInitInfo.HeightMapWidth + n];
+				total += heightMap[(uint64_t)m * terrainInitInfo.HeightMapWidth + n];
 				number += 1.0f;
 			}
 		}
@@ -294,7 +331,7 @@ void Terrain::Smooth()
 	{
 		for (UINT j = 0; j < terrainInitInfo.HeightMapWidth; ++j)
 		{
-			destination[i * terrainInitInfo.HeightMapWidth + j] = Average(i, j);
+			destination[(uint64_t)i * terrainInitInfo.HeightMapWidth + j] = Average(i, j);
 		}
 	}
 	heightMap = destination;

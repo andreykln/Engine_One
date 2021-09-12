@@ -34,16 +34,17 @@ public:
 	Terrain(Graphics& gfx);
 	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP);
 	int GetNumQuadFaces();
+	float GetHeight(float camX, float camZ);
 
 private:
-	bool InBounds(int i, int j);
+	bool  InBounds(int i, int j);
 	float Average(int i, int j);
 	float GetWidth();
 	float GetDepth();
-	void Smooth();
-	void CalculateAllPatchBoundsY();
-	void CalculatePatchBoundsY(UINT i, UINT j);
-	void ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M);
+	void  Smooth();
+	void  CalculateAllPatchBoundsY();
+	void  CalculatePatchBoundsY(UINT i, UINT j);
+	void  ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M);
 
 	CB_HS_TerrainPerFrame HullShaderCB;
 	CB_VS_WorldViewProjection DomainShaderCB; 

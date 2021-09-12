@@ -88,12 +88,21 @@ public:
 		 return pos;
 	 }
 
+	 void SetCameraYPosition(float y)
+	 {
+		 DirectX::XMFLOAT3 pos;
+		 DirectX::XMStoreFloat3(&pos, positon);
+		 pos.y = y;
+		 positon = DirectX::XMLoadFloat3(&pos);
+	 }
+
 	 DirectX::XMFLOAT3 GetCameraDirection()
 	 {
 		 DirectX::XMFLOAT3 dir;
 		 DirectX::XMStoreFloat3(&dir, front);
 		 return dir;
 	 }
+
 
 	DirectX::XMMATRIX GetViewMatrix()
 	{

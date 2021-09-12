@@ -133,17 +133,21 @@ float CalculateTessFactor(float3 p)
     //(in negative half space) of plane
 bool AabbBehindPlaneTest(float3 center, float3 extents, float4 plane)
 {
-    float3 n = abs(plane.xyz);
+    float3 n = abs(plane.xyz); //(|n.x|, |n.y|, |n.z|)
+    //Why this is a plane normal? And I don't understand how a plane can be defined with x,y,z,w
     
     //this is always positive
     float r = dot(extents, n);
+    //This is the projection on plane's normal, right? So it's the vector from the plane
+    //to the farthest edge of the box
+    
     //signed distance from center point to plane
     float s = dot(float4(center, 1.0f), plane);
+    //This one I don't understand at all. Why dot product is a signed distance? 
     
     //if the center point of the box is a distance of r or more
     //behind the plane (in which case s is negative since it is behind the plane)
     //then the box is completely in the negative half space of the plane
-    
     return (r + s) < 0.0f;
 }
 bool AabbOutsideFrustumTest(float3 center, float3 extents, float4 frustumPlanes[6])
