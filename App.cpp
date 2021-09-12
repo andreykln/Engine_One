@@ -858,9 +858,8 @@ void App::DrawTerrain()
 
 	//bind camera to terrain surface
 	DirectX::XMFLOAT3 camPos = camera.GetCameraPosition();
-	float y = pTerrain->GetHeight(camPos.x, camPos.z);
-	camera.SetCameraYPosition(y);
-
+	float y = pTerrain->GetHeight(camPos.x, camPos.z, camPos.y);
+	camera.SetCameraYPosition(y + 2.0f);
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	if (GetAsyncKeyState('6') & 0x8000)
 	{

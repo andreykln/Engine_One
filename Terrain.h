@@ -34,7 +34,7 @@ public:
 	Terrain(Graphics& gfx);
 	void SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP);
 	int GetNumQuadFaces();
-	float GetHeight(float camX, float camZ);
+	float GetHeight(float camX, float camZ, float camY);
 
 private:
 	bool  InBounds(int i, int j);

@@ -33,8 +33,8 @@ Terrain::Terrain(Graphics& gfx)
 	terrainInitInfo.LayerMapFilename3 = L"Textures\\Terrain\\lightdirt.dds";
 	terrainInitInfo.LayerMapFilename4 = L"Textures\\Terrain\\snow.dds";
 	terrainInitInfo.HeightMapFilename = L"Textures\\Terrain\\terrain.raw";
-	terrainInitInfo.cellSpacing = 0.5f;
-	terrainInitInfo.HeightMapHeight = 2049;
+	terrainInitInfo.cellSpacing = 0.5f; //0.5f
+	terrainInitInfo.HeightMapHeight = 2049;//
 	terrainInitInfo.HeightMapWidth = 2049;
 	terrainInitInfo.HeightScale = 50.0f;
 
@@ -261,10 +261,10 @@ int Terrain::GetNumQuadFaces()
 	return numPatchQuadFaces;
 }
 
-float Terrain::GetHeight(float camX, float camZ)
+float Terrain::GetHeight(float camX, float camZ, float camY)
 {
 	//transform from terrain local space to "cell" space
-	float c = (camX + 0.5f * GetWidth()) / terrainInitInfo.cellSpacing;
+	float c = (camX + 0.5f * GetWidth()) /  terrainInitInfo.cellSpacing;
 	float d = (camZ - 0.5f * GetWidth()) / -terrainInitInfo.cellSpacing;
 
 	//get the row and column we are in
@@ -276,10 +276,10 @@ float Terrain::GetHeight(float camX, float camZ)
 	//  | /|
 	//  |/ |
 	// C*--*D
-	float A = heightMap[(uint64_t)row * terrainInitInfo.HeightMapWidth + col];
-	float B = heightMap[(uint64_t)row * terrainInitInfo.HeightMapWidth + col + 1];
-	float C = heightMap[(uint64_t)(row + 1) * terrainInitInfo.HeightMapWidth + col];
-	float D = heightMap[(uint64_t)(row + 1) * terrainInitInfo.HeightMapWidth + col + 1];
+	float A = heightMap[row * terrainInitInfo.HeightMapWidth + col];
+	float B = heightMap[row * terrainInitInfo.HeightMapWidth + col + 1];
+	float C = heightMap[(row + 1) * terrainInitInfo.HeightMapWidth + col];
+	float D = heightMap[(row + 1) * terrainInitInfo.HeightMapWidth + col + 1];
 
 	float s = c - (float)col;
 	float t = d - (float)row;

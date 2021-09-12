@@ -61,7 +61,7 @@ private:
 	Shape* pShapes;
 
 	Camera camera;
-
+	CubeMapCamera* pCMCamera;
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
