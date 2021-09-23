@@ -90,5 +90,34 @@ struct InputLayout
 		{"TEXCOORD", 1u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
+
+	static const UINT nParticle = 5;
+	const D3D11_INPUT_ELEMENT_DESC particle[nParticle] =
+	{
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+		D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Velocity", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Size", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Age", 0u, DXGI_FORMAT_R32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Type", 0u, DXGI_FORMAT_R32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+	};
+
 };
 
+struct Stream_Out
+{
+	const UINT fireSize = 5;
+	const D3D11_SO_DECLARATION_ENTRY fire[5] =
+	{
+		//Stream, semantic name, semantic index, start component, component count, output slot
+		{ 0, "POSITION", 0, 0, 3, 0 }, //Position
+		{ 0, "TEXCOORD", 0, 0, 3, 0 }, //Velocity
+		{ 0, "TEXCOORD", 1, 0, 2, 0 }, //size
+		{ 0, "TEXCOORD", 2, 0, 1, 0 }, //age
+		{ 0, "TEXCOORD", 3, 0, 1, 0 }, //type
+	};
+};

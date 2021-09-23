@@ -71,6 +71,15 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pTerrainHS, L"Shaders\\Hull\\TerrainHS.cso");
 	DS_Init(&pTerrainDS, L"Shaders\\Domain\\TerrainDS.cso");
 	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\TerrainPS.cso");
+
+	//Particles
+	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
+	VS_IL_Init(&pSOVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleSOVS.cso");
+	VS_IL_Init(&pParticleFireVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
+	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFIreGS.cso");
+	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
+
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -150,6 +159,20 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pTerrainIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pTerrainVS, nullptr, 0u);
+		break;
+
+	}
+	case ShaderPicker::Particles_StreamOut_VS_GS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
+		break;
+
+	}
+	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFireVS, nullptr, 0u);
 		break;
 
 	}
@@ -248,6 +271,11 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pTerrainPS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleFirePS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -265,6 +293,16 @@ void Shaders::BindGS(ShaderPicker shader)
 	case ShaderPicker::CircleToCylinderVS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pCircletoCylinderGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_StreamOut_VS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pSOFireGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFireGS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -471,6 +509,29 @@ void Shaders::GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path
 		pBlob->GetBufferPointer(),
 		pBlob->GetBufferSize(),
 		nullptr,
+		pGSShader));
+#ifdef MY_DEBUG
+	if (GetDebug(*pSgfx) != nullptr)
+	{
+		pSgfx->SetDebugName(*pGSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Shaders::GS_SO_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateGeometryShaderWithStreamOutput(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		SO.fire,
+		SO.fireSize, 
+		NULL, 0, 0,	nullptr,
 		pGSShader));
 #ifdef MY_DEBUG
 	if (GetDebug(*pSgfx) != nullptr)

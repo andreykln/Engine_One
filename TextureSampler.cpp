@@ -45,6 +45,9 @@ void TextureSampler::Bind(Graphics& gfx) noexcept
 	case ShaderType::Hull:
 		break;
 	case ShaderType::Geometry:
+	{
+		GetContext(gfx)->GSSetSamplers(0u, 1u, &pSamplerState);
+	}
 		break;
 	default:
 		break;

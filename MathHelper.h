@@ -26,5 +26,27 @@ public:
 	{
 		return a < b ? a : b;
 	}
+
+	static DirectX::XMVECTOR RandomUnitVec3()
+	{
+		DirectX::XMVECTOR one = DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f);
+		while (true)
+		{
+			//random points in the cube
+			DirectX::XMVECTOR v = DirectX::XMVectorSet(
+				RandomFloatWithinRange(-1.0f, 1.0f),
+				RandomFloatWithinRange(-1.0f, 1.0f),
+				RandomFloatWithinRange(-1.0f, 1.0f), 0.0f);
+			//ignore points outside of the unit sphere in order to  
+			//get an even distribution over the unit sphere.
+			//otherwise points will clump more on the sphere near the corners of the cube
+			if (DirectX::XMVector3Greater(DirectX::XMVector3LengthSq(v), one))
+			{
+				continue;
+			}
+			return DirectX::XMVector2Normalize(v);
+		}
+
+	}
 };
 

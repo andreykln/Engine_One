@@ -36,13 +36,16 @@ private:
 	void InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout, ID3D11InputLayout** pIL,
 		UINT nElements,ID3DBlob* pBlob, const std::wstring& name);
 	void GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
+	void GS_SO_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path);
 	void CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path);
 	void HS_Init(ID3D11HullShader** pHShader, const std::wstring& path);
 	void DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path);
+	void DSSO_Output();
 
 	Graphics* pSgfx = nullptr;
 	InputLayout IL;
 	ID3DBlob* pBlob = nullptr;
+	Stream_Out SO;
 
 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
@@ -57,6 +60,7 @@ private:
 	ID3D11VertexShader* pLightVS = nullptr;
 	ID3D11InputLayout* pLightIL = nullptr;
 	ID3D11PixelShader* pLightPS = nullptr;
+	
 
 	ID3D11VertexShader* pTreeBillboardVS = nullptr;
 	ID3D11InputLayout* pTreeBillboardIL = nullptr;
@@ -125,5 +129,14 @@ private:
 	ID3D11HullShader* pTerrainHS = nullptr;
 	ID3D11DomainShader* pTerrainDS = nullptr;
 	ID3D11PixelShader* pTerrainPS = nullptr;
+
+	//particles
+	ID3D11InputLayout*    pSOIL = nullptr;
+	ID3D11VertexShader*   pSOVS = nullptr;
+	ID3D11GeometryShader* pSOFireGS = nullptr;
+	ID3D11VertexShader*   pParticleFireVS = nullptr;
+	ID3D11GeometryShader* pParticleFireGS = nullptr;
+	ID3D11PixelShader*    pParticleFirePS = nullptr;
+
 };
 
