@@ -17,6 +17,53 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 
 	TextureSampler* pGSSOsampler = new TextureSampler(gfx, ShaderType::Geometry);
 	AddBind(pGSSOsampler);
+
+	//this ptr used only in manual binding, so release pointer 
+	GeometryShaderConstantBuffer<CB_GS_StreamOut>* pGSCBSO = new GeometryShaderConstantBuffer<CB_GS_StreamOut>(gfx, GSSOparticleFireData,
+		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pGSSOParticleFire = pGSCBSO->GetGeometryShaderConstantBuffer();
+	pGSCBSO = nullptr;
+
+	GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>* pGSCBDraw =
+		new GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>(gfx, camPosVP,
+		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pGSParticleFireDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
+	pGSCBDraw = nullptr;
+
+	std::wstring directory[1];
+	directory[0] = L"Textures\\flame.dds";
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
+	AddBind(pSRV);
+	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
+	AddBind(pTexSampler);
+
+}
+
+void ParticleSystem::UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
+{
+	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSSOParticleFire);
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSSOParticleFire, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_GS_StreamOut* StreamOut = reinterpret_cast<CB_GS_StreamOut*>(mappedData.pData);
+	StreamOut->emitterPositon = emitPos;
+	StreamOut->gameTime = gameTime;
+	StreamOut->timeStep = timeStep;
+	gfx.pgfx_pDeviceContext->Unmap(pGSSOParticleFire, 0u);
+}
+
+void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
+{
+	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSParticleFireDraw);
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleFireDraw, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	CB_CameraPosition_ViewProj* drawParticleGS = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+	drawParticleGS->cameraPosition = cameraPos;
+	drawParticleGS->viewProjection = viewProjection;
+	gfx.pgfx_pDeviceContext->Unmap(pGSParticleFireDraw, 0u);
 }
 
 void ParticleSystem::BindToSOStage(Graphics& gfx)

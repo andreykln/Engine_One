@@ -5,7 +5,7 @@ struct Particle
     float3 initialVelocityW : Velocity;
     float2 size : Size;
     float age : Age;
-    int type : Type;
+    uint type : Type;
 };
 
 Particle main(Particle vin)

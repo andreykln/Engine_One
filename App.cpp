@@ -13,13 +13,13 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 // 	CreateShapesWithDynamicCubeMap();
-	CreateHillsWithGPUWaves();
+// 	CreateHillsWithGPUWaves();
 // 	CreateMirror();
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
 // 	CreatePicking();
-// 	CreateTerrain();
+	CreateTerrain();
 
 }
 
@@ -32,14 +32,14 @@ void App::DoFrame()
 // 
 // 	DrawShapesWithDynamicCubeMap();
 // 	DrawMirror();
-	DrawHillsWithGPUWaves();
+// 	DrawHillsWithGPUWaves();
 // 	DrawBox();
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
 // 	DrawPicking();
-// 	DrawTerrain();
+	DrawTerrain();
 
 
 	CalculateFrameStats();

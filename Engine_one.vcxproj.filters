@@ -502,9 +502,6 @@
     <FxCompile Include="ParticleFireSOGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="ParticleFIreGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
     <FxCompile Include="ParticlePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
@@ -513,6 +510,9 @@
     </FxCompile>
     <FxCompile Include="ParticleFireVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleFireGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

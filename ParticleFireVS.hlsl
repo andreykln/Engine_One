@@ -2,11 +2,11 @@ static const float3 accelW = { 0.0f, 7.8f, 0.0f };
 
 struct Particle
 {
-    float3 initialPosW : POSITION;
-    float3 initialVelocityW : TEXCOORD0;
-    float2 size : TEXCOORD1;
-    float age : TEXCOORD2;
-    uint type : TEXCOORD3;
+    float3 initialPosW : Position;
+    float3 initialVelocityW : Velocity;
+    float2 size : Size;
+    float age : Age;
+    uint type : Type;
 };
 
 struct VertexOut

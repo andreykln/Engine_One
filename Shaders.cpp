@@ -76,7 +76,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
 	VS_IL_Init(&pSOVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleSOVS.cso");
 	VS_IL_Init(&pParticleFireVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
-	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFIreGS.cso");
+	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFireGS.cso");
 	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
 
 
