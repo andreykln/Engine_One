@@ -17,8 +17,16 @@ struct Particle
     float3 initialVelocityW : TEXCOORD0;
     float2 size : TEXCOORD1;
     float age : TEXCOORD2;
-    int type : TEXCOORD3;
+    uint type : TEXCOORD3;
 };
+/*struct Particle
+{
+    float3 initialPosW : Position;
+    float3 initialVelocityW : Velocity;
+    float2 size : Size;
+    float age : Age;
+    uint type : Type;
+};*/
 
 
 struct GSOutput

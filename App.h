@@ -65,6 +65,7 @@ private:
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
 	
+	ParticleSystem* pParticle = nullptr;
 	Terrain* pTerrain = nullptr;
 	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;

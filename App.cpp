@@ -844,16 +844,26 @@ void App::DrawPicking()
 
 void App::CreateTerrain()
 {
-	pTerrain = new Terrain(wnd.GetGraphics());
+// 	pTerrain = new Terrain(wnd.GetGraphics());
+
+	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
 }
+
 
 void App::DrawTerrain()
 {
-	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	viewProjectionMatrix = GetViewProjectionCamera();
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	//supposed to be drawn last so it will blend
+	pParticle->UpdateStreamOutConstBuffer(wnd.GetGraphics(), DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
+// 	pParticle->UpdateParticleDrawConstBuffer(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
+	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(),pShaders, true, viewProjectionMatrix, camera.GetCameraPosition());
+
+	/*pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindPS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
-	viewProjectionMatrix = GetViewProjectionCamera();
 
 	//bind camera to terrain surface
 	DirectX::XMFLOAT3 camPos = camera.GetCameraPosition();
@@ -866,7 +876,7 @@ void App::DrawTerrain()
 	}
 
 	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
-	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
+	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);*/
 }
 
 App::~App()

@@ -132,6 +132,7 @@ private:
 
 	//particles
 	ID3D11InputLayout*    pSOIL = nullptr;
+	ID3D11InputLayout*    pParticleDrawIL = nullptr;
 	ID3D11VertexShader*   pSOVS = nullptr;
 	ID3D11GeometryShader* pSOFireGS = nullptr;
 	ID3D11VertexShader*   pParticleFireVS = nullptr;

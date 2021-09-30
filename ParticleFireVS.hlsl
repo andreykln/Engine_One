@@ -13,11 +13,11 @@ struct VertexOut
 {
     float3 posW : POSITION;
     float2 sizeW : SIZE;
-    float4 Color : COLOR;
+    float4 color : COLOR;
     uint type : TYPE;
 };
 
-Particle main(Particle vin)
+VertexOut main(Particle vin)
 {
     VertexOut vout;
     
@@ -28,7 +28,7 @@ Particle main(Particle vin)
     
     //fade color with time
     float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-    vout.Color = float4(1.0f, 1.0f, 1.0, opacity);
+    vout.color = float4(1.0f, 1.0f, 1.0, opacity);
     
     vout.sizeW = vin.size;
     vout.type = vin.type;

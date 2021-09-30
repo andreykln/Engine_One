@@ -17,6 +17,8 @@ public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
 	void UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
 	void UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
+	void SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pShaders,
+		bool firstRun, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
 	//time elapsed since the system was reset
 	float GetAge() const;
 
@@ -30,6 +32,7 @@ public:
 	void Update(float dt, float gameTime);
 	void Draw(Graphics& gfx);
 
+	bool mFirstRun = true;
 private:
 	void BindToSOStage(Graphics& gfx);
 	void UnbindFromSOStage(Graphics& gfx);

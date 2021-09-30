@@ -74,8 +74,8 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	//Particles
 	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
-	VS_IL_Init(&pSOVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleSOVS.cso");
-	VS_IL_Init(&pParticleFireVS, IL.particle, &pSOIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
+	VS_IL_Init(&pSOVS, IL.particleSO, &pSOIL, IL.nParticleStreamOut, L"Shaders\\Vertex\\ParticleSOVS.cso");
+	VS_IL_Init(&pParticleFireVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
 	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFireGS.cso");
 	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
 
@@ -171,7 +171,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::Particles_Draw_VS_GS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
+		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFireVS, nullptr, 0u);
 		break;
 
@@ -531,7 +531,7 @@ void Shaders::GS_SO_Init(ID3D11GeometryShader** pGSShader, const std::wstring& p
 		pBlob->GetBufferSize(),
 		SO.fire,
 		SO.fireSize, 
-		NULL, 0, 0,	nullptr,
+		NULL, 0, D3D11_SO_NO_RASTERIZED_STREAM,	nullptr,
 		pGSShader));
 #ifdef MY_DEBUG
 	if (GetDebug(*pSgfx) != nullptr)

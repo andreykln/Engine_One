@@ -3,15 +3,29 @@
 ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	: maxParticles(maxParticles)
 {
+
+	// The initial particle emitter has type 0 and age 0.  The rest
+// of the particle attributes do not apply to an emitter.
+	Particle p;
+	p.age = 0.0f;
+	p.type = 0;
 	//Vertex buffer for Stream-Out
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.ByteWidth = sizeof(Particle) * maxParticles;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+	vbd.ByteWidth = sizeof(Particle) * 1;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0u;
 	vbd.MiscFlags = 0u;
+	D3D11_SUBRESOURCE_DATA initDataParticle;
+	initDataParticle.pSysMem = &p;
 
+	gfx.pgfx_pDevice->CreateBuffer(&vbd, &initDataParticle, &pInitVB);
+	
+	//ping-pong buffers for stream out and drawing
+	vbd.ByteWidth = sizeof(Particle) * maxParticles;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pStreamOutVB);
+	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
 
 	randomTexSRV = CreateRandomTexture1DSRV(gfx);
 
@@ -64,6 +78,56 @@ void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMAT
 	drawParticleGS->cameraPosition = cameraPos;
 	drawParticleGS->viewProjection = viewProjection;
 	gfx.pgfx_pDeviceContext->Unmap(pGSParticleFireDraw, 0u);
+}
+
+void ParticleSystem::SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pShaders,
+	bool firstRun, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
+{
+	UINT stride = sizeof(Particle);
+	UINT offset = 0;
+	if (firstRun)
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
+		UpdateParticleDrawConstBuffer(gfx, viewProjection, cameraPos);
+		gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pInitVB, &stride, &offset);
+	}
+	else
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
+		pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
+		gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pDrawVB, &stride, &offset);
+	}
+
+	gfx.pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, 0u);
+
+	if (firstRun)
+	{
+		gfx.pgfx_pDeviceContext->Draw(1u, 0u);
+		firstRun = false;
+	}
+	else
+	{
+		gfx.pgfx_pDeviceContext->DrawAuto();
+	}
+	// done streaming-out--unbind the vertex buffer
+	ID3D11Buffer* bufferArray[1] = { 0 };
+	gfx.pgfx_pDeviceContext->SOSetTargets(1, bufferArray, 0u);
+	std::swap(pDrawVB, pStreamOutVB);
+	pShaders->UnbindVS();
+	pShaders->UnbindGS();
+	pShaders->UnbindPS();
+
+
+
+	pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
+	pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
+	pShaders->BindPS(ShaderPicker::Particles_Draw_VS_GS_PS);
+
+	// Draw the updated particle system we just streamed-out. 
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
+	gfx.pgfx_pDeviceContext->DrawAuto();
+
 }
 
 void ParticleSystem::BindToSOStage(Graphics& gfx)

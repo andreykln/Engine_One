@@ -1,11 +1,11 @@
 
 struct Particle
 {
-    float3 initialPosW : Position;
-    float3 initialVelocityW : Velocity;
-    float2 size : Size;
-    float age : Age;
-    uint type : Type;
+    float3 initialPosW : POSITION;
+    float3 initialVelocityW : TEXCOORD0;
+    float2 size : TEXCOORD1;
+    float age : TEXCOORD2;
+    uint type : TEXCOORD3;
 };
 
 Particle main(Particle vin)

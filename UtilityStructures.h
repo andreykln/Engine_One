@@ -225,6 +225,15 @@ struct CB_GS_StreamOut
 	float padding[3] = {0.0f, 0.0f, 0.0f};
 };
 
+struct Particle
+{
+	DirectX::XMFLOAT3 initialPos;
+	DirectX::XMFLOAT3 initialVel;
+	DirectX::XMFLOAT2 size;
+	float age;
+	unsigned int type;
+};
+
 
 enum DemoSwitch
 {

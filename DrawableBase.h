@@ -18,3 +18,4 @@
 #include "DynamicCubeMap.h"
 #include "DisplacementWaves.h"
 #include "Terrain.h"
+#include "ParticleSystem.h"
