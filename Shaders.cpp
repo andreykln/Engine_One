@@ -431,6 +431,16 @@ void Shaders::UnbindDS()
 	pSgfx->pgfx_pDeviceContext->DSSetShader(0u, nullptr, 0u);
 }
 
+void Shaders::UnbindAll()
+{
+	UnbindCS();
+	UnbindDS();
+	UnbindGS();
+	UnbindHS();
+	UnbindPS();
+	UnbindVS();
+}
+
 void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
 						const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 						ID3D11InputLayout** pIL,
@@ -456,6 +466,27 @@ void Shaders::VS_IL_Init(ID3D11VertexShader** pVShader,
 	//for usage in other shaders;
 	pBlob->Release();
 
+}
+
+void Shaders::VS_Init(ID3D11VertexShader** pVShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	pSgfx->CheckFileExistence(pSgfx, path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(GetDevice(*pSgfx)->CreateVertexShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pVShader));
+#ifdef MY_DEBUG
+	if (path != std::wstring())
+	{
+		pSgfx->SetDebugName(*pVShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
 }
 
 void Shaders::PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path)

@@ -844,7 +844,7 @@ void App::DrawPicking()
 
 void App::CreateTerrain()
 {
-// 	pTerrain = new Terrain(wnd.GetGraphics());
+	//pTerrain = new Terrain(wnd.GetGraphics());
 
 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
 }
@@ -852,15 +852,23 @@ void App::CreateTerrain()
 
 void App::DrawTerrain()
 {
+ 	pShaders->UnbindAll();
+	ID3D11Buffer* bufferArray[1] = { 0 };
+	wnd.GetGraphics().pgfx_pDeviceContext->SOSetTargets(1u, bufferArray, 0u);
+
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	ID3D11RenderTargetView* renderTargets[1];
+	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
+	wnd.GetGraphics().SetViewport();
 
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//supposed to be drawn last so it will blend
-	pParticle->UpdateStreamOutConstBuffer(wnd.GetGraphics(), DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
-// 	pParticle->UpdateParticleDrawConstBuffer(wnd.GetGraphics(), viewProjectionMatrix, camera.GetCameraPosition());
-	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(),pShaders, true, viewProjectionMatrix, camera.GetCameraPosition());
+	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
 
-	/*pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	/*pShaders->UnbindAll();
+	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindPS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);

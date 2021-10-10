@@ -25,6 +25,7 @@ public:
 	void UnbindVS();
 	void UnbindHS();
 	void UnbindDS();
+	void UnbindAll();
 private:
 	//most convenient to have this class to be a child of Bindable
 	//but this function isn't needed
@@ -32,6 +33,7 @@ private:
 
 	void VS_IL_Init(ID3D11VertexShader** pVShader, const D3D11_INPUT_ELEMENT_DESC* inputLayout,
 		ID3D11InputLayout** pIL, UINT nElements, const std::wstring& path);
+	void VS_Init(ID3D11VertexShader** pVShader, const std::wstring& path);
 	void PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path);
 	void InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout, ID3D11InputLayout** pIL,
 		UINT nElements,ID3DBlob* pBlob, const std::wstring& name);

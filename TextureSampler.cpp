@@ -21,6 +21,7 @@ TextureSampler::TextureSampler(Graphics& gfx, ShaderType type)
 	DX::ThrowIfFailed(GetDevice(gfx)->CreateSamplerState(&samplerDesc, &pSamplerState));
 }
 
+
 void TextureSampler::Bind(Graphics& gfx) noexcept
 {
 	switch (sType)
@@ -54,4 +55,9 @@ void TextureSampler::Bind(Graphics& gfx) noexcept
 	}
 
 
+}
+
+ID3D11SamplerState* TextureSampler::GetSamplerState()
+{
+	return pSamplerState;
 }

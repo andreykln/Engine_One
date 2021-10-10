@@ -7,15 +7,14 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	// The initial particle emitter has type 0 and age 0.  The rest
 // of the particle attributes do not apply to an emitter.
 	Particle p;
-	p.age = 0.0f;
-	p.type = 0;
 	//Vertex buffer for Stream-Out
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.ByteWidth = sizeof(Particle) * 1;
+	vbd.ByteWidth = sizeof(Particle) * 1; //why mul by 1?
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0u;
 	vbd.MiscFlags = 0u;
+	vbd.StructureByteStride = 0u;
 	D3D11_SUBRESOURCE_DATA initDataParticle;
 	initDataParticle.pSysMem = &p;
 
@@ -28,11 +27,16 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
 
 	randomTexSRV = CreateRandomTexture1DSRV(gfx);
+	
+
 
 	TextureSampler* pGSSOsampler = new TextureSampler(gfx, ShaderType::Geometry);
-	AddBind(pGSSOsampler);
+	pSSGSSO = pGSSOsampler->GetSamplerState();
 
 	//this ptr used only in manual binding, so release pointer 
+	GSSOparticleFireData.emitterPositon = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	GSSOparticleFireData.gameTime = 0.0f;
+	GSSOparticleFireData.timeStep = 0.0f;
 	GeometryShaderConstantBuffer<CB_GS_StreamOut>* pGSCBSO = new GeometryShaderConstantBuffer<CB_GS_StreamOut>(gfx, GSSOparticleFireData,
 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	pGSSOParticleFire = pGSCBSO->GetGeometryShaderConstantBuffer();
@@ -44,12 +48,11 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	pGSParticleFireDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
 	pGSCBDraw = nullptr;
 
-	std::wstring directory[1];
-	directory[0] = L"Textures\\flame.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
-	AddBind(pSRV);
+	const wchar_t* filePath = L"Textures\\flame.dds";
+	ShaderResourceView* pSRV = new ShaderResourceView(gfx, filePath);
+	psFireDrawTexture = pSRV->GetSRV();
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
+	pSSDrawPixel = pTexSampler->GetSamplerState();
 
 }
 
@@ -57,9 +60,8 @@ void ParticleSystem::UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3
 {
 	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSSOParticleFire);
 
-
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSSOParticleFire, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSSOParticleFire, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_GS_StreamOut* StreamOut = reinterpret_cast<CB_GS_StreamOut*>(mappedData.pData);
 	StreamOut->emitterPositon = emitPos;
 	StreamOut->gameTime = gameTime;
@@ -73,60 +75,74 @@ void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMAT
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleFireDraw, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleFireDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_CameraPosition_ViewProj* drawParticleGS = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
 	drawParticleGS->cameraPosition = cameraPos;
-	drawParticleGS->viewProjection = viewProjection;
+	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(viewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pGSParticleFireDraw, 0u);
 }
 
 void ParticleSystem::SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pShaders,
-	bool firstRun, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
+	DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
+	DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
 {
+	pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
+
 	UINT stride = sizeof(Particle);
 	UINT offset = 0;
 	if (firstRun)
 	{
-		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
-		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
-		UpdateParticleDrawConstBuffer(gfx, viewProjection, cameraPos);
+		BindToSOStage(gfx);
+		UpdateStreamOutConstBuffer(gfx, emitPos, timeStep, gameTime);
 		gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pInitVB, &stride, &offset);
+		gfx.pgfx_pDeviceContext->GSSetSamplers(0u, 1u, &pSSGSSO);
 	}
 	else
 	{
-		pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
-		pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
+		BindToSOStage(gfx);
+		UpdateStreamOutConstBuffer(gfx, emitPos, timeStep, gameTime);
+		gfx.pgfx_pDeviceContext->GSSetSamplers(0u, 1u, &pSSGSSO);
 		gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pDrawVB, &stride, &offset);
 	}
 
-	gfx.pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, 0u);
+	gfx.pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, &offset);
 
 	if (firstRun)
 	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
 		gfx.pgfx_pDeviceContext->Draw(1u, 0u);
 		firstRun = false;
 	}
 	else
 	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
+
+
 		gfx.pgfx_pDeviceContext->DrawAuto();
 	}
+
+
 	// done streaming-out--unbind the vertex buffer
-	ID3D11Buffer* bufferArray[1] = { 0 };
-	gfx.pgfx_pDeviceContext->SOSetTargets(1, bufferArray, 0u);
+	UnbindFromSOStage(gfx);
 	std::swap(pDrawVB, pStreamOutVB);
-	pShaders->UnbindVS();
-	pShaders->UnbindGS();
-	pShaders->UnbindPS();
 
 
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
 
+	UpdateParticleDrawConstBuffer(gfx, viewProjection, cameraPos);
+	// Draw the updated particle system we just streamed-out.
 	pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
 	pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
 	pShaders->BindPS(ShaderPicker::Particles_Draw_VS_GS_PS);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 
-	// Draw the updated particle system we just streamed-out. 
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel); //second call of it, does it needed?
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
+
 	gfx.pgfx_pDeviceContext->DrawAuto();
+	
 
 }
 

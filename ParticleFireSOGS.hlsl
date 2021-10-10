@@ -6,6 +6,7 @@ cbuffer GSSObuffer : register(b0)
     float3 emitPosW;
     float timeStep;
     float gameTime;
+    float3 padding;
 }
    
 
@@ -19,14 +20,6 @@ struct Particle
     float age : TEXCOORD2;
     uint type : TEXCOORD3;
 };
-/*struct Particle
-{
-    float3 initialPosW : Position;
-    float3 initialVelocityW : Velocity;
-    float2 size : Size;
-    float age : Age;
-    uint type : Type;
-};*/
 
 
 struct GSOutput
@@ -43,6 +36,7 @@ void main(
 	inout PointStream<Particle> ptStream
 )
 {
+    //float testTimeStep = 0.05f;
     gin[0].age += timeStep;
     
     if (gin[0].type == PT_EMITTER)
@@ -62,7 +56,8 @@ void main(
             p.type = PT_FLARE;
             
             ptStream.Append(p);
-            
+
+
             // reset the time to emit
             gin[0].age = 0.0f;
         }
