@@ -844,7 +844,7 @@ void App::DrawPicking()
 
 void App::CreateTerrain()
 {
-	//pTerrain = new Terrain(wnd.GetGraphics());
+	pTerrain = new Terrain(wnd.GetGraphics());
 
 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
 }
@@ -852,6 +852,30 @@ void App::CreateTerrain()
 
 void App::DrawTerrain()
 {
+	// TERRAIN
+	pShaders->UnbindAll();
+	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	pShaders->BindPS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+
+	//bind camera to terrain surface
+// 	DirectX::XMFLOAT3 camPos = camera.GetCameraPosition();
+// 	float y = pTerrain->GetHeight(camPos.x, camPos.z, camPos.y);
+// 	camera.SetCameraYPosition(y + 2.0f);
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+	if (GetAsyncKeyState('6') & 0x8000)
+	{
+		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+	}
+
+	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
+	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
+
+
+	// PARTICLES
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthStencil, 0u);
  	pShaders->UnbindAll();
 	ID3D11Buffer* bufferArray[1] = { 0 };
 	wnd.GetGraphics().pgfx_pDeviceContext->SOSetTargets(1u, bufferArray, 0u);
@@ -865,26 +889,12 @@ void App::DrawTerrain()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//supposed to be drawn last so it will blend
 	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
+		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
 
-	/*pShaders->UnbindAll();
-	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
-	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
-	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
-	pShaders->BindPS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
+	//reset
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 
-	//bind camera to terrain surface
-	DirectX::XMFLOAT3 camPos = camera.GetCameraPosition();
-	float y = pTerrain->GetHeight(camPos.x, camPos.z, camPos.y);
-	camera.SetCameraYPosition(y + 2.0f);
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-	if (GetAsyncKeyState('6') & 0x8000)
-	{
-		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
-	}
-
-	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
-	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);*/
 }
 
 App::~App()

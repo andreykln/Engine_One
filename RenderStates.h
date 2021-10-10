@@ -21,6 +21,7 @@ public:
 	static ID3D11BlendState* TransparentBS;
 	static ID3D11BlendState* NoRenderTargetWritesBS;
 	static ID3D11BlendState* srsColor;
+	static ID3D11BlendState* additiveBlend;
 
 
 	// Depth/stencil states
@@ -30,6 +31,7 @@ public:
 	static ID3D11DepthStencilState* DepthComplexityCountDSS;
 	static ID3D11DepthStencilState* DepthComplexityReadDSS;
 	static ID3D11DepthStencilState* LessEqualDSS;
+	static ID3D11DepthStencilState* disableDepthStencil;
 
 
 

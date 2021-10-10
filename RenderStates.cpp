@@ -15,6 +15,7 @@ ID3D11BlendState* RenderStates::AlphaToCoverageBS = nullptr;
 ID3D11BlendState* RenderStates::TransparentBS = nullptr;
 ID3D11BlendState* RenderStates::NoRenderTargetWritesBS = nullptr;
 ID3D11BlendState* RenderStates::srsColor = nullptr;
+ID3D11BlendState* RenderStates::additiveBlend = nullptr;
 
 ID3D11DepthStencilState* RenderStates::MarkMirrorDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DrawReflectionDSS = nullptr;
@@ -22,6 +23,7 @@ ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityCountDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityReadDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::LessEqualDSS = nullptr;
+ID3D11DepthStencilState* RenderStates::disableDepthStencil = nullptr;
 
 
 
@@ -121,6 +123,24 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateBlendState(&transparentDesc, &TransparentBS));
+
+	//
+	//Additive
+	//
+	D3D11_BLEND_DESC additiveDesc = { 0 };
+	additiveDesc.AlphaToCoverageEnable = false;
+	additiveDesc.IndependentBlendEnable = false;
+
+	additiveDesc.RenderTarget[0].BlendEnable = true;
+	additiveDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	additiveDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	additiveDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	additiveDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	additiveDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	additiveDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	additiveDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateBlendState(&additiveDesc, &additiveBlend));
 
 	//colorful one
 	D3D11_BLEND_DESC test = { 0 };
@@ -282,9 +302,33 @@ void RenderStates::InitializeAll(Graphics& gfx)
 
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplReadDesc, &DepthComplexityReadDSS));
 
+	//
+	//disable depth
+	//
+	D3D11_DEPTH_STENCIL_DESC disableDepthDesc;
+	disableDepthDesc.DepthEnable = false;
+	disableDepthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	disableDepthDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	disableDepthDesc.StencilEnable = false;
+	disableDepthDesc.StencilReadMask = 0xff;
+	disableDepthDesc.StencilWriteMask = 0xff;
 
+	disableDepthDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	disableDepthDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	disableDepthDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&disableDepthDesc, &disableDepthStencil));
 	//
 	//lessEqualDss
+	//
 	D3D11_DEPTH_STENCIL_DESC lessEqualDSSDesc;
 	lessEqualDSSDesc.DepthEnable = true;
 	lessEqualDSSDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -309,6 +353,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(AlphaToCoverageBS);
 	ReleaseID3D(TransparentBS);
 	ReleaseID3D(NoRenderTargetWritesBS);
+	ReleaseID3D(additiveBlend);
 
 	ReleaseID3D(MarkMirrorDSS);
 	ReleaseID3D(DrawReflectionDSS);
@@ -316,6 +361,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(DepthComplexityCountDSS);
 	ReleaseID3D(DepthComplexityReadDSS);
 	ReleaseID3D(LessEqualDSS);
+	ReleaseID3D(disableDepthStencil);
 
 }
 
