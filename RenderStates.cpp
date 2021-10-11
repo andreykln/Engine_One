@@ -23,7 +23,7 @@ ID3D11DepthStencilState* RenderStates::NoDoubleBlendDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityCountDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::DepthComplexityReadDSS = nullptr;
 ID3D11DepthStencilState* RenderStates::LessEqualDSS = nullptr;
-ID3D11DepthStencilState* RenderStates::disableDepthStencil = nullptr;
+ID3D11DepthStencilState* RenderStates::disableDepthWrites = nullptr;
 
 
 
@@ -303,29 +303,29 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&depthComplReadDesc, &DepthComplexityReadDSS));
 
 	//
-	//disable depth
+	//Disable depth writes, keep depth test
 	//
-	D3D11_DEPTH_STENCIL_DESC disableDepthDesc;
-	disableDepthDesc.DepthEnable = false;
-	disableDepthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	disableDepthDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-	disableDepthDesc.StencilEnable = false;
-	disableDepthDesc.StencilReadMask = 0xff;
-	disableDepthDesc.StencilWriteMask = 0xff;
+	D3D11_DEPTH_STENCIL_DESC disableDepthWritesDesc;
+	disableDepthWritesDesc.DepthEnable = true;
+	disableDepthWritesDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	disableDepthWritesDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	disableDepthWritesDesc.StencilEnable = false;
+	disableDepthWritesDesc.StencilReadMask = 0xff;
+	disableDepthWritesDesc.StencilWriteMask = 0xff;
 
-	disableDepthDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	disableDepthDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-	disableDepthDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	disableDepthDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	disableDepthWritesDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 
 	// We are not rendering backfacing polygons, so these settings do not matter.
-	disableDepthDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	disableDepthDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-	disableDepthDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
-	disableDepthDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	disableDepthWritesDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	disableDepthWritesDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 
 
-	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&disableDepthDesc, &disableDepthStencil));
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateDepthStencilState(&disableDepthWritesDesc, &disableDepthWrites));
 	//
 	//lessEqualDss
 	//
@@ -361,7 +361,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(DepthComplexityCountDSS);
 	ReleaseID3D(DepthComplexityReadDSS);
 	ReleaseID3D(LessEqualDSS);
-	ReleaseID3D(disableDepthStencil);
+	ReleaseID3D(disableDepthWrites);
 
 }
 

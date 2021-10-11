@@ -31,7 +31,7 @@ public:
 	static ID3D11DepthStencilState* DepthComplexityCountDSS;
 	static ID3D11DepthStencilState* DepthComplexityReadDSS;
 	static ID3D11DepthStencilState* LessEqualDSS;
-	static ID3D11DepthStencilState* disableDepthStencil;
+	static ID3D11DepthStencilState* disableDepthWrites;
 
 
 

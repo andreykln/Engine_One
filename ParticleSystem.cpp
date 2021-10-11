@@ -10,7 +10,7 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	//Vertex buffer for Stream-Out
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.ByteWidth = sizeof(Particle) * 1; //why mul by 1?
+	vbd.ByteWidth = sizeof(Particle); 
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0u;
 	vbd.MiscFlags = 0u;
@@ -86,6 +86,14 @@ void ParticleSystem::SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pS
 	DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 	DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
 {
+	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+
+	gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+	gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
+
+
+
 	pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
 
 	UINT stride = sizeof(Particle);
@@ -132,13 +140,14 @@ void ParticleSystem::SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pS
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
 
 	UpdateParticleDrawConstBuffer(gfx, viewProjection, cameraPos);
+
 	// Draw the updated particle system we just streamed-out.
 	pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
 	pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
 	pShaders->BindPS(ShaderPicker::Particles_Draw_VS_GS_PS);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 
-	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel); //second call of it, does it needed?
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel); 
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 
 	gfx.pgfx_pDeviceContext->DrawAuto();

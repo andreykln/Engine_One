@@ -874,19 +874,12 @@ void App::DrawTerrain()
 
 
 	// PARTICLES
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthStencil, 0u);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthStencil, 0u);
  	pShaders->UnbindAll();
-	ID3D11Buffer* bufferArray[1] = { 0 };
-	wnd.GetGraphics().pgfx_pDeviceContext->SOSetTargets(1u, bufferArray, 0u);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	ID3D11RenderTargetView* renderTargets[1];
-	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
-	wnd.GetGraphics().SetViewport();
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//supposed to be drawn last so it will blend
 	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
