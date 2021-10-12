@@ -45,7 +45,7 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>* pGSCBDraw =
 		new GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>(gfx, camPosVP,
 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pGSParticleFireDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
+	pGSParticleDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
 	pGSCBDraw = nullptr;
 
 	const wchar_t* filePath = L"Textures\\flame.dds";
@@ -53,6 +53,10 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	psFireDrawTexture = pSRV->GetSRV();
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	pSSDrawPixel = pTexSampler->GetSamplerState();
+
+	filePath = L"Textures\\raindrop.dds";
+	ShaderResourceView* pRainSrv = new ShaderResourceView(gfx, filePath);
+	psRainDropTexture = pRainSrv->GetSRV();
 
 }
 
@@ -71,18 +75,18 @@ void ParticleSystem::UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3
 
 void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
 {
-	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSParticleFireDraw);
+	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSParticleDraw);
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleFireDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_CameraPosition_ViewProj* drawParticleGS = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
 	drawParticleGS->cameraPosition = cameraPos;
 	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(viewProjection);
-	gfx.pgfx_pDeviceContext->Unmap(pGSParticleFireDraw, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pGSParticleDraw, 0u);
 }
 
-void ParticleSystem::SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pShaders,
+void ParticleSystem::DrawFire(Graphics& gfx, Shaders* pShaders,
 	DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 	DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
 {

@@ -72,12 +72,20 @@ Shaders::Shaders(Graphics& in_gfx)
 	DS_Init(&pTerrainDS, L"Shaders\\Domain\\TerrainDS.cso");
 	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\TerrainPS.cso");
 
-	//Particles
+	//Particles fire
 	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
 	VS_IL_Init(&pSOVS, IL.particleSO, &pSOIL, IL.nParticleStreamOut, L"Shaders\\Vertex\\ParticleSOVS.cso");
 	VS_IL_Init(&pParticleFireVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
 	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFireGS.cso");
 	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
+
+	//particles rain
+	GS_SO_Init(&pParticleRainGSSO, L"Shaders\\Geometry\\ParticleRainSOGS.cso");
+	GS_Init(&pParticleRainGS, L"Shaders\\Geometry\\ParticleRainGS.cso");
+	VS_IL_Init(&pParticleRainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleRainVS.cso");
+	PS_Init(&pParticleRainPS, L"Shaders\\Pixel\\ParticleRainPS.cso");
+
+
 
 
 }
@@ -167,14 +175,18 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
 		break;
-
 	}
 	case ShaderPicker::Particles_Draw_VS_GS_PS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFireVS, nullptr, 0u);
 		break;
-
+	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleRainVS, nullptr, 0u);
+		break;
 	}
 	default:
 	break;
@@ -276,6 +288,11 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleFirePS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -303,6 +320,16 @@ void Shaders::BindGS(ShaderPicker shader)
 	case ShaderPicker::Particles_Draw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFireGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainStreamOut_VS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleRainGSSO, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleRainGS, nullptr, 0u);
 		break;
 	}
 	default:

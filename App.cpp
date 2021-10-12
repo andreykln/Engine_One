@@ -881,7 +881,7 @@ void App::DrawTerrain()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	//supposed to be drawn last so it will blend
-	pParticle->SetVertexBuffersAndDrawParticles(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+	pParticle->DrawFire(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
 
 	//reset

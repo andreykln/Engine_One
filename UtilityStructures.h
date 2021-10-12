@@ -280,5 +280,7 @@ enum ShaderPicker
 	TerrainHeightMap_VS_PS_DS_HS_PS,
 	Particles_StreamOut_VS_GS,
 	Particles_Draw_VS_GS_PS,
+	Particles_RainStreamOut_VS_GS,
+	Particles_RainDraw_VS_GS_PS,
 	Keep
 };

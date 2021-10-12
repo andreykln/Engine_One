@@ -42,7 +42,6 @@ private:
 	void CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path);
 	void HS_Init(ID3D11HullShader** pHShader, const std::wstring& path);
 	void DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path);
-	void DSSO_Output();
 
 	Graphics* pSgfx = nullptr;
 	InputLayout IL;
@@ -132,7 +131,7 @@ private:
 	ID3D11DomainShader* pTerrainDS = nullptr;
 	ID3D11PixelShader* pTerrainPS = nullptr;
 
-	//particles
+	//particles fire
 	ID3D11InputLayout*    pSOIL = nullptr;
 	ID3D11InputLayout*    pParticleDrawIL = nullptr;
 	ID3D11VertexShader*   pSOVS = nullptr;
@@ -140,6 +139,13 @@ private:
 	ID3D11VertexShader*   pParticleFireVS = nullptr;
 	ID3D11GeometryShader* pParticleFireGS = nullptr;
 	ID3D11PixelShader*    pParticleFirePS = nullptr;
+
+	//particles rain
+	ID3D11VertexShader* pParticleRainVS = nullptr;
+	ID3D11GeometryShader* pParticleRainGS = nullptr;
+	ID3D11GeometryShader* pParticleRainGSSO = nullptr;
+	ID3D11PixelShader* pParticleRainPS = nullptr;
+
 
 };
 

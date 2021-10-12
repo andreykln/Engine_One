@@ -15,30 +15,19 @@ class ParticleSystem : public Shape
 
 public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
-	void UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
-	void SetVertexBuffersAndDrawParticles(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
+	void DrawFire(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
-	//time elapsed since the system was reset
-	float GetAge() const;
 
-	void SetCamPos(const DirectX::XMFLOAT3& camPosW);
-	void SetEmitPos(const DirectX::XMFLOAT3& emitPosW);
-	void SetEmitDir(const DirectX::XMFLOAT3& emitDirW);
-
-	void Init(Graphics& gfx, ID3D11ShaderResourceView* texArraySRV, ID3D11ShaderResourceView* randomTexSRV);
-
-	void Reset();
-	void Update(float dt, float gameTime);
-	void Draw(Graphics& gfx);
 
 	bool mFirstRun = true;
 private:
 	void UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
 	void BindToSOStage(Graphics& gfx);
 	void UnbindFromSOStage(Graphics& gfx);
+	void UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
+
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(Graphics& gfx);
 
-	void BuildVB(Graphics& gfx);
 
 
 	UINT maxParticles;
@@ -64,11 +53,12 @@ private:
 	ID3D11Buffer* pGSSOParticleFire = nullptr;
 	CB_GS_StreamOut GSSOparticleFireData;
 
-	ID3D11Buffer* pGSParticleFireDraw = nullptr;
+	ID3D11Buffer* pGSParticleDraw = nullptr;
 	CB_CameraPosition_ViewProj camPosVP;
 
 	ID3D11ShaderResourceView* texArraySRV = nullptr;
 	ID3D11ShaderResourceView* randomTexSRV = nullptr;
 	ID3D11ShaderResourceView* psFireDrawTexture = nullptr;
+	ID3D11ShaderResourceView* psRainDropTexture = nullptr;
 
 };
