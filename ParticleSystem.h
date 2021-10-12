@@ -15,16 +15,15 @@ class ParticleSystem : public Shape
 
 public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
-	void DrawFire(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
-		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
+	void DrawParticle(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
+		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime, ParticlePick particle);
 
-
-	bool mFirstRun = true;
 private:
 	void UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
 	void BindToSOStage(Graphics& gfx);
 	void UnbindFromSOStage(Graphics& gfx);
 	void UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
+	void Reset();
 
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(Graphics& gfx);
 
@@ -36,7 +35,7 @@ private:
 	float gameTime;
 	float timeStep;
 	float age;
-	int frameCounter = 0;
+	int rainCounter = 0;
 
 	DirectX::XMFLOAT3 camPosW;
 	DirectX::XMFLOAT3 emitPosW;

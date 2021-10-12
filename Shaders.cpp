@@ -170,13 +170,13 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		break;
 
 	}
-	case ShaderPicker::Particles_StreamOut_VS_GS:
+	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFireVS, nullptr, 0u);
@@ -186,6 +186,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleRainVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainStreamOut_VS_GS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -283,7 +289,7 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pTerrainPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleFirePS, nullptr, 0u);
 		break;
@@ -312,12 +318,12 @@ void Shaders::BindGS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pCircletoCylinderGS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::Particles_StreamOut_VS_GS:
+	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pSOFireGS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::Particles_Draw_VS_GS_PS:
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFireGS, nullptr, 0u);
 		break;

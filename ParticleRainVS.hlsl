@@ -12,8 +12,6 @@ struct Particle
 struct VertexOut
 {
     float3 posW : POSITION;
-   // float2 sizeW : SIZE;
-   // float4 color : COLOR;
     uint type : TYPE;
 };
 
@@ -26,11 +24,6 @@ VertexOut main(Particle vin)
     //constant acceleration equation
     vout.posW = 0.5f * t * t * accelW + t * vin.initialVelocityW + vin.initialPosW;
     
-    //fade color with time
-   // float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-//    vout.color = float4(1.0f, 1.0f, 1.0, opacity);
-    
- //   vout.sizeW = vin.size;
     vout.type = vin.type;
     
     return vout;

@@ -86,19 +86,33 @@ void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMAT
 	gfx.pgfx_pDeviceContext->Unmap(pGSParticleDraw, 0u);
 }
 
-void ParticleSystem::DrawFire(Graphics& gfx, Shaders* pShaders,
+void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 	DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
-	DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
+	DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime, ParticlePick particle)
 {
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 
-	gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
-	gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
 
 
+	switch (particle)
+	{
+	case Fire:
+	{
+		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
+		pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
+	}
+		break;
+	case Rain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+	}
+		break;
+	default:
+		break;
+	}
 
-	pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
 
 	UINT stride = sizeof(Particle);
 	UINT offset = 0;
@@ -121,15 +135,47 @@ void ParticleSystem::DrawFire(Graphics& gfx, Shaders* pShaders,
 
 	if (firstRun)
 	{
-		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
-		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
+		switch (particle)
+		{
+		case Fire:
+		{
+			pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		}
+			break;
+		case Rain:
+		{
+		
+			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+
+		}
+			break;
+		default:
+			break;
+		}
 		gfx.pgfx_pDeviceContext->Draw(1u, 0u);
 		firstRun = false;
 	}
 	else
 	{
-		pShaders->BindVSandIA(ShaderPicker::Particles_StreamOut_VS_GS);
-		pShaders->BindGS(ShaderPicker::Particles_StreamOut_VS_GS);
+		switch (particle)
+		{
+		case Fire:
+		{
+			pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		}
+			break;
+		case Rain:
+		{
+			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		}
+			break;
+		default:
+			break;
+		}
 
 
 		gfx.pgfx_pDeviceContext->DrawAuto();
@@ -146,17 +192,40 @@ void ParticleSystem::DrawFire(Graphics& gfx, Shaders* pShaders,
 	UpdateParticleDrawConstBuffer(gfx, viewProjection, cameraPos);
 
 	// Draw the updated particle system we just streamed-out.
-	pShaders->BindVSandIA(ShaderPicker::Particles_Draw_VS_GS_PS);
-	pShaders->BindGS(ShaderPicker::Particles_Draw_VS_GS_PS);
-	pShaders->BindPS(ShaderPicker::Particles_Draw_VS_GS_PS);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
+	switch (particle)
+	{
+	case Fire:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+		pShaders->BindGS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+		pShaders->BindPS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
+	}
+		break;
+	case Rain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		pShaders->BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		pShaders->BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		rainCounter++;
+		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+	}
+		break;
+	default:
+		break;
+	}
+
 
 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel); 
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 
 	gfx.pgfx_pDeviceContext->DrawAuto();
 	
 
+}
+
+void ParticleSystem::Reset()
+{
+	firstRun = false;
 }
 
 void ParticleSystem::BindToSOStage(Graphics& gfx)

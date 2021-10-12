@@ -36,7 +36,6 @@ void main(
 	inout PointStream<Particle> ptStream
 )
 {
-    //float testTimeStep = 0.05f;
     gin[0].age += timeStep;
     
     if (gin[0].type == PT_EMITTER)

@@ -278,9 +278,15 @@ enum ShaderPicker
 	DisplacementMapping_VS_DS_HS,
 	DisplacementWaves_VS_HS_DS_PS,
 	TerrainHeightMap_VS_PS_DS_HS_PS,
-	Particles_StreamOut_VS_GS,
-	Particles_Draw_VS_GS_PS,
+	Particles_FireStreamOut_VS_GS,
+	Particles_FireDraw_VS_GS_PS,
 	Particles_RainStreamOut_VS_GS,
 	Particles_RainDraw_VS_GS_PS,
 	Keep
+};
+
+enum ParticlePick
+{
+	Fire,
+	Rain
 };

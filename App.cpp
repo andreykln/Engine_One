@@ -46,7 +46,8 @@ void App::DoFrame()
 
 // 	DebugTextToTitle();
 	wnd.GetGraphics().EndFrame();
-	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+// 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+	wnd.GetGraphics().ClearBuffer(0.0392f, 0.0392f, 0.17254f);
 
 }
 
@@ -847,11 +848,14 @@ void App::CreateTerrain()
 	pTerrain = new Terrain(wnd.GetGraphics());
 
 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
+	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
 }
 
 
 void App::DrawTerrain()
 {
+	viewProjectionMatrix = GetViewProjectionCamera();
+
 	// TERRAIN
 	pShaders->UnbindAll();
 	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
@@ -874,15 +878,20 @@ void App::DrawTerrain()
 
 
 	// PARTICLES
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthStencil, 0u);
+	pShaders->UnbindAll();
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
+	rainPosition.z += 10.0f;
+	rainPosition.y += 5.0f;
+	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
+
  	pShaders->UnbindAll();
 
-	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	//supposed to be drawn last so it will blend
-	pParticle->DrawFire(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime());
+	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);
 
 	//reset
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);

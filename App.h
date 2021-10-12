@@ -66,6 +66,7 @@ private:
 	Shaders* pShaders = nullptr;
 	
 	ParticleSystem* pParticle = nullptr;
+	ParticleSystem* pParticleRain = nullptr;
 	Terrain* pTerrain = nullptr;
 	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;
