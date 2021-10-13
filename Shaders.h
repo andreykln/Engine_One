@@ -146,6 +146,11 @@ private:
 	ID3D11GeometryShader* pParticleRainGSSO = nullptr;
 	ID3D11PixelShader* pParticleRainPS = nullptr;
 
+	//particles explosion
+	ID3D11VertexShader* pParticleExplosionVS = nullptr;
+	ID3D11GeometryShader* pParticleExplosionSOGS = nullptr;
+	ID3D11GeometryShader* pParticleExplosionGS = nullptr;
+
 
 };
 

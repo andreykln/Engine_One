@@ -526,6 +526,15 @@
     <FxCompile Include="ParticleRainGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
+    <FxCompile Include="ParticleExplosionSOGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleExplosionVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleExplosionGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

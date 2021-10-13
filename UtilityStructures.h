@@ -282,11 +282,15 @@ enum ShaderPicker
 	Particles_FireDraw_VS_GS_PS,
 	Particles_RainStreamOut_VS_GS,
 	Particles_RainDraw_VS_GS_PS,
+	Particles_ExplosionStreamOut_VS_GS,
+	Particle_ExplosionDraw_VS_GS_PS,
 	Keep
 };
 
 enum ParticlePick
 {
 	Fire,
-	Rain
+	Rain,
+	Explosion,
+	Fountain
 };

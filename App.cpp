@@ -849,6 +849,7 @@ void App::CreateTerrain()
 
 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
 	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
+	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 1);
 }
 
 
@@ -857,7 +858,7 @@ void App::DrawTerrain()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	// TERRAIN
-	pShaders->UnbindAll();
+	/*pShaders->UnbindAll();
 	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
@@ -874,28 +875,39 @@ void App::DrawTerrain()
 	}
 
 	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
-	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
+	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);*/
 
 
 	// PARTICLES
 	pShaders->UnbindAll();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
+	//RAIN
+	/*DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
 	rainPosition.z += 10.0f;
 	rainPosition.y += 5.0f;
 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
 
- 	pShaders->UnbindAll();
+ 	pShaders->UnbindAll();*/
 
+	//EXPLOSION
+	pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
+
+	pShaders->UnbindAll();
+
+	//FIRE
 	//supposed to be drawn last so it will blend
-	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+	/*pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);
+
+
+
 
 	//reset
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);*/
 
 }
 

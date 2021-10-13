@@ -108,6 +108,11 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 	}
+	case Explosion:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+
+	}
 		break;
 	default:
 		break;
@@ -145,12 +150,15 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 			break;
 		case Rain:
 		{
-		
 			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
-
 		}
 			break;
+		case Explosion:
+		{
+			pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+		}
 		default:
 			break;
 		}
@@ -171,6 +179,11 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		{
 			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		}
+		case Explosion:
+		{
+			pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+			pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
 		}
 			break;
 		default:
@@ -207,6 +220,14 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		pShaders->BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		pShaders->BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		rainCounter++;
+		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+	}
+	case Explosion:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
+		pShaders->BindGS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
+		pShaders->BindPS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		rainCounter++;
 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
 	}
