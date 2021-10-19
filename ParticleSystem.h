@@ -17,13 +17,14 @@ public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
 	void DrawParticle(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime, ParticlePick particle);
+	void Reset();
+
 
 private:
 	void UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
 	void BindToSOStage(Graphics& gfx);
 	void UnbindFromSOStage(Graphics& gfx);
 	void UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos);
-	void Reset();
 
 	ID3D11ShaderResourceView* CreateRandomTexture1DSRV(Graphics& gfx);
 

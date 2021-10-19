@@ -92,7 +92,10 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 {
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-
+	if (GetAsyncKeyState('4') & 0x8000)
+	{
+		Reset();
+	}
 
 
 	switch (particle)
@@ -108,8 +111,12 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 	}
+	break;
 	case Explosion:
 	{
+		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
+
 		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
 
 	}
@@ -179,6 +186,7 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		{
 			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+			break;
 		}
 		case Explosion:
 		{
@@ -222,6 +230,7 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		pShaders->BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		rainCounter++;
 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+		break;
 	}
 	case Explosion:
 	{
@@ -229,7 +238,7 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		pShaders->BindGS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		pShaders->BindPS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		rainCounter++;
-		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 	}
 		break;
 	default:
@@ -246,7 +255,7 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 
 void ParticleSystem::Reset()
 {
-	firstRun = false;
+	firstRun = true;
 }
 
 void ParticleSystem::BindToSOStage(Graphics& gfx)

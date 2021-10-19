@@ -8,11 +8,13 @@ struct VertexOut
 {
     float3 posW : POSITION;
     float2 sizeW : SIZE;
+    float4 color : COLOR;
     uint type : TYPE;
 };
 struct GSOutput
 {
     float4 posH : SV_POSITION;
+    float4 color : COLOR;
     float2 tex : TEXCOORD;
 };
 
@@ -50,6 +52,7 @@ void main(
     {
         geoOut.posH = mul(v[i], viewProjection);
         geoOut.tex = quadTexC[i];
+        geoOut.color = gin[0].color;
         triStream.Append(geoOut);
     }
 

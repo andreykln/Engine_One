@@ -303,12 +303,12 @@ void Shaders::BindPS(ShaderPicker shader)
 		break;
 	}
 	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
+	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleFirePS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
-	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
 		break;
