@@ -36,7 +36,7 @@ VertexOut main(Particle vin)
     }
     else
     {
-        vout.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+        vout.color = float4(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
     

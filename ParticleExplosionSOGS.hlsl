@@ -32,42 +32,46 @@ struct GSOutput
 Texture1D randomTex : register(t0);
 SamplerState samLinear : register(s0);
 
-[maxvertexcount(5)]
+[maxvertexcount(20)]
 void main(
 	point Particle gin[1],
 	inout PointStream<Particle> ptStream
 )
 {
     gin[0].age += timeStep;
-    
+    float offset = 0.0f;
+
+    //emits several shells at once then gets destroyed, not drawn
     if (gin[0].type == PT_EMITTER)
     {
+        for (int i = 0; i < 1; i++)
+        {
         
-       
-
-        float3 vRandomDirection = RandomUnitVec3(0);
-                
-        Particle p;
-        p.initialPosW = vRandomDirection;
-        p.initialVelocityW = 0.0f;
-        p.size = float2(0.0f, 0.0f);
-        p.age = 0.0f;
-        p.type = PT_SHELL;
+            float3 vRandomPosition = RandomUnitVec3(offset);
+            offset += 1.0f;
+            Particle p;
+            p.initialPosW = vRandomPosition;
+            p.initialVelocityW = 0.0f;
+            p.size = float2(0.0f, 0.0f);
+            p.age = 0.0f;
+            p.type = PT_SHELL;
     
-        ptStream.Append(p);
-            
-        
-          //destroy first and only emitter
+            ptStream.Append(p);
+        }
     }
+    //not drawn, emits flares
     if(gin[0].type == PT_SHELL)
     {
-
-     
+        //how long to keep shells so they emit flares
+        if (gin[0].age < 0.3f)
+        {
+            ptStream.Append(gin[0]);
+        }
         for (int j = 0; j < 1; j++)
         {
-            float offset = 0.0f;
-            float3 vRandomDirection = RandomUnitVec3(offset++);
-                
+            
+            float3 vRandomDirection = RandomUnitVec3(offset);
+            offset += 1.0f;
             Particle p;
             p.initialPosW = gin[0].initialPosW;
             p.initialVelocityW = vRandomDirection;
@@ -77,17 +81,13 @@ void main(
             ptStream.Append(p);
             
         }
-      
-        //keep shells until they can emit
-        if (gin[0].age < 0.3f)
-        {
-            ptStream.Append(gin[0]);
-        }
+   
+
     }
     else
     {
-		// Specify conditions to keep particle; this may vary from system to system.
-        if (gin[0].age <= 0.4f)
+        //how long to keep flares
+        if (gin[0].age < 0.4f)
             ptStream.Append(gin[0]);
     }
 }
