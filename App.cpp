@@ -846,9 +846,9 @@ void App::DrawPicking()
 void App::CreateTerrain()
 {
   	pTerrain = new Terrain(wnd.GetGraphics());
-// 
-// 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
-//  	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
+
+ 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
+ 	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
 	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
 }
 
@@ -883,13 +883,13 @@ void App::DrawTerrain()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	//RAIN
-	/*DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
+	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
 	rainPosition.z += 10.0f;
 	rainPosition.y += 5.0f;
 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
 
- 	pShaders->UnbindAll();*/
+ 	pShaders->UnbindAll();
 
 	//EXPLOSION
 	pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
@@ -899,8 +899,8 @@ void App::DrawTerrain()
 
 	//FIRE
 	//supposed to be drawn last so it will blend
-	/*pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);*/
+	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);
 
 
 

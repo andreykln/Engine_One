@@ -149,63 +149,39 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 
 	gfx.pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, &offset);
 
+	switch (particle)
+	{
+	case Fire:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
+	}
+	break;
+	case Rain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+	}
+	break;
+	case Explosion:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+		pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+	}
+	default:
+		break;
+	}
+
 	if (firstRun)
 	{
-		switch (particle)
-		{
-		case Fire:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
-		}
-			break;
-		case Rain:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
-		}
-			break;
-		case Explosion:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
-		}
-		default:
-			break;
-		}
 		gfx.pgfx_pDeviceContext->Draw(1u, 0u);
 		firstRun = false;
+
 	}
 	else
 	{
-		switch (particle)
-		{
-		case Fire:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
-		}
-			break;
-		case Rain:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
-			break;
-		}
-		case Explosion:
-		{
-			pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
-			pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
-		}
-			break;
-		default:
-			break;
-		}
-
-
 		gfx.pgfx_pDeviceContext->DrawAuto();
 	}
-
 
 	// done streaming-out--unbind the vertex buffer
 	UnbindFromSOStage(gfx);
