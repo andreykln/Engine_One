@@ -23,23 +23,20 @@ VertexOut main(Particle vin)
     VertexOut vout;
     
     float t = vin.age;
+
     float accelW = vin.initialVelocityW;
     //constant acceleration equation
     vout.posW = 0.5f * t * t * accelW + t * vin.initialVelocityW + vin.initialPosW;
     vout.sizeW = vin.size;
     vout.type = vin.type;
+
+    
     //fade color with time
     if(vin.type == PT_FLARE)
     {
-        float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
-        vout.color = float4(1.0f, 1.0f, 1.0, opacity);
+      float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
+      vout.color = float4(1.0f, 1.0f, 1.0, opacity);
     }
-    else
-    {
-        vout.color = float4(0.0f, 0.0f, 0.0f, 1.0f);
-    }
-
-    
     return vout;
     
 }

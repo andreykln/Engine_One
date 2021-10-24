@@ -94,7 +94,11 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 
 	if (GetAsyncKeyState('4') & 0x8000)
 	{
-		Reset();
+		if (gameTime - lastResetTime > 1.0f)
+		{
+			Reset();
+			lastResetTime = gameTime;
+		}
 	}
 
 

@@ -845,7 +845,7 @@ void App::DrawPicking()
 
 void App::CreateTerrain()
 {
-//  	pTerrain = new Terrain(wnd.GetGraphics());
+  	pTerrain = new Terrain(wnd.GetGraphics());
 // 
 // 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
 //  	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
@@ -858,7 +858,7 @@ void App::DrawTerrain()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 	// TERRAIN
-	/*pShaders->UnbindAll();
+	pShaders->UnbindAll();
 	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindHS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
 	pShaders->BindDS(ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS);
@@ -875,7 +875,7 @@ void App::DrawTerrain()
 	}
 
 	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
-	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);*/
+	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
 
 
 	// PARTICLES
@@ -893,7 +893,7 @@ void App::DrawTerrain()
 
 	//EXPLOSION
 	pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
+		DirectX::XMFLOAT3(30.0f, 3.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
 
 	pShaders->UnbindAll();
 

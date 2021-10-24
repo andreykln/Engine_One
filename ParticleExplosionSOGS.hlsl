@@ -44,16 +44,15 @@ void main(
     //emits several shells at once then gets destroyed, not drawn
     if (gin[0].type == PT_EMITTER)
     {
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 3; i++)
         {
-        
             float3 vRandomPosition = RandomUnitVec3(offset);
-            offset += 1.0f;
+            offset += 0.003f;
             Particle p;
-            p.initialPosW = vRandomPosition;
-            p.initialVelocityW = 0.0f;
+            p.initialPosW = emitPosW + (vRandomPosition * 0.5);
+            p.initialVelocityW = vRandomPosition * 0.5;
             p.size = float2(0.0f, 0.0f);
-            p.age = 0.0f;
+            p.age = gin[0].age;
             p.type = PT_SHELL;
     
             ptStream.Append(p);
@@ -67,22 +66,18 @@ void main(
         {
             ptStream.Append(gin[0]);
         }
-        for (int j = 0; j < 1; j++)
+        for (int j = 0; j < 20; j++)
         {
-            
             float3 vRandomDirection = RandomUnitVec3(offset);
-            offset += 1.0f;
+            offset += 0.002f;
             Particle p;
             p.initialPosW = gin[0].initialPosW;
             p.initialVelocityW = vRandomDirection;
-            p.size = float2(0.3f, 0.3f);
+            p.size = float2(0.4f, 0.4f);
             p.age = 0.0f;
             p.type = PT_FLARE;
             ptStream.Append(p);
-            
         }
-   
-
     }
     else
     {

@@ -1,3 +1,4 @@
+
 struct GSOutput
 {
     float4 posH : SV_POSITION;
@@ -12,5 +13,6 @@ float4 main(GSOutput pin) : SV_TARGET
 {
    // float4 color = SRVTexture.Sample(tex0Sample, float3(pin.tex, 0.0f)) * pin.color;
     float4 color = SRVTexture.Sample(tex0Sample, pin.tex) * pin.color;
+
     return color;
 }

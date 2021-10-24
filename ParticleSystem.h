@@ -35,6 +35,7 @@ private:
 
 	float gameTime;
 	float timeStep;
+	float lastResetTime = 0.0f;
 	float age;
 	int rainCounter = 0;
 
