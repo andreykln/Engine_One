@@ -182,7 +182,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	case ShaderPicker::Particles_RainStreamOut_VS_GS:
 	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
-	case ShaderPicker::Particle_FountainStreamOut_VS_PS_GS:
+	case ShaderPicker::Particle_FountainStreamOut_VS_GS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
@@ -368,7 +368,12 @@ void Shaders::BindGS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleExplosionSOGS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::Particle_FountainStreamOut_VS_PS_GS:
+	case ShaderPicker::Particle_FountainStreamOut_VS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFountainSOGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFountainGS, nullptr, 0u);
 		break;

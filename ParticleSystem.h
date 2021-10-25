@@ -37,7 +37,6 @@ private:
 	float timeStep;
 	float lastResetTime = 0.0f;
 	float age;
-	int rainCounter = 0;
 
 	DirectX::XMFLOAT3 camPosW;
 	DirectX::XMFLOAT3 emitPosW;

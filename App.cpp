@@ -889,9 +889,9 @@ void App::DrawTerrain()
 	rainPosition.z += 10.0f;
 	rainPosition.y += 5.0f;
 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
+		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);*/
 
- 	pShaders->UnbindAll();*/
+ 	pShaders->UnbindAll();
 
 	//FOUNTAIN
 	pParticleFountain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
@@ -905,11 +905,11 @@ void App::DrawTerrain()
 	/*pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		DirectX::XMFLOAT3(30.0f, 3.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
 
-	pShaders->UnbindAll();*/
+	pShaders->UnbindAll();
 
 	//FIRE
 	//supposed to be drawn last so it will blend
-	/*pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);*/
 
 

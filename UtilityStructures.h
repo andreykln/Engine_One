@@ -284,7 +284,7 @@ enum ShaderPicker
 	Particles_RainDraw_VS_GS_PS,
 	Particles_ExplosionStreamOut_VS_GS,
 	Particle_ExplosionDraw_VS_GS_PS,
-	Particle_FountainStreamOut_VS_PS_GS,
+	Particle_FountainStreamOut_VS_GS,
 	Particle_FountainDraw_VS_GS_PS,
 	Keep
 };
