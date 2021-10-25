@@ -51,7 +51,7 @@ void main(
                             
                 Particle p;
                 p.initialPosW = emitPosW.xyz;
-                p.initialVelocityW = vRandom;
+                p.initialVelocityW = 15.0f + vRandom.x * 4;
                 p.size = float2(1.0f, 1.0f);
                 p.age = 0.0f;
                 p.type = PT_FLARE;

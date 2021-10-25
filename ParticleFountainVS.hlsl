@@ -1,4 +1,4 @@
-static const float3 accelW = { -1.0f, 9.8f, 0.0f };
+static const float3 accelW = { -9.8f, 0.0f, 0.0f };
 
 struct Particle
 {
@@ -22,8 +22,8 @@ VertexOut main(Particle vin)
     float t = vin.age;
     
     //constant acceleration equation
-    vout.posW = 0.5f * t * t * accelW + t * vin.initialVelocityW + vin.initialPosW;
-    
+    vout.posW = t * t * accelW + t * vin.initialVelocityW + vin.initialPosW;
+
     vout.type = vin.type;
     
     return vout;

@@ -1,6 +1,6 @@
 #define PT_EMITTER 0
 #define PT_FLARE 1
-static const float3 accelW = { -1.0f, 9.8f, 0.0f };
+static const float3 accelW = { 0.02f, 0.22f, 0.0f };
 cbuffer cbPerFrame
 {
     float4x4 viewProjection;
@@ -29,7 +29,7 @@ void main(
     {
 		// Slant line in acceleration direction.
         float3 p0 = gin[0].posW;
-        float3 p1 = gin[0].posW + 0.07f * accelW;
+        float3 p1 = gin[0].posW + 0.02f;
 		
         GSOutput v0;
         v0.posH = mul(float4(p0, 1.0f), viewProjection);
