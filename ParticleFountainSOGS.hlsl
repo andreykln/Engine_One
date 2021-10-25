@@ -48,10 +48,12 @@ void main(
                 float3 vRandom = RandomUnitVec3(offset);
                 offset += 0.01f;
                // vRandom.y = 20.0f;
-                            
+                float coneWidth = 11.0f;
+                
                 Particle p;
                 p.initialPosW = emitPosW.xyz;
-                p.initialVelocityW = 15.0f + vRandom.x * 4;
+                p.initialVelocityW = vRandom;
+                p.initialVelocityW.y = abs(p.initialVelocityW.y) + coneWidth;
                 p.size = float2(1.0f, 1.0f);
                 p.age = 0.0f;
                 p.type = PT_FLARE;

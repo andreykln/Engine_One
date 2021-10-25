@@ -845,13 +845,13 @@ void App::DrawPicking()
 
 void App::CreateTerrain()
 {
-//   	pTerrain = new Terrain(wnd.GetGraphics());
-// 
-//  	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
-//  	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
-// 	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
+  	//pTerrain = new Terrain(wnd.GetGraphics());
 
-	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 1000);
+ 	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
+ 	//pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
+ 	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
+
+	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 2000);
 }
 
 
@@ -889,9 +889,9 @@ void App::DrawTerrain()
 	rainPosition.z += 10.0f;
 	rainPosition.y += 5.0f;
 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);*/
+		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
 
- 	pShaders->UnbindAll();
+ 	pShaders->UnbindAll();*/
 
 	//FOUNTAIN
 	pParticleFountain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
@@ -902,15 +902,15 @@ void App::DrawTerrain()
 
 
 	//EXPLOSION
-	/*pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(30.0f, 3.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
+	pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+		DirectX::XMFLOAT3(0.0f, 3.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
 
 	pShaders->UnbindAll();
 
 	//FIRE
 	//supposed to be drawn last so it will blend
 	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);*/
+		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);
 
 
 
