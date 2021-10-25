@@ -151,6 +151,11 @@ private:
 	ID3D11GeometryShader* pParticleExplosionSOGS = nullptr;
 	ID3D11GeometryShader* pParticleExplosionGS = nullptr;
 
+	//particles fountain
+	ID3D11VertexShader* pParticleFountainVS = nullptr;
+	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
+	ID3D11GeometryShader* pParticleFountainGS = nullptr;
+
 
 };
 

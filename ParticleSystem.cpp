@@ -114,17 +114,22 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 	case Rain:
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		break;
 	}
-	break;
+	case Fountain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particle_FountainStreamOut_VS_PS_GS);
+		break;
+	}
 	case Explosion:
 	{
 		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
 		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
 
 		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
-
-	}
 		break;
+	}
+
 	default:
 		break;
 	}
@@ -155,14 +160,21 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
 		pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		break;
 	}
-	break;
+
 	case Rain:
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 		pShaders->BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		break;
 	}
-	break;
+	case Fountain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particle_FountainStreamOut_VS_PS_GS);
+		pShaders->BindGS(ShaderPicker::Particle_FountainStreamOut_VS_PS_GS);
+		break;
+	}
 	case Explosion:
 	{
 		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
@@ -208,7 +220,15 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		pShaders->BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		pShaders->BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		pShaders->BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
-		rainCounter++;
+// 		rainCounter++;
+		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+		break;
+	}
+	case Fountain:
+	{
+		pShaders->BindVSandIA(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
+		pShaders->BindGS(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
+		pShaders->BindPS(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
 		break;
 	}
@@ -217,7 +237,6 @@ void ParticleSystem::DrawParticle(Graphics& gfx, Shaders* pShaders,
 		pShaders->BindVSandIA(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		pShaders->BindGS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		pShaders->BindPS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
-		rainCounter++;
 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 	}
 		break;

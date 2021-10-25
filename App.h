@@ -68,6 +68,7 @@ private:
 	ParticleSystem* pParticle = nullptr;
 	ParticleSystem* pParticleRain = nullptr;
 	ParticleSystem* pParticleExplosion = nullptr;
+	ParticleSystem* pParticleFountain = nullptr;
 	Terrain* pTerrain = nullptr;
 	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;

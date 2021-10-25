@@ -535,6 +535,15 @@
     <FxCompile Include="ParticleExplosionGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
+    <FxCompile Include="ParticleFountainVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleFountainSOGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleFountainGS.hlsl">
+      <Filter>Shaders\Geometry</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

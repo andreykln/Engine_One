@@ -90,6 +90,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_Init(&pParticleExplosionGS, L"Shaders\\Geometry\\ParticleExplosionGS.cso");
 	VS_IL_Init(&pParticleExplosionVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleExplosionVS.cso");
 
+	//fountain
+	GS_SO_Init(&pParticleFountainSOGS, L"Shaders\\Geometry\\ParticleFountainSOGS.cso");
+	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\ParticleFountainGS.cso");
+	VS_IL_Init(&pParticleFountainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFountainVS.cso");
 
 
 
@@ -178,6 +182,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	case ShaderPicker::Particles_RainStreamOut_VS_GS:
 	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
+	case ShaderPicker::Particle_FountainStreamOut_VS_PS_GS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
@@ -195,16 +200,16 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleRainVS, nullptr, 0u);
 		break;
 	}
-// 	case ShaderPicker::Particles_RainStreamOut_VS_GS:
-// 	{
-// 		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
-// 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
-// 		break;
-// 	}
 	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleExplosionVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pParticleDrawIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFountainVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -309,6 +314,7 @@ void Shaders::BindPS(ShaderPicker shader)
 		break;
 	}
 	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
 		break;
@@ -360,6 +366,11 @@ void Shaders::BindGS(ShaderPicker shader)
 	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleExplosionSOGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainStreamOut_VS_PS_GS:
+	{
+		pSgfx->pgfx_pDeviceContext->GSSetShader(pParticleFountainGS, nullptr, 0u);
 		break;
 	}
 	default:
