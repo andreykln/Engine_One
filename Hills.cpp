@@ -225,14 +225,26 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
 								gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
 		AddBind(pSRVHeightMap);
-	}
 		break;
+	}
 	case HillsDemo:
 	case HillsAllLight:
 	{
 		directory[0] = L"Textures\\grass.dds";
-	}
 		break;
+	}
+	case ShadowMap:
+	{
+		directory[0] = L"Textures\\floor.dds";
+		normalMap[0] = L"Textures\\floor_nmap.dds";
+
+		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
+		AddBind(pSRVHeightMap);
+		break;
+
+	}
+
 	default:
 		break;
 	}

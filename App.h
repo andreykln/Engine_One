@@ -35,6 +35,8 @@ private:
 	void CreateShapesWithDynamicCubeMap();
 	void DrawShapesWithDynamicCubeMap();
 	void DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP);
+	void CreateShadowMapDemo();
+	void DrawShadowMapDemo();
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
 	void InstancingCreate();
