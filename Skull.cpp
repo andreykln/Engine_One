@@ -124,6 +124,13 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 
 }
 
+void Skull::DrawSkull(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, DirectX::XMFLOAT3 camPosition)
+{
+	UpdateVSMatrices(gfx, in_world,	in_ViewProj);
+	UpdatePSConstBuffers(gfx, camPosition);
+	this->BindAndDrawIndexed(gfx);
+}
+
 void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;

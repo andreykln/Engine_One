@@ -6,6 +6,8 @@ class Hills : public Shape
 {
 public:
 	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo);
+	void DrawHills(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera);
 	DirectX::XMFLOAT3 GetHillNormal(float x, float z) const;
 	void SetVerticesWidth(UINT in_vertWidth) noexcept;
 	void SetVerticesDepth(UINT in_vertDepth) noexcept;

@@ -5,6 +5,9 @@ class Skull : public Shape
 {
 public:
 	Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo);
+	void DrawSkull(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj,
+		DirectX::XMFLOAT3 camPosition);
+
 	//updating only light for mirror demo
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition);

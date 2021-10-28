@@ -174,6 +174,13 @@ Cylinder::Cylinder(Graphics& gfx,
 
 }
 
+void Cylinder::DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 camPositon)
+{
+	UpdateDisplacementCBuffers(gfx, in_world, in_ViewProj, camPositon);
+	UpdatePSConstBuffers(gfx, camPositon);
+	BindAndDrawIndexed(gfx);
+}
+
 void Cylinder::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
 {

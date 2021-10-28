@@ -271,6 +271,14 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 
+void Hills::DrawHills(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
+{
+	UpdateVSMatrices(gfx, in_world, in_ViewProj, in_camera);
+	UpdatePSConstBuffers(gfx, in_camera);
+	this->BindAndDrawIndexed(gfx);
+}
+
 DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
 {
 	DirectX::XMFLOAT3 n(

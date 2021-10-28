@@ -98,6 +98,13 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	AddBind(pTexSampler);
 }
 
+void GeoSphere::DrawSpheres(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt, DirectX::XMFLOAT3 camPositon)
+{
+	UpdateVSMatrices(gfx, in_world, in_ViewProj, sin(dt));
+	UpdatePSConstBuffers(gfx, camPositon);
+	BindAndDrawIndexed(gfx);
+}
+
 void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt)
 {
 	sphereTextureOffset.y += 0.05f * dt;

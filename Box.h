@@ -6,6 +6,8 @@ class Box : public Shape
 {
 public:
 	Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo);
+	void DrawBox(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj,
+		DirectX::XMFLOAT3 camPositon);
 	DirectX::XMMATRIX GetBoxForHillsOffset();
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,

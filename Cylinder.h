@@ -5,6 +5,8 @@ class Cylinder : public Shape
 public:
 	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count,
 		DemoSwitch in_switch);
+	void DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 camPositon);
 	void UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera);
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,

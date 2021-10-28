@@ -216,6 +216,13 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 }
 
 
+void Box::DrawBox(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, DirectX::XMFLOAT3 camPositon)
+{
+	UpdateDisplacementCBuffers(gfx,	in_world, in_ViewProj, camPositon);
+	UpdatePSConstBuffers(gfx, camPositon);
+	BindAndDrawIndexed(gfx);
+}
+
 DirectX::XMMATRIX Box::GetBoxForHillsOffset()
 {
 	return boxforHillsOffset;
@@ -272,8 +279,6 @@ void Box::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_
 		break;
 	}
 	}
-
-
 
 }
 

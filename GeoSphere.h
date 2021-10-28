@@ -5,6 +5,8 @@ class GeoSphere : public Shape
 {
 public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere);
+	void DrawSpheres(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt,
+		DirectX::XMFLOAT3 camPositon);
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 private:
