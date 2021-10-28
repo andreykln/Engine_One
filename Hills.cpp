@@ -10,6 +10,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	switch (currentDemo)
 	{
 	case Shapesdemo:
+	case ShadowMap:
 	{
 		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -148,6 +149,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	switch (currentDemo)
 	{
 	case Shapesdemo:
+	case ShadowMap:
 	{
 		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVSCB = 
 			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, transformMatricesWithCameraPos, 0u, 1u);
@@ -172,6 +174,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	{
 	case Shapesdemo:
 	case HillsDemo:
+	case ShadowMap:
 	{
 		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
 			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -242,9 +245,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
 		AddBind(pSRVHeightMap);
 		break;
-
 	}
-
 	default:
 		break;
 	}
@@ -302,6 +303,19 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 {
 	switch (currentDemo)
 	{
+	case ShadowMap:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = grassScaling;
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
+		break;
+	}
 	case Shapesdemo:
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;

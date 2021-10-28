@@ -95,6 +95,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\ParticleFountainGS.cso");
 	VS_IL_Init(&pParticleFountainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFountainVS.cso");
 
+	//shadow map
+	VS_IL_Init(&pShadowMapVS, IL.lightTextureNormalMapping,
+		&pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\NormalMappingShadowsVS.cso");
+	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\NormalMappingShadowPS.cso");
 
 
 }
@@ -212,6 +216,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFountainVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -317,6 +327,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
 		break;
 	}
 	default:

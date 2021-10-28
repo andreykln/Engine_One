@@ -781,7 +781,7 @@ void App::CreateShadowMapDemo()
 	pSky = new Sky(wnd.GetGraphics());
 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::DisplacementMapping);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
-	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
+	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::ShadowMap);
 	for (int i = 0; i < 10; i++)
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
@@ -849,10 +849,16 @@ void App::DrawShadowMapDemo()
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
+
+	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
+	pShaders->BindPS(ShaderPicker::ShadowMap_VS_PS);
 	pHills->UpdateVSMatrices(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, camera.GetCameraPosition());
 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 	pDisplacementMappingBox->UpdateDisplacementCBuffers(wnd.GetGraphics(),
 		shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix, camera.GetCameraPosition());

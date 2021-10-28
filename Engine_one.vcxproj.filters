@@ -544,6 +544,12 @@
     <FxCompile Include="ParticleFountainGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
+    <FxCompile Include="NormalMappingShadowPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalMappingShadowsVS.hlsl">
+      <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

@@ -156,6 +156,9 @@ private:
 	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
 	ID3D11GeometryShader* pParticleFountainGS = nullptr;
 
+	//ShadowMap
+	ID3D11VertexShader* pShadowMapVS = nullptr;
+	ID3D11PixelShader* pShadowMapPS = nullptr;
 
 };
 
