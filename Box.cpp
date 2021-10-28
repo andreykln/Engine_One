@@ -39,6 +39,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	case DemoSwitch::Shapesdemo:
 	case DemoSwitch::DefaultBox:
 	case DemoSwitch::DisplacementMapping:
+	case DemoSwitch::ShadowMap:
 	{
 		directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 		directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -88,6 +89,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	{
 	case Shapesdemo:
 	case DisplacementMapping:
+	case ShadowMap:
 	{
 		VertexBuffer* pVB = new VertexBuffer(gfx, verticesNormal, L"BoxNormal.");
 		AddBind(pVB);
@@ -111,7 +113,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
 	AddIndexBuffer(pIndexBuffer);
 
-	if (currentDemo == DemoSwitch::DisplacementMapping)
+	switch (currentDemo)
+	{
+	case DisplacementMapping:
 	{
 		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVSCB =
 			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, displacementMappingVS_CB, 0u, 1u);
@@ -122,15 +126,25 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 				gfx, displacementMappingDS_CB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pCopyDSdisMappingCB = pDSCamPos->GetDomainShaderConstantBuffer();
 		AddBind(pDSCamPos);
+		break;
 	}
-	else
+	case ShadowMap:
+	{
+		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVSCB =
+			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, displacementMappingVS_CB, 0u, 1u);
+		pCopyVSdisMappingCb = pVSCB->GetVertexConstantBuffer();
+		AddBind(pVSCB);
+		break;
+	}
+	default:
 	{
 		VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
 			new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
 		pCopyVCBMatricesBox = pVCBPerObject->GetVertexConstantBuffer();
 		AddBind(pVCBPerObject);
+		break;
 	}
-
+	}
 
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCBPerFrame =
@@ -152,6 +166,21 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	case DemoSwitch::DisplacementMapping:
 	{
 		directory[0] = L"Textures\\bricks.dds";
+		normalMap[0] = L"Textures\\bricks_nmap.dds";
+		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
+		AddBind(pSRVHeightMap);
+		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
+		AddBind(pSRVN);
+		break;
+	}
+	case DemoSwitch::ShadowMap:
+	{
+		directory[0] = L"Textures\\bricks3.dds";
+		normalMap[0] = L"Textures\\bricks3_nmap.dds";
+		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
+		AddBind(pSRVN);
+		break;
 	}
 	break;
 	case DemoSwitch::HillsAllLight:
@@ -169,16 +198,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		break;
 	}
 
-
-	if (currentDemo == DemoSwitch::DisplacementMapping)
-	{
-		normalMap[0] = L"Textures\\bricks_nmap.dds";
-		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
-			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
-		AddBind(pSRVHeightMap);
-		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
-		AddBind(pSRVN);
-	}
 
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
@@ -218,21 +237,44 @@ void Box::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, con
 void Box::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVSdisMappingCb, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
-	pMatrices->world = DirectX::XMMatrixTranspose(in_world);
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	pMatrices->cameraPosition = in_camera;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVSdisMappingCb, 0u);
+	switch (currentDemo)
+	{
+	case DisplacementMapping:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVSdisMappingCb, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVSdisMappingCb, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDSdisMappingCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
-	pDSBuffer->cameraPosition = in_camera;
-	pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	gfx.pgfx_pDeviceContext->Unmap(pCopyDSdisMappingCB, 0u);
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDSdisMappingCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+		pDSBuffer->cameraPosition = in_camera;
+		pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+		gfx.pgfx_pDeviceContext->Unmap(pCopyDSdisMappingCB, 0u);
+		break;
+	}
+	case ShadowMap:
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVSdisMappingCb, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVSdisMappingCb, 0u);
+		break;
+	}
+	}
+
+
+
 }
 
 void Box::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)

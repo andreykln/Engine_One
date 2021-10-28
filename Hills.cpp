@@ -260,9 +260,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	}
 
 
-
-
-
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
 	if (currentDemo == DemoSwitch::Shapesdemo)
@@ -351,11 +348,6 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	}
 	break;
 	}
-
-
-
-
-
 
 }
 

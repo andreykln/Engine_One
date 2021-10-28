@@ -7,7 +7,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	{
 		cylinderParts.CreateCylinderNoCaps(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
 	}
-	if(in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping)
+	if(in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping || DemoSwitch::ShadowMap)
 	{
 		cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
 	}
@@ -28,7 +28,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	std::vector<Vertices_Full> verticesWithNormals(mesh.vertices.size());
 
-	if (in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping)
+	if (in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping || DemoSwitch::ShadowMap)
 	{
 		for (UINT i = 0; i < mesh.vertices.size(); i++)
 		{
@@ -68,7 +68,7 @@ Cylinder::Cylinder(Graphics& gfx,
 		AddBind(pVertexBuffer);
 	}
 
-	if (in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping)
+	if (in_switch == DemoSwitch::Shapesdemo || DemoSwitch::DisplacementMapping || DemoSwitch::ShadowMap)
 	{
 		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesWithNormals, L"CylinderNormals");
 		AddBind(pVertexBuffer);
@@ -89,6 +89,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 		break;
 	case DisplacementMapping:
+	case ShadowMap:
 	{
 		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVCBPerObject =
 			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, disMappingVSCB, 0u, 1u);
@@ -131,14 +132,21 @@ Cylinder::Cylinder(Graphics& gfx,
 		{
 			LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
 		}
-// 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, LightningArray, (UINT)std::size(LightningArray), 1, true);
-// 		AddBind(pSRV);
+
 	}
 
 	std::wstring directory[1];
 	std::wstring normalMap[1];
-	directory[0] = L"Textures\\bricks.dds";
-	normalMap[0] = L"Textures\\bricks_nmap.dds";
+	if (currentDemo == ShadowMap)
+	{
+		directory[0] = L"Textures\\bricks3.dds";
+		normalMap[0] = L"Textures\\bricks3_nmap.dds";
+	}
+	else
+	{
+		directory[0] = L"Textures\\bricks.dds";
+		normalMap[0] = L"Textures\\bricks_nmap.dds";
+	}
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory), ShaderType::Pixel);
 	AddBind(pSRV);
 
@@ -169,22 +177,39 @@ Cylinder::Cylinder(Graphics& gfx,
 void Cylinder::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
 {
+	if (currentDemo == DisplacementMapping)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
 
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
-	pMatrices->world = DirectX::XMMatrixTranspose(in_world);
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	pMatrices->cameraPosition = in_camera;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDomainShaderBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+		pDSBuffer->cameraPosition = in_camera;
+		pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+		gfx.pgfx_pDeviceContext->Unmap(pCopyDomainShaderBuffer, 0u);
+	}
+	if (currentDemo == ShadowMap)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesCylinder, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
+		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+		pMatrices->texTransform = DirectX::XMMatrixIdentity();
+		pMatrices->cameraPosition = in_camera;
+		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesCylinder, 0u);
+	}
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyDomainShaderBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_CameraPosition_ViewProj* pDSBuffer = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
-	pDSBuffer->cameraPosition = in_camera;
-	pDSBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	gfx.pgfx_pDeviceContext->Unmap(pCopyDomainShaderBuffer, 0u);
+
+
 
 }
 
