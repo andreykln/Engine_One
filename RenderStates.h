@@ -15,6 +15,7 @@ public:
 	static ID3D11RasterizerState* CullClockwiseRS;
 	static ID3D11RasterizerState* CullCounterClockwiseRS;
 	static ID3D11RasterizerState* SolidFillRS;
+	static ID3D11RasterizerState* ShadowMapBiasRS;
 
 	// Blend states
 	static ID3D11BlendState* AlphaToCoverageBS;

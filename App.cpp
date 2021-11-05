@@ -9,7 +9,8 @@ App::App()
 {
 	rStates.InitializeAll(wnd.GetGraphics());
 	pShaders = new Shaders(wnd.GetGraphics());
-
+	const int smapSize = 2048;
+	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 // 	CreateShapesWithDynamicCubeMap();
@@ -781,7 +782,7 @@ void App::CreateShadowMapDemo()
 	pSky = new Sky(wnd.GetGraphics());
 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::ShadowMap);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
-	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::ShadowMap);
+	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45, DemoSwitch::ShadowMap);
 	for (int i = 0; i < 10; i++)
 	{
 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));

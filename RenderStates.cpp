@@ -10,6 +10,7 @@ ID3D11RasterizerState* RenderStates::NoCullRS = nullptr;
 ID3D11RasterizerState* RenderStates::CullClockwiseRS = nullptr;
 ID3D11RasterizerState* RenderStates::SolidFillRS = nullptr;
 ID3D11RasterizerState* RenderStates::CullCounterClockwiseRS = nullptr;
+ID3D11RasterizerState* RenderStates::ShadowMapBiasRS = nullptr;
 
 ID3D11BlendState* RenderStates::AlphaToCoverageBS = nullptr;
 ID3D11BlendState* RenderStates::TransparentBS = nullptr;
@@ -30,6 +31,14 @@ ID3D11DepthStencilState* RenderStates::disableDepthWrites = nullptr;
 
 void RenderStates::InitializeAll(Graphics& gfx)
 {
+	//
+	//ShadowMap Bias
+	//
+	D3D11_RASTERIZER_DESC shadowMapBiasDesc;
+	shadowMapBiasDesc.DepthBias = 100000;
+	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
+	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
+
 	//
 	//SolidFIllRS
 	//
@@ -349,6 +358,7 @@ void RenderStates::DestroyAll()
 	ReleaseID3D(CullClockwiseRS);
 	ReleaseID3D(CullCounterClockwiseRS);
 	ReleaseID3D(SolidFillRS);
+	ReleaseID3D(ShadowMapBiasRS);
 
 	ReleaseID3D(AlphaToCoverageBS);
 	ReleaseID3D(TransparentBS);

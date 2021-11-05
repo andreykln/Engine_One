@@ -66,6 +66,7 @@ private:
 	CubeMapCamera* pCMCamera;
 	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
+	ShadowMapGen* pShadowMap = nullptr;
 	
 	ParticleSystem* pParticle = nullptr;
 	ParticleSystem* pParticleRain = nullptr;
