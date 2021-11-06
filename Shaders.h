@@ -160,5 +160,9 @@ private:
 	ID3D11VertexShader* pShadowMapVS = nullptr;
 	ID3D11PixelShader* pShadowMapPS = nullptr;
 
+	//shadow map generation
+	ID3D11VertexShader* pShadowMapGenVS = nullptr;
+	ID3D11PixelShader* pShadowMapGenPS = nullptr;
+
 };
 

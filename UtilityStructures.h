@@ -234,6 +234,21 @@ struct Particle
 	unsigned int type;
 };
 
+//
+// shadow map
+//
+struct ShadowMapGenVS
+{
+	ShadowMapGenVS() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX lightWVP;
+	DirectX::XMMATRIX texTransform;
+};
+
+
+
+
+///////////////////////
+
 
 enum DemoSwitch
 {
@@ -288,6 +303,7 @@ enum ShaderPicker
 	Particle_FountainStreamOut_VS_GS,
 	Particle_FountainDraw_VS_GS_PS,
 	ShadowMap_VS_PS,
+	ShadowMapGen_VS_PS,
 	Keep
 };
 

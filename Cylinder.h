@@ -15,6 +15,7 @@ public:
 	void IncrementTexArrPos() noexcept;
 private:
 	UINT GetTexArrPos() const noexcept;
+	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld);
 
 	DemoSwitch currentDemo;
 	GeometryGenerator::MeshData mesh;
@@ -24,12 +25,13 @@ private:
 	CB_PS_PerFrameUpdate pscBuffer;
 	CB_CameraPosition_ViewProj displacementMappingCylinderCB;
 	CB_VS_TransformWithCameraPosition disMappingVSCB;
-
+	ShadowMapGenVS shadowMapCbuffer;
 
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyLightTextureCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
 	ID3D11Buffer* pCopyDomainShaderBuffer = nullptr;
+	ID3D11Buffer* pShadomMapGenCB = nullptr;
 
 	UINT texArrPosition{};
 

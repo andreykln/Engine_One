@@ -29,8 +29,8 @@ private:
 
 	D3D11_VIEWPORT mViewport;
 
-	DirectX::XMMATRIX lightView;
-	DirectX::XMMATRIX lightProj;
-	DirectX::XMMATRIX lightTransform;
+	DirectX::XMFLOAT4X4 lightView;
+	DirectX::XMFLOAT4X4 lightProj;
+	DirectX::XMFLOAT4X4 shadowTransform;
 
 };

@@ -100,7 +100,10 @@ Shaders::Shaders(Graphics& in_gfx)
 		&pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\NormalMappingShadowsVS.cso");
 	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\NormalMappingShadowPS.cso");
 
-
+	//shadow map generation
+	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
+	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
+	
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -222,6 +225,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::ShadowMapGen_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapGenVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -332,6 +341,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::ShadowMap_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapGen_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapGenPS, nullptr, 0u);
 		break;
 	}
 	default:

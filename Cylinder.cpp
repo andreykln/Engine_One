@@ -94,6 +94,9 @@ Cylinder::Cylinder(Graphics& gfx,
 		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVCBPerObject =
 			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, disMappingVSCB, 0u, 1u);
 		pCopyVCBMatricesCylinder = pVCBPerObject->GetVertexConstantBuffer();
+		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
+			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
+		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
 		AddBind(pVCBPerObject);
 	}
 		break;
@@ -270,5 +273,17 @@ void Cylinder::IncrementTexArrPos() noexcept
 UINT Cylinder::GetTexArrPos() const noexcept
 {
 	return texArrPosition;
+}
+
+void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld)
+{
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
+	pMatrices->lightWVP = in_lightWorld;
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
 }
 
