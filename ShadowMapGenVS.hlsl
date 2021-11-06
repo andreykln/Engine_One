@@ -6,14 +6,15 @@ cbuffer cbPerFrame
 
 struct VertexIn
 {
-    float3 posL : POSITION;
-    float2 tex : TEXCOORD;
+    float3 position : Position;
+    float3 normal : Normal;
+    float2 texCoord : TexCoordinate;
+    float3 tangentLocal : Tangent;
 };
 
 struct VertexOut
 {
     float4 posH : SV_POSITION;
-    float3 normalL : NORMAL;
     float2 tex : TEXCOORD;
 };
 
@@ -21,7 +22,7 @@ struct VertexOut
 VertexOut main( VertexIn vin )
 {
     VertexOut vout;
-    vout.posH = mul(float4(vin.posL, 1.0f), lightWVP);
-    vout.tex = mul(float4(vin.tex, 0.0f,1.0f), texTransform);
+    vout.posH = mul(float4(vin.position, 1.0f), lightWVP);
+    vout.tex = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform);
 	return vout;
 }

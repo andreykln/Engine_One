@@ -38,7 +38,7 @@ void App::DoFrame()
 // 	DrawHillsWithGPUWaves();
 // 	DrawBox();
 // 	DrawDepthComplexityStencil();
-	DrawGaussBlur();
+// 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
 // 	DrawPicking();
@@ -789,8 +789,7 @@ void App::DrawSceneToShadowMap()
 	{
 		DirectX::XMMATRIX WVP = *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
 		x->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
-		x->DrawCylinder(wnd.GetGraphics(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
 
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
@@ -837,6 +836,7 @@ void App::DrawShadowMapDemo()
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime(), displacementCylinders[0]->GetOldLightDirection());
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	//set default render target and viewport
@@ -853,8 +853,9 @@ void App::DrawShadowMapDemo()
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, pShadowMap->DepthMapSRV());
-		x->BindAndDrawIndexed(wnd.GetGraphics);
+			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+		pShadowMap->SetShadowSampler(wnd.GetGraphics());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 

@@ -110,6 +110,7 @@ Cylinder::Cylinder(Graphics& gfx,
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pLightDirectionPSCbuffer = pLightsPS->GetPixelShaderConstantBuffer();
 	AddBind(pLightsPS);
 
 	if (currentDemo == ShadowMap)
@@ -193,6 +194,7 @@ void Cylinder::DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world, co
 	UpdatePSConstBuffers(gfx, camPositon);
 	BindAndDrawIndexed(gfx);
 }
+
 
 void Cylinder::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
@@ -295,7 +297,8 @@ void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX&
 }
 
 void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
-	const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV)
+	const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
+	DirectX::XMFLOAT3 newLightDirection)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
@@ -317,12 +320,18 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	frame->lightDirection = directionalLight.dirLight[0].direction;
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
+
+	
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_DirectionalL_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
+	lightDir->dirLight[0].direction = newLightDirection;
+
+	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
+
+
 }
 
-void Cylinder::SetNewLightDirection(DirectX::XMFLOAT3 newDirection)
-{
-	directionalLight.dirLight[0].direction = newDirection;
-}
+
 
 DirectX::XMFLOAT3 Cylinder::GetOldLightDirection()
 {

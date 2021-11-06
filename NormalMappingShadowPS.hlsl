@@ -1,12 +1,13 @@
 #include "LightHelper.hlsli"
 
-struct PSstruct
+struct VSout
 {
     float4 PosH : SV_Position;
     float3 PosW : Position;
     float3 NormalW : Normal;
-    float2 Tex : TEXCOORD;
+    float2 Tex : TEXCOORD0;
     float3 tangentW : TANGENT;
+    float4 shadowPosH : TEXCOORD1;
 };
 
 cbuffer CBPSDirectionalLight_Fog : register(b0)
@@ -19,13 +20,6 @@ cbuffer CBPSDirectionalLight_Fog : register(b0)
     float2 padding;
 };
 
-/*cbuffer PS_Per_Frame : register(b1)
-{
-    float3 camPositon;
-    unsigned int numberOfLights;
-    unsigned int texArrayPosition;
-}*/
-
 cbuffer PS_Per_FrameShadowMap : register(b1)
 {
     float3 lightDirection;
@@ -36,13 +30,15 @@ cbuffer PS_Per_FrameShadowMap : register(b1)
 
 Texture2D SRVTexture : register(t0);
 Texture2D SRVNormalMap : register(t1);
+Texture2D SRVshadowMap : register(t2);
 SamplerState tex0Sample : register(s0);
+SamplerComparisonState shadowSampler : register(s1);
 
 
-float4 main(PSstruct pin) : SV_TARGET
+float4 main(VSout pin) : SV_TARGET
 {
     //update rotating main light for shadow map
-    directLight[0].direction = lightDirection;
+    //directLight[0].direction = lightDirection;
    // Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
     
@@ -74,15 +70,18 @@ float4 main(PSstruct pin) : SV_TARGET
         float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
+        
+        float shadow;
+        shadow = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+        
         [unroll]
         for (uint i = 0; i < numberOfLights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(objectMaterial, directLight[i], bumpedNormalW, toEye, A, D, S);
             ambient += A;
-            diffuse += D;
-            specular += S;
+            diffuse += D * shadow;
+            specular += S * shadow;
         }
     
     

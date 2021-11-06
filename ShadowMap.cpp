@@ -46,11 +46,36 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
 
+
+
+
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pShadowSampler));
+
 }
 
 ID3D11ShaderResourceView* ShadowMapGen::DepthMapSRV()
 {
 	return pDepthMapSRV;
+}
+
+void ShadowMapGen::SetShadowSampler(Graphics& gfx)
+{
+	gfx.pgfx_pDeviceContext->PSSetSamplers(1u, 1u, &pShadowSampler);
 }
 
 void ShadowMapGen::BindDSVandSetNullRenderTarget(Graphics& gfx)
@@ -70,7 +95,7 @@ void ShadowMapGen::UpdateScene(float dt, DirectX::XMFLOAT3 oldLightDir)
 
 	DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir);
 	lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
-	DirectX::XMStoreFloat3(&oldLightDir, lightDir);
+	DirectX::XMStoreFloat3(&newLightDirection, lightDir);
 }
 
 DirectX::XMMATRIX ShadowMapGen::GetShadowTransform()
@@ -91,6 +116,11 @@ DirectX::XMMATRIX ShadowMapGen::GetLightView()
 DirectX::XMMATRIX ShadowMapGen::GetLighViewProjection()
 {
 	return lightViewProjection;
+}
+
+DirectX::XMFLOAT3 ShadowMapGen::GetNewLightDirection()
+{
+	return newLightDirection;
 }
 
 void ShadowMapGen::BuildShadowTransform(DirectionalLight* oldLightDir)

@@ -1,3 +1,5 @@
+static const float SMAP_SIZE = 2048.0f;
+static const float SMAP_DX = 1.0f / SMAP_SIZE;
 
 struct DirectionalLight
 {
@@ -208,15 +210,28 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample,
     return bumpedNormalW;
 }
 
-/*struct VertexIn
+float CalcShadowFactor(SamplerComparisonState samShadow, Texture2D shadowMap, float4 shadowPosH)
 {
-    float3 pos : Position;
-    float3 normal : Normal;
-};
-
-struct VertexOut
-{
-    float4 PosH : SV_Position;
-    float3 PosW : Position;
-    float3 NormalW : Normal;
-};*/
+    shadowPosH.xyz /= shadowPosH.w;
+    float depth = shadowPosH.z;
+    
+    const float dx = SMAP_DX;
+    
+    float percentLit = 0.0f;
+    
+    const float2 offsets[9] =
+    {
+        float2(-dx, -dx), float2(0.0f, -dx), float2(dx, -dx),
+        float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
+        float2(-dx, dx), float2(0.0f, dx), float2(dx, dx)
+    };
+    
+    //3x3 box filter pattern. Each sample does a 4-tap PCF
+    [unroll]
+    for (int i = 0; i < 9; ++i)
+    {
+        percentLit += shadowMap.SampleCmpLevelZero(samShadow,
+        shadowPosH.xy + offsets[i], depth).r;
+    }
+    return percentLit /= 9.0f;
+}

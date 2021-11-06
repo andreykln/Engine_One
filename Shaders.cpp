@@ -227,7 +227,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::ShadowMapGen_VS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapGenVS, nullptr, 0u);
 		break;
 	}
