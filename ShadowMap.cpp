@@ -62,18 +62,35 @@ void ShadowMapGen::BindDSVandSetNullRenderTarget(Graphics& gfx)
 	gfx.pgfx_pDeviceContext->ClearDepthStencilView(pDepthMapDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void ShadowMapGen::UpdateScene(float dt, DirectionalLight* oldLightDir)
+void ShadowMapGen::UpdateScene(float dt, DirectX::XMFLOAT3 oldLightDir)
 {
 	lightRotationAngle += 0.1f * dt;
 
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(lightRotationAngle);
 
-	for (int i = 0; i < 3; ++i)
-	{
-		DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir[i].direction);
-		lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
-		DirectX::XMStoreFloat3(&oldLightDir[i].direction, lightDir);
-	}
+	DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir);
+	lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
+	DirectX::XMStoreFloat3(&oldLightDir, lightDir);
+}
+
+DirectX::XMMATRIX ShadowMapGen::GetShadowTransform()
+{
+	return shadowTransform;
+}
+
+DirectX::XMMATRIX ShadowMapGen::GetLightProjection()
+{
+	return lightProj;
+}
+
+DirectX::XMMATRIX ShadowMapGen::GetLightView()
+{
+	return lightView;
+}
+
+DirectX::XMMATRIX ShadowMapGen::GetLighViewProjection()
+{
+	return lightViewProjection;
 }
 
 void ShadowMapGen::BuildShadowTransform(DirectionalLight* oldLightDir)
@@ -107,7 +124,11 @@ void ShadowMapGen::BuildShadowTransform(DirectionalLight* oldLightDir)
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 	XMMATRIX S = V * P * T;
-	XMStoreFloat4x4(&lightView, V);
-	XMStoreFloat4x4(&lightProj, P);
-	XMStoreFloat4x4(&shadowTransform, S);
+	lightViewProjection = V * P;
+	shadowTransform = S;
+	lightProj = P;
+	lightView = V;
+// 	XMStoreFloat4x4(&lightView, V);
+// 	XMStoreFloat4x4(&lightProj, P);
+// 	XMStoreFloat4x4(&shadowTransform, S);
 }

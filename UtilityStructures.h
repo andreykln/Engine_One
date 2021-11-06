@@ -243,8 +243,22 @@ struct ShadowMapGenVS
 	DirectX::XMMATRIX lightWVP;
 	DirectX::XMMATRIX texTransform;
 };
-
-
+struct CB_PS_ShadowMapDraw
+{
+	CB_PS_ShadowMapDraw() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMFLOAT3 lightDirection;
+	unsigned int numberOfLights = 1u;
+	DirectX::XMFLOAT3 cameraPositon;
+};
+struct CB_VS_ShadowMapDraw
+{
+	CB_VS_ShadowMapDraw() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX shadowTransform;
+};
 
 
 ///////////////////////

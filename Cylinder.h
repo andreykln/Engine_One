@@ -13,9 +13,13 @@ public:
 		const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void IncrementTexArrPos() noexcept;
+	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
+	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
+		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV);
+	void SetNewLightDirection(DirectX::XMFLOAT3 newDirection);
+	DirectX::XMFLOAT3 GetOldLightDirection();
 private:
 	UINT GetTexArrPos() const noexcept;
-	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld);
 
 	DemoSwitch currentDemo;
 	GeometryGenerator::MeshData mesh;
@@ -25,14 +29,17 @@ private:
 	CB_PS_PerFrameUpdate pscBuffer;
 	CB_CameraPosition_ViewProj displacementMappingCylinderCB;
 	CB_VS_TransformWithCameraPosition disMappingVSCB;
+	//Shadow map
 	ShadowMapGenVS shadowMapCbuffer;
+	CB_PS_ShadowMapDraw shadowMapDraw;
+	CB_VS_ShadowMapDraw shadowMapVSDraw;
 
 	ID3D11Buffer* pCopyPCBLightsCylinder = nullptr;
 	ID3D11Buffer* pCopyLightTextureCylinder = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesCylinder = nullptr;
 	ID3D11Buffer* pCopyDomainShaderBuffer = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
-
+	ID3D11Buffer* pShadowMapVSDraw = nullptr;
 	UINT texArrPosition{};
 
 

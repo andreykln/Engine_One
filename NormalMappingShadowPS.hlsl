@@ -19,13 +19,20 @@ cbuffer CBPSDirectionalLight_Fog : register(b0)
     float2 padding;
 };
 
-cbuffer PS_Per_Frame : register(b1)
+/*cbuffer PS_Per_Frame : register(b1)
 {
     float3 camPositon;
     unsigned int numberOfLights;
     unsigned int texArrayPosition;
-}
+}*/
 
+cbuffer PS_Per_FrameShadowMap : register(b1)
+{
+    float3 lightDirection;
+    unsigned int numberOfLights;
+    float3 camPositon;
+
+}
 
 Texture2D SRVTexture : register(t0);
 Texture2D SRVNormalMap : register(t1);
@@ -34,6 +41,8 @@ SamplerState tex0Sample : register(s0);
 
 float4 main(PSstruct pin) : SV_TARGET
 {
+    //update rotating main light for shadow map
+    directLight[0].direction = lightDirection;
    // Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
     
