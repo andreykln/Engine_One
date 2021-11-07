@@ -16,13 +16,13 @@ public:
 	void SetShadowSampler(Graphics& gfx);
 	void BindDSVandSetNullRenderTarget(Graphics& gfx);
 	void UpdateScene(float dt, DirectX::XMFLOAT3 oldLightDir);
+	void BuildShadowTransform(DirectX::XMFLOAT3 oldLightDir);
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
 	DirectX::XMMATRIX GetLightView();
 	DirectX::XMMATRIX GetLighViewProjection();
 	DirectX::XMFLOAT3 GetNewLightDirection();
 private:
-	void BuildShadowTransform(DirectionalLight* oldLightDir);
 
 	UINT mWidth;
 	UINT mHeight;

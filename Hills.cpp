@@ -151,8 +151,8 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	case Shapesdemo:
 	case ShadowMap:
 	{
-		VertexConstantBuffer<CB_VS_TransformWithCameraPosition>* pVSCB = 
-			new VertexConstantBuffer<CB_VS_TransformWithCameraPosition>(gfx, transformMatricesWithCameraPos, 0u, 1u);
+		VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVSCB =
+			new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapPlane, 0u, 1u);
 		pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
 		AddBind(pVSCB);
 		break;
@@ -272,10 +272,11 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 void Hills::DrawHills(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera,
+	ID3D11ShaderResourceView* pShadowMap, const DirectX::XMMATRIX& in_ShadowTransform)
 {
-	UpdateVSMatrices(gfx, in_world, in_ViewProj, in_camera);
-	UpdatePSConstBuffers(gfx, in_camera);
+	UpdateVSMatrices(gfx, in_world, in_ViewProj, in_camera, in_ShadowTransform);
+	UpdatePSConstBuffers(gfx, in_camera, pShadowMap);
 	this->BindAndDrawIndexed(gfx);
 }
 
@@ -304,7 +305,7 @@ void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
 
 
 void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera, const DirectX::XMMATRIX& in_ShadowTransform)
 {
 	switch (currentDemo)
 	{
@@ -312,12 +313,12 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-		CB_VS_TransformWithCameraPosition* pMatrices = reinterpret_cast<CB_VS_TransformWithCameraPosition*>(mappedData.pData);
+		CB_VS_ShadowMapDraw* pMatrices = reinterpret_cast<CB_VS_ShadowMapDraw*>(mappedData.pData);
 		pMatrices->world = DirectX::XMMatrixTranspose(in_world);
 		pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 		pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 		pMatrices->texTransform = grassScaling;
-		pMatrices->cameraPosition = in_camera;
+		pMatrices->shadowTransform = in_ShadowTransform;
 		gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesHills, 0u);
 		break;
 	}
@@ -359,8 +360,10 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 
 }
 
-void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, ID3D11ShaderResourceView* pShadowMap)
 {
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMap);
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsHills, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
