@@ -151,10 +151,18 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	case Shapesdemo:
 	case ShadowMap:
 	{
+		//delete?
 		VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVSCB =
 			new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapPlane, 0u, 1u);
 		pCopyVCBMatricesHills = pVSCB->GetVertexConstantBuffer();
-		AddBind(pVSCB);
+		////////////////
+// 		AddBind(pVSCB);
+		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
+			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
+		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
+		VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
+			new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
+		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 		break;
 	}
 
@@ -168,7 +176,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	break;
 	}
 
-
+	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pLightDirectionPSCbuffer = pLightsPS->GetPixelShaderConstantBuffer();
+	AddBind(pLightsPS);
 
 	switch (currentDemo)
 	{
@@ -176,14 +187,17 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	case HillsDemo:
 	case ShadowMap:
 	{
-		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		AddBind(pLightsPS);
-
-		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
-		AddBind(pLightsCB);
+// 		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+// 			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 		AddBind(pLightsPS);
+// 
+// 		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+// 			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 		pCopyPCBLightsHills = pLightsCB->GetPixelShaderConstantBuffer();
+// 		AddBind(pLightsCB);
+		PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>* pLightsCB =
+			new PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>(gfx, shadowMapDraw, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pCopyPCBLightsPlane = pLightsCB->GetPixelShaderConstantBuffer();
 	}
 	break;
 	case HillsAllLight:
@@ -311,6 +325,7 @@ void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
 	{
 	case ShadowMap:
 	{
+		gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pCopyVCBMatricesHills);
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesHills, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 		CB_VS_ShadowMapDraw* pMatrices = reinterpret_cast<CB_VS_ShadowMapDraw*>(mappedData.pData);
@@ -405,6 +420,49 @@ void Hills::UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, Dire
 
 	gfx.pgfx_pDeviceContext->Unmap(pCopyAllLights, 0u);
 
+}
+
+void Hills::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
+{
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
+	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
+}
+
+void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3 newLightDirection)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_VS_ShadowMapDraw* shadowVS = reinterpret_cast<CB_VS_ShadowMapDraw*> (mappedData.pData);
+	shadowVS->texTransform = grassScaling;
+	shadowVS->shadowTransform = newShadowTransform;
+	shadowVS->world = in_world;
+	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	shadowVS->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+
+
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pCopyPCBLightsPlane);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsPlane, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_ShadowMapDraw* frame = reinterpret_cast<CB_PS_ShadowMapDraw*> (mappedData.pData);
+	frame->cameraPositon = newCamPosition;
+	frame->lightDirection = directionalLight.dirLight[0].direction;
+
+	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsPlane, 0u);
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_DirectionalL_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
+	lightDir->dirLight[0].direction = newLightDirection;
+
+	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
 }
 
 DirectX::XMMATRIX Hills::GetHillsOffset() const

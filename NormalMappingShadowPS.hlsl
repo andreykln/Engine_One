@@ -71,17 +71,17 @@ float4 main(VSout pin) : SV_TARGET
         float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
         
-        float shadow;
-        shadow = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
-        
+        float3 shadow = float3(1.0f, 1.0f, 1.0f);
+        shadow[0] = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+       // shadow[0] = 0.0f;
         [unroll]
         for (uint i = 0; i < numberOfLights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(objectMaterial, directLight[i], bumpedNormalW, toEye, A, D, S);
             ambient += A;
-            diffuse += D * shadow;
-            specular += S * shadow;
+            diffuse += D * shadow[0];
+            specular += S * shadow[0];
         }
     
     

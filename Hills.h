@@ -16,6 +16,10 @@ public:
 		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera, const DirectX::XMMATRIX& in_ShadowTransform);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, ID3D11ShaderResourceView* pShadowMap);
 	void UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT3 camDirection,float totalTime);
+	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
+	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
+		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
+		DirectX::XMFLOAT3 newLightDirection);
 	DirectX::XMMATRIX GetHillsOffset() const;
 
 private:
@@ -44,11 +48,18 @@ private:
 	ID3D11Buffer* pCopyVCBMatricesHills = nullptr;
 	ID3D11Buffer* pCopyAllLights = nullptr;
 	ID3D11Buffer* pCopyDomainShaderBuffer = nullptr;
+	ID3D11Buffer* pShadomMapGenCB = nullptr;
+	ID3D11Buffer* pShadowMapVSDraw = nullptr;
+	ID3D11Buffer* pCopyPCBLightsPlane = nullptr;
+	ID3D11Buffer* pLightDirectionPSCbuffer = nullptr;
+	CB_VS_ShadowMapDraw shadowMapVSDraw;
+	CB_PS_ShadowMapDraw shadowMapDraw;
 
 	ID3DBlob* pVertexShaderBlob = nullptr;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 	DirectionalLight dirLight;
+	ShadowMapGenVS shadowMapCbuffer;
 // 	Material landMat;
 	std::vector<TreePointSprite> treesPositions;
 

@@ -796,10 +796,11 @@ void App::DrawSceneToShadowMap()
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
-	//don't need for shadow generation
-	ID3D11ShaderResourceView* pTempSRV = nullptr;
-	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
-		viewProjectionMatrix, camera.GetCameraPosition(), pTempSRV, DirectX::XMMatrixIdentity());
+	pHills->UpdateShadomMapGenBuffers(wnd.GetGraphics(),
+		shapes.Get_m_GridWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection(), camera.GetCameraPosition());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
+// 		viewProjectionMatrix, camera.GetCameraPosition(), pTempSRV, DirectX::XMMatrixIdentity());
 
 
 
@@ -813,6 +814,7 @@ void App::CreateShadowMapDemo()
 // 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::ShadowMap);
 // 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45, DemoSwitch::ShadowMap);
+	//delete?
 // 	for (int i = 0; i < 10; i++)
 // 	{
 // 		cylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::Shapesdemo));
@@ -862,8 +864,13 @@ void App::DrawShadowMapDemo()
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
 
-	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
-		viewProjectionMatrix, camera.GetCameraPosition(), pShadowMap->DepthMapSRV(), pShadowMap->GetShadowTransform());
+	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
+		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+	pShadowMap->SetShadowSampler(wnd.GetGraphics());
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
+// 		viewProjectionMatrix, camera.GetCameraPosition(), pShadowMap->DepthMapSRV(), pShadowMap->GetShadowTransform());
 
 	// 	pDisplacementMappingBox->DrawBox(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
 	// 		viewProjectionMatrix, camera.GetCameraPosition());
