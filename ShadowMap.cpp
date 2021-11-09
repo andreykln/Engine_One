@@ -61,7 +61,7 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 
 	samplerDesc.MipLODBias = 0.0f;
 	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pShadowSampler));
@@ -87,20 +87,25 @@ void ShadowMapGen::BindDSVandSetNullRenderTarget(Graphics& gfx)
 	gfx.pgfx_pDeviceContext->ClearDepthStencilView(pDepthMapDSV, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void ShadowMapGen::UpdateScene(float dt, DirectX::XMFLOAT3 oldLightDir)
+void ShadowMapGen::UpdateScene(float dt, DirectionalLight* oldLightDir)
 {
 	lightRotationAngle += 0.1f * dt;
 
-	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(lightRotationAngle);
 
-	DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir);
-	lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
-	DirectX::XMStoreFloat3(&newLightDirection, lightDir);
+	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(lightRotationAngle);
+	for (int i = 0; i < 3; i++)
+	{
+		DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir[i].direction);
+		lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
+		DirectX::XMStoreFloat3(&newLightDirection[i], lightDir);
+	}
 }
 
 DirectX::XMMATRIX ShadowMapGen::GetShadowTransform()
 {
-	return shadowTransform;
+// 	return shadowTransform;
+
+	return DirectX::XMMatrixTranspose(shadowTransform);
 }
 
 DirectX::XMMATRIX ShadowMapGen::GetLightProjection()
@@ -118,16 +123,16 @@ DirectX::XMMATRIX ShadowMapGen::GetLighViewProjection()
 	return lightViewProjection;
 }
 
-DirectX::XMFLOAT3 ShadowMapGen::GetNewLightDirection()
+DirectX::XMFLOAT3* ShadowMapGen::GetNewLightDirection()
 {
 	return newLightDirection;
 }
 
-void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3 oldLightDir)
+void ShadowMapGen::BuildShadowTransform(DirectionalLight* oldLightDir)
 {
 	using namespace DirectX;
 	//only first light cast shadow
-	XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir);
+	XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir[0].direction);
 	XMVECTOR lightPos = -2.0f * sceneBounds.radius * lightDir;
 	XMVECTOR targetPos = XMLoadFloat3(&sceneBounds.center);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -154,7 +159,11 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3 oldLightDir)
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f);
 	XMMATRIX S = V * P * T;
+
+
 	lightViewProjection = V * P;
+
+
 	shadowTransform = S;
 	lightProj = P;
 	lightView = V;

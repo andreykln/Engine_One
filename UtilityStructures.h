@@ -247,7 +247,7 @@ struct CB_PS_ShadowMapDraw
 {
 	CB_PS_ShadowMapDraw() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 lightDirection;
-	unsigned int numberOfLights = 1u;
+	unsigned int numberOfLights = 1;
 	DirectX::XMFLOAT3 cameraPositon;
 	int pad0;
 };

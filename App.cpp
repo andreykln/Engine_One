@@ -785,7 +785,7 @@ void App::DrawSceneToShadowMap()
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapGen_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMapGen_VS_PS);
 
-	//copy
+	//copy in argument
 	pShadowMap->BuildShadowTransform(displacementCylinders[0]->GetOldLightDirection());
 	for (auto& x : displacementCylinders)
 	{
@@ -840,7 +840,7 @@ void App::DrawShadowMapDemo()
 	// 		viewProjectionMatrix, camera.GetCameraPosition());
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-	pShadowMap->UpdateScene(timer.DeltaTime(), displacementCylinders[0]->GetOldLightDirection());
+	pShadowMap->UpdateScene(timer.TotalTime() * 0.1f, displacementCylinders[0]->GetOldLightDirection());
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);

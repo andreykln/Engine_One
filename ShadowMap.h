@@ -15,13 +15,13 @@ public:
 	ID3D11ShaderResourceView* DepthMapSRV();
 	void SetShadowSampler(Graphics& gfx);
 	void BindDSVandSetNullRenderTarget(Graphics& gfx);
-	void UpdateScene(float dt, DirectX::XMFLOAT3 oldLightDir);
-	void BuildShadowTransform(DirectX::XMFLOAT3 oldLightDir);
+	void UpdateScene(float dt, DirectionalLight* oldLightDir);
+	void BuildShadowTransform(DirectionalLight* oldLightDir);
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
 	DirectX::XMMATRIX GetLightView();
 	DirectX::XMMATRIX GetLighViewProjection();
-	DirectX::XMFLOAT3 GetNewLightDirection();
+	DirectX::XMFLOAT3* GetNewLightDirection();
 private:
 
 	UINT mWidth;
@@ -35,7 +35,7 @@ private:
 
 	D3D11_VIEWPORT mViewport;
 
-	DirectX::XMFLOAT3 newLightDirection;
+	DirectX::XMFLOAT3 newLightDirection[3];
 	DirectX::XMMATRIX lightView;
 	DirectX::XMMATRIX lightProj;
 	DirectX::XMMATRIX shadowTransform;

@@ -5,8 +5,8 @@ struct VSout
     float4 PosH : SV_Position;
     float3 PosW : Position;
     float3 NormalW : Normal;
-    float2 Tex : TEXCOORD0;
     float3 tangentW : TANGENT;
+    float2 Tex : TEXCOORD0;
     float4 shadowPosH : TEXCOORD1;
 };
 
@@ -63,7 +63,8 @@ float4 main(VSout pin) : SV_TARGET
 
     
     
-    
+    float3 shadow = float3(0.0f, 1.0f, 1.0f);
+    //float shadow;
     if (numberOfLights > 0)
     {
     
@@ -71,17 +72,17 @@ float4 main(VSout pin) : SV_TARGET
         float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
         
-        float3 shadow = float3(1.0f, 1.0f, 1.0f);
         shadow[0] = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
-       // shadow[0] = 0.0f;
+        //shadow = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+        
         [unroll]
         for (uint i = 0; i < numberOfLights; ++i)
         {
             float4 A, D, S;
             ComputeDirectionalLight(objectMaterial, directLight[i], bumpedNormalW, toEye, A, D, S);
             ambient += A;
-            diffuse += D * shadow[0];
-            specular += S * shadow[0];
+            diffuse += D * shadow[i];
+            specular += S * shadow[i];
         }
     
     
@@ -91,8 +92,8 @@ float4 main(VSout pin) : SV_TARGET
      //fogging
     float fogLerp = saturate((distToEye - fogStart) / fogRange);
     litColor = lerp(litColor, fogColor, fogLerp);
-        // Common to take alpha from diffuse material and texture
+    // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-
+   // litColor = float4(shadow[0], 0 , 0, 1.0f);
     return litColor;
 }

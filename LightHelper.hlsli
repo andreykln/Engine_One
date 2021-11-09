@@ -1,5 +1,4 @@
-static const float SMAP_SIZE = 2048.0f;
-static const float SMAP_DX = 1.0f / SMAP_SIZE;
+
 
 struct DirectionalLight
 {
@@ -209,9 +208,11 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample,
     
     return bumpedNormalW;
 }
-
+static const float SMAP_SIZE = 2048.0f;
+static const float SMAP_DX = 1.0f / SMAP_SIZE;
 float CalcShadowFactor(SamplerComparisonState samShadow, Texture2D shadowMap, float4 shadowPosH)
 {
+
     shadowPosH.xyz /= shadowPosH.w;
     float depth = shadowPosH.z;
     

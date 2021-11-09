@@ -16,8 +16,8 @@ public:
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, 
-		DirectX::XMFLOAT3 newLightDirection);
-	DirectX::XMFLOAT3 GetOldLightDirection();
+		DirectX::XMFLOAT3* newLightDirection);
+	DirectionalLight* GetOldLightDirection();
 private:
 	UINT GetTexArrPos() const noexcept;
 

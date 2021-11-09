@@ -298,7 +298,7 @@ void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX&
 
 void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 	const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
-	DirectX::XMFLOAT3 newLightDirection)
+	DirectX::XMFLOAT3* newLightDirection)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
@@ -324,7 +324,10 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_DirectionalL_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
-	lightDir->dirLight[0].direction = newLightDirection;
+	for (int i = 0; i < 3; i++)
+	{
+		lightDir->dirLight[i].direction = newLightDirection[i];
+	}
 
 	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
 
@@ -333,8 +336,8 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 
 
 
-DirectX::XMFLOAT3 Cylinder::GetOldLightDirection()
+DirectionalLight* Cylinder::GetOldLightDirection()
 {
-	return directionalLight.dirLight[0].direction;
+	return directionalLight.dirLight;
 }
 
