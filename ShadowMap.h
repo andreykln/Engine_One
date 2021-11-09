@@ -16,7 +16,7 @@ public:
 	void SetShadowSampler(Graphics& gfx);
 	void BindDSVandSetNullRenderTarget(Graphics& gfx);
 	void UpdateScene(float dt, DirectionalLight* oldLightDir);
-	void BuildShadowTransform(DirectionalLight* oldLightDir);
+	void BuildShadowTransform(DirectX::XMFLOAT3* oldLightDir);
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
 	DirectX::XMMATRIX GetLightView();

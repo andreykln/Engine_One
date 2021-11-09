@@ -786,7 +786,7 @@ void App::DrawSceneToShadowMap()
 	pShaders->BindPS(ShaderPicker::ShadowMapGen_VS_PS);
 
 	//copy in argument
-	pShadowMap->BuildShadowTransform(displacementCylinders[0]->GetOldLightDirection());
+	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 	for (auto& x : displacementCylinders)
 	{
 		DirectX::XMMATRIX WVP = *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
