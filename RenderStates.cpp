@@ -35,9 +35,16 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	//ShadowMap Bias
 	//
 	D3D11_RASTERIZER_DESC shadowMapBiasDesc;
-	shadowMapBiasDesc.DepthBias = 10000;
+	ZeroMemory(&shadowMapBiasDesc, sizeof(D3D11_RASTERIZER_DESC));
+	shadowMapBiasDesc.FillMode = D3D11_FILL_SOLID;
+	shadowMapBiasDesc.CullMode = D3D11_CULL_BACK;
+	shadowMapBiasDesc.FrontCounterClockwise = false;
+	shadowMapBiasDesc.DepthClipEnable = true;
+
+	shadowMapBiasDesc.DepthBias = 100000;
 	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
 	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRasterizerState(&shadowMapBiasDesc, &ShadowMapBiasRS));
 
 	//
 	//SolidFIllRS

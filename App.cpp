@@ -840,10 +840,11 @@ void App::DrawShadowMapDemo()
 	// 		viewProjectionMatrix, camera.GetCameraPosition());
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-	pShadowMap->UpdateScene(timer.TotalTime() * 0.1f, displacementCylinders[0]->GetOldLightDirection());
+	pShadowMap->UpdateScene(timer.DeltaTime(), displacementCylinders[0]->GetOldLightDirection());
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+
 	//set default render target and viewport
 	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
@@ -869,8 +870,6 @@ void App::DrawShadowMapDemo()
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-// 	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
-// 		viewProjectionMatrix, camera.GetCameraPosition(), pShadowMap->DepthMapSRV(), pShadowMap->GetShadowTransform());
 
 	// 	pDisplacementMappingBox->DrawBox(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
 	// 		viewProjectionMatrix, camera.GetCameraPosition());
