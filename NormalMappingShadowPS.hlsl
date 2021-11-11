@@ -94,6 +94,6 @@ float4 main(VSout pin) : SV_TARGET
     litColor = lerp(litColor, fogColor, fogLerp);
     // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-   // litColor = float4(shadow[0], 0 , 0, 1.0f);
+    //litColor = float4(shadow[0], 0 , 0, 1.0f);
     return litColor;
 }

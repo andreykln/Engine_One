@@ -43,7 +43,7 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateShaderResourceView(depthMap, &srvDesc, &pDepthMapSRV));
 	depthMap->Release();
 
-	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	sceneBounds.center = DirectX::XMFLOAT3(0.0f, -4.0f, 0.0f);
 	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
 
 
@@ -131,7 +131,6 @@ DirectX::XMFLOAT3* ShadowMapGen::GetNewLightDirection()
 void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3* oldLightDir)
 {
 	using namespace DirectX;
-	//only first light cast shadow
 	XMVECTOR lightDir = DirectX::XMLoadFloat3(oldLightDir);
 	XMVECTOR lightPos = -2.0f * sceneBounds.radius * lightDir;
 	XMVECTOR targetPos = XMLoadFloat3(&sceneBounds.center);

@@ -35,7 +35,7 @@ void RenderStates::InitializeAll(Graphics& gfx)
 	//ShadowMap Bias
 	//
 	D3D11_RASTERIZER_DESC shadowMapBiasDesc;
-	shadowMapBiasDesc.DepthBias = 100000;
+	shadowMapBiasDesc.DepthBias = 10000;
 	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
 	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
 

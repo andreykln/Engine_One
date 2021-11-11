@@ -21,7 +21,7 @@ private:
 	void SetCenterSphere(DirectX::XMFLOAT4X4& source);
 
 	const DirectX::XMMATRIX cameraOffset = 
-			DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
+			DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 	DirectX::XMFLOAT4X4 sSphereWorld[10];
 	DirectX::XMMATRIX m_SphereWorld[10];
