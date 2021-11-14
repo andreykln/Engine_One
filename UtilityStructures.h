@@ -319,6 +319,8 @@ enum ShaderPicker
 	Particle_FountainDraw_VS_GS_PS,
 	ShadowMap_VS_PS,
 	ShadowMapGen_VS_PS,
+	ShadowMapGenSkull_VS_PS,
+	ShadowMapDrawSkull_VS_PS,
 	Keep
 };
 

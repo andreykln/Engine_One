@@ -36,6 +36,17 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
+	static const UINT nSkullElements = 3;
+	const D3D11_INPUT_ELEMENT_DESC skull[nSkullElements] =
+	{
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Color", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+	};
+
 	static const UINT nPosition_Color = 2;
 	const D3D11_INPUT_ELEMENT_DESC positionColorIL[nPosition_Color] =
 	{
