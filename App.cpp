@@ -531,7 +531,7 @@ void App::CreateShapesWithDynamicCubeMap()
 	pDynamicCubeMap = new DynamicCubeMap(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::Shapesdemo);
 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::DisplacementMapping);
-	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true);
+	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 1.5f, 20u, true, DemoSwitch::Shapesdemo);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 65, 45, DemoSwitch::Shapesdemo);
 	for (int i = 0; i < 10; i++)
@@ -544,7 +544,7 @@ void App::CreateShapesWithDynamicCubeMap()
 	}
 	for (size_t i = 0; i < 10; i++)
 	{
-		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::Shapesdemo));
 	}
 }
 
@@ -795,6 +795,13 @@ void App::DrawSceneToShadowMap()
 
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	for (auto& x : geoSpheres)
+	{
+		DirectX::XMMATRIX WVP = *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
+		x->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
 
 	pHills->UpdateShadomMapGenBuffers(wnd.GetGraphics(),
 		shapes.Get_m_GridWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection(), camera.GetCameraPosition());
@@ -823,10 +830,10 @@ void App::CreateShadowMapDemo()
 	{
 		displacementCylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap));
 	}
-// 	for (size_t i = 0; i < 10; i++)
-// 	{
-// 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false));
-// 	}
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap));
+	}
 }
 
 void App::DrawShadowMapDemo()
@@ -864,6 +871,16 @@ void App::DrawShadowMapDemo()
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	for (auto& x : geoSpheres)
+	{
+		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+			pShadowMap->GetShadowTransform(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(),
+			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+		x->BindAndDrawIndexed(wnd.GetGraphics());
+	}
+	shapes.GetSphereWorldArray() -= 10; //reset array position
+
+
 
 	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),

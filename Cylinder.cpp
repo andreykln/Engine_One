@@ -118,7 +118,6 @@ Cylinder::Cylinder(Graphics& gfx,
 		PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>* pLightsCB =
 			new PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>(gfx, shadowMapDraw, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
-// 		AddBind(pLightsCB);
 	}
 	else
 	{
@@ -188,7 +187,8 @@ Cylinder::Cylinder(Graphics& gfx,
 
 }
 
-void Cylinder::DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 camPositon)
+void Cylinder::DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 camPositon)
 {
 	UpdateDisplacementCBuffers(gfx, in_world, in_ViewProj, camPositon);
 	UpdatePSConstBuffers(gfx, camPositon);
