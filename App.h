@@ -28,8 +28,6 @@ private:
 	void DrawGaussBlur();
 	void CreateBox();
 	void DrawBox();
-	void CreateMirror();
-	void DrawMirror();
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
 	void CreateShapesWithDynamicCubeMap();

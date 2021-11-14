@@ -46,18 +46,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 
-	mirrorBuffer.dirLight[0].ambient = DirectX::XMFLOAT4(0.015f, 0.015f, 0.015f, 1.0f);
-	mirrorBuffer.dirLight[0].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	mirrorBuffer.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	mirrorBuffer.dirLight[0].specular = DirectX::XMFLOAT4(0.03f, 0.03f, 0.03f, 1.0f);
-	mirrorBuffer.dirLight[1].ambient = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	mirrorBuffer.dirLight[1].diffuse = DirectX::XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	mirrorBuffer.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	mirrorBuffer.dirLight[1].specular = DirectX::XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f);
-	mirrorBuffer.dirLight[2].ambient = DirectX::XMFLOAT4(0.0, 0.0f, 0.0f, 1.0f);
-	mirrorBuffer.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	mirrorBuffer.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	mirrorBuffer.dirLight[2].specular = DirectX::XMFLOAT4(0.02f, 0.02f, 0.02f, 1.0f);
 
 	skullMatData.ambient = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
 	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
@@ -160,18 +148,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 		AddBind(pLightsCB);
 	}
 
-	if (currentDemo == MirrorSkull)
-	{
-		PixelShaderConstantBuffer<CB_PS_Skull_Mirror>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_Skull_Mirror>(gfx, mirrorBuffer, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBMirrorSkull = pLightsCB->GetPixelShaderConstantBuffer();
-		AddBind(pLightsCB);
-
-		PixelShaderConstantBuffer<CB_PS_Skull_Mat>* pSkullM =
-			new PixelShaderConstantBuffer<CB_PS_Skull_Mat>(gfx, skullMaterial, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopySkullMaterial = pSkullM->GetPixelShaderConstantBuffer();
-		AddBind(pSkullM);
-	}
 
 }
 
@@ -245,48 +221,6 @@ void Skull::UpdatePSLightDirection(Graphics& gfx,DirectX::XMFLOAT3 lightDirectio
 
 }
 
-DirectX::XMMATRIX Skull::GetMirroredSkullTranslation() const
-{
-	return mirroredSkull;
-}
-
-void Skull::SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept
-{
-// 	constBuffPerFrame.dirLight[index].direction = lightDirection;
-}
-
-void Skull::SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept
-{
-// 	constBuffPerFrame.dirLight[index].direction = lightDirection[index];
-}
-
-void Skull::UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept
-{
-	eyePosition = eyePos;
-}
-
-void Skull::UpdateMaterial(Graphics& gfx, bool shadow) noexcept
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopySkullMaterial, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_PS_Skull_Mat* frame = reinterpret_cast<CB_PS_Skull_Mat*> (mappedData.pData);
-	if (shadow)
-	{
-		frame->mat = shadowMaterial;
-	}
-	else {
-		frame->mat = skullMatData;
-	}
-
-
-	gfx.pgfx_pDeviceContext->Unmap(pCopySkullMaterial, 0u);
-
-}
-
-DirectionalLight Skull::GetLightDirection(UINT index) const noexcept
-{
-	return directionalLight.dirLight[index];
-}
 
 void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
 {

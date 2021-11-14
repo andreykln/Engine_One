@@ -12,13 +12,6 @@ public:
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition);
 	void UpdatePSLightDirection(Graphics& gfx, DirectX::XMFLOAT3 lightDirection, UINT index);
-	DirectX::XMMATRIX GetMirroredSkullTranslation() const;
-	void SetNewLightDirection(DirectX::XMFLOAT3& lightDirection, UINT index) noexcept;
-	void SetNewLightDirection_(DirectX::XMFLOAT3 lightDirection[3], UINT index) noexcept;
-	void UpdateEyePosition(DirectX::XMFLOAT3 eyePos) noexcept;
-	void UpdateMaterial(Graphics& gfx, bool shadow) noexcept;
-	DirectionalLight GetLightDirection(UINT index) const noexcept;
-
 
 	//sm
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
@@ -32,8 +25,6 @@ public:
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
-	CB_PS_Skull_Mirror mirrorBuffer;
-	CB_PS_Skull_Mat skullMaterial;
 
 	ShadowMapGenVS shadowMapCbuffer;
 	CB_PS_ShadowMapDraw shadowMapDraw;
@@ -42,8 +33,6 @@ private:
 	DemoSwitch currentDemo;
 
 	UINT currentLightNum {};
-	DirectX::XMFLOAT3 eyePosition;
-	const DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 5.0f, -20.0f);
 	ID3D11Buffer* pCopyPCBLightsSkull = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesSkull = nullptr;
 	ID3D11Buffer* pCopyPCBMirrorSkull = nullptr;

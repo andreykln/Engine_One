@@ -137,16 +137,6 @@ Cylinder::Cylinder(Graphics& gfx,
 		pCopyDomainShaderBuffer = pDSCamPos->GetDomainShaderConstantBuffer();
 		AddBind(pDSCamPos);
 	}
-	//TODO delete?
-	if (currentDemo == DemoSwitch::LightningCone)
-	{
-		std::wstring LightningArray[60];
-		for (UINT i = 0; i < 60; ++i)
-		{
-			LightningArray[i] = L"Textures\\Lightning\\Spark" + std::to_wstring(i + 1) + L".dds";
-		}
-
-	}
 
 	std::wstring directory[1];
 	std::wstring normalMap[1];
@@ -251,11 +241,6 @@ void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
 	frame->cameraPositon = camPositon;
-
-	if (currentDemo == DemoSwitch::LightningCone)
-	{
-		frame->texArrayPos = GetTexArrPos();
-	}
 
 
 	if (GetAsyncKeyState('0') & 0x8000)
