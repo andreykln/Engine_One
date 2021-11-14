@@ -806,8 +806,12 @@ void App::DrawSceneToShadowMap()
 	pHills->UpdateShadomMapGenBuffers(wnd.GetGraphics(),
 		shapes.Get_m_GridWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection(), camera.GetCameraPosition());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-// 	pHills->DrawHills(wnd.GetGraphics(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
-// 		viewProjectionMatrix, camera.GetCameraPosition(), pTempSRV, DirectX::XMMatrixIdentity());
+
+	DirectX::XMMATRIX WVP = shapes.Get_m_BoxWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
+
+	pDisplacementMappingBox->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+
 
 
 
@@ -818,7 +822,7 @@ void App::DrawSceneToShadowMap()
 void App::CreateShadowMapDemo()
 {
 	pSky = new Sky(wnd.GetGraphics());
-// 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::ShadowMap);
+	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.5f, 1.5f, 2.5f, DemoSwitch::ShadowMap);
 // 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::Shapesdemo);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45, DemoSwitch::ShadowMap);
 	//delete?
@@ -888,8 +892,10 @@ void App::DrawShadowMapDemo()
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	// 	pDisplacementMappingBox->DrawBox(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
-	// 		viewProjectionMatrix, camera.GetCameraPosition());
+	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
+		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	// 	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
 	// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
