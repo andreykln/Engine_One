@@ -168,6 +168,7 @@ private:
 	ID3D11VertexShader* pSkullSMGenVS = nullptr;
 	ID3D11VertexShader* pSkullSMDrawVS = nullptr;
 	ID3D11PixelShader* pSkullSMPS = nullptr;
+	ID3D11PixelShader* pSkullSMGenPS = nullptr;
 	ID3D11InputLayout* pSkullSMIL = nullptr;
 
 };

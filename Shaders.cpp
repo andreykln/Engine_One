@@ -14,6 +14,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pSkullSMGenVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapGenSkullVS.cso");
 	VS_IL_Init(&pSkullSMDrawVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapDrawSkullVS.cso");
 	PS_Init(&pSkullSMPS, L"Shaders\\Pixel\\ShadowMapDrawSkullPS.cso");
+	PS_Init(&pSkullSMGenPS, L"Shaders\\Pixel\\ShadowMapSkullGenPS.cso");
 
 
 	PS_Init(&pMirrorRoomPS, L"Shaders\\Pixel\\MirrorRoomPS.cso");
@@ -369,6 +370,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkullSMPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapGenSkull_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
 		break;
 	}
 	default:
