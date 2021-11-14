@@ -43,7 +43,7 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateShaderResourceView(depthMap, &srvDesc, &pDepthMapSRV));
 	depthMap->Release();
 
-	sceneBounds.center = DirectX::XMFLOAT3(0.0f, -4.0f, 0.0f);
+	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
 
 
@@ -91,9 +91,8 @@ void ShadowMapGen::UpdateScene(float dt, DirectionalLight* oldLightDir)
 {
 	lightRotationAngle += 0.1f * dt;
 
-
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(lightRotationAngle);
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir[i].direction);
 		lightDir = DirectX::XMVector3TransformNormal(lightDir, R);
@@ -103,8 +102,6 @@ void ShadowMapGen::UpdateScene(float dt, DirectionalLight* oldLightDir)
 
 DirectX::XMMATRIX ShadowMapGen::GetShadowTransform()
 {
-// 	return shadowTransform;
-
 	return DirectX::XMMatrixTranspose(shadowTransform);
 }
 
@@ -150,6 +147,7 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3* oldLightDir)
 	float t = sphereCenterLS.y + sceneBounds.radius;
 	float f = sphereCenterLS.z + sceneBounds.radius;
 	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
 	//transform NDC space
 	XMMATRIX T
 	(
@@ -166,7 +164,4 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3* oldLightDir)
 	shadowTransform = S;
 	lightProj = P;
 	lightView = V;
-// 	XMStoreFloat4x4(&lightView, V);
-// 	XMStoreFloat4x4(&lightProj, P);
-// 	XMStoreFloat4x4(&shadowTransform, S);
 }

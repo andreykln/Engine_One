@@ -38,8 +38,7 @@ SamplerComparisonState shadowSampler : register(s1);
 float4 main(VSout pin) : SV_TARGET
 {
     //update rotating main light for shadow map
-    //directLight[0].direction = lightDirection;
-   // Interpolating normal can unnormalize it
+   //Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
@@ -73,7 +72,6 @@ float4 main(VSout pin) : SV_TARGET
         float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
         
         shadow[0] = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
-        //shadow = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
         
         [unroll]
         for (uint i = 0; i < numberOfLights; ++i)
@@ -94,6 +92,5 @@ float4 main(VSout pin) : SV_TARGET
     litColor = lerp(litColor, fogColor, fogLerp);
     // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-    //litColor = float4(shadow[0], 0 , 0, 1.0f);
     return litColor;
 }

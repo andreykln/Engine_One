@@ -23,7 +23,7 @@ public:
 	DirectX::XMMATRIX GetLighViewProjection();
 	DirectX::XMFLOAT3* GetNewLightDirection();
 private:
-
+	float transl = 0.0f;
 	UINT mWidth;
 	UINT mHeight;
 	BoundingSphereShadow sceneBounds;

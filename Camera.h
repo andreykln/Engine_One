@@ -13,7 +13,7 @@ const float SENSITIVITY = 0.009f;
 const float FOV_max = DirectX::XM_PI * 0.33f;
 const float FOV_min = DirectX::XM_PI / 180.0f;
 const DirectX::XMVECTOR defaultFront{ 0.0f, 0.0f, 5.0f };
-const DirectX::XMVECTOR defaultPositon{ 0.0f, 0.0f, -6.0f };
+const DirectX::XMVECTOR defaultPositon{ 0.0f, 4.0f, -4.0f };
 const DirectX::XMVECTOR defaultUp{ 0.0f, 1.0f, 0.0f };
 
 
