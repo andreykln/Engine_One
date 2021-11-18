@@ -11,12 +11,16 @@ struct VSout
 
 cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
-    DirectionalLight directLight[3];
-    Material objectMaterial;
+    DirectionalLightEx directLightEx;
+    float pad0;
+    MaterialEx objectMaterial;
+    float4 ambientLight;
     float4 fogColor;
     float fogStart;
     float fogRange;
-    float2 padding;
+    float pad1;
+    float pad2;
+    
 };
 
 cbuffer PS_Per_FrameShadowMap : register(b1)
@@ -33,20 +37,70 @@ SamplerComparisonState shadowSampler : register(s1);
 
 float4 main(VSout pin) : SV_TARGET
 {
-    //update rotating main light for shadow map
+    
+        // Interpolating normal can unnormalize it, so renormalize it.
+    pin.NormalW = normalize(pin.NormalW);
+
+    // Vector from point being lit to eye. 
+    float3 toEyeW = normalize(camPositon - pin.PosW);
+
+	// Indirect lighting.
+    float4 ambient = ambientLight * objectMaterial.diffuseAlbedo;
+
+    const float shininess = 1.0f - objectMaterial.roughness;
+    MaterialEx mat = { objectMaterial.diffuseAlbedo, objectMaterial.fresnelR0, shininess };
+    float3 shadowFactor = 1.0f;
+    float4 directLight;
+    DirectionalLightEx dr = directLightEx;
+    dr.direction = lightDirection;
+    directLight = float4(shadowFactor * ComputeDirectionalLightEx(dr, objectMaterial, pin.NormalW, toEyeW),0.0f);
+
+    float4 litColor = ambient + directLight;
+
+    // Common convention to take alpha from diffuse material.
+    litColor.a = objectMaterial.diffuseAlbedo.a;
+
+    return litColor;
+    
+    
+   /* //update rotating main light for shadow map
    //Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
-    
+	
     // The toEye vector is used in lighting.
-    float3 toEye = camPositon - pin.PosW;
+    float3 toEyeW = normalize(camPositon - pin.PosW);
     
-    // Cache the distance to the eye from this surface point.
+    float4 ambient = ambientLight * objectMaterial.diffuseAlbedo;
+    
+    float shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+    
+    const float shininess = (1.0f - objectMaterial.roughness);
+    MaterialEx mat = { objectMaterial.diffuseAlbedo, objectMaterial.fresnelR0, shininess };
+    float4 directLight = float4(shadowFactor * ComputeDirectionalLightEx(directLightEx, objectMaterial, pin.NormalW, toEyeW),1.0f);
+
+    float4 litColor = ambient + directLight;
+
+	// Add in specular reflections.
+    float3 r = reflect(-toEyeW, pin.NormalW);
+    float3 fresnelFactor = SchlickFresnel(objectMaterial.fresnelR0, pin.NormalW, 0);
+    litColor.rgb += shininess * fresnelFactor;
+	
+    // Common convention to take alpha from diffuse albedo.
+    litColor.a = objectMaterial.diffuseAlbedo.a;
+
+    return litColor;*/
+    
+    
+    
+    /*// Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
     
     //normalize
-    toEye /= distToEye;
+    toEye /= distToEye;*/
 
-    float4 texColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    
+    /*float4 texColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     texColor = pin.color;
   
     float4 litColor = texColor;
@@ -64,15 +118,13 @@ float4 main(VSout pin) : SV_TARGET
         
         shadow[0] = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
         
-        [unroll]
-        for (uint i = 0; i < numberOfLights; ++i)
-        {
-            float4 A, D, S;
-            ComputeDirectionalLight(objectMaterial, directLight[i], pin.NormalW, toEye, A, D, S);
-            ambient += A;
-            diffuse += D * shadow[i];
-            specular += S * shadow[i];
-        }
+   
+        float4 A, D, S;
+        ComputeDirectionalLight(objectMaterial, directLight, pin.NormalW, toEye, A, D, S);
+        ambient += A;
+        diffuse += D * shadow;
+        specular += S * shadow;
+       
     
     
         litColor = texColor * (ambient + diffuse) + specular;
@@ -83,5 +135,5 @@ float4 main(VSout pin) : SV_TARGET
     litColor = lerp(litColor, fogColor, fogLerp);
     // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-    return litColor;
+    return litColor;*/
 }

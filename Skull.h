@@ -11,7 +11,6 @@ public:
 	//updating only light for mirror demo
 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition);
-	void UpdatePSLightDirection(Graphics& gfx, DirectX::XMFLOAT3 lightDirection, UINT index);
 
 	//sm
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
@@ -21,6 +20,7 @@ public:
 
 	Material shadowMaterial;
 	Material skullMatData;
+	CB_PS_DirectionalEX_Fog dirLightEX;
 
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;

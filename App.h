@@ -91,7 +91,6 @@ private:
  	std::vector<GeoSphere*> geoSpheres;
 //  Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
-	MirrorRoom* pMirrorRoom = nullptr;
  	Skull* pSkull = nullptr;
 	QuadTessellation* pQuadTess = nullptr;
 	Picking* pPicking = nullptr;

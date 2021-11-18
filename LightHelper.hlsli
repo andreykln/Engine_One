@@ -9,6 +9,13 @@ struct DirectionalLight
     float pad;
 };
 
+struct DirectionalLightEx
+{
+    float3 strength;
+    int pad0;
+    float3 direction;
+};
+
 struct PointLight
 {
     float4 ambient;
@@ -44,6 +51,13 @@ struct Material
     float4 diffuse;
     float4 specular; // w = specularity power
     float4 reflect;
+};
+
+struct MaterialEx
+{
+    float4 diffuseAlbedo;
+    float3 fresnelR0;
+    float roughness;
 };
 
 // Computes the ambient, diffuse, and specular terms in the lighting equation
@@ -231,4 +245,44 @@ float CalcShadowFactor(SamplerComparisonState samShadow, Texture2D shadowMap, fl
         shadowPosH.xy + offsets[i], depth).r;
     }
     return percentLit /= 9.0f;
+}
+
+// Schlick gives an approximation to Fresnel reflectance
+float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
+{
+    float cosIncidentAngle = saturate(dot(normal, lightVec));
+
+    float f0 = 1.0f - cosIncidentAngle;
+    float3 reflectPercent = R0 + (1.0f - R0) * (f0 * f0 * f0 * f0 * f0);
+
+    return reflectPercent;
+}
+
+
+float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, MaterialEx mat)
+{
+    const float m = (1.0 - mat.roughness) * 256.0f;
+    float3 halfVec = normalize(toEye + lightVec);
+
+    float roughnessFactor = (m + 8.0f) * pow(max(dot(halfVec, normal), 0.0f), m) / 8.0f;
+    float3 fresnelFactor = SchlickFresnel(mat.fresnelR0, halfVec, lightVec);
+
+    float3 specAlbedo = fresnelFactor * roughnessFactor;
+
+    // Our spec formula goes outside [0,1] range, so scale it down a bit.
+    specAlbedo = specAlbedo / (specAlbedo + 1.0f);
+
+    return (mat.diffuseAlbedo.rgb + specAlbedo) * lightStrength;
+}
+
+float3 ComputeDirectionalLightEx(DirectionalLightEx L, MaterialEx mat, float3 normal, float3 toEye)
+{
+    // The light vector aims opposite the direction the light rays travel.
+    float3 lightVec = -L.direction;
+
+    // Scale light down by Lambert's cosine law.
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    float3 lightStrength = L.strength * ndotl;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }

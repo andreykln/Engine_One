@@ -20,10 +20,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	UINT vertices = 0;
 	UINT triangles = 0;
 
-	shadowMaterial.ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	shadowMaterial.diffuse = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	shadowMaterial.specular = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 16.0f);
-
 
 
 	directionalLight.mat.ambient =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
@@ -51,6 +47,12 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
 	skullMatData.specular = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 16.0f);
 
+	dirLightEX.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
+	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+	dirLightEX.mat.roughness = 0.3f;
+
 	std::fstream file(path);
 	std::string ignore;
 	file >> ignore >> vertices;
@@ -66,7 +68,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 		{
 			file >> verticesFromTXTSM[i].position.x >> verticesFromTXTSM[i].position.y >> verticesFromTXTSM[i].position.z >>
 				verticesFromTXTSM[i].normal.x >> verticesFromTXTSM[i].normal.y >> verticesFromTXTSM[i].normal.z;
-			verticesFromTXTSM[i].color = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+			verticesFromTXTSM[i].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 		file >> ignore >> ignore >> ignore;
 	}
@@ -126,8 +128,8 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 
 	if (currentDemo == ShadowMap)
 	{
-		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>* pLightsPS =
+			new PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>(gfx, dirLightEX, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pLightDirectionPSCbuffer = pLightsPS->GetPixelShaderConstantBuffer();
 
 		PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>* pLightsCB =
@@ -190,36 +192,11 @@ void Skull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition)
 
 		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
 	}
-	if (pCopyPCBMirrorSkull)
-	{
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBMirrorSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-		CB_PS_Skull_Mirror* frame = reinterpret_cast<CB_PS_Skull_Mirror*> (mappedData.pData);
-		frame->cameraPosition = camPosition;
 
-		if (GetAsyncKeyState('0') & 0x8000)
-			frame->numberOfLights = 0;
-		if (GetAsyncKeyState('1') & 0x8000)
-			frame->numberOfLights = 1;
-		if (GetAsyncKeyState('2') & 0x8000)
-			frame->numberOfLights = 2;
-		if (GetAsyncKeyState('3') & 0x8000)
-			frame->numberOfLights = 3;
-
-		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBMirrorSkull, 0u);
-	}
 
 }
 
-void Skull::UpdatePSLightDirection(Graphics& gfx,DirectX::XMFLOAT3 lightDirection, UINT index)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBMirrorSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_Skull_Mirror* frame = reinterpret_cast<CB_PS_Skull_Mirror*> (mappedData.pData);
-	frame->dirLight[index].direction = lightDirection;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBMirrorSkull, 0u);
 
-}
 
 
 void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
@@ -247,23 +224,18 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	shadowVS->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
-
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pCopyPCBLightsCylinder);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_ShadowMapDraw* frame = reinterpret_cast<CB_PS_ShadowMapDraw*> (mappedData.pData);
 	frame->cameraPositon = newCamPosition;
-	frame->lightDirection = directionalLight.dirLight[0].direction;
-
+	frame->lightDirection = newLightDirection[0];
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightDirectionPSCbuffer);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_PS_DirectionalEX_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalEX_Fog*> (mappedData.pData);
+// 	lightDir->dirLight.direction = newLightDirection[0];
+// 	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
 
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_DirectionalL_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalL_Fog*> (mappedData.pData);
-	for (int i = 0; i < 3; i++)
-	{
-		lightDir->dirLight[i].direction = newLightDirection[i];
-	}
-
-	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
 }

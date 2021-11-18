@@ -32,7 +32,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_Init(&pCircletoCylinderGS, L"Shaders\\Geometry\\Circle_CylinderGS.cso");
 	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
 
-	PS_Init(&pMirrorSkullPS, L"Shaders\\Pixel\\SkullMirrorPS.cso");
 	PS_Init(&pAllLightForHills, L"Shaders\\Pixel\\HillsAllLightPS.cso");
 
 	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
@@ -269,11 +268,6 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::MirrorRoomPS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pMirrorRoomPS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::LightAndTextureArrayPS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightAndTextureArrayPS, nullptr, 0u);
@@ -292,11 +286,6 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::CircleToCylinderVS_GS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pCirletoCylinderPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::MirrorSkull_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pMirrorSkullPS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::HillsAllLight_PS:

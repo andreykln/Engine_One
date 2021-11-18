@@ -11,10 +11,10 @@ App::App()
 	pShaders = new Shaders(wnd.GetGraphics());
 	const int smapSize = 2048;
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
-	CreateBilateralHillsBlur();
+// 	CreateBilateralHillsBlur();
 // 	CreateBox();
 // 	CreateShapesWithDynamicCubeMap();
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateHillsWithGPUWaves();
 // 	CreateMirror();
 // 	CreateDepthComplexityStencil();
@@ -33,13 +33,13 @@ void App::DoFrame()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
 // 
 // 	DrawShapesWithDynamicCubeMap();
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawMirror();
 // 	DrawHillsWithGPUWaves();
 // 	DrawBox();
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
-	DrawBilateralHillsBlur();
+// 	DrawBilateralHillsBlur();
 // 	DrawBezierPatchTess();
 // 	DrawPicking();
 // 	DrawTerrain();

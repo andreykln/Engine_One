@@ -59,3 +59,18 @@ struct Material
 	DirectX::XMFLOAT4 specular; // w = SpecPower
 	DirectX::XMFLOAT4 reflect;
 };
+
+
+struct MaterialEx
+{
+	DirectX::XMFLOAT4 diffuseAlbedo;
+	DirectX::XMFLOAT3 fresnelR0;
+	float roughness;
+};
+
+struct DirectionalLightEx
+{
+	DirectX::XMFLOAT3 strength;
+	int pad0;
+	DirectX::XMFLOAT3 direction;
+};

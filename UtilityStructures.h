@@ -106,6 +106,20 @@ struct CB_PS_DirectionalL_Fog
 	float padding[2];
 };
 
+struct CB_PS_DirectionalEX_Fog
+{
+	CB_PS_DirectionalEX_Fog() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLightEx dirLight;
+	float pad0;
+	MaterialEx mat;
+	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	const float fogstart = 50.0f;
+	const float fogRange = 200.0f;
+	float pad1;
+	float pad2;
+};
+
 struct CB_PS_Dir_Point_Spot_Fog_Lights
 {
 	CB_PS_Dir_Point_Spot_Fog_Lights() { ZeroMemory(this, sizeof(this)); }
@@ -153,28 +167,6 @@ struct CB_VS_GPUWaves_consts
 	float padding;
 };
 
-///hackjob
-struct CB_PS_MirrorRoom
-{
-	CB_PS_MirrorRoom() { ZeroMemory(this, sizeof(this)); }
-	DirectionalLight dirLight[3];
-	DirectX::XMFLOAT3 cameraPosition;
-	unsigned int numberOfLights = 2u;
-};
-
-struct CB_PS_Skull_Mirror
-{
-	CB_PS_Skull_Mirror() { ZeroMemory(this, sizeof(this)); }
-	DirectionalLight dirLight[3];
-	DirectX::XMFLOAT3 cameraPosition;
-	unsigned int numberOfLights = 2u;
-};
-
-struct CB_PS_Skull_Mat
-{
-	Material mat;
-};
-//hackjob ends
 struct TreePointSprite
 {
 	TreePointSprite() : pos(0.0f, 0.0f, 0.0f), size(0.0f, 0.0f) {};
@@ -282,12 +274,10 @@ enum ShaderPicker
 {
 	LightAndTexture_VS_PS,
 	Light_VS_PS,
-	MirrorRoomPS,
 	LightAndTextureArrayPS,
 	DepthComplexityVS_PS,
 	TreeBillboardVS_PS_GS,
 	CircleToCylinderVS_GS_PS,
-	MirrorSkull_PS,
 	HillsAllLight_PS,
 	HorizontalBlur_CS,
 	BlurTexture_PS,
