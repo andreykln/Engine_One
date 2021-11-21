@@ -110,7 +110,6 @@ struct CB_PS_DirectionalEX_Fog
 {
 	CB_PS_DirectionalEX_Fog() { ZeroMemory(this, sizeof(this)); }
 	DirectionalLightEx dirLight;
-	float pad0;
 	MaterialEx mat;
 	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);

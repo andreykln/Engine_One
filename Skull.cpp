@@ -50,8 +50,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	dirLightEX.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
 	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
-	dirLightEX.mat.roughness = 0.3f;
+	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.08f, 0.08f, 0.08f);
+	dirLightEX.mat.roughness = 0.3f; //the greater the number the more spread the specular highlight
+	dirLightEX.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 
 	std::fstream file(path);
 	std::string ignore;
@@ -60,27 +61,27 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	file >> ignore >> ignore >> ignore >> ignore;
 
 	std::vector<Vertices> verticesFromTXT(vertices);
-	std::vector<VerticesSM> verticesFromTXTSM(vertices);
+// 	std::vector<VerticesSM> verticesFromTXTSM(vertices);
 
-	if (currentDemo == ShadowMap)
-	{
-		for (size_t i = 0; i < vertices; i++)
-		{
-			file >> verticesFromTXTSM[i].position.x >> verticesFromTXTSM[i].position.y >> verticesFromTXTSM[i].position.z >>
-				verticesFromTXTSM[i].normal.x >> verticesFromTXTSM[i].normal.y >> verticesFromTXTSM[i].normal.z;
-			verticesFromTXTSM[i].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		file >> ignore >> ignore >> ignore;
-	}
-	else
-	{
+// 	if (currentDemo == ShadowMap)
+// 	{
+// 		for (size_t i = 0; i < vertices; i++)
+// 		{
+// 			file >> verticesFromTXTSM[i].position.x >> verticesFromTXTSM[i].position.y >> verticesFromTXTSM[i].position.z >>
+// 				verticesFromTXTSM[i].normal.x >> verticesFromTXTSM[i].normal.y >> verticesFromTXTSM[i].normal.z;
+// 			verticesFromTXTSM[i].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 		}
+// 		file >> ignore >> ignore >> ignore;
+// 	}
+// 	else
+// 	{
 		for (size_t i = 0; i < vertices; i++)
 		{
 			file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
 				verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
 		}
 		file >> ignore >> ignore >> ignore;
-	}
+// 	}
 
 
 	UINT indexCount = 3 * triangles;
@@ -92,16 +93,16 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	}
 	file.close();
 
-	if (currentDemo == ShadowMap)
-	{
-		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXTSM, L"TXT");
-		AddBind(pVertexBuffer);
-	}
-	else
-	{
+// 	if (currentDemo == ShadowMap)
+// 	{
+// 		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXTSM, L"TXT");
+// 		AddBind(pVertexBuffer);
+// 	}
+// 	else
+// 	{
 		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 		AddBind(pVertexBuffer);
-	}
+// 	}
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -233,9 +234,17 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightDirectionPSCbuffer);
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CB_PS_DirectionalEX_Fog* lightDir = reinterpret_cast<CB_PS_DirectionalEX_Fog*> (mappedData.pData);
-// 	lightDir->dirLight.direction = newLightDirection[0];
-// 	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_PS_DirectionalEX_Fog* test = reinterpret_cast<CB_PS_DirectionalEX_Fog*> (mappedData.pData);
+
+	if (GetAsyncKeyState('0') & 0x8000)
+		test->mat.roughness = 0.9f;
+
+	else
+	{
+		test->mat.roughness = 0.3f;
+
+	}
+	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
 
 }

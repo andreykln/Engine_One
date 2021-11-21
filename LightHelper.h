@@ -70,7 +70,8 @@ struct MaterialEx
 
 struct DirectionalLightEx
 {
-	DirectX::XMFLOAT3 strength;
+	DirectX::XMFLOAT3 strength; //strength means color of light.
 	int pad0;
 	DirectX::XMFLOAT3 direction;
+	int pad1;
 };

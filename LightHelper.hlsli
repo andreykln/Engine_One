@@ -14,6 +14,7 @@ struct DirectionalLightEx
     float3 strength;
     int pad0;
     float3 direction;
+    int pad1;
 };
 
 struct PointLight

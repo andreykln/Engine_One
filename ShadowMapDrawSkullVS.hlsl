@@ -11,7 +11,6 @@ struct VertexIn
 {
     float3 position : Position;
     float3 normal : Normal;
-    float4 color : Color;
 };
 
 struct VSout
@@ -20,7 +19,6 @@ struct VSout
     float3 PosW : Position;
     float3 NormalW : Normal;
     float4 shadowPosH : TEXCOORD1;
-    float4 color : COLOR;
 };
 
 
@@ -31,7 +29,6 @@ VSout main(VertexIn vin)
     vout.PosH = mul(float4(vin.position, 1.0f), worldViewProjection);
     vout.PosW = mul(float4(vin.position, 1.0f), world).xyz;
     vout.NormalW = mul(float4(vin.normal, 1.0f), worldInverseTranspose).xyz;
-    vout.color = vin.color;
     
     vout.shadowPosH = mul(float4(vin.position, 1.0f), shadowTransform);
     return vout;

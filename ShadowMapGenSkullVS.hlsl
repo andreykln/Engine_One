@@ -8,13 +8,11 @@ struct VertexIn
 {
     float3 position : Position;
     float3 normal : Normal;
-    float4 color : Color;
 };
 
 struct VertexOut
 {
     float4 posH : SV_POSITION;
-    float4 color : COLOR;
 };
 
 static float4x4 fMatrix =
@@ -29,7 +27,5 @@ VertexOut main(VertexIn vin)
     VertexOut vout;
     vout.posH = mul(float4(vin.position, 1.0f), lightWVP);
 
-    //vout.posH = mul(vout.posH, lightWVP);
-    vout.color = vin.color;
     return vout;
 }
