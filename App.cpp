@@ -711,7 +711,7 @@ void App::DrawShadowMapDemo()
 
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-	pShadowMap->UpdateScene(timer.DeltaTime(), displacementCylinders[0]->GetOldLightDirection());
+	pShadowMap->UpdateScene(timer.DeltaTime());
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
@@ -722,39 +722,40 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().SetViewport();
 	/////
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
-
+	
+	auto TESTDIRECTION = pShadowMap->GetNewLightDirection();
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 	pSkull->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), pShadowMap->GetShadowTransform(),
 		shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0f)
 		* DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix,
-		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+		pShadowMap->DepthMapSRV(), TESTDIRECTION);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMap_VS_PS);
 
-	for (auto& x : displacementCylinders)
+	/*for (auto& x : displacementCylinders)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
 			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	shapes.GetCylinderWorldArray() -= 10; //reset array position*/
 	for (auto& x : geoSpheres)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+			viewProjectionMatrix, pShadowMap->DepthMapSRV(), TESTDIRECTION);
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetSphereWorldArray() -= 10; //reset array position
 
 
 
-	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+	/*pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
@@ -771,7 +772,7 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
 	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
-	pSky->DrawSky(wnd.GetGraphics(), viewProjectionMatrix);
+	pSky->DrawSky(wnd.GetGraphics(), viewProjectionMatrix);*/
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);

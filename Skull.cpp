@@ -212,7 +212,9 @@ void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in
 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
 }
 
-void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3* newLightDirection)
+void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
+	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
+	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
@@ -230,7 +232,7 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_ShadowMapDraw* frame = reinterpret_cast<CB_PS_ShadowMapDraw*> (mappedData.pData);
 	frame->cameraPositon = newCamPosition;
-	frame->lightDirection = newLightDirection[0];
+	frame->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightDirectionPSCbuffer);

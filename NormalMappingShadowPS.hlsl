@@ -10,7 +10,20 @@ struct VSout
     float4 shadowPosH : TEXCOORD1;
 };
 
-cbuffer CBPSDirectionalLight_Fog : register(b0)
+cbuffer cbDefaultPS : register(b0)
+{
+    DirectionalLightEx dirLight;
+    MaterialEx mat;
+    float4 fogColor;
+    float4 ambientLight;
+    float3 lightDirection;
+    float fogstart;
+    float3 camPositon;
+    float fogRange;
+}
+
+
+/*cbuffer CBPSDirectionalLight_Fog : register(b0)
 {
     DirectionalLight directLight[3];
     Material objectMaterial;
@@ -26,7 +39,7 @@ cbuffer PS_Per_FrameShadowMap : register(b1)
     unsigned int numberOfLights;
     float3 camPositon;
 
-}
+}*/
 
 Texture2D SRVTexture : register(t0);
 Texture2D SRVNormalMap : register(t1);
@@ -37,12 +50,36 @@ SamplerComparisonState shadowSampler : register(s1);
 
 float4 main(VSout pin) : SV_TARGET
 {
-    //update rotating main light for shadow map
+    float4 diffuseAlbedo = SRVTexture.Sample(tex0Sample, pin.Tex) * mat.diffuseAlbedo;
+
+    // Interpolating normal can unnormalize it, so renormalize it.
+    pin.NormalW = normalize(pin.NormalW);
+
+    // Vector from point being lit to eye. 
+    float3 toEyeW = normalize(camPositon - pin.PosW);
+
+	// Indirect lighting.
+    float4 ambient = ambientLight * diffuseAlbedo;
+
+    float3 shadowFactor = 1.0f;
+    /*DirectionalLightEx dr = directLightEx;
+    dr.direction = lightDirection;*/
+    float4 directLight = float4(shadowFactor * ComputeDirectionalLightEx(dirLight, mat, pin.NormalW, toEyeW), 0.0f);
+
+    float4 litColor = ambient + directLight;
+
+    // Common convention to take alpha from diffuse material.
+    litColor.a = diffuseAlbedo.a;
+
+    return litColor;
+    
+    
+   /* //update rotating main light for shadow map
    //Interpolating normal can unnormalize it
     pin.NormalW = normalize(pin.NormalW);
     
     // The toEye vector is used in lighting.
-    float3 toEye = camPositon - pin.PosW;
+    float3 toEye = cameraPositon - pin.PosW;
     
     // Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -92,5 +129,5 @@ float4 main(VSout pin) : SV_TARGET
     litColor = lerp(litColor, fogColor, fogLerp);
     // Common to take alpha from diffuse material and texture
     litColor.a = objectMaterial.diffuse.a * texColor.a;
-    return litColor;
+    return litColor;*/
 }

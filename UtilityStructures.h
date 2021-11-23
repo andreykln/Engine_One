@@ -251,10 +251,31 @@ struct CB_VS_ShadowMapDraw
 	DirectX::XMMATRIX texTransform;
 	DirectX::XMMATRIX shadowTransform;
 };
-
-
 ///////////////////////
 
+struct cbDefaultVS
+{
+	cbDefaultVS() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX shadowTransform;
+	DirectX::XMMATRIX matTransform;
+};
+
+struct cbDefaultPS
+{
+	cbDefaultPS() { ZeroMemory(this, sizeof(this)); }
+	DirectionalLightEx dirLight;
+	MaterialEx mat;
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	DirectX::XMFLOAT3 lightDirection;
+	const float fogstart = 50.0f;
+	DirectX::XMFLOAT3 camPositon;
+	const float fogRange = 200.0f;
+};
 
 enum DemoSwitch
 {

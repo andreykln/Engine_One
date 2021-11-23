@@ -2,6 +2,8 @@
 #include "WinBase.h"
 #include "directxmath.h"
 
+static DirectX::XMFLOAT3 defaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+
 struct DirectionalLight
 {
 	DirectionalLight() { ZeroMemory(this, sizeof(this)); }
@@ -72,6 +74,6 @@ struct DirectionalLightEx
 {
 	DirectX::XMFLOAT3 strength; //strength means color of light.
 	int pad0;
-	DirectX::XMFLOAT3 direction;
+	DirectX::XMFLOAT3 direction = defaultLightDirection;
 	int pad1;
 };

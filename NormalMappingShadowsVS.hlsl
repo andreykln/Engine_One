@@ -5,6 +5,7 @@ cbuffer CBPerObject : register(b0)
     float4x4 worldInverseTranspose;
     float4x4 texTransform;
     float4x4 shadowTransform;
+    float4x4 matTransform;
 };
 
 struct VertexIn
@@ -36,7 +37,8 @@ VSout main(VertexIn vin)
     vout.tangentW = mul(vin.tangentLocal, (float3x3) world);
     
 	// Transform to homogeneous clip space.
-    vout.Tex = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform).xy;
+    float4 texC = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform);
+    vout.Tex = mul(texC, matTransform).xy;
     
     vout.shadowPosH = mul(float4(vin.position, 1.0f), shadowTransform);
     return vout;
