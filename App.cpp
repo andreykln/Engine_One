@@ -723,13 +723,13 @@ void App::DrawShadowMapDemo()
 	/////
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	
-	auto TESTDIRECTION = pShadowMap->GetNewLightDirection();
+	auto newLightDirection = pShadowMap->GetNewLightDirection();
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 	pSkull->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), pShadowMap->GetShadowTransform(),
 		shapes.GetCameraOffset() * DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0f)
 		* DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f), viewProjectionMatrix,
-		pShadowMap->DepthMapSRV(), TESTDIRECTION);
+		pShadowMap->DepthMapSRV(), newLightDirection);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 
@@ -748,20 +748,20 @@ void App::DrawShadowMapDemo()
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, pShadowMap->DepthMapSRV(), TESTDIRECTION);
+			viewProjectionMatrix, pShadowMap->DepthMapSRV(), newLightDirection);
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
 	shapes.GetSphereWorldArray() -= 10; //reset array position
 
 
 
-	/*pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+	/*pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
