@@ -62,6 +62,7 @@ float4 main(VSout pin) : SV_TARGET
     float4 ambient = ambientLight * diffuseAlbedo;
 
     float3 shadowFactor = 1.0f;
+    //float3 shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
     //read new light direction
     DirectionalLightEx dr = dirLight;
     dr.direction = lightDirection;

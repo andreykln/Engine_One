@@ -17,7 +17,7 @@ public:
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
-		DirectX::XMFLOAT3* newLightDirection);
+		DirectX::XMFLOAT3& newLightDirection);
 
 
 private:
@@ -38,6 +38,10 @@ private:
 	ID3D11Buffer* pCopyVCBMatricesBox = nullptr;
 	ID3D11Buffer* pCopyDSdisMappingCB = nullptr;
 	ID3D11Buffer* pCopyVSdisMappingCb = nullptr;
+
+	cbDefaultVS boxVSCB;
+	cbDefaultPS boxPSCB;
+	ID3D11Buffer* pShadowMapBoxDrawPS = nullptr;
 
 	//Shadow
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;

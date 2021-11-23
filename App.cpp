@@ -736,14 +736,14 @@ void App::DrawShadowMapDemo()
 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMap_VS_PS);
 
-	/*for (auto& x : displacementCylinders)
+	for (auto& x : displacementCylinders)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
 			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position*/
+	shapes.GetCylinderWorldArray() -= 10; //reset array position
 	for (auto& x : geoSpheres)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
@@ -761,7 +761,7 @@ void App::DrawShadowMapDemo()
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	/*pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
@@ -772,7 +772,7 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
 	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
-	pSky->DrawSky(wnd.GetGraphics(), viewProjectionMatrix);*/
+	pSky->DrawSky(wnd.GetGraphics(), viewProjectionMatrix);
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
