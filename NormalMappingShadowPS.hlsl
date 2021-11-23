@@ -62,9 +62,10 @@ float4 main(VSout pin) : SV_TARGET
     float4 ambient = ambientLight * diffuseAlbedo;
 
     float3 shadowFactor = 1.0f;
-    /*DirectionalLightEx dr = directLightEx;
-    dr.direction = lightDirection;*/
-    float4 directLight = float4(shadowFactor * ComputeDirectionalLightEx(dirLight, mat, pin.NormalW, toEyeW), 0.0f);
+    //read new light direction
+    DirectionalLightEx dr = dirLight;
+    dr.direction = lightDirection;
+    float4 directLight = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, pin.NormalW, toEyeW), 0.0f);
 
     float4 litColor = ambient + directLight;
 
