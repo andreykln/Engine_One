@@ -574,6 +574,9 @@
     <FxCompile Include="ShadowMapSkullGenPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
+    <FxCompile Include="ShadowMapPlaneDrawPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

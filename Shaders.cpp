@@ -109,7 +109,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	//shadow map generation
 	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
 	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
-	
+
+	//plane SM 
+	PS_Init(&pPlaneShadowMapPS, L"Shaders\\Pixel\\ShadowMapPlaneDrawPS.cso");
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -364,6 +367,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::ShadowMapGenSkull_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapDrawPlane_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pPlaneShadowMapPS, nullptr, 0u);
 		break;
 	}
 	default:

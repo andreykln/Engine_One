@@ -60,7 +60,7 @@ float4 main(VSout pin) : SV_TARGET
 
     const float shininess = (mat.shininess) * normalMapSample.a;
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
-    float3 shadowFactor = 1.0f;
+    float3 shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
     DirectionalLightEx dr = dirLight;
     dr.direction = lightDirection;
     
@@ -72,11 +72,11 @@ float4 main(VSout pin) : SV_TARGET
 	// Add in specular reflections.
     if (enableNormalMapping)
     {
-    float3 r = reflect(-toEyeW, bumpedNormalW);
-    float4 reflectionColor = cubeMap.Sample(tex0Sample, r);
-    float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
-    litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
-	}
+        float3 r = reflect(-toEyeW, bumpedNormalW);
+        float4 reflectionColor = cubeMap.Sample(tex0Sample, r);
+        float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
+        litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
+    }
     // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.
 a;
