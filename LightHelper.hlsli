@@ -58,7 +58,7 @@ struct MaterialEx
 {
     float4 diffuseAlbedo;
     float3 fresnelR0;
-    float roughness;
+    float shininess;
 };
 
 // Computes the ambient, diffuse, and specular terms in the lighting equation
@@ -208,19 +208,19 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample,
                                 float3 unitNormalW,
                                 float3 tangentW)
 {
-    //Uncompress each component from [0,1] tp [-1, 1]
+	// Uncompress each component from [0,1] to [-1,1].
     float3 normalT = 2.0f * normalMapSample - 1.0f;
-    
-    //build orthonormal basis
+
+	// Build orthonormal basis.
     float3 N = unitNormalW;
     float3 T = normalize(tangentW - dot(tangentW, N) * N);
     float3 B = cross(N, T);
-    
+
     float3x3 TBN = float3x3(T, B, N);
-    
-    //transform from tangent space to world space
+
+	// Transform from tangent space to world space.
     float3 bumpedNormalW = mul(normalT, TBN);
-    
+
     return bumpedNormalW;
 }
 static const float SMAP_SIZE = 2048.0f;
@@ -262,7 +262,7 @@ float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
 
 float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, MaterialEx mat)
 {
-    const float m = (1.0 - mat.roughness) * 256.0f;
+    const float m = mat.shininess * 256.0f;
     float3 halfVec = normalize(toEye + lightVec);
 
     float roughnessFactor = (m + 8.0f) * pow(max(dot(halfVec, normal), 0.0f), m) / 8.0f;
@@ -270,7 +270,8 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
 
     float3 specAlbedo = fresnelFactor * roughnessFactor;
 
-    // Our spec formula goes outside [0,1] range, so scale it down a bit.
+    // Our spec formula goes outside [0,1] range, but we are 
+    // doing LDR rendering.  So scale it down a bit.
     specAlbedo = specAlbedo / (specAlbedo + 1.0f);
 
     return (mat.diffuseAlbedo.rgb + specAlbedo) * lightStrength;

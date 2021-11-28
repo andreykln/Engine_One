@@ -61,7 +61,7 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 
 	samplerDesc.MipLODBias = 0.0f;
 	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pShadowSampler));
@@ -89,7 +89,7 @@ void ShadowMapGen::BindDSVandSetNullRenderTarget(Graphics& gfx)
 
 void ShadowMapGen::UpdateScene(float dt)
 {
-	lightRotationAngle += 0.1f * dt;
+	lightRotationAngle += 0.2f * dt;
 	newLightDirection = defaultLightDirection;
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationY(lightRotationAngle);
 	DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&newLightDirection);

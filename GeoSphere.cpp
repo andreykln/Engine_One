@@ -85,10 +85,10 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 
 
 
-	geoSpherePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	geoSpherePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.9f, 1.0f);
 	geoSpherePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
-	geoSpherePSCB.mat.roughness = 0.3f;
-	geoSpherePSCB.dirLight.strength = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+	geoSpherePSCB.mat.shininess = 0.7f;
+	geoSpherePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 	if (currentDemo == ShadowMap)
 	{
@@ -187,6 +187,13 @@ void GeoSphere::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newC
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
+	if (GetAsyncKeyState('1') & 0x8000)
+		surface->enableNormalMapping = true;
+	else
+	{
+		surface->enableNormalMapping = false;
+
+	}
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);

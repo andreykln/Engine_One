@@ -48,10 +48,10 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	skullMatData.specular = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 16.0f);
 
 	dirLightEX.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
+	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.08f, 0.08f, 0.08f);
-	dirLightEX.mat.roughness = 0.3f; //the greater the number the more spread the specular highlight
+	dirLightEX.mat.shininess = 0.7f; //the greater the number the more spread the specular highlight
 	dirLightEX.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 
 	std::fstream file(path);
@@ -240,11 +240,11 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	CB_PS_DirectionalEX_Fog* test = reinterpret_cast<CB_PS_DirectionalEX_Fog*> (mappedData.pData);
 
 	if (GetAsyncKeyState('0') & 0x8000)
-		test->mat.roughness = 0.9f;
+		test->mat.shininess = 0.1f;
 
 	else
 	{
-		test->mat.roughness = 0.3f;
+		test->mat.shininess = 0.7f;
 
 	}
 	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);

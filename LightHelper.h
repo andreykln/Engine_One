@@ -3,7 +3,7 @@
 #include "directxmath.h"
 
 static DirectX::XMFLOAT3 defaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-
+static DirectX::XMFLOAT3 defaultLightStrength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
 struct DirectionalLight
 {
 	DirectionalLight() { ZeroMemory(this, sizeof(this)); }
@@ -67,13 +67,18 @@ struct MaterialEx
 {
 	DirectX::XMFLOAT4 diffuseAlbedo;
 	DirectX::XMFLOAT3 fresnelR0;
-	float roughness;
+	float shininess;
 };
 
 struct DirectionalLightEx
 {
-	DirectX::XMFLOAT3 strength; //strength means color of light.
+	DirectionalLightEx() 
+	{ 
+		ZeroMemory(this, sizeof(this));
+	}
+
+	DirectX::XMFLOAT3 strength = defaultLightStrength; //strength means color of light.
 	int pad0;
-	DirectX::XMFLOAT3 direction = defaultLightDirection;
+	DirectX::XMFLOAT3 direction;
 	int pad1;
 };

@@ -51,10 +51,10 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 
-	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
-	planePSCB.mat.roughness = 0.3f;
-	planePSCB.dirLight.strength = DirectX::XMFLOAT3(0.5f, 0.5f, 0.5f);
+	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9, 0.9f, 1.0f);
+	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
+	planePSCB.mat.shininess = 0.9f;
+	planePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 
 	switch (currentDemo)
@@ -199,6 +199,14 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPlaneDrawPS, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
+	if (GetAsyncKeyState('1') & 0x8000)
+		surface->enableNormalMapping = true;
+	else
+	{
+		surface->enableNormalMapping = false;
+
+	}
+
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pPlaneDrawPS, 0u);

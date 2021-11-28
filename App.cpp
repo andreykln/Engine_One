@@ -723,6 +723,10 @@ void App::DrawShadowMapDemo()
 	/////
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	
+	//cubemap for specular reflections
+	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, pSky->GetSkyCubeMap());
+
+
 	auto newLightDirection = pShadowMap->GetNewLightDirection();
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMapDrawSkull_VS_PS);
