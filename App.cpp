@@ -693,7 +693,7 @@ void App::CreateShadowMapDemo()
 	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 2.0f, DemoSwitch::ShadowMap);
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::ShadowMap);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45, DemoSwitch::ShadowMap);
-
+	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap);
 	for (int i = 0; i < 10; i++)
 	{
 		displacementCylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap));

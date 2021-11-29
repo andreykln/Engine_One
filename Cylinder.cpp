@@ -190,6 +190,16 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 
 
 
+void Cylinder::UpdatePosition(Graphics& gfx, const DirectX::XMMATRIX& in_world)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->world = in_world;
+	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+}
+
 DirectionalLight* Cylinder::GetOldLightDirection()
 {
 	return directionalLight.dirLight;
