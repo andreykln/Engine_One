@@ -257,7 +257,7 @@ struct cbDefaultVS
 {
 	cbDefaultVS() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX viewProjection;
 	DirectX::XMMATRIX worldInvTranspose;
 	DirectX::XMMATRIX texTransform;
 	DirectX::XMMATRIX shadowTransform;

@@ -187,9 +187,9 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
 	shadowVS->texTransform = plateScaling;
 	shadowVS->shadowTransform = newShadowTransform;
-	shadowVS->world = in_world;
+	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	shadowVS->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 

@@ -60,7 +60,8 @@ float4 main(VSout pin) : SV_TARGET
 
     const float shininess = (mat.shininess) * normalMapSample.a;
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
-    float3 shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+    float shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
+
     DirectionalLightEx dr = dirLight;
     dr.direction = lightDirection;
     

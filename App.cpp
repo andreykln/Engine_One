@@ -736,9 +736,8 @@ void App::DrawShadowMapDemo()
 		pShadowMap->DepthMapSRV(), newLightDirection);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
-
 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
-	pShaders->BindPS(ShaderPicker::ShadowMap_VS_PS);
+	pShaders->BindPS(ShaderPicker::ShadowMapDrawPlane_PS);
 
 	for (auto& x : displacementCylinders)
 	{
@@ -758,16 +757,12 @@ void App::DrawShadowMapDemo()
 	shapes.GetSphereWorldArray() -= 10; //reset array position
 
 
-	pShaders->BindPS(ShaderPicker::ShadowMapDrawPlane_PS);
 
 	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-
-	pShaders->BindPS(ShaderPicker::ShadowMap_VS_PS);
-
 
 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,

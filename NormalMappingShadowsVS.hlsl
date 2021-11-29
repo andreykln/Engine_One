@@ -1,7 +1,7 @@
 cbuffer cbDefaultVS : register(b0)
 {
     float4x4 world;
-    float4x4 worldViewProjection;
+    float4x4 viewProjection;
     float4x4 worldInverseTranspose;
     float4x4 texTransform;
     float4x4 shadowTransform;
@@ -30,16 +30,24 @@ struct VSout
 VSout main(VertexIn vin)
 {
     VSout vout;
+	
     // Transform to world space.
-    vout.PosH = mul(float4(vin.position, 1.0f), worldViewProjection);
-    vout.PosW = mul(float4(vin.position, 1.0f), world).xyz;
-    vout.NormalW = mul(float4(vin.normal, 1.0f), worldInverseTranspose).xyz;
+    float4 posW = mul(float4(vin.position, 1.0f), world);
+    vout.PosW = posW.xyz;
+
+    // Assumes nonuniform scaling; otherwise, need to use inverse-transpose of world matrix.
+    vout.NormalW = mul(vin.normal, (float3x3) world);
+	
     vout.tangentW = mul(vin.tangentLocal, (float3x3) world);
-    
-	// Transform to homogeneous clip space.
+
+    // Transform to homogeneous clip space.
+    vout.PosH = mul(posW, viewProjection);
+	
+	// Output vertex attributes for interpolation across triangle.
     float4 texC = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform);
     vout.Tex = mul(texC, matTransform).xy;
-    
-    vout.shadowPosH = mul(float4(vin.position, 1.0f), shadowTransform);
+
+    // Generate projective tex-coords to project shadow map onto scene.
+    vout.shadowPosH = mul(posW, shadowTransform);
     return vout;
 }
