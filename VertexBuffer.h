@@ -51,6 +51,8 @@ public:
 #endif
 	}
 	void Bind(Graphics& gfx) noexcept override;
+	ID3D11Buffer* Get_p_VertexBuffer() const noexcept;
+
 private:
 	UINT startSlot{};
 	UINT numBuffers{};

@@ -85,6 +85,7 @@ private:
 	Box* pDisplacementMappingBox = nullptr;
 	TreeBillboard* pBillboards = nullptr;
  	Cylinder* pCylinder = nullptr;
+	Cylinder* pInstancedCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;
 	std::vector<Cylinder*> displacementCylinders;
  	GeoSphere* pGeoSphere = nullptr;

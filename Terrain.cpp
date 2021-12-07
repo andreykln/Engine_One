@@ -44,7 +44,6 @@ Terrain::Terrain(Graphics& gfx)
 	PixelShaderConstantBuffer<CB_PS_Terrain>* pCBPSTerrainContants =
 		new PixelShaderConstantBuffer(gfx, terrainConstants, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 	AddBind(pCBPSTerrainContants);
-	CB_PS_PerFrameUpdate;
 
 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pCBPSPerFrame =
 		new PixelShaderConstantBuffer(gfx, cbPsPerFrame, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);

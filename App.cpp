@@ -22,6 +22,7 @@ App::App()
 // 	CreateBezierPatchTess();
 // 	CreatePicking();
 // 	CreateTerrain();
+// 	InstancingCreate();
 
 }
 
@@ -43,7 +44,7 @@ void App::DoFrame()
 // 	DrawBezierPatchTess();
 // 	DrawPicking();
 // 	DrawTerrain();
-
+// 	DrawInstancingDraw();
 
 	CalculateFrameStats();
 
@@ -650,19 +651,26 @@ void App::DrawSceneToShadowMap()
 		WVP, camera.GetCameraPosition());
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pShaders->BindVSandIA(ShaderPicker::ShadowMapGen_VS_PS);
+	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedGen_VS);
  	pShaders->BindPS(ShaderPicker::ShadowMapGen_VS_PS);
 
 	//copy in argument
 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
-	for (auto& x : displacementCylinders)
+
+	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
+
+	pInstancedCylinder->UpdateShadowMapGenBuffersInstanced(wnd.GetGraphics(), VP);
+	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0u, 0u, 0u);
+	/*for (auto& x : displacementCylinders)
 	{
 		DirectX::XMMATRIX WVP = *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
 		x->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 
 	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	shapes.GetCylinderWorldArray() -= 10; //reset array position*/
+	pShaders->BindVSandIA(ShaderPicker::ShadowMapGen_VS_PS);
+
 	for (auto& x : geoSpheres)
 	{
 		DirectX::XMMATRIX WVP = *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
@@ -694,10 +702,11 @@ void App::CreateShadowMapDemo()
 	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt", DemoSwitch::ShadowMap);
 	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45, DemoSwitch::ShadowMap);
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap);
-	for (int i = 0; i < 10; i++)
+	pInstancedCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap);
+	/*for (int i = 0; i < 10; i++)
 	{
 		displacementCylinders.push_back(new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20, DemoSwitch::ShadowMap));
-	}
+	}*/
 	for (size_t i = 0; i < 10; i++)
 	{
 		geoSpheres.push_back(new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap));
@@ -739,14 +748,14 @@ void App::DrawShadowMapDemo()
 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	pShaders->BindPS(ShaderPicker::ShadowMapDrawPlane_PS);
 
-	for (auto& x : displacementCylinders)
+	/*for (auto& x : displacementCylinders)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 			pShadowMap->GetShadowTransform(), *(shapes.GetCylinderWorldArray())++ * shapes.GetCameraOffset(),
 			viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 		x->BindAndDrawIndexed(wnd.GetGraphics());
 	}
-	shapes.GetCylinderWorldArray() -= 10; //reset array position
+	shapes.GetCylinderWorldArray() -= 10; //reset array position*/
 	for (auto& x : geoSpheres)
 	{
 		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),

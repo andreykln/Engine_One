@@ -164,6 +164,10 @@ private:
 	ID3D11VertexShader* pShadowMapGenVS = nullptr;
 	ID3D11PixelShader* pShadowMapGenPS = nullptr;
 
+	//shadowmap gen instanced
+	ID3D11VertexShader* pShadowMapInstancedVS = nullptr;
+	ID3D11InputLayout* pShadowMapInstancedIL = nullptr;
+
 	//shadowMap skull
 	ID3D11VertexShader* pSkullSMGenVS = nullptr;
 	ID3D11VertexShader* pSkullSMDrawVS = nullptr;

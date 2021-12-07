@@ -113,6 +113,11 @@ Shaders::Shaders(Graphics& in_gfx)
 	//plane SM 
 	PS_Init(&pPlaneShadowMapPS, L"Shaders\\Pixel\\ShadowMapPlaneDrawPS.cso");
 
+	//SM generation instanced
+	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
+		 IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
+
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -250,6 +255,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSkullSMIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSkullSMDrawVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapInstancedGen_VS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapInstancedVS, nullptr, 0u);
 		break;
 	}
 	default:

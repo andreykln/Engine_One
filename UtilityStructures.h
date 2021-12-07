@@ -336,6 +336,7 @@ enum ShaderPicker
 	ShadowMapGenSkull_VS_PS,
 	ShadowMapDrawSkull_VS_PS,
 	ShadowMapDrawPlane_PS,
+	ShadowMapInstancedGen_VS,
 	Keep
 };
 

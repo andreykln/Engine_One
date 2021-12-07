@@ -14,6 +14,7 @@ public:
 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 	void IncrementTexArrPos() noexcept;
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
+	void UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, 
 		DirectX::XMFLOAT3& newLightDirection);
@@ -21,6 +22,8 @@ public:
 	DirectionalLight* GetOldLightDirection();
 private:
 	UINT GetTexArrPos() const noexcept;
+	DirectX::XMFLOAT4X4 sCylWorld[10];
+	DirectX::XMMATRIX m_CylWorld[10];
 
 	DemoSwitch currentDemo;
 	GeometryGenerator::MeshData mesh;
@@ -48,6 +51,10 @@ private:
 	ID3D11Buffer* pLightDirectionPSCbuffer = nullptr;
 	UINT texArrPosition{};
 
+
+	ID3D11Buffer* pNormalVB = nullptr;
+	ID3D11Buffer* pIAbuffers[2];
+	UINT stride[2]{};
 
 };
 
