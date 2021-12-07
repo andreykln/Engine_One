@@ -137,10 +137,6 @@ void Cylinder::IncrementTexArrPos() noexcept
 {
 }
 
-UINT Cylinder::GetTexArrPos() const noexcept
-{
-	return texArrPosition;
-}
 
 void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
 {
@@ -159,7 +155,6 @@ void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX&
 
 void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
 {
-	UINT offset[2] = {0,0};
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
 
@@ -174,13 +169,14 @@ void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::
 
 }
 
-void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
-	const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
+
+void Cylinder::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
+	const DirectX::XMMATRIX& newShadowTransform,
+	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 	DirectX::XMFLOAT3& newLightDirection)
 {
-	UINT stride = sizeof(Vertices_Full);
-	UINT offset = 0;
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pNormalVB, &stride, &offset);
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
@@ -188,8 +184,8 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
 	shadowVS->shadowTransform = newShadowTransform;
-	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
-	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	shadowVS->world = DirectX::XMMatrixIdentity();
+	shadowVS->worldInvTranspose = DirectX::XMMatrixIdentity();
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
@@ -212,23 +208,5 @@ void Cylinder::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapConeDrawPS, 0u);
 
-
-}
-
-
-
-void Cylinder::UpdatePosition(Graphics& gfx, const DirectX::XMMATRIX& in_world)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
-	shadowVS->world = in_world;
-	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
-}
-
-DirectionalLight* Cylinder::GetOldLightDirection()
-{
-	return directionalLight.dirLight;
 }
 

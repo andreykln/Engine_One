@@ -116,6 +116,9 @@ Shaders::Shaders(Graphics& in_gfx)
 	//SM generation instanced
 	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
 		 IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
+	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
+
+	
 
 
 }
@@ -261,6 +264,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapInstancedVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapInstancedDraw_VS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
 		break;
 	}
 	default:
