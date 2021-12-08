@@ -109,6 +109,7 @@ struct InputLayout
 		{"World", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48u,
 		D3D11_INPUT_PER_INSTANCE_DATA, 1},
 	};
+
 	static const UINT nTerrainHeightMap = 3;
 	const D3D11_INPUT_ELEMENT_DESC terrainHeightMap[nInstancedSkull] =
 	{

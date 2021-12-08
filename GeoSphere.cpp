@@ -6,38 +6,8 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 {
 
 
-	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.75f, 0.75f, 0.75f, 1.0f);
-	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
-	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-
-	if (centerSphere)
-	{
-		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 16.0f);
-		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-
-	}
-	else
-	{
-		directionalLight.mat.ambient = DirectX::XMFLOAT4(0.6f, 0.8f, 1.0f, 1.0f);
-		directionalLight.mat.diffuse = DirectX::XMFLOAT4(0.6f, 0.8f, 1.0f, 1.0f);
-		directionalLight.mat.specular = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 16.0f);
-		directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	}
-
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
-	std::vector<Vertex_IA> vertices(mesh.vertices.size());
+	std::vector<Vertices_Full> vertices(mesh.vertices.size());
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
@@ -50,11 +20,32 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 		vertices[i].pos = p;
 		vertices[i].normal = mesh.vertices[i].normal;
 		vertices[i].tex = t;
+		vertices[i].tangent = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+	
+	}
+
+	//build world matrices for 10 spheres
+	for (int i = 0; i < 5; ++i)
+	{
+		DirectX::XMStoreFloat4x4(&sGeoSphereWorld[i * 2 + 0],
+			DirectX::XMMatrixTranslation(-5.0f, 3.5f, -10.0f + i * 5.0f));
+
+		DirectX::XMStoreFloat4x4(&sGeoSphereWorld[i * 2 + 1],
+			DirectX::XMMatrixTranslation(5.0f, 3.5f, -10.0f + i * 5.0f));
+	}
+	std::vector<DirectX::XMFLOAT4X4> geoSphereWorld(10);
+	for (size_t i = 0; i < 10; i++)
+	{
+		geoSphereWorld[i] = sGeoSphereWorld[i];
 	}
 
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"GeoSphere");
-	AddBind(pVertexBuffer);
+
+	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, vertices, geoSphereWorld, L"IstancedVB");
+	pIAbuffers[0] = pVertexBuffer->GetVertexData();
+	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
+	stride[0] = sizeof(Vertices_Full);
+	stride[1] = sizeof(DirectX::XMFLOAT4X4);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"GeoSphereIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -161,6 +152,19 @@ void GeoSphere::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
+}
+
+void GeoSphere::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
+{
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
+	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightView);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
 }

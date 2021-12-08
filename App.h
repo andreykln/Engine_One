@@ -88,6 +88,7 @@ private:
 	Cylinder* pInstancedCylinder = nullptr;
  	std::vector<Cylinder*> cylinders;
 	std::vector<Cylinder*> displacementCylinders;
+	GeoSphere* pInstancedGeoSphere = nullptr;
  	GeoSphere* pGeoSphere = nullptr;
  	std::vector<GeoSphere*> geoSpheres;
 //  Sphere* pSphere = nullptr;
