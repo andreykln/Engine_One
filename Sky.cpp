@@ -22,7 +22,7 @@ Sky::Sky(Graphics& gfx)
 
 
 	std::wstring directory[1];
-	directory[0] = L"Textures\\desertcube1024.dds";
+	directory[0] = L"Textures\\snowcube1024.dds"; //desertcube1024
 	pCubeMapSRV = ShaderResourceView::CreateCubeMap(gfx, directory);
 
 

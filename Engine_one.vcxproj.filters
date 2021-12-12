@@ -583,9 +583,6 @@
     <FxCompile Include="ShadowMapDrawInstancedVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="SpheresWithCubeMapPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

@@ -49,10 +49,19 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 
 	dirLightEX.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
-	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.08f, 0.08f, 0.08f);
-	dirLightEX.mat.shininess = 0.7f; //the greater the number the more spread the specular highlight
-	dirLightEX.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+	//data for bone skull
+// 	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.08f, 0.08f, 0.08f);
+// 	dirLightEX.mat.shininess = 0.7f; //the greater the number the more spread the specular highlight
+// 	dirLightEX.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
+
+	//data for mirror skull
+	dirLightEX.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	dirLightEX.mat.fresnelR0 = DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f);
+	dirLightEX.mat.shininess = 0.8f;
+	dirLightEX.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
+
+
 
 	std::fstream file(path);
 	std::string ignore;
@@ -61,27 +70,13 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	file >> ignore >> ignore >> ignore >> ignore;
 
 	std::vector<Vertices> verticesFromTXT(vertices);
-// 	std::vector<VerticesSM> verticesFromTXTSM(vertices);
 
-// 	if (currentDemo == ShadowMap)
-// 	{
-// 		for (size_t i = 0; i < vertices; i++)
-// 		{
-// 			file >> verticesFromTXTSM[i].position.x >> verticesFromTXTSM[i].position.y >> verticesFromTXTSM[i].position.z >>
-// 				verticesFromTXTSM[i].normal.x >> verticesFromTXTSM[i].normal.y >> verticesFromTXTSM[i].normal.z;
-// 			verticesFromTXTSM[i].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 		}
-// 		file >> ignore >> ignore >> ignore;
-// 	}
-// 	else
-// 	{
-		for (size_t i = 0; i < vertices; i++)
-		{
-			file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
-				verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
-		}
-		file >> ignore >> ignore >> ignore;
-// 	}
+	for (size_t i = 0; i < vertices; i++)
+	{
+		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
+			verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
+	}
+	file >> ignore >> ignore >> ignore;
 
 
 	UINT indexCount = 3 * triangles;
@@ -93,16 +88,10 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	}
 	file.close();
 
-// 	if (currentDemo == ShadowMap)
-// 	{
-// 		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXTSM, L"TXT");
-// 		AddBind(pVertexBuffer);
-// 	}
-// 	else
-// 	{
-		VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
-		AddBind(pVertexBuffer);
-// 	}
+
+	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
+	AddBind(pVertexBuffer);
+
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);

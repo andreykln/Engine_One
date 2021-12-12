@@ -28,7 +28,8 @@ cbuffer PS_Per_FrameShadowMap : register(b1)
     float3 camPositon;
 
 }
-
+TextureCube cubeMap : register(t3);
+SamplerState tex0Sample : register(s0);
 Texture2D SRVshadowMap : register(t2);
 SamplerComparisonState shadowSampler : register(s1);
 
@@ -52,6 +53,13 @@ float4 main(VSout pin) : SV_TARGET
 
     float4 litColor = ambient + directLight;
 
+    
+    // Add in specular reflections.
+    float3 r = reflect(-toEyeW, pin.NormalW);
+    float4 reflectionColor = cubeMap.Sample(tex0Sample, r);
+    float3 fresnelFactor = SchlickFresnel(objectMaterial.fresnelR0, pin.NormalW, r);
+    litColor.rgb += objectMaterial.shininess * fresnelFactor * reflectionColor.rgb;
+    
     // Common convention to take alpha from diffuse material.
     litColor.a = objectMaterial.diffuseAlbedo.a;
 
