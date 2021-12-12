@@ -41,17 +41,12 @@ float4 main(VSout pin) : SV_TARGET
 	
 	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
-    float3 bumpedNormalW = pin.NormalW;
     float4 normalMapSample = SRVNormalMap.Sample(tex0Sample, pin.Tex);
-    //float4 litColor = SRVTexture.Sample(tex0Sample, pin.Tex);
-    float4 litColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
-        // Vector from point being lit to eye. 
+    // Vector from point being lit to eye. 
     float3 toEyeW = normalize(camPositon - pin.PosW);
 
-
-    bumpedNormalW = NormalSampleToWorldSpace(normalMapSample.rgb, pin.NormalW, pin.tangentW);
-
+    float3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample.rgb, pin.NormalW, pin.tangentW);
     
 	// Dynamically look up the texture in the array.
     diffuseAlbedo *= SRVTexture.Sample(tex0Sample, pin.Tex);
@@ -62,7 +57,6 @@ float4 main(VSout pin) : SV_TARGET
         diffuseAlbedo = mat.diffuseAlbedo;
         bumpedNormalW = pin.NormalW;
         shininess = mat.shininess;
-
     }
     // Light terms.
     float4 ambient = ambientLight * diffuseAlbedo;
@@ -73,9 +67,10 @@ float4 main(VSout pin) : SV_TARGET
     DirectionalLightEx dr = dirLight;
     dr.direction = lightDirection;
     
-    float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, camPositon), 0.0f);
+    
+    float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
  
-
+    float4 litColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
     litColor = ambient + result;
     
 	// Add in specular reflections.
