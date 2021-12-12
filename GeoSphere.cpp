@@ -76,9 +76,9 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 
 
 
-	geoSpherePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.9f, 1.0f);
-	geoSpherePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
-	geoSpherePSCB.mat.shininess = 0.7f;
+	geoSpherePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	geoSpherePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.98f, 0.97f, 0.95f);
+	geoSpherePSCB.mat.shininess = 0.9f;
 	geoSpherePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 	if (currentDemo == ShadowMap)
@@ -169,6 +169,36 @@ void GeoSphere::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX:
 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
 }
 
+void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
+{
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+	shadowVS->shadowTransform = newShadowTransform;
+	shadowVS->world = DirectX::XMMatrixIdentity();
+	shadowVS->worldInvTranspose = DirectX::XMMatrixIdentity();
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+
+
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightGeoSphere);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+
+	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
+	surface->disableTexSampling = true;
+
+	surface->camPositon = newCamPosition;
+	surface->lightDirection = newLightDirection;
+	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);
+}
+
 void GeoSphere::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
 	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
@@ -191,13 +221,7 @@ void GeoSphere::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newC
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
-	if (GetAsyncKeyState('1') & 0x8000)
-		surface->enableNormalMapping = true;
-	else
-	{
-		surface->enableNormalMapping = false;
-
-	}
+	surface->disableTexSampling = true;
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);

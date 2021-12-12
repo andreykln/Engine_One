@@ -199,13 +199,6 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPlaneDrawPS, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
-	if (GetAsyncKeyState('1') & 0x8000)
-		surface->enableNormalMapping = true;
-	else
-	{
-		surface->enableNormalMapping = false;
-
-	}
 
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;

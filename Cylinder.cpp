@@ -196,14 +196,6 @@ void Cylinder::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLO
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapConeDrawPS, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
-	if (GetAsyncKeyState('1') & 0x8000)
-		surface->enableNormalMapping = true;
-	else
-	{
-		surface->enableNormalMapping = false;
-
-	}
-
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapConeDrawPS, 0u);

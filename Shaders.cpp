@@ -118,9 +118,6 @@ Shaders::Shaders(Graphics& in_gfx)
 		 IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
 	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
 
-	
-
-
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)

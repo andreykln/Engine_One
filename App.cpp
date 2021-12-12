@@ -739,25 +739,21 @@ void App::DrawShadowMapDemo()
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedDraw_VS);
 	pShaders->BindPS(ShaderPicker::ShadowMapDrawPlane_PS);
 
+	//columns
 	pInstancedCylinder->UpdateShadowMapDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
+	//spheres
+	pInstancedGeoSphere->UpdateShadowMapDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
+		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+	pInstancedGeoSphere->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
 
+	//plane
 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
-	/*for (auto& x : geoSpheres)
-	{
-		x->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-			pShadowMap->GetShadowTransform(), *(shapes.GetSphereWorldArray())++ * shapes.GetCameraOffset(),
-			viewProjectionMatrix, pShadowMap->DepthMapSRV(), newLightDirection);
-		x->BindAndDrawIndexed(wnd.GetGraphics());
-	}
-	shapes.GetSphereWorldArray() -= 10; //reset array position*/
-
-
-
 	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());

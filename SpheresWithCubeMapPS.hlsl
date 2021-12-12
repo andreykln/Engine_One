@@ -20,7 +20,7 @@ cbuffer cbDefaultPS : register(b0)
     float fogstart;
     float3 camPositon;
     float fogRange;
-    bool disableTexSampling;
+    bool enableNormalMapping;
 }
 
 
@@ -55,18 +55,12 @@ float4 main(VSout pin) : SV_TARGET
     
 	// Dynamically look up the texture in the array.
     diffuseAlbedo *= SRVTexture.Sample(tex0Sample, pin.Tex);
-    float shininess = (mat.shininess) * normalMapSample.a;
 
-    if (disableTexSampling)
-    {
-        diffuseAlbedo = mat.diffuseAlbedo;
-        bumpedNormalW = pin.NormalW;
-        shininess = mat.shininess;
 
-    }
     // Light terms.
     float4 ambient = ambientLight * diffuseAlbedo;
 
+    const float shininess = (mat.shininess) * normalMapSample.a;
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
     float shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);
 
@@ -79,11 +73,13 @@ float4 main(VSout pin) : SV_TARGET
     litColor = ambient + result;
     
 	// Add in specular reflections.
-   
-    float3 r = reflect(-toEyeW, bumpedNormalW);
-    float4 reflectionColor = cubeMap.Sample(tex0Sample, r);
-    float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
-    litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
+    if (enableNormalMapping)
+    {
+        float3 r = reflect(-toEyeW, bumpedNormalW);
+        float4 reflectionColor = cubeMap.Sample(tex0Sample, r);
+        float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
+        litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
+    }
     // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a;
 

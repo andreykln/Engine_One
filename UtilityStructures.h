@@ -275,7 +275,7 @@ struct cbDefaultPS
 	const float fogstart = 50.0f;
 	DirectX::XMFLOAT3 camPositon;
 	const float fogRange = 200.0f;
-	bool enableNormalMapping = false;
+	bool disableTexSampling = false;
 	int pad0;
 	int pad1;
 	int pad2;
