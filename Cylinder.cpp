@@ -114,6 +114,8 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	shadowVS->worldInvTranspose = DirectX::XMMatrixIdentity();
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	shadowVS->enableDisplacementMapping = true;
+	shadowVS->cameraPositon = newCamPosition;
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 

@@ -441,12 +441,27 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedDraw_VS);
 	pShaders->BindPS(ShaderPicker::DefaultInstanced_PS);
+	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
+	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	//columns
-	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
+// 	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+// 		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
+// 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+// 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+
+	//box
+	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->UnbindDS();
+	pShaders->UnbindHS();
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//spheres
 	pInstancedGeoSphere->UpdateShadowMapDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
@@ -463,10 +478,7 @@ void App::DrawShadowMapDemo()
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
-		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+
 
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);

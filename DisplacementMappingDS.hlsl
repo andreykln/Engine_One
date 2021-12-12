@@ -3,8 +3,9 @@ struct DomainOut
     float4 PosH : SV_POSITION;
     float3 PosW : POSITION;
     float3 NormalW : NORMAL;
-    float2 Tex : TEXCOORD;
     float3 TangentW : TANGENT;
+    float2 Tex : TEXCOORD;
+    float4 shadowPosH : TEXCOORD1;
 };
 //static float4x4 test = float4(float4(1.0f, 0.0f, 0.0f, 0.0f), float4(0.0f, 1.0f, 0.0f, 4.0f),
 //float4(0.0f, 0.0f, 1.0f, 0.0f), float4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -28,15 +29,27 @@ struct PatchTess
 struct HullOut
 {
     float3 PosW : Position;
+    float4 PosH : SV_Position;
     float3 NormalW : Normal;
     float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
+    float4 shadowPosH : TEXCOORD1;
 };
 
 cbuffer CamPos : register(b0)
 {
-    float4x4 ViewProjection;
+    float4x4 world;
+    float4x4 viewProjection;
+    float4x4 worldInverseTranspose;
+    float4x4 texTransform;
+    float4x4 shadowTransform;
+    float4x4 matTransform;
     float3 cameraPosition;
+    int pad0;
+    bool enableDisplacementMapping;
+    int pad1;
+    int pad2;
+    int pad3;
 };
 
 SamplerState samplerLinear;
@@ -57,7 +70,8 @@ DomainOut main(
     dout.NormalW = bary.x * tri[0].NormalW + bary.y * tri[1].NormalW + bary.z * tri[2].NormalW;
     dout.TangentW = bary.x * tri[0].tangentW + bary.y * tri[1].tangentW + bary.z * tri[2].tangentW;
     dout.Tex = bary.x * tri[0].Tex + bary.y * tri[1].Tex + bary.z * tri[2].Tex;
-	
+    dout.shadowPosH = bary.x * tri[0].shadowPosH + bary.y * tri[1].shadowPosH + bary.z * tri[2].shadowPosH;
+    
 	// Interpolating normal can unnormalize it, so normalize it.
     dout.NormalW = normalize(dout.NormalW);
 	
@@ -78,8 +92,8 @@ DomainOut main(
 	
 	// Project to homogeneous clip space.
 
-    dout.PosH = mul(float4(dout.PosW, 1.0f), ViewProjection);
-
+    dout.PosH = mul(float4(dout.PosW, 1.0f), viewProjection);
+    
 
     return dout;
 }

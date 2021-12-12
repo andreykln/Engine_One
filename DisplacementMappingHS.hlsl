@@ -1,13 +1,13 @@
 struct VSout
 {
+    float4 PosH : SV_Position;
     float3 PosW : Position;
     float3 NormalW : Normal;
-    float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
+    float2 Tex : TEXCOORD0;
+    float4 shadowPosH : TEXCOORD1;
     float tessFactor : TESS;
 };
-
-
 
 // Output patch constant data.
 struct PatchTess
@@ -37,9 +37,11 @@ PatchTess CalcHSPatchConstants(
 struct HullOut
 {
     float3 PosW : Position;
+    float4 PosH : SV_Position;
     float3 NormalW : Normal;
     float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
+    float4 shadowPosH : TEXCOORD1;
 };
 
 
@@ -59,6 +61,8 @@ HullOut main(
     Output.NormalW = ip[i].NormalW;
     Output.tangentW = ip[i].tangentW;
     Output.Tex = ip[i].Tex;
+    Output.PosH = ip[i].PosH;
+    Output.shadowPosH = ip[i].shadowPosH;
 
 	return Output;
 }

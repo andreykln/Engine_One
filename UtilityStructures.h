@@ -262,6 +262,12 @@ struct cbDefaultVS
 	DirectX::XMMATRIX texTransform;
 	DirectX::XMMATRIX shadowTransform;
 	DirectX::XMMATRIX matTransform;
+	DirectX::XMFLOAT3 cameraPositon;
+	int pad0;
+	bool enableDisplacementMapping = false;
+	int pad1;
+	int pad2;
+	int pad3;
 };
 
 struct cbDefaultPS

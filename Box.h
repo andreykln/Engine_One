@@ -18,6 +18,11 @@ private:
 	ID3D11Buffer* pShadowMapBoxDrawPS = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
+	ID3D11ShaderResourceView* pDiffMapHeightMap = nullptr;
+	ID3D11ShaderResourceView* pNormalMap = nullptr;
+	ID3D11SamplerState* pSamplerState = nullptr;
+
+
 
 	const DirectX::XMMATRIX boxforHillsOffset = DirectX::XMMatrixTranslation(-5.0f, -3.5f, 4.0f);
 	GeometryGenerator::MeshData mesh;

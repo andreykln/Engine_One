@@ -97,33 +97,36 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	}
 
 	std::wstring directory[1];
-	std::wstring normalMap[1];
 
 	switch (currentDemo)
 	{
 
 	case DemoSwitch::ShadowMap:
 	{
-		directory[0] = L"Textures\\bricks3.dds";
-		normalMap[0] = L"Textures\\bricks3_nmap.dds";
-		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
-		AddBind(pSRVN);
+		//directory[0] = L"Textures\\bricks3.dds";
+		const wchar_t* diffuseMap = L"Textures\\bricks3.dds";
+		const wchar_t* path = L"Textures\\bricks3_nmap.dds";
+		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, path);
+		pNormalMap = pSRVN->GetSRV();
+
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
+		pDiffMapHeightMap = pSRV->GetSRV();
+
+
+		//AddBind(pSRVN);
 		break;
 	}
-	break;
-	break;
 	case DemoSwitch::DefaultBox:
 	{
-		directory[0] = L"Textures\\WoodCrate01.dds";
+		const wchar_t* diffuseMap = L"Textures\\WoodCrate01.dds";
 	}
 	break;
 	}
 
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
-	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
+	pSamplerState = pTexSampler->GetSamplerState();
+
 }
 
 void Box::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
@@ -143,6 +146,13 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
 {
+	gfx.pgfx_pDeviceContext->DSSetSamplers(0u, 1u, &pSamplerState);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSamplerState);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDiffMapHeightMap);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNormalMap);
+	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pNormalMap);
+	gfx.pgfx_pDeviceContext->DSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
@@ -153,6 +163,8 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	shadowVS->enableDisplacementMapping = true;
+	shadowVS->cameraPositon = newCamPosition;
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 
