@@ -16,24 +16,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pSkullSMPS, L"Shaders\\Pixel\\ShadowMapDrawSkullPS.cso");
 	PS_Init(&pSkullSMGenPS, L"Shaders\\Pixel\\ShadowMapSkullGenPS.cso");
 
-
-	PS_Init(&pMirrorRoomPS, L"Shaders\\Pixel\\MirrorRoomPS.cso");
-
 	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
 
 	VS_IL_Init(&pDepthComplexityVS, IL.positionColorIL, &pDepthCoplexityIL, IL.nPosition_Color, L"Shaders\\Vertex\\DepthCompVS.cso");
 	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
-
-	VS_IL_Init(&pTreeBillboardVS, IL.treeBillboardIL, &pTreeBillboardIL, IL.nTreeBillboardElements, L"Shaders\\Vertex\\TreeBillboardVS.cso");
-	GS_Init(&pTreeBillboardGS, L"Shaders\\Geometry\\TreeBillboardGS.cso");
-	PS_Init(&pTreeBillboardPS, L"Shaders\\Pixel\\TreeBillboardPS.cso");
-
-	VS_IL_Init(&pCirletoCylinderVS, IL.positonIL, &pCirletoCylinderIL, IL.nPositon, L"Shaders\\Vertex\\Circle_CylinderVS.cso");
-	GS_Init(&pCircletoCylinderGS, L"Shaders\\Geometry\\Circle_CylinderGS.cso");
-	PS_Init(&pCirletoCylinderPS, L"Shaders\\Pixel\\Circle_CylinderPS.cso");
-
-	PS_Init(&pAllLightForHills, L"Shaders\\Pixel\\HillsAllLightPS.cso");
-
 	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
 	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
 	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
@@ -142,19 +128,6 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::TreeBillboardVS_PS_GS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pTreeBillboardIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pTreeBillboardVS, nullptr, 0u);
-		
-		break;
-	}
-	case ShaderPicker::CircleToCylinderVS_GS_PS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pCirletoCylinderIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pCirletoCylinderVS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::GPUWaves_VS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
@@ -179,7 +152,6 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSkyVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
@@ -298,21 +270,6 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::TreeBillboardVS_PS_GS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pTreeBillboardPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::CircleToCylinderVS_GS_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pCirletoCylinderPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::HillsAllLight_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pAllLightForHills, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::BlurTexture_PS :
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
@@ -338,7 +295,6 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::LightAndTextureNormalMapping_VS_PS:
 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
@@ -400,16 +356,6 @@ void Shaders::BindGS(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::TreeBillboardVS_PS_GS:
-	{
-		pSgfx->pgfx_pDeviceContext->GSSetShader(pTreeBillboardGS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::CircleToCylinderVS_GS_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->GSSetShader(pCircletoCylinderGS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	{
 		pSgfx->pgfx_pDeviceContext->GSSetShader(pSOFireGS, nullptr, 0u);

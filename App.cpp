@@ -326,7 +326,7 @@ void App::CreateDepthComplexityStencil()
 	pDepthArr[1] = new DepthComplexity(wnd.GetGraphics());
 	pDepthArr[2] = new DepthComplexity(wnd.GetGraphics());
 	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u);
-	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
+// 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
 
 }
 

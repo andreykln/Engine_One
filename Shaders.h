@@ -52,7 +52,6 @@ private:
 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
 	ID3D11PixelShader* pLightAndTexturePS = nullptr;
 	ID3D11PixelShader* pLightAndTextureArrayPS = nullptr;
-	ID3D11PixelShader* pAllLightForHills = nullptr;
 
 	ID3D11VertexShader* pDepthComplexityVS = nullptr;
 	ID3D11InputLayout* pDepthCoplexityIL = nullptr;
@@ -61,22 +60,6 @@ private:
 	ID3D11VertexShader* pLightVS = nullptr;
 	ID3D11InputLayout* pLightIL = nullptr;
 	ID3D11PixelShader* pLightPS = nullptr;
-	
-
-	ID3D11VertexShader* pTreeBillboardVS = nullptr;
-	ID3D11InputLayout* pTreeBillboardIL = nullptr;
-	ID3D11PixelShader* pTreeBillboardPS = nullptr;
-	ID3D11GeometryShader* pTreeBillboardGS = nullptr;
-
-	ID3D11PixelShader* pMirrorRoomPS = nullptr;
-
-	ID3D11VertexShader* pCirletoCylinderVS = nullptr;
-	ID3D11InputLayout* pCirletoCylinderIL = nullptr;
-	ID3D11GeometryShader* pCircletoCylinderGS = nullptr;
-	ID3D11PixelShader* pCirletoCylinderPS = nullptr;
-
-	ID3D11PixelShader* pMirrorSkullPS = nullptr;
-
 
 	ID3D11ComputeShader* pHorizontalBlurCS = nullptr;
 	ID3D11ComputeShader* pVerticalBlurCS = nullptr;
@@ -164,7 +147,7 @@ private:
 	ID3D11VertexShader* pShadowMapGenVS = nullptr;
 	ID3D11PixelShader* pShadowMapGenPS = nullptr;
 
-	//shadowmap gen instanced
+	//shadow map gen instanced
 	ID3D11VertexShader* pShadowMapInstancedVS = nullptr;
 	ID3D11InputLayout* pShadowMapInstancedIL = nullptr;
 	ID3D11VertexShader* pShadowMapDrawInstancedVS = nullptr;

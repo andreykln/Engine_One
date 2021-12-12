@@ -283,13 +283,7 @@ struct cbDefaultPS
 
 enum DemoSwitch
 {
-	LightningCone,
-	Shapesdemo,
-	HillsDemo,
-	HillsAllLight,
 	DefaultBox,
-	MirrorSkull,
-	DisplacementMapping,
 	ShadowMap
 };
 
@@ -300,9 +294,6 @@ enum ShaderPicker
 	Light_VS_PS,
 	LightAndTextureArrayPS,
 	DepthComplexityVS_PS,
-	TreeBillboardVS_PS_GS,
-	CircleToCylinderVS_GS_PS,
-	HillsAllLight_PS,
 	HorizontalBlur_CS,
 	BlurTexture_PS,
 	VerticalBlur_CS,
@@ -319,7 +310,6 @@ enum ShaderPicker
 	InstancedSkull_PS,
 	Sky_VS_PS,
 	CubeMap_PS,
-	LightAndTextureNormalMapping_VS_PS,
 	DisplacementMapping_VS_DS_HS,
 	DisplacementWaves_VS_HS_DS_PS,
 	TerrainHeightMap_VS_PS_DS_HS_PS,
