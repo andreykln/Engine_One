@@ -1,7 +1,6 @@
 #include "Cylinder.h"
 Cylinder::Cylinder(Graphics& gfx,
-	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count, DemoSwitch in_switch)
-	: currentDemo{in_switch}
+	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count)
 {
 	cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
@@ -48,26 +47,12 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddIndexBuffer(pIndexBuffer);
 
 
-	switch (currentDemo)
-	{
-
-	case DisplacementMapping:
-	case ShadowMap:
-	{
-		VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
-			new VertexConstantBuffer<cbDefaultVS>(gfx, coneVSCB, 0u, 1u);
-		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
-		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
-			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
-		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
-	}
-		break;
-	default:
-		break;
-	}
-
-
-
+	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
+		new VertexConstantBuffer<cbDefaultVS>(gfx, coneVSCB, 0u, 1u);
+	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
+		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
+	pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
 
 
 	conePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -75,82 +60,23 @@ Cylinder::Cylinder(Graphics& gfx,
 	conePSCB.mat.shininess = 0.7f;
 	conePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
-
-	if (currentDemo == ShadowMap)
-	{
-		PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
-			new PixelShaderConstantBuffer<cbDefaultPS>(gfx, conePSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pShadowMapConeDrawPS = pLightsCB->GetPixelShaderConstantBuffer();
-	}
-
-
-
-
+	PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
+		new PixelShaderConstantBuffer<cbDefaultPS>(gfx, conePSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pShadowMapConeDrawPS = pLightsCB->GetPixelShaderConstantBuffer();
 
 	std::wstring directory[1];
 	std::wstring normalMap[1];
-	if (currentDemo == ShadowMap)
-	{
-		directory[0] = L"Textures\\bricks3.dds";
-		normalMap[0] = L"Textures\\bricks3_nmap.dds";
-	}
-	else
-	{
-		directory[0] = L"Textures\\bricks.dds";
-		normalMap[0] = L"Textures\\bricks_nmap.dds";
-	}
+	directory[0] = L"Textures\\bricks3.dds";
+	normalMap[0] = L"Textures\\bricks3_nmap.dds";
+
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory), ShaderType::Pixel);
 	AddBind(pSRV);
 
 	ShaderResourceView* pSRVN = new ShaderResourceView(gfx, normalMap, 1u, 1u, ShaderType::Pixel);
 	AddBind(pSRVN);
 
-
-	
-
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
-
-}
-
-void Cylinder::DrawCylinder(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 camPositon)
-{
-}
-
-
-void Cylinder::UpdateDisplacementCBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera)
-{
-
-}
-
-void Cylinder::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
-{
-}
-
-void Cylinder::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
-{
-}
-
-void Cylinder::IncrementTexArrPos() noexcept
-{
-}
-
-
-void Cylinder::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
-{
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
-	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
-
-
-
 }
 
 void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
@@ -170,7 +96,7 @@ void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::
 }
 
 
-void Cylinder::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
+void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
 	const DirectX::XMMATRIX& newShadowTransform,
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 	DirectX::XMFLOAT3& newLightDirection)

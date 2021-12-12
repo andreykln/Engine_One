@@ -1,29 +1,20 @@
 #include "Hills.h"
 #include <cmath>
 
-Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo)
-	: width(in_width), depth(in_depth), m(in_m), n(in_n), currentDemo(demo)
+Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n)
+	: width(in_width), depth(in_depth), m(in_m), n(in_n)
 {
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
 	std::vector<Vertices_Full> vertices(grid.vertices.size());
 
-	switch (currentDemo)
+	for (size_t i = 0; i < grid.vertices.size(); ++i)
 	{
-	case ShadowMap:
-	{
-
-		for (size_t i = 0; i < grid.vertices.size(); ++i)
-		{
-			DirectX::XMFLOAT3 p = grid.vertices[i].position;
-			vertices[i].pos = p;
-			vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f };
-			vertices[i].tex = grid.vertices[i].TexC;
-			vertices[i].tangent = grid.vertices[i].tangentU;
-		}
+		DirectX::XMFLOAT3 p = grid.vertices[i].position;
+		vertices[i].pos = p;
+		vertices[i].normal = DirectX::XMFLOAT3{ 0.0f, 1.0f, 0.0f };
+		vertices[i].tex = grid.vertices[i].TexC;
+		vertices[i].tangent = grid.vertices[i].tangentU;
 	}
-		break;
-	}
-
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
 	AddBind(pVertexBuffer);
 
@@ -31,25 +22,13 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	AddIndexBuffer(pIndexBuffer);
 
 
-	switch (currentDemo)
-	{
-	case ShadowMap:
-	{
+	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
+		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
+	pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
 
-		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
-			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
-		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
-
-		VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
-			new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
-		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
-
-		break;
-	}
-	break;
-	}
-
-
+	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
+		new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
+	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 
 	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9, 0.9f, 1.0f);
 	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
@@ -57,112 +36,26 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	planePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 
-	switch (currentDemo)
-	{
-	case ShadowMap:
-	{
-		PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
-			new PixelShaderConstantBuffer<cbDefaultPS>(gfx, planePSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pPlaneDrawPS = pLightsCB->GetPixelShaderConstantBuffer();
-
-
-	}
-	break;
-	default:
-		break;
-	}
+	PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
+		new PixelShaderConstantBuffer<cbDefaultPS>(gfx, planePSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pPlaneDrawPS = pLightsCB->GetPixelShaderConstantBuffer();
 
 
 	std::wstring directory[1];
 	std::wstring normalMap[1];
 
-	switch (currentDemo)
-	{
-	case Shapesdemo:
-	{
-		directory[0] = L"Textures\\stones.dds";
-		normalMap[0] = L"Textures\\stones_nmap.dds";
+	directory[0] = L"Textures\\floor.dds";
+	normalMap[0] = L"Textures\\floor_nmap.dds";
 
-		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
-								gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Domain);
-		AddBind(pSRVHeightMap);
-		break;
-	}
-	case HillsDemo:
-	case HillsAllLight:
-	{
-		directory[0] = L"Textures\\grass.dds";
-		break;
-	}
-	case ShadowMap:
-	{
-		directory[0] = L"Textures\\floor.dds";
-		normalMap[0] = L"Textures\\floor_nmap.dds";
-
-		ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
-			gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
-		AddBind(pSRVHeightMap);
-		break;
-	}
-	default:
-		break;
-	}
-
+	ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+		gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
+	AddBind(pSRVHeightMap);
 
 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
 	AddBind(pSRV);
 
-
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
-}
-
-
-
-void Hills::DrawHills(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera,
-	ID3D11ShaderResourceView* pShadowMap, const DirectX::XMMATRIX& in_ShadowTransform)
-{
-	UpdateVSMatrices(gfx, in_world, in_ViewProj, in_camera, in_ShadowTransform);
-	UpdatePSConstBuffers(gfx, in_camera, pShadowMap);
-	this->BindAndDrawIndexed(gfx);
-}
-
-DirectX::XMFLOAT3 Hills::GetHillNormal(float x, float z) const
-{
-	DirectX::XMFLOAT3 n(
-		-0.03f * z * cosf(0.1f * x) - 0.3f * cosf(0.1f * z),
-		1.0f,
-		-0.3f * sinf(0.1f * x) + 0.03f * x * sinf(0.1f * z));
-	DirectX::XMVECTOR unitNormal = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&n));
-	DirectX::XMStoreFloat3(&n, unitNormal);
-	return n;
-}
-
-
-void Hills::SetVerticesWidth(UINT in_vertWidth) noexcept
-{
-	m = in_vertWidth;
-}
-
-void Hills::SetVerticesDepth(UINT in_vertDepth) noexcept
-{
-	n = in_vertDepth;
-}
-
-
-
-void Hills::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera, const DirectX::XMMATRIX& in_ShadowTransform)
-{
-}
-
-void Hills::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, ID3D11ShaderResourceView* pShadowMap)
-{
-}
-
-void Hills::UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT3 camDirection, float totalTime)
-{
 }
 
 void Hills::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
@@ -206,12 +99,3 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 
 }
 
-DirectX::XMMATRIX Hills::GetHillsOffset() const
-{
-	return offsetForHillsWithWaves;
-}
-
-float Hills::GetHeight(float x, float z) const
-{
-	return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f * z));
-}

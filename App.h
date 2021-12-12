@@ -30,9 +30,6 @@ private:
 	void DrawBox();
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
-	void CreateShapesWithDynamicCubeMap();
-	void DrawShapesWithDynamicCubeMap();
-	void DrawShapesWithoutCenterSphere(DirectX::XMMATRIX& cubeFaceVP);
 
 	//shadow map
 	void DrawSceneToShadowMap();
@@ -43,21 +40,16 @@ private:
 	void DrawBezierPatchTess();
 	void InstancingCreate();
 	void DrawInstancingDraw();
-	void CreatePicking();
-	void DrawPicking();
 	void CreateTerrain();
 	void DrawTerrain();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
 
-// 	DirectX::XMMATRIX CameraZoom() const noexcept;
-// 	DirectX::XMMATRIX GetPerspectiveProjection(float in_FOV) noexcept;
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	DirectX::XMMATRIX mirroredSkull = DirectX::XMMatrixTranslation(0.0f, 5.0f, -20.0f);
 
 	Window wnd;
 	Timer timer;
@@ -66,8 +58,8 @@ private:
 
 	Camera camera;
 	CubeMapCamera* pCMCamera;
-	ShaderPicker picker = LightAndTexture_VS_PS;
 	Shaders* pShaders = nullptr;
+
 	ShadowMapGen* pShadowMap = nullptr;
 	
 	ParticleSystem* pParticle = nullptr;
@@ -75,29 +67,19 @@ private:
 	ParticleSystem* pParticleExplosion = nullptr;
 	ParticleSystem* pParticleFountain = nullptr;
 	Terrain* pTerrain = nullptr;
-	DisplacementWaves* pDisplacementWaves = nullptr;
 	InstancedSkull* pInstancedSkulls = nullptr;
-	DynamicCubeMap* pDynamicCubeMap = nullptr;
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
  	Box* pBox = nullptr;
 	Box* pDisplacementMappingBox = nullptr;
-	TreeBillboard* pBillboards = nullptr;
- 	Cylinder* pCylinder = nullptr;
 	Cylinder* pInstancedCylinder = nullptr;
- 	std::vector<Cylinder*> cylinders;
-	std::vector<Cylinder*> displacementCylinders;
 	GeoSphere* pInstancedGeoSphere = nullptr;
  	GeoSphere* pGeoSphere = nullptr;
- 	std::vector<GeoSphere*> geoSpheres;
-//  Sphere* pSphere = nullptr;
   	Hills* pHills = nullptr;
  	Skull* pSkull = nullptr;
 	QuadTessellation* pQuadTess = nullptr;
-	Picking* pPicking = nullptr;
 	Sky* pSky = nullptr;
-// 	Pyramid* pPyramid = nullptr;
   	ShapesDemo shapes;
 
 	UINT stencilRef = 0;

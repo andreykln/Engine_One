@@ -1,9 +1,6 @@
 #include "Skull.h"
 
-// CBPerFrame Skull::constBuffPerFrame;
-
-Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
-	: currentDemo(in_currentDemo)
+Skull::Skull(Graphics& gfx, const std::wstring& path)
 {
 	struct Vertices
 	{
@@ -19,29 +16,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 
 	UINT vertices = 0;
 	UINT triangles = 0;
-
-
-
-	directionalLight.mat.ambient =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
-	directionalLight.mat.diffuse =  DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.86f, 0.862f, 0.863f, 64.0f);
-
-
-	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-
-	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.55f, 0.55f, 0.55f, 1.0f);
-
-	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
-	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-
 
 	skullMatData.ambient = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
 	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
@@ -92,101 +66,24 @@ Skull::Skull(Graphics& gfx, const std::wstring& path, DemoSwitch in_currentDemo)
 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 	AddBind(pVertexBuffer);
 
-
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
+	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
+	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
+		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
+	pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
 
-	if (currentDemo == ShadowMap)
-	{
-		VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
-			new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
-		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
-		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
-			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
-		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
-	}
+	PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>* pLightsPS =
+		new PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>(gfx, dirLightEX, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pLightDirectionPSCbuffer = pLightsPS->GetPixelShaderConstantBuffer();
 
-	else
-	{
-		VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-			new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-		pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
-		AddBind(pVCBPerObject);
-	}
-
-
-	if (currentDemo == ShadowMap)
-	{
-		PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>* pLightsPS =
-			new PixelShaderConstantBuffer<CB_PS_DirectionalEX_Fog>(gfx, dirLightEX, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pLightDirectionPSCbuffer = pLightsPS->GetPixelShaderConstantBuffer();
-
-		PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>(gfx, shadowMapDraw, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
-	}
-
-
-	if (currentDemo == Shapesdemo)
-	{
-		PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-			new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		AddBind(pLightsPS);
-
-		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
-		AddBind(pLightsCB);
-	}
-
-
+	PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>* pLightsCB =
+		new PixelShaderConstantBuffer<CB_PS_ShadowMapDraw>(gfx, shadowMapDraw, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+	pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
 }
-
-void Skull::DrawSkull(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, DirectX::XMFLOAT3 camPosition)
-{
-	UpdateVSMatrices(gfx, in_world,	in_ViewProj);
-	UpdatePSConstBuffers(gfx, camPosition);
-	this->BindAndDrawIndexed(gfx);
-}
-
-void Skull::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesSkull, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-	pMatrices->world = in_world;
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesSkull, 0u);
-}
-
-void Skull::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition)
-{
-	if (pCopyPCBLightsSkull)
-	{
-		D3D11_MAPPED_SUBRESOURCE mappedData;
-		DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsSkull, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-		CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-		frame->cameraPositon = camPosition;
-
-		if (GetAsyncKeyState('0') & 0x8000)
-			frame->numberOfLights = 0;
-		if (GetAsyncKeyState('1') & 0x8000)
-			frame->numberOfLights = 1;
-		if (GetAsyncKeyState('2') & 0x8000)
-			frame->numberOfLights = 2;
-		if (GetAsyncKeyState('3') & 0x8000)
-			frame->numberOfLights = 3;
-
-		gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsSkull, 0u);
-	}
-
-
-}
-
-
 
 
 void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
@@ -225,17 +122,4 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightDirectionPSCbuffer);
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightDirectionPSCbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_DirectionalEX_Fog* test = reinterpret_cast<CB_PS_DirectionalEX_Fog*> (mappedData.pData);
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		test->mat.shininess = 0.1f;
-
-	else
-	{
-		test->mat.shininess = 0.7f;
-
-	}
-	gfx.pgfx_pDeviceContext->Unmap(pLightDirectionPSCbuffer, 0u);
-
 }

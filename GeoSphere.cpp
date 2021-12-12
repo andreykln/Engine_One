@@ -51,28 +51,28 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	AddIndexBuffer(pIndexBuffer);
 
 
-	switch (currentDemo)
-	{
-
-	case ShadowMap:
-	{
+// 	switch (currentDemo)
+// 	{
+// 
+// 	case ShadowMap:
+// 	{
 		VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
 			new VertexConstantBuffer<cbDefaultVS>(gfx, geoSphereVSCB, 0u, 1u);
 		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
 		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
-	}
-		break;
-	default:
-	{
-		VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-			new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-		pCopyVCBMatricesGeoSphere = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
-		AddBind(pVCBPerObject);
-	}
-		break;
-	}
+// 	}
+// 		break;
+// 	default:
+// 	{
+// 		VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+// 			new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 		pCopyVCBMatricesGeoSphere = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+// 		AddBind(pVCBPerObject);
+// 	}
+// 		break;
+// 	}
 
 
 
@@ -81,19 +81,19 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	geoSpherePSCB.mat.shininess = 0.9f;
 	geoSpherePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
-	if (currentDemo == ShadowMap)
-	{
+// 	if (currentDemo == ShadowMap)
+// 	{
 		PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
 			new PixelShaderConstantBuffer<cbDefaultPS>(gfx, geoSpherePSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
 		pLightGeoSphere = pLightsCB->GetPixelShaderConstantBuffer();
-	}
-	else
-	{
-		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-		pCopyPCBLightsGeoSphere = pLightsCB->GetPixelShaderConstantBuffer();
-		AddBind(pLightsCB);
-	}
+// 	}
+// 	else
+// 	{
+// 		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+// 			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 		pCopyPCBLightsGeoSphere = pLightsCB->GetPixelShaderConstantBuffer();
+// 		AddBind(pLightsCB);
+// 	}
 
 
 
@@ -101,17 +101,17 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 
 	std::wstring directory[1];
 
-	if (centerSphere)
-	{
-
-	}
-	if (!centerSphere)
-	{
+// 	if (centerSphere)
+// 	{
+// 
+// 	}
+// 	if (!centerSphere)
+// 	{
 		directory[0] = L"Textures\\stone.dds";
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
 		AddBind(pSRV);
 
-	}
+// 	}
 
 
 
@@ -119,42 +119,42 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	AddBind(pTexSampler);
 }
 
-void GeoSphere::DrawSpheres(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt, DirectX::XMFLOAT3 camPositon)
-{
-	UpdateVSMatrices(gfx, in_world, in_ViewProj, sin(dt));
-	UpdatePSConstBuffers(gfx, camPositon);
-	BindAndDrawIndexed(gfx);
-}
+// void GeoSphere::DrawSpheres(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt, DirectX::XMFLOAT3 camPositon)
+// {
+// 	UpdateVSMatrices(gfx, in_world, in_ViewProj, sin(dt));
+// 	UpdatePSConstBuffers(gfx, camPositon);
+// 	BindAndDrawIndexed(gfx);
+// }
 
-void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt)
-{
-	sphereTextureOffset.y += 0.05f * dt;
-	sphereTextureOffset.x += 0.1f * dt;
-	sphereOffset = DirectX::XMMatrixTranslation(0.0f, sphereTextureOffset.x, sphereTextureOffset.y);
+// void GeoSphere::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt)
+// {
+// 	sphereTextureOffset.y += 0.05f * dt;
+// 	sphereTextureOffset.x += 0.1f * dt;
+// 	sphereOffset = DirectX::XMMatrixTranslation(0.0f, sphereTextureOffset.x, sphereTextureOffset.y);
+// 
+// 
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesGeoSphere, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
+// 	pMatrices->world = in_world;
+// 	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+// 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+// 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
+// }
 
-
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyVCBMatricesGeoSphere, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_Transform* pMatrices = reinterpret_cast<CB_VS_Transform*>(mappedData.pData);
-	pMatrices->world = in_world;
-	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pCopyVCBMatricesGeoSphere, 0u);
-}
-
-void GeoSphere::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
-{
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
-	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
-}
+// void GeoSphere::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
+// {
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
+// 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
+// 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
+// }
 
 void GeoSphere::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
 {
@@ -199,51 +199,51 @@ void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFL
 	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);
 }
 
-void GeoSphere::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
-	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
-	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
-	shadowVS->texTransform = DirectX::XMMatrixIdentity();
-	shadowVS->shadowTransform = newShadowTransform;
-	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
-	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	shadowVS->matTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+// void GeoSphere::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition,
+// 	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
+// 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
+// {
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+// 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+// 	shadowVS->shadowTransform = newShadowTransform;
+// 	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
+// 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+// 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+// 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+// 
+// 
+// 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightGeoSphere);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 
+// 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
+// 	surface->disableTexSampling = true;
+// 	surface->camPositon = newCamPosition;
+// 	surface->lightDirection = newLightDirection;
+// 	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);
+// 
+// }
 
-
-	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightGeoSphere);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pLightGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-
-	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
-	surface->disableTexSampling = true;
-	surface->camPositon = newCamPosition;
-	surface->lightDirection = newLightDirection;
-	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);
-
-}
-
-void GeoSphere::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-	frame->cameraPositon = camPositon;
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numberOfLights = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numberOfLights = 1;
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numberOfLights = 2;
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numberOfLights = 3;
-
-	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsGeoSphere, 0u);
-}
+// void GeoSphere::UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon)
+// {
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsGeoSphere, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+// 	frame->cameraPositon = camPositon;
+// 
+// 	if (GetAsyncKeyState('0') & 0x8000)
+// 		frame->numberOfLights = 0;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+// 	if (GetAsyncKeyState('1') & 0x8000)
+// 		frame->numberOfLights = 1;
+// 	if (GetAsyncKeyState('2') & 0x8000)
+// 		frame->numberOfLights = 2;
+// 	if (GetAsyncKeyState('3') & 0x8000)
+// 		frame->numberOfLights = 3;
+// 
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsGeoSphere, 0u);
+// }
 

@@ -5,69 +5,29 @@
 class Hills : public Shape
 {
 public:
-	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n, DemoSwitch demo);
-	void DrawHills(Graphics& gfx, const DirectX::XMMATRIX& in_world,
-		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera, ID3D11ShaderResourceView* pShadowMap,
-		const DirectX::XMMATRIX& in_ShadowTransform);
-	DirectX::XMFLOAT3 GetHillNormal(float x, float z) const;
-	void SetVerticesWidth(UINT in_vertWidth) noexcept;
-	void SetVerticesDepth(UINT in_vertDepth) noexcept;
-	void UpdateVSMatrices(Graphics& gfx,const DirectX::XMMATRIX& in_world,
-		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMFLOAT3 in_camera, const DirectX::XMMATRIX& in_ShadowTransform);
-	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon, ID3D11ShaderResourceView* pShadowMap);
-	void UpdatePSAllLights(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMFLOAT3 camDirection,float totalTime);
+	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n);
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
-	DirectX::XMMATRIX GetHillsOffset() const;
-
 private:
-	CB_VS_Transform transformMatrices;
-	CB_VS_TransformWithCameraPosition transformMatricesWithCameraPos;
-	CB_PS_DirectionalL_Fog directionalLight;
-	CB_PS_Dir_Point_Spot_Fog_Lights allLight;
-	CB_PS_PerFrameUpdate pscBuffer;
-
-	cbDefaultVS planeVSCB;
-	cbDefaultPS planePSCB;
-
-
-	CB_VS_ShadowMapDraw shadowMapPlane;
-
-	CB_CameraPosition_ViewProj dsBufferCameraPosition;
-	const DirectX::XMMATRIX grassScaling = DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
-	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
-	const DirectX::XMMATRIX offsetForHillsWithWaves = DirectX::XMMatrixTranslation(0.0f, -4.0f, 0.0f);
-
-
-	DemoSwitch currentDemo;
 	float width{};
 	float depth{};
 	UINT m{};
 	UINT n{};
-	float GetHeight(float x, float z) const;
+	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
 
-	ID3D11Buffer* pCopyPCBLightsHills = nullptr;
-	ID3D11Buffer* pCopyVCBMatricesHills = nullptr;
-	ID3D11Buffer* pCopyAllLights = nullptr;
-	ID3D11Buffer* pCopyDomainShaderBuffer = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
-	ID3D11Buffer* pCopyPCBLightsPlane = nullptr;
-	ID3D11Buffer* pLightDirectionPSCbuffer = nullptr;
-
 	ID3D11Buffer* pPlaneDrawPS = nullptr;
+
 	CB_VS_ShadowMapDraw shadowMapVSDraw;
 	CB_PS_ShadowMapDraw shadowMapDraw;
+	cbDefaultVS planeVSCB;
+	cbDefaultPS planePSCB;
 
-	ID3DBlob* pVertexShaderBlob = nullptr;
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
-	DirectionalLight dirLight;
 	ShadowMapGenVS shadowMapCbuffer;
-// 	Material landMat;
-	std::vector<TreePointSprite> treesPositions;
-
 };
 
