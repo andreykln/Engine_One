@@ -574,14 +574,14 @@
     <FxCompile Include="ShadowMapSkullGenPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="ShadowMapPlaneDrawPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="ShadowMapGenInstancedVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
     <FxCompile Include="ShadowMapDrawInstancedVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="DefaultInstanced_PS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

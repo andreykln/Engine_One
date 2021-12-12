@@ -97,7 +97,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
 
 	//plane SM 
-	PS_Init(&pPlaneShadowMapPS, L"Shaders\\Pixel\\ShadowMapPlaneDrawPS.cso");
+	PS_Init(&pDefaultInstancedPS, L"Shaders\\Pixel\\DefaultInstanced_PS.cso");
 
 	//SM generation instanced
 	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
@@ -342,9 +342,9 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::ShadowMapDrawPlane_PS:
+	case ShaderPicker::DefaultInstanced_PS:
 	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pPlaneShadowMapPS, nullptr, 0u);
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
 		break;
 	}
 	default:

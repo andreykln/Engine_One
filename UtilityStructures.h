@@ -325,7 +325,7 @@ enum ShaderPicker
 	ShadowMapGen_VS_PS,
 	ShadowMapGenSkull_VS_PS,
 	ShadowMapDrawSkull_VS_PS,
-	ShadowMapDrawPlane_PS,
+	DefaultInstanced_PS,
 	ShadowMapInstancedGen_VS,
 	ShadowMapInstancedDraw_VS,
 	Keep

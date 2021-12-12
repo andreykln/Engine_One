@@ -29,8 +29,7 @@ void App::DoFrame()
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::NoRenderTargetWritesBS, blendFactorsZero, 0xffffffff);
-// 
+
 	DrawShadowMapDemo();
 	DrawHillsWithGPUWaves();
 // 	DrawBox();
@@ -441,7 +440,7 @@ void App::DrawShadowMapDemo()
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedDraw_VS);
-	pShaders->BindPS(ShaderPicker::ShadowMapDrawPlane_PS);
+	pShaders->BindPS(ShaderPicker::DefaultInstanced_PS);
 
 	//columns
 	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),

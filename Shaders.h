@@ -159,8 +159,8 @@ private:
 	ID3D11PixelShader* pSkullSMGenPS = nullptr;
 	ID3D11InputLayout* pSkullSMIL = nullptr;
 
-	//shadowMap plane
-	ID3D11PixelShader* pPlaneShadowMapPS = nullptr;
+	//main light shader with shadow map
+	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
 
 };
 
