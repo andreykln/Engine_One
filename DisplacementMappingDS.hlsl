@@ -7,8 +7,7 @@ struct DomainOut
     float2 Tex : TEXCOORD;
     float4 shadowPosH : TEXCOORD1;
 };
-//static float4x4 test = float4(float4(1.0f, 0.0f, 0.0f, 0.0f), float4(0.0f, 1.0f, 0.0f, 4.0f),
-//float4(0.0f, 0.0f, 1.0f, 0.0f), float4(0.0f, 0.0f, 0.0f, 1.0f));
+
 
 static float4x4 test0 =
 {
@@ -19,7 +18,6 @@ static float4x4 test0 =
 };
 
 
-//static float4x4 test0 = float4({1,2,3,4}, {1,2,3,4}, {1,2,3,4}, {1,2,3,4} );
 struct PatchTess
 {
     float EdgeTessFactor[3] : SV_TessFactor; 
@@ -38,7 +36,7 @@ struct HullOut
 
 cbuffer CamPos : register(b0)
 {
-    float4x4 world;
+    row_major float4x4 world;
     float4x4 viewProjection;
     float4x4 worldInverseTranspose;
     float4x4 texTransform;
@@ -71,6 +69,13 @@ DomainOut main(
     dout.TangentW = bary.x * tri[0].tangentW + bary.y * tri[1].tangentW + bary.z * tri[2].tangentW;
     dout.Tex = bary.x * tri[0].Tex + bary.y * tri[1].Tex + bary.z * tri[2].Tex;
     dout.shadowPosH = bary.x * tri[0].shadowPosH + bary.y * tri[1].shadowPosH + bary.z * tri[2].shadowPosH;
+    
+    
+    float4 posW = mul(float4(dout.PosW, 1.0f), world);
+ 
+    
+    
+    dout.shadowPosH = mul(posW, shadowTransform);
     
 	// Interpolating normal can unnormalize it, so normalize it.
     dout.NormalW = normalize(dout.NormalW);

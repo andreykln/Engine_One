@@ -46,6 +46,12 @@ VSout main(VertexIn vin)
     // Transform to world space.
     float4 posW = mul(float4(vin.position, 1.0f), vin.world);
     vout.PosW = posW.xyz;
+    if(enableDisplacementMapping)
+    {
+        posW = float4(vin.position, 1.0f);
+        vout.PosW = posW.xyz;
+    }
+    
 
     // Assumes nonuniform scaling; otherwise, need to use inverse-transpose of world matrix.
     vout.NormalW = mul(vin.normal, (float3x3) vin.world);

@@ -159,7 +159,7 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
 	shadowVS->shadowTransform = newShadowTransform;
-	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
+	shadowVS->world = in_world;
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
