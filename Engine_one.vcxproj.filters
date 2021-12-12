@@ -367,9 +367,6 @@
     <FxCompile Include="CubePS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="PyramidDistortedVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="LightVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
@@ -394,26 +391,11 @@
     <FxCompile Include="DepthCompPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="TreeBillboardVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="TreeBillboardGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="TreeBillboardPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="Circle_CylinderVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="Circle_CylinderPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="Circle_CylinderGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="SkullMirrorPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="HillsAllLightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>

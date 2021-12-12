@@ -96,7 +96,7 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
 	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
 
-	//plane SM 
+	//main light shader for textured surfaced
 	PS_Init(&pDefaultInstancedPS, L"Shaders\\Pixel\\DefaultInstanced_PS.cso");
 
 	//SM generation instanced
