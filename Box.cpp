@@ -111,9 +111,6 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 
 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
 		pDiffMapHeightMap = pSRV->GetSRV();
-
-
-		//AddBind(pSRVN);
 		break;
 	}
 	case DemoSwitch::DefaultBox:
@@ -159,7 +156,7 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
 	shadowVS->shadowTransform = newShadowTransform;
-	shadowVS->world = in_world;
+	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();

@@ -13,7 +13,13 @@ cbuffer cbDefaultVS : register(b0)
     int pad2;
     int pad3;
 };
-
+static float4x4 test0 =
+{
+    2.0f, 0.0f, 0.0f, 0.0f,
+    0.0f, 10.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 2.0f, 0.0f,
+    0.0f, 0.5f, 0.0f, 1.0f
+};
 struct VertexIn
 {
     float3 position : Position;
@@ -46,13 +52,13 @@ VSout main(VertexIn vin)
     // Transform to world space.
     float4 posW = mul(float4(vin.position, 1.0f), vin.world);
     vout.PosW = posW.xyz;
+    
+    //transform to world space in domain shader
     if(enableDisplacementMapping)
     {
         posW = float4(vin.position, 1.0f);
         vout.PosW = posW.xyz;
     }
-    
-
     // Assumes nonuniform scaling; otherwise, need to use inverse-transpose of world matrix.
     vout.NormalW = mul(vin.normal, (float3x3) vin.world);
 	
@@ -65,23 +71,26 @@ VSout main(VertexIn vin)
     float4 texC = mul(float4(vin.texCoord, 0.0f, 1.0f), texTransform);
     vout.Tex = mul(texC, matTransform).xy;
 
-    // Generate projective tex-coords to project shadow map onto scene.
-    vout.shadowPosH = mul(posW, shadowTransform);
     
     if(enableDisplacementMapping)
     {
+        vout.shadowPosH = posW;
+
         float d = distance(vout.PosW, cameraPosition);
     
-    //normalized tesselation factor
-    //the tesselation is 
-    // 0 if d >= minTessDistance
-    // 1 if d <= maxTessDistance
+        //normalized tesselation factor
+        //the tesselation is 
+        // 0 if d >= minTessDistance
+        // 1 if d <= maxTessDistance
         float tess = saturate((minTessDistance - d) / (minTessDistance - maxTessFactor));
-    //rescale [0,1] --> [minTessfactor, maxTessFactor]
+        //rescale [0,1] --> [minTessfactor, maxTessFactor]
         vout.tessFactor = minTessFactor + tess * (maxTessFactor - minTessFactor);
     }
     else
     {
+        // Generate projective tex-coords to project shadow map onto scene.
+        vout.shadowPosH = mul(posW, shadowTransform);
+
         vout.tessFactor = 0.0f;
     }
     

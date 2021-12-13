@@ -457,7 +457,7 @@ void App::DrawShadowMapDemo()
 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+	pDisplacementMappingBox->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 1u, 0, 0, 0);
 
 	pShaders->UnbindDS();
 	pShaders->UnbindHS();
