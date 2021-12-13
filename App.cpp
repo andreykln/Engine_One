@@ -441,17 +441,19 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedDraw_VS);
 	pShaders->BindPS(ShaderPicker::DefaultInstanced_PS);
-	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
+
+
+
+	//columns
+	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
+		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
 
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-
-	//columns
-// 	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-// 		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
-// 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-// 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
+	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 
 	//box
 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
