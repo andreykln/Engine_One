@@ -14,8 +14,8 @@ struct InputLayout
 	};
 	
 
-	static const UINT nlightTextureNormalMapping = 4;
-	const D3D11_INPUT_ELEMENT_DESC lightTextureNormalMapping[nlightTextureNormalMapping] =
+	static const UINT nPosNormalTexCoordTangent = 4;
+	const D3D11_INPUT_ELEMENT_DESC posNormalTexCoordTangent[nPosNormalTexCoordTangent] =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},

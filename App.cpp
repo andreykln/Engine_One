@@ -11,7 +11,7 @@ App::App()
 	pShaders = new Shaders(wnd.GetGraphics());
 	const int smapSize = 2048;
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
-
+	pSSAO = new SSAO(wnd.GetGraphics(), resolution_width, resolution_height);
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 	CreateShadowMapDemo();
@@ -388,11 +388,6 @@ void App::DrawSceneToShadowMap()
 	pDisplacementMappingBox->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-
-
-
-
-
 }
 
 void App::CreateShadowMapDemo()
@@ -413,6 +408,41 @@ void App::DrawShadowMapDemo()
 	viewProjectionMatrix = GetViewProjectionCamera();
 
 
+	//set normal map render target
+// 	ID3D11RenderTargetView* normalMapRT = pSSAO->GetSSAO_RTV();
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &normalMapRT, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().SetViewport();
+
+	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	DrawNormalMap(viewProjectionMatrix);
+
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH , 1.0f, 0);
+
+
+
+
+
+
+		//set default render target and viewport
+	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().SetViewport();
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], colors);
+
+	/////
+
+
+
+
+
+
+
+
+
+
+
+
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
@@ -420,7 +450,6 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 
 	//set default render target and viewport
-	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().SetViewport();
 	/////
@@ -496,6 +525,15 @@ void App::DrawShadowMapDemo()
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pNULLSRV);
 
+}
+
+void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
+{
+	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
+	pShaders->BindPS(CreateNormalMap_VS_PS);
+	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
+		viewProjectionMatrix);
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
 
 void App::CreateBezierPatchTess()

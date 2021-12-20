@@ -175,3 +175,22 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapBoxDrawPS, 0u);
 }
 
+void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pShadowMapBoxDrawPS);
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pShadowMapVSDraw);
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
+	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+
+}
+

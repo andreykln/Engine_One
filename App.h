@@ -36,6 +36,9 @@ private:
 	void CreateShadowMapDemo();
 	void DrawShadowMapDemo();
 
+	//SSAO
+	void DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix);
+
 	void CreateBezierPatchTess();
 	void DrawBezierPatchTess();
 	void InstancingCreate();
@@ -61,7 +64,9 @@ private:
 	Shaders* pShaders = nullptr;
 
 	ShadowMapGen* pShadowMap = nullptr;
-	
+
+	SSAO* pSSAO = nullptr;
+
 	ParticleSystem* pParticle = nullptr;
 	ParticleSystem* pParticleRain = nullptr;
 	ParticleSystem* pParticleExplosion = nullptr;
@@ -86,7 +91,7 @@ private:
 
 	const float screenAspect = float(resolution_width) / float(resolution_height);
 	float zoom = DirectX::XM_PI * 0.25f;
-	float colors[4]{};
+	float colors[4]{ 0.0392f, 0.0392f, 0.17254f, 1.0f};
 	const float camera_move_step = 0.05f;
 	const float axis_x = -10.0f;
 	const float axis_y = 10.0f;

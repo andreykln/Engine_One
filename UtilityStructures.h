@@ -334,7 +334,7 @@ enum ShaderPicker
 	DefaultInstanced_PS,
 	ShadowMapInstancedGen_VS,
 	ShadowMapInstancedDraw_VS,
-	Keep
+	CreateNormalMap_VS_PS,
 };
 
 enum ParticlePick

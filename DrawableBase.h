@@ -20,3 +20,4 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "ShadowMap.h"
+#include "SSAO.h"

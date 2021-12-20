@@ -94,7 +94,7 @@ private:
 	//normalMapping
 	ID3D11VertexShader* pNormalMappingVS = nullptr;
 	ID3D11PixelShader* pNormalMappingPS = nullptr;
-	ID3D11InputLayout* pNormalMappingIL = nullptr;
+	ID3D11InputLayout* pPosNormalTexCTangentIL = nullptr;
 
 	//displacement mapping. 
 	ID3D11VertexShader* pDisplacementMappingVS = nullptr;
@@ -161,6 +161,10 @@ private:
 
 	//main light shader with shadow map
 	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
+	
+	//SSAO
+	ID3D11VertexShader* pCreateNormalMapVS = nullptr;
+	ID3D11PixelShader* pCreateNormalMapPS = nullptr;
 
 };
 

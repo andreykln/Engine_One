@@ -47,13 +47,13 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
 
-	VS_IL_Init(&pDisplacementMappingVS, IL.lightTextureNormalMapping, &pNormalMappingIL,
-		IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+	VS_IL_Init(&pDisplacementMappingVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
+		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
 	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
 
-	VS_IL_Init(&pDisplacementWavesVS, IL.lightTextureNormalMapping, &pNormalMappingIL,
-		IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\DisplacementWavesVS.cso");
+	VS_IL_Init(&pDisplacementWavesVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
+		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementWavesVS.cso");
 	PS_Init(&pDisplacementWavesPS, L"Shaders\\Pixel\\DisplacementWavesPS.cso");
 	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\DisplacementWavesHS.cso");
 	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\DisplacementWavesDS.cso");
@@ -88,8 +88,8 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pParticleFountainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFountainVS.cso");
 
 	//shadow map
-	VS_IL_Init(&pShadowMapVS, IL.lightTextureNormalMapping,
-		&pNormalMappingIL, IL.nlightTextureNormalMapping, L"Shaders\\Vertex\\NormalMappingShadowsVS.cso");
+	VS_IL_Init(&pShadowMapVS, IL.posNormalTexCoordTangent,
+		&pPosNormalTexCTangentIL, IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\NormalMappingShadowsVS.cso");
 	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\NormalMappingShadowPS.cso");
 
 	//shadow map generation
@@ -103,6 +103,12 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
 		 IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
 	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
+
+	//SSAO
+	//NormalMap generation  
+	VS_IL_Init(&pCreateNormalMapVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
+		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\CreateNormalMapVS.cso");
+	PS_Init(&pCreateNormalMapPS, L"Shaders\\Pixel\\CreateNormalMapPS.cso");
 
 }
 
@@ -154,13 +160,13 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementWavesVS, nullptr, 0u);
 		break;
 
@@ -207,13 +213,13 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::ShadowMap_VS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::ShadowMapGen_VS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pNormalMappingIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapGenVS, nullptr, 0u);
 		break;
 	}
@@ -239,6 +245,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CreateNormalMap_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -345,6 +357,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::DefaultInstanced_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CreateNormalMap_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pCreateNormalMapPS, nullptr, 0u);
 		break;
 	}
 	default:

@@ -9,6 +9,7 @@ public:
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
+	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
 private:
 	DemoSwitch currentDemo;
 	ShadowMapGenVS shadowMapCbuffer;

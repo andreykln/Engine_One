@@ -52,6 +52,9 @@
     <Filter Include="Shaders\Domain">
       <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Vertex\BuldNormalMap">
+      <UniqueIdentifier>{206f443d-0c3a-4d88-8fb0-95f77668c95d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -187,6 +190,9 @@
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="SSAO.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,6 +363,9 @@
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="SSAO.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
   </ItemGroup>
@@ -564,6 +573,18 @@
     </FxCompile>
     <FxCompile Include="DefaultInstanced_PS.hlsl">
       <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="CreateNormalMapPS.hlsl">
+      <Filter>Shaders\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="CreateNormalMapVS.hlsl">
+      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
+    </FxCompile>
+    <FxCompile Include="CreateNormalMapInstancedVS.hlsl">
+      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
+    </FxCompile>
+    <FxCompile Include="CreateNormalMapSkullVS.hlsl">
+      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
