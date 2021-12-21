@@ -545,6 +545,11 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
 	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), viewProjectionMatrix);
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+
+	pShaders->BindVSandIA(CreateNormalMapSkullVS);
+	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, viewProjectionMatrix);
+	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+
 }
 
 void App::CreateBezierPatchTess()

@@ -72,6 +72,13 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+	//allocate another memory, because when creating normal map
+	//it conflicts with the previous one
+	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObjectNormalMap =
+		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
+	pNormalMapGenerate = pVCBPerObjectNormalMap->GetVertexConstantBuffer();
+	/////
+
 	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
 	pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
@@ -91,7 +98,7 @@ void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightWorld);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
@@ -122,4 +129,17 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pLightDirectionPSCbuffer);
+}
+
+void Skull::UpdateNormalMap(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapGenerate);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapGenerate, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	CB_VS_ShadowMapDraw* cBuffer = reinterpret_cast<CB_VS_ShadowMapDraw*> (mappedData.pData);
+	cBuffer->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
+	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(skullWorld * in_ViewProj);
+
+	gfx.pgfx_pDeviceContext->Unmap(pNormalMapGenerate, 0u);
 }

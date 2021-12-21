@@ -14,11 +14,6 @@ cbuffer cbDefaultVS : register(b0)
     int pad3;
 };
 
-/*cbuffer SSAOWorlds : register(b1)
-{
-    float4x4 SSAOworld[10];
-}*/
-
 struct VertexIn
 {
     float3 position : Position;
@@ -41,7 +36,6 @@ VertexOut main(VertexIn vin)
 {
     VertexOut vout;
     
-    //float4x4 WIT = mul(SSAOworld[vin.InstanceId], worldInverseTranspose);
     float4x4 WIT = mul(vin.world, worldInverseTranspose);
     
     vout.normalW = mul(vin.normal, (float3x3) WIT);

@@ -90,9 +90,6 @@ void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightView);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
-
-
-
 }
 
 
