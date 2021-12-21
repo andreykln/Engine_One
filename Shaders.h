@@ -165,6 +165,7 @@ private:
 	//SSAO
 	ID3D11VertexShader* pCreateNormalMapVS = nullptr;
 	ID3D11PixelShader* pCreateNormalMapPS = nullptr;
-
+	ID3D11VertexShader* pCreateNormalMapSkullVS = nullptr;
+	ID3D11VertexShader* pCreateNormalMapInstancedVS = nullptr;
 };
 

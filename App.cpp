@@ -449,6 +449,13 @@ void App::DrawShadowMapDemo()
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 
+	//
+	//
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::EqualDSS, 0u);
+
+	//
+	//
+
 	//set default render target and viewport
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().SetViewport();
@@ -534,6 +541,10 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix);
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
+	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), viewProjectionMatrix);
+	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 }
 
 void App::CreateBezierPatchTess()

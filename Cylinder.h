@@ -1,5 +1,6 @@
 #pragma once
 #include "Shape.h"
+
 class Cylinder : public Shape
 {
 public:
@@ -8,6 +9,8 @@ public:
 	void UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
+	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj);
+
 private:
 	DirectX::XMFLOAT4X4 sCylWorld[10];
 	DirectX::XMMATRIX m_CylWorld[10];

@@ -130,3 +130,21 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 
 }
 
+void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj)
+{
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pShadowMapConeDrawPS);
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pShadowMapVSDraw);
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_ViewProj);
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+}
+

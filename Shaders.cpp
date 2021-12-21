@@ -109,6 +109,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pCreateNormalMapVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
 		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\CreateNormalMapVS.cso");
 	PS_Init(&pCreateNormalMapPS, L"Shaders\\Pixel\\CreateNormalMapPS.cso");
+	VS_Init(&pCreateNormalMapSkullVS, L"Shaders\\Vertex\\CreateNormalMapSkullVS.cso");
+	VS_Init(&pCreateNormalMapInstancedVS, L"Shaders\\Vertex\\CreateNormalMapInstancedVS.cso");
+
+	
 
 }
 
@@ -251,6 +255,18 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CreateNormalMapSkullVS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pSkullSMIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapSkullVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CreateNormalMapInstancedVS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapInstancedVS, nullptr, 0u);
 		break;
 	}
 	default:
