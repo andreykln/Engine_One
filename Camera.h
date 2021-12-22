@@ -8,7 +8,7 @@ extern const short resolution_height;
 //default values
 const float YAW = 45.5f;
 const float PITCH = 0.0f;
-const float SPEED = 20.5f;
+const float SPEED = 2.0f;
 const float SENSITIVITY = 0.009f;
 const float FOV_max = DirectX::XM_PI * 0.33f;
 const float FOV_min = DirectX::XM_PI / 180.0f;

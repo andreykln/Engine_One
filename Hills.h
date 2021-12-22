@@ -28,6 +28,7 @@ private:
 	CB_PS_ShadowMapDraw shadowMapDraw;
 	cbDefaultVS planeVSCB;
 	cbDefaultPS planePSCB;
+	cbCreateNormalMap normalMapData;
 
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;

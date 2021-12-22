@@ -21,6 +21,8 @@ private:
 	ShadowMapGenVS shadowMapCbuffer;
 	cbDefaultVS coneVSCB;
 	cbDefaultPS conePSCB;
+	cbCreateNormalMap normalMapData;
+
 	ID3D11Buffer* pShadowMapConeDrawPS = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;

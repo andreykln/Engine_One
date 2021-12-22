@@ -15,6 +15,7 @@ private:
 	ShadowMapGenVS shadowMapCbuffer;
 	cbDefaultVS boxVSCB;
 	cbDefaultPS boxPSCB;
+	cbCreateNormalMap normapMapData;
 
 	ID3D11Buffer* pShadowMapBoxDrawPS = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;

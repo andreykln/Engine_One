@@ -72,12 +72,9 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
-	//allocate another memory, because when creating normal map
-	//it conflicts with the previous one
-	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObjectNormalMap =
-		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
-	pNormalMapGenerate = pVCBPerObjectNormalMap->GetVertexConstantBuffer();
-	/////
+	VertexConstantBuffer<cbCreateNormalMap>* pVCBNMap =
+		new VertexConstantBuffer<cbCreateNormalMap>(gfx, normalMapData, 0u, 1u);
+	pNormalMapGenerate = pVCBNMap->GetVertexConstantBuffer();
 
 	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
@@ -137,9 +134,9 @@ void Skull::UpdateNormalMap(Graphics& gfx, const DirectX::XMMATRIX& in_world, co
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapGenerate, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_VS_ShadowMapDraw* cBuffer = reinterpret_cast<CB_VS_ShadowMapDraw*> (mappedData.pData);
-	cBuffer->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
-	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(skullWorld * in_ViewProj);
-
+	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
+	cBuffer->worldInvTranspose = MathHelper::InverseTranspose(skullWorld * in_ViewProj);
+	cBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	cBuffer->world = skullWorld;
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapGenerate, 0u);
 }

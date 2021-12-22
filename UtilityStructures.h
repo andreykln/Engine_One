@@ -287,6 +287,14 @@ struct cbDefaultPS
 	int pad2;
 };
 
+struct cbCreateNormalMap
+{
+	cbCreateNormalMap() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX viewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+};
+
 enum DemoSwitch
 {
 	DefaultBox,

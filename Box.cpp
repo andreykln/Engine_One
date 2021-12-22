@@ -63,8 +63,8 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
 		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 		//copy for normal map so it won't occupy the same memory causing flickering
-		VertexConstantBuffer<cbDefaultVS>* pVCBNormalMap =
-			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
+		VertexConstantBuffer<cbCreateNormalMap>* pVCBNormalMap =
+			new VertexConstantBuffer<cbCreateNormalMap>(gfx, normapMapData, 0u, 1u);
 		pNormalMapVSDraw = pVCBNormalMap->GetVertexConstantBuffer();
 
 
@@ -190,12 +190,10 @@ void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
-	shadowVS->texTransform = DirectX::XMMatrixIdentity();
-	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
-	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
-	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
+	nMap->world = DirectX::XMMatrixTranspose(in_world);
+	nMap->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
+	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 
 }

@@ -29,9 +29,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
 		new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
-	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject0 =
-		new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
-	pNormalMapDraw = pVCBPerObject0->GetVertexConstantBuffer();
+	VertexConstantBuffer<cbCreateNormalMap>* pVCBNmap =
+		new VertexConstantBuffer<cbCreateNormalMap>(gfx, normalMapData, 0u, 1u);
+	pNormalMapDraw = pVCBNmap->GetVertexConstantBuffer();
 
 
 	
@@ -112,12 +112,10 @@ void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_wor
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
-	shadowVS->texTransform = DirectX::XMMatrixIdentity();
-	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
-	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
-	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
+	nMap->world = DirectX::XMMatrixTranspose(in_world);
+	nMap->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
+	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapDraw, 0u);
 }
 

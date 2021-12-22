@@ -9,10 +9,7 @@ struct VertexIn
 struct VertexOut
 {
     float4 posH : SV_Position;
-   // float3 posW : Position;
     float3 normalW : NORMAL;
-  //  float2 texC : TEXCOORD0;
-    //float3 tangentW : TANGENT;
 };
 
 cbuffer cbDefaultVS : register(b0)
@@ -20,15 +17,6 @@ cbuffer cbDefaultVS : register(b0)
     float4x4 world;
     float4x4 viewProjection;
     float4x4 worldInverseTranspose;
-    float4x4 texTransform;
-    float4x4 shadowTransform;
-    float4x4 matTransform;
-    float3 cameraPosition;
-    int pad0;
-    bool enableDisplacementMapping;
-    int pad1;
-    int pad2;
-    int pad3;
 };
 
 VertexOut main (VertexIn vin)
