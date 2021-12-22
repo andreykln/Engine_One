@@ -62,6 +62,14 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
 			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
 		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+		//copy for normal map so it won't occupy the same memory causing flickering
+		VertexConstantBuffer<cbDefaultVS>* pVCBNormalMap =
+			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
+		pNormalMapVSDraw = pVCBNormalMap->GetVertexConstantBuffer();
+
+
+		
+
 		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
 		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
@@ -177,20 +185,18 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 
 void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
 {
-	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pShadowMapBoxDrawPS);
-	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pShadowMapVSDraw);
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
 	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
+	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 
 }
 

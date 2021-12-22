@@ -18,6 +18,7 @@ private:
 
 	ID3D11Buffer* pShadowMapBoxDrawPS = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
+	ID3D11Buffer* pNormalMapVSDraw = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11ShaderResourceView* pDiffMapHeightMap = nullptr;
 	ID3D11ShaderResourceView* pNormalMap = nullptr;

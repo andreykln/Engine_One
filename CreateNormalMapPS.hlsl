@@ -9,7 +9,7 @@ struct VertexOut
     //float3 tangentW : TANGENT;
 };
 
-cbuffer cbDefaultPS : register(b0)
+/*cbuffer cbDefaultPS : register(b0)
 {
     DirectionalLightEx dirLight;
     MaterialEx mat;
@@ -35,7 +35,7 @@ cbuffer cbDefaultVS : register(b1)
     int pad1;
     int pad2;
     int pad3;
-};
+};*/
 
 float4 main(VertexOut pin) : SV_TARGET
 {
