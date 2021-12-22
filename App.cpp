@@ -542,6 +542,9 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 		viewProjectionMatrix);
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
+	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), viewProjectionMatrix);
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
 	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
 	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), viewProjectionMatrix);
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);

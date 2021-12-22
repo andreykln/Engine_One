@@ -24,6 +24,7 @@ private:
 	ID3D11Buffer* pShadowMapConeDrawPS = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
+	ID3D11Buffer* pNormalMapVSDraw = nullptr;
 	ID3D11Buffer* pShadowMapDrawInstancedCB = nullptr;
 	ID3D11Buffer* pNormalVB = nullptr;
 	ID3D11Buffer* pIAbuffers[2];

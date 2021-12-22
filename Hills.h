@@ -10,6 +10,8 @@ public:
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
+	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+
 private:
 	float width{};
 	float depth{};
@@ -19,6 +21,7 @@ private:
 
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
+	ID3D11Buffer* pNormalMapDraw = nullptr;
 	ID3D11Buffer* pPlaneDrawPS = nullptr;
 
 	CB_VS_ShadowMapDraw shadowMapVSDraw;

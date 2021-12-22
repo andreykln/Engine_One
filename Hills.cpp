@@ -29,7 +29,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
 		new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject0 =
+		new VertexConstantBuffer<cbDefaultVS>(gfx, planeVSCB, 0u, 1u);
+	pNormalMapDraw = pVCBPerObject0->GetVertexConstantBuffer();
 
+
+	
 	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9, 0.9f, 1.0f);
 	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
 	planePSCB.mat.shininess = 0.9f;
@@ -98,5 +103,21 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pPlaneDrawPS, 0u);
 
+}
+
+void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+{
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapDraw);
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
+	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pNormalMapDraw, 0u);
 }
 
