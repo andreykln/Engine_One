@@ -135,8 +135,7 @@ void Skull::UpdateNormalMap(Graphics& gfx, const DirectX::XMMATRIX& in_world, co
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapGenerate, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	cBuffer->worldInvTranspose = MathHelper::InverseTranspose(skullWorld * in_ViewProj);
-	cBuffer->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	cBuffer->world = skullWorld;
+	cBuffer->worldInvTranspose = DirectX::XMMatrixTranspose(skullWorld * in_ViewProj);
+	cBuffer->viewProjection = DirectX::XMMatrixTranspose(skullWorld * in_ViewProj);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapGenerate, 0u);
 }

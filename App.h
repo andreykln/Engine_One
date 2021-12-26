@@ -47,6 +47,7 @@ private:
 	void DrawTerrain();
 	DirectX::XMMATRIX GetViewProjectionCamera();
 
+	void SetDefaultRTVAndViewPort();
 
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;

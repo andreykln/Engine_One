@@ -23,9 +23,6 @@ VertexOut main(VertexIn vin)
 {
     VertexOut vout;
     vout.normalW = mul(vin.normal, (float3x3) worldInverseTranspose);
-    
-    float4x4 worldView = mul(world, viewProjection);
-
-    vout.posH = mul(float4(vin.position, 1.0f), worldView);
+    vout.posH = mul(float4(vin.position, 1.0f), viewProjection);
     return vout;
 }

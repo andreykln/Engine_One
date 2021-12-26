@@ -3,8 +3,8 @@
 Shaders::Shaders(Graphics& in_gfx)
 	: pSgfx(&in_gfx)
 {
-	VS_IL_Init(&pLightAndTextureVS, IL.lightTexture, &pLightAndTextureIL,
-				IL.nLightTextureElements, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+	VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,
+				IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 
 	VS_IL_Init(&pLightVS, IL.light, &pLightIL, IL.nLightElements, L"Shaders\\Vertex\\LightVS.cso");
@@ -29,8 +29,8 @@ Shaders::Shaders(Graphics& in_gfx)
 
 	CS_Init(&pDisturbWaves, L"Shaders\\Compute\\DisturbWavesCS.cso");
 	CS_Init(&pUpdateWaves, L"Shaders\\Compute\\UpdateWavesCS.cso");
-	VS_IL_Init(&pGPUWavesVS, IL.lightTexture, &pLightAndTextureIL,
-		IL.nLightTextureElements, L"Shaders\\Vertex\\GPUWavesVS.cso");
+	VS_IL_Init(&pGPUWavesVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\GPUWavesVS.cso");
 
 	VS_IL_Init(&pQuadTessellationVS, IL.positonIL, &pPositonIL, IL.nPositon, L"Shaders\\Vertex\\QuadTessellationPassVS.cso");
 	PS_Init(&pQuadTessellationPS, L"Shaders\\Pixel\\QuadTessPS.cso");

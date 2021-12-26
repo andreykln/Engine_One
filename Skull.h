@@ -20,7 +20,7 @@ public:
 	CB_PS_ShadowMapDraw shadowMapDraw;
 	CB_VS_ShadowMapDraw shadowMapVSDraw;
 
-	const DirectX::XMMATRIX skullWorld = DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0f) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
+	const DirectX::XMMATRIX skullWorld =DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0f) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
 private:
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
 	ID3D11Buffer* pNormalMapGenerate = nullptr;

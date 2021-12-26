@@ -2,8 +2,8 @@
 #include "Bindable.h"
 struct InputLayout 
 {
-	static const UINT nLightTextureElements = 3;
-	const D3D11_INPUT_ELEMENT_DESC lightTexture[nLightTextureElements] =
+	static const UINT nPosNormalTexture = 3;
+	const D3D11_INPUT_ELEMENT_DESC posNormalTexture[nPosNormalTexture] =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},

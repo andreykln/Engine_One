@@ -348,6 +348,14 @@ DirectX::XMMATRIX App::GetViewProjectionCamera()
 
 
 
+void App::SetDefaultRTVAndViewPort()
+{
+	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().SetViewport();
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], colors);
+}
+
 void App::DrawSceneToShadowMap()
 {
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -424,14 +432,9 @@ void App::DrawShadowMapDemo()
 
 
 
-		//set default render target and viewport
-	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().SetViewport();
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], colors);
+	SetDefaultRTVAndViewPort();
 
-	/////
-
+	
 
 
 
@@ -457,8 +460,7 @@ void App::DrawShadowMapDemo()
 	//
 
 	//set default render target and viewport
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().SetViewport();
+	SetDefaultRTVAndViewPort();
 	/////
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	
