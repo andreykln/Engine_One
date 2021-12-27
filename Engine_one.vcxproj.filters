@@ -52,8 +52,8 @@
     <Filter Include="Shaders\Domain">
       <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Vertex\BuldNormalMap">
-      <UniqueIdentifier>{206f443d-0c3a-4d88-8fb0-95f77668c95d}</UniqueIdentifier>
+    <Filter Include="Shaders\SSAO">
+      <UniqueIdentifier>{e064d239-05e9-47ba-b909-11364194cc43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -578,13 +578,19 @@
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="CreateNormalMapVS.hlsl">
-      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
+      <Filter>Shaders\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="CreateNormalMapInstancedVS.hlsl">
-      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
+      <Filter>Shaders\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="CreateNormalMapSkullVS.hlsl">
-      <Filter>Shaders\Vertex\BuldNormalMap</Filter>
+      <Filter>Shaders\SSAO</Filter>
+    </FxCompile>
+    <FxCompile Include="ComputeSSAOVS.hlsl">
+      <Filter>Shaders\SSAO</Filter>
+    </FxCompile>
+    <FxCompile Include="ComputeSSAOPS.hlsl">
+      <Filter>Shaders\SSAO</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

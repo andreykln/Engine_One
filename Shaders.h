@@ -162,10 +162,14 @@ private:
 	//main light shader with shadow map
 	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
 	
-	//SSAO
+	//SSAO normal map
 	ID3D11VertexShader* pCreateNormalMapVS = nullptr;
 	ID3D11PixelShader* pCreateNormalMapPS = nullptr;
 	ID3D11VertexShader* pCreateNormalMapSkullVS = nullptr;
 	ID3D11VertexShader* pCreateNormalMapInstancedVS = nullptr;
+
+	//compute SSAO
+	ID3D11VertexShader* pSSAOFullScreenQuadVS = nullptr;
+	ID3D11PixelShader* pSSAOFullScreenQuadPS = nullptr;
 };
 

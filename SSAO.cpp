@@ -6,17 +6,11 @@ SSAO::SSAO(Graphics& gfx, UINT mWidth, UINT mHeight)
 	BuildRandomVectorTexture(gfx);
 	BuildFullScreenQuadBuffers(gfx);
 	BuildSamplers(gfx);
-	BuildConstantBuffer(gfx);
-	BuildFrustumFarCorners(0.5f * DirectX::XM_PI, 1000.0f);
 	BuildOffsetVectors();
-
+	BuildFrustumFarCorners(0.5f * DirectX::XM_PI, 1000.0f);
+	BuildConstantBuffer(gfx);
 
 }
-
-// ID3D11RenderTargetView* SSAO::GetNormalMapRTV()
-// {
-// 	return pNormalMapTRV;
-// }
 
 ID3D11ShaderResourceView* SSAO::GetNormalMapSRV()
 {
@@ -47,6 +41,10 @@ void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX viewM)
 
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pRandomVectorsSRV);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNormalMapSRV);
+
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pNormalMapSampler);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(1u, 1u, &pRandomVectorSampler);
+
 
 	UpdateSSAOConstBuffer(gfx, viewM);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6u, 0u, 0u);
@@ -104,7 +102,7 @@ void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	vp.MinDepth = 0.0f;
-	vp.MinDepth = 1.0f;
+	vp.MaxDepth = 1.0f;
 
 }
 
@@ -181,6 +179,12 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 	v[1].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
 	v[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 	v[3].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+
+// 	v[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+// 	v[1].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+// 	v[2].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+// 	v[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+
 
 	D3D11_BUFFER_DESC buffDesc;
 	buffDesc.ByteWidth = 4 * sizeof(Vertex_IA);
@@ -290,9 +294,9 @@ void SSAO::BuildRandomVectorTexture(Graphics& gfx)
 	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
 
 	const int size = 256 * 256;
-	DirectX::XMFLOAT4* col = new DirectX::XMFLOAT4[size];
 
-	//DirectX::XMFLOAT4 color[256 * 256];
+	DirectX::PackedVector::XMCOLOR* col = new DirectX::PackedVector::XMCOLOR[size];
+
 	for (int i = 0; i < 256; ++i)
 	{
 		for (int j = 0; j < 256; ++j)
@@ -301,12 +305,13 @@ void SSAO::BuildRandomVectorTexture(Graphics& gfx)
 					   MathHelper::RandomFloatWithinRange(0.0f, 1.0f),
 					   MathHelper::RandomFloatWithinRange(0.0f, 1.0f));
 
-			col[i * 256 + j] = DirectX::XMFLOAT4(v.x, v.y, v.z, 0.0f);
+			col[i * 256 + j] = DirectX::PackedVector::XMCOLOR(v.x, v.y, v.z, 0.0f);
 		}
 	}
+
 	D3D11_SUBRESOURCE_DATA subresData;
-	subresData.SysMemPitch = 256 * sizeof(DirectX::XMFLOAT4);
-	subresData.pSysMem = &col[0];
+	subresData.SysMemPitch = 256 * sizeof(DirectX::PackedVector::XMCOLOR);
+	subresData.pSysMem = col;
 
 	ID3D11Texture2D* pTex = nullptr;
 	gfx.pgfx_pDevice->CreateTexture2D(&texDesc, &subresData, &pTex);
@@ -331,6 +336,6 @@ void SSAO::UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView)
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	SSAOConstBuffer* pBuffer = reinterpret_cast<SSAOConstBuffer*>(mappedData.pData);
-	pBuffer->viewToTexSpace = viewToTextureSpace;
+	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(viewToTextureSpace);
 	gfx.pgfx_pDeviceContext->Unmap(pSSAOConstBuffer, 0u);
 }

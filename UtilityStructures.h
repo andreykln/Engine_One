@@ -345,6 +345,7 @@ enum ShaderPicker
 	CreateNormalMap_VS_PS,
 	CreateNormalMapSkullVS,
 	CreateNormalMapInstancedVS,
+	ComputeSSAO_VS_PS,
 };
 
 enum ParticlePick

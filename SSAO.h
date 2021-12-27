@@ -1,6 +1,6 @@
 #pragma once
 #include "DrawableBase.h"
-
+#include "directxpackedvector.h"
 class SSAO : public Shape
 {
 public:
@@ -16,7 +16,6 @@ private:
 		DirectX::XMVECTOR offsetVectors[14];
 		DirectX::XMVECTOR frustumFarCorners[4];
 
-		// Coordinates given in view space.
 		const float gOcclusionRadius = 0.5f;
 		const float gOcclusionFadeStart = 0.2f;
 		const float gOcclusionFadeEnd = 2.0f;
@@ -33,8 +32,6 @@ private:
 
 	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
 
-
-// 	ID3D11RenderTargetView* GetNormalMapRTV();
 
 	ID3D11ShaderResourceView* pNormalMapSRV = nullptr;
 	ID3D11ShaderResourceView* pRandomVectorsSRV = nullptr;

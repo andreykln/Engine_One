@@ -111,7 +111,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pCreateNormalMapPS, L"Shaders\\Pixel\\CreateNormalMapPS.cso");
 	VS_Init(&pCreateNormalMapSkullVS, L"Shaders\\Vertex\\CreateNormalMapSkullVS.cso");
 	VS_Init(&pCreateNormalMapInstancedVS, L"Shaders\\Vertex\\CreateNormalMapInstancedVS.cso");
-
+	//compute ssao
+	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeSSAOVS.cso");
+	PS_Init(&pSSAOFullScreenQuadPS, L"Shaders\\Pixel\\ComputeSSAOPS.cso");
 	
 
 }
@@ -269,6 +272,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapInstancedVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::ComputeSSAO_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pSSAOFullScreenQuadVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -378,6 +387,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::CreateNormalMap_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pCreateNormalMapPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ComputeSSAO_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pSSAOFullScreenQuadPS, nullptr, 0u);
 		break;
 	}
 	default:

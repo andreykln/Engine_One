@@ -424,11 +424,14 @@ void App::DrawShadowMapDemo()
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	DrawNormalMap(viewProjectionMatrix);
 
+	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+
+	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetViewMatrix());
+
+	///not needed??
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
 		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH , 1.0f, 0);
-
-
-
 
 
 
