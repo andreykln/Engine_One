@@ -22,7 +22,7 @@ ID3D11ShaderResourceView* SSAO::GetRandomVectorSRV()
 	return pRandomVectorsSRV;
 }
 
-void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX viewM)
+void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj)
 {
 	// Bind the ambient map as the render target.  Observe that this pass does not bind 
 	// a depth/stencil buffer--it does not need it, and without one, no depth test is
@@ -46,7 +46,7 @@ void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX viewM)
 	gfx.pgfx_pDeviceContext->PSSetSamplers(1u, 1u, &pRandomVectorSampler);
 
 
-	UpdateSSAOConstBuffer(gfx, viewM);
+	UpdateSSAOConstBuffer(gfx, mProj);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6u, 0u, 0u);
 }
 
@@ -175,15 +175,15 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 	v[2].normal = DirectX::XMFLOAT3(2.0f, 0.0f, 0.0f);
 	v[3].normal = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
 
-	v[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
-	v[1].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	v[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	v[3].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+// 	v[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+// 	v[1].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+// 	v[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+// 	v[3].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
 
-// 	v[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-// 	v[1].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
-// 	v[2].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
-// 	v[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	v[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	v[1].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+	v[2].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+	v[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 
 
 	D3D11_BUFFER_DESC buffDesc;

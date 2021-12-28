@@ -7,7 +7,7 @@ public:
 	SSAO(Graphics& gfx, UINT mWidth, UINT mHeight);
 	ID3D11ShaderResourceView* GetNormalMapSRV();
 	ID3D11ShaderResourceView* GetRandomVectorSRV();
-	void ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX viewM);
+	void ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj);
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
 private:
 	struct SSAOConstBuffer

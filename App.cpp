@@ -125,8 +125,7 @@ void App::DrawHillsWithGPUWaves()
 	}
 	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
 	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
-	pShaders->UnbindCS();
-
+	pShaders->UnbindAll();
 }
 
 void App::CreateBilateralHillsBlur()
@@ -354,6 +353,8 @@ void App::SetDefaultRTVAndViewPort()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().SetViewport();
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], colors);
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void App::DrawSceneToShadowMap()
@@ -415,23 +416,22 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
 
+// 	ID3D11ShaderResourceView* nullSRV = nullptr;
+// 	wnd.GetGraphics().pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &nullSRV);
 
-	//set normal map render target
-// 	ID3D11RenderTargetView* normalMapRT = pSSAO->GetSSAO_RTV();
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &normalMapRT, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().SetViewport();
+	SetDefaultRTVAndViewPort();
+
 
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	DrawNormalMap(viewProjectionMatrix);
 
 	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
 
-	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetViewMatrix());
 
-	///not needed??
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
-		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH , 1.0f, 0);
+	
 
 
 

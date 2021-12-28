@@ -28,7 +28,7 @@ struct VertexOut
 VertexOut main(VertexIn vin)
 {
     VertexOut vout;
-    //already in NDC from normal map
+    //already in NDC
     vout.PosH = float4(vin.PosL, 1.0f);
     vout.Tex = vin.Tex;
     

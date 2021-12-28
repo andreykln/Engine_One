@@ -58,8 +58,8 @@ float OcclusionFunction(float distZ)
     return occlusion;
 }
 float4 main(VertexOut pin) : SV_Target
-{
-    // p -- the point we are computing the ambient occlusion for.
+{ 
+	// p -- the point we are computing the ambient occlusion for.
 	// n -- normal vector at p.
 	// q -- a random offset from p.
 	// r -- a potential occluder that might occlude p.
@@ -67,14 +67,12 @@ float4 main(VertexOut pin) : SV_Target
 	// Get viewspace normal and z-coord of this pixel.  The tex-coords for
 	// the fullscreen quad we drew are already in uv-space.
     float4 normalDepth = normalMapSRV.SampleLevel(normalMapSmp, pin.Tex, 0.0f);
-	
+ 
     float3 n = normalDepth.xyz;
     float pz = normalDepth.w;
+
 	//
 	// Reconstruct full view space position (x,y,z).
-	
-	//pin.ToFarPlane is interpolated?
-	//vector to the p point
 	// Find t such that p = t*pin.ToFarPlane.
 	// p.z = t*pin.ToFarPlane.z
 	// t = p.z / pin.ToFarPlane.z
@@ -85,36 +83,39 @@ float4 main(VertexOut pin) : SV_Target
     float3 randVec = 2.0f * randomVectorSRV.SampleLevel(randomVecSmp, 4.0f * pin.Tex, 0.0f).rgb - 1.0f;
 
     float occlusionSum = 0.0f;
-
+	
+	// Sample neighboring points about p in the hemisphere oriented by n.
 	[unroll]
-    for (int i = 0; i < sampleCount; i++)
+    for (int i = 0; i < sampleCount; ++i)
     {
-		// All offset vectors are fixed and uniformly distributed  across verticxes of a cube
-		// (so that our offset vectors do not clump in the same direction).
-		// If we reflect them about a random vector
+		// Are offset vectors are fixed and uniformly distributed (so that our offset vectors
+		// do not clump in the same direction).  If we reflect them about a random vector
 		// then we get a random uniform distribution of offset vectors.
         float3 offset = reflect(offsetVectors[i].xyz, randVec);
+	
 		// Flip offset vector if it is behind the plane defined by (p, n).
         float flip = sign(dot(offset, n));
+		
 		// Sample a point near p within the occlusion radius.
         float3 q = p + flip * gOcclusionRadius * offset;
+		
 		// Project q and generate projective tex-coords.  
         float4 projQ = mul(float4(q, 1.0f), viewToTexSpace);
         projQ /= projQ.w;
-		
+
 		// Find the nearest depth value along the ray from the eye to q (this is not
 		// the depth of q, as q is just an arbitrary point near p and might
 		// occupy empty space).  To find the nearest depth we look it up in the depthmap.
-		
-		//found a sample point, project it to the texture space, find viewSpace depth at the same xy coorditanes
-		//of a closest point in normal-depth map
+
         float rz = normalMapSRV.SampleLevel(normalMapSmp, projQ.xy, 0.0f).a;
-		
+
 		// Reconstruct full view space position r = (rx,ry,rz).  We know r
 		// lies on the ray of q, so there exists a t such that r = t*q.
 		// r.z = t*q.z ==> t = r.z / q.z
+
         float3 r = (rz / q.z) * q;
 		
+		//
 		// Test whether r occludes p.
 		//   * The product dot(n, normalize(r - p)) measures how much in front
 		//     of the plane(p,n) the occluder point r is.  The more in front it is, the
@@ -132,6 +133,7 @@ float4 main(VertexOut pin) : SV_Target
 		
         occlusionSum += occlusion;
     }
+	
     occlusionSum /= sampleCount;
 	
     float access = 1.0f - occlusionSum;
