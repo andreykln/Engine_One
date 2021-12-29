@@ -9,13 +9,14 @@ public:
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
-	void UpdateNormalMap(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdateNormalMap(Graphics& gfx, const DirectX::XMMATRIX& in_world,
+		const DirectX::XMMATRIX& in_ViewProj, const DirectX::XMMATRIX& in_ViewProjection);
 
 	Material shadowMaterial;
 	Material skullMatData;
 	CB_PS_DirectionalEX_Fog dirLightEX;
 	cbCreateNormalMap normalMapData;
-
+	cbCreateNormalMapTEST normalMapDataTEST;
 	ShadowMapGenVS shadowMapCbuffer;
 	CB_PS_ShadowMapDraw shadowMapDraw;
 	CB_VS_ShadowMapDraw shadowMapVSDraw;

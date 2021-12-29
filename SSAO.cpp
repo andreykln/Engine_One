@@ -55,9 +55,11 @@ void SSAO::SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv
 	ID3D11RenderTargetView* renderTargets[1] = { pNormalMapTRV };
 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, dsv);
 	// Clear view space normal to (0,0,-1) and clear depth to be very far away.  
+	//RenderDoc yells at 1e5f interpreting it is INF, but maybe this is OK
 	float clearColor[] = { 0.0f, 0.0f, -1.0f, 1e5f };
 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pNormalMapTRV, clearColor);
 }
+
 
 void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight)
 {
@@ -263,7 +265,7 @@ void SSAO::BuildConstantBuffer(Graphics& gfx)
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		cBuff.frustumFarCorners[i] = DirectX::XMLoadFloat4(&frustumFarCorner[i]);
+		cBuff.frustumFarCorners[i] = frustumFarCorner[i];
 	}
 
 	D3D11_BUFFER_DESC buffDesc;

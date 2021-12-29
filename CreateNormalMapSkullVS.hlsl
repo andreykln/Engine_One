@@ -8,21 +8,23 @@ struct VertexIn
 
 struct VertexOut
 {
-    float4 posH : SV_Position;
-    float3 normalW : NORMAL;
+    float4 posH : SV_POSITION;
+    float3 posV : POSITION;
+    float3 normalV : NORMAL;
 };
 
 cbuffer cbDefaultVS : register(b0)
 {
-    float4x4 world;
-    float4x4 viewProjection;
-    float4x4 worldInverseTranspose;
+    float4x4 worldView;
+    float4x4 worldInvTransposeView;
+    float4x4 worldViewProjection;
 };
 
 VertexOut main(VertexIn vin)
 {
     VertexOut vout;
-    vout.normalW = mul(vin.normal, (float3x3) worldInverseTranspose);
-    vout.posH = mul(float4(vin.position, 1.0f), viewProjection);
+    vout.posV = mul(float4(vin.position, 1.0f), worldView);
+    vout.normalV = mul(vin.normal, (float3x3) worldInvTransposeView);
+    vout.posH = mul(float4(vin.position, 1.0f), worldViewProjection);
     return vout;
 }

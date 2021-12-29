@@ -77,7 +77,9 @@ float4 main(VertexOut pin) : SV_Target
 	// p.z = t*pin.ToFarPlane.z
 	// t = p.z / pin.ToFarPlane.z
 	//
-    float3 p = (pz / pin.ToFarPlane.z) * pin.ToFarPlane;
+    float a = pin.ToFarPlane.z;
+    float3 b = pin.ToFarPlane;
+    float3 p = (pz / a) * b;
 	
 	// Extract random vector and map from [0,1] --> [-1, +1].
     float3 randVec = 2.0f * randomVectorSRV.SampleLevel(randomVecSmp, 4.0f * pin.Tex, 0.0f).rgb - 1.0f;

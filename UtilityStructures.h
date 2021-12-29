@@ -295,6 +295,15 @@ struct cbCreateNormalMap
 	DirectX::XMMATRIX worldInvTranspose;
 };
 
+struct cbCreateNormalMapTEST
+{
+	cbCreateNormalMapTEST() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX worldView;
+	DirectX::XMMATRIX worldInvTransposeView;
+	DirectX::XMMATRIX worldViewProjection;
+
+};
+
 enum DemoSwitch
 {
 	DefaultBox,

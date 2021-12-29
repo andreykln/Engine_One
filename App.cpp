@@ -351,10 +351,10 @@ void App::SetDefaultRTVAndViewPort()
 {
 	ID3D11RenderTargetView* renderTargets[1]{ wnd.GetGraphics().pgfx_RenderTargetView.Get() };
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().SetViewport();
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], colors);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
 		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	wnd.GetGraphics().SetViewport();
 }
 
 void App::DrawSceneToShadowMap()
@@ -415,45 +415,37 @@ void App::DrawShadowMapDemo()
 {
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
-
-// 	ID3D11ShaderResourceView* nullSRV = nullptr;
-// 	wnd.GetGraphics().pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
-// 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &nullSRV);
-
-	SetDefaultRTVAndViewPort();
-
-
-	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	DrawNormalMap(viewProjectionMatrix);
-
-	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
-	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
-	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
-
-
-	
-
-
-
-	SetDefaultRTVAndViewPort();
-
-	
-
-
-
-
-
-
-
-
-
-
-
+	//shadow map
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	//////////////////
+// 	ID3D11ShaderResourceView* nullSRV = nullptr;
+// 	wnd.GetGraphics().pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &nullSRV);
+
+// 	SetDefaultRTVAndViewPort();
+	
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	wnd.GetGraphics().SetViewport();
+
+	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
+
+	DrawNormalMap(viewProjectionMatrix);
+
+	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	pSSAO->ComputeSSAO(wnd.GetGraphics(), DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI,
+		(float)resolution_width / (float)resolution_height, 0.1, 1000.0f));
+
+
+	
+
 
 	//
 	//
@@ -541,9 +533,9 @@ void App::DrawShadowMapDemo()
 
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
-	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
+// 	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
 	pShaders->BindPS(CreateNormalMap_VS_PS);
-	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
+	/*pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
 		viewProjectionMatrix);
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -552,10 +544,10 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 
 	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
 	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), viewProjectionMatrix);
-	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);*/
 
 	pShaders->BindVSandIA(CreateNormalMapSkullVS);
-	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, viewProjectionMatrix);
+	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
 
 }

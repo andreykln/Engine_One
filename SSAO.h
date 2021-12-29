@@ -14,7 +14,7 @@ private:
 	{
 		DirectX::XMMATRIX viewToTexSpace;
 		DirectX::XMVECTOR offsetVectors[14];
-		DirectX::XMVECTOR frustumFarCorners[4];
+		DirectX::XMFLOAT4 frustumFarCorners[4];
 
 		const float gOcclusionRadius = 0.5f;
 		const float gOcclusionFadeStart = 0.2f;
