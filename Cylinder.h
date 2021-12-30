@@ -9,7 +9,8 @@ public:
 	void UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
-	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj);
+	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM,
+		const DirectX::XMMATRIX& in_ViewProjection);
 
 private:
 	DirectX::XMFLOAT4X4 sCylWorld[10];
@@ -21,7 +22,7 @@ private:
 	ShadowMapGenVS shadowMapCbuffer;
 	cbDefaultVS coneVSCB;
 	cbDefaultPS conePSCB;
-	cbCreateNormalMap normalMapData;
+	cbCreateNormalMapInstanced normalMapData;
 
 	ID3D11Buffer* pShadowMapConeDrawPS = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;

@@ -51,8 +51,8 @@ Cylinder::Cylinder(Graphics& gfx,
 		new VertexConstantBuffer<cbDefaultVS>(gfx, coneVSCB, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 
-	VertexConstantBuffer<cbCreateNormalMap>* pVCBNMap =
-		new VertexConstantBuffer<cbCreateNormalMap>(gfx, normalMapData, 0u, 1u);
+	VertexConstantBuffer<cbCreateNormalMapInstanced>* pVCBNMap =
+		new VertexConstantBuffer<cbCreateNormalMapInstanced>(gfx, normalMapData, 0u, 1u);
 	pNormalMapVSDraw = pVCBNMap->GetVertexConstantBuffer();
 
 	
@@ -134,7 +134,8 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 
 }
 
-void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewProj)
+void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM,
+	const DirectX::XMMATRIX& in_ViewProjection)
 {
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
@@ -142,10 +143,10 @@ void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	nMap->worldInvTranspose = MathHelper::InverseTranspose(in_ViewProj);
-	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
-	nMap->world = DirectX::XMMatrixIdentity();
+	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
+	nMap->view = DirectX::XMMatrixTranspose(in_ViewM);
+	nMap->invTransposeView = MathHelper::InverseTranspose(in_ViewM);
+	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 }
 

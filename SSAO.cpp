@@ -61,6 +61,28 @@ void SSAO::SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv
 }
 
 
+void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
+{
+	shaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
+	shaders->BindPS(DrawDebugTexQuad_VS_PS);
+	gfx.pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	UINT stride = sizeof(Vertex_IA);
+	UINT offset = 0u;
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
+	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+
+	// Scale and shift quad to lower-right corner.
+	/*DirectX::XMMATRIX world(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.0f, 1.0f);*/
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
+	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
+	shaders->UnbindAll();
+}
+
 void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight)
 {
 	D3D11_TEXTURE2D_DESC texDesc;
@@ -255,6 +277,15 @@ void SSAO::BuildSamplers(Graphics& gfx)
 	samplerNormalMap.MaxLOD = D3D11_FLOAT32_MAX;
 	gfx.pgfx_pDevice->CreateSamplerState(&samplerNormalMap, &pNormalMapSampler);
 }
+
+void SSAO::BuildDebugScreenQuadData(Graphics& gfx)
+{
+
+
+
+}
+
+
 
 void SSAO::BuildConstantBuffer(Graphics& gfx)
 {

@@ -290,17 +290,17 @@ struct cbDefaultPS
 struct cbCreateNormalMap
 {
 	cbCreateNormalMap() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX viewProjection;
-	DirectX::XMMATRIX worldInvTranspose;
-};
-
-struct cbCreateNormalMapTEST
-{
-	cbCreateNormalMapTEST() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMMATRIX worldView;
 	DirectX::XMMATRIX worldInvTransposeView;
 	DirectX::XMMATRIX worldViewProjection;
+};
+
+struct cbCreateNormalMapInstanced
+{
+	cbCreateNormalMapInstanced() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX invTransposeView;
+	DirectX::XMMATRIX viewProjection;
 
 };
 
@@ -355,6 +355,7 @@ enum ShaderPicker
 	CreateNormalMapSkullVS,
 	CreateNormalMapInstancedVS,
 	ComputeSSAO_VS_PS,
+	DrawDebugTexQuad_VS_PS,
 };
 
 enum ParticlePick

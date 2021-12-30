@@ -441,7 +441,7 @@ void App::DrawShadowMapDemo()
 	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
 	pSSAO->ComputeSSAO(wnd.GetGraphics(), DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI,
-		(float)resolution_width / (float)resolution_height, 0.1, 1000.0f));
+		(float)resolution_width / (float)resolution_height, 0.1f, 1000.0f));
 
 
 	
@@ -513,7 +513,8 @@ void App::DrawShadowMapDemo()
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-
+	//	DEBUG
+	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
@@ -529,21 +530,23 @@ void App::DrawShadowMapDemo()
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pNULLSRV);
 
+
+	
 }
 
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
 // 	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
 	pShaders->BindPS(CreateNormalMap_VS_PS);
-	/*pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
-		viewProjectionMatrix);
-	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
+// 		camera.GetViewMatrix(), viewProjectionMatrix);
+// 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+// 
+// 	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), camera.GetViewMatrix(), viewProjectionMatrix);
+// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
-	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), viewProjectionMatrix);
-	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-
-	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
-	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), viewProjectionMatrix);
+	/*pShaders->BindVSandIA(CreateNormalMapInstancedVS);
+	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);*/
 
 	pShaders->BindVSandIA(CreateNormalMapSkullVS);

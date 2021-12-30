@@ -16,7 +16,6 @@ public:
 	Material skullMatData;
 	CB_PS_DirectionalEX_Fog dirLightEX;
 	cbCreateNormalMap normalMapData;
-	cbCreateNormalMapTEST normalMapDataTEST;
 	ShadowMapGenVS shadowMapCbuffer;
 	CB_PS_ShadowMapDraw shadowMapDraw;
 	CB_VS_ShadowMapDraw shadowMapVSDraw;

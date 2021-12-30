@@ -35,7 +35,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 	
-	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9, 0.9f, 1.0f);
+	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
 	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
 	planePSCB.mat.shininess = 0.9f;
 	planePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
@@ -105,7 +105,8 @@ void Hills::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 
 }
 
-void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewM,
+	const DirectX::XMMATRIX& in_ViewProjection)
 {
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapDraw);
 
@@ -113,9 +114,9 @@ void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_wor
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	nMap->world = DirectX::XMMatrixTranspose(in_world);
-	nMap->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
-	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	nMap->worldView = DirectX::XMMatrixTranspose(in_world);
+	nMap->worldInvTransposeView = DirectX::XMMatrixTranspose(in_world * MathHelper::InverseTranspose(in_ViewM));
+	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapDraw, 0u);
 }
 

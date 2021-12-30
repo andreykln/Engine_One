@@ -9,6 +9,7 @@ public:
 	ID3D11ShaderResourceView* GetRandomVectorSRV();
 	void ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj);
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
+	void DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders);
 private:
 	struct SSAOConstBuffer
 	{
@@ -29,6 +30,7 @@ private:
 	void BuildOffsetVectors();
 	void BuildFullScreenQuadBuffers(Graphics& gfx);
 	void BuildSamplers(Graphics& gfx);
+	void BuildDebugScreenQuadData(Graphics& gfx);
 
 	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
 

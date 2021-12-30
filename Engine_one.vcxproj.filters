@@ -55,6 +55,9 @@
     <Filter Include="Shaders\SSAO">
       <UniqueIdentifier>{e064d239-05e9-47ba-b909-11364194cc43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\DebugScreenQuad">
+      <UniqueIdentifier>{e9b5b56f-d936-41db-a249-da96d54597af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -591,6 +594,12 @@
     </FxCompile>
     <FxCompile Include="ComputeSSAOPS.hlsl">
       <Filter>Shaders\SSAO</Filter>
+    </FxCompile>
+    <FxCompile Include="DebugScreenQuadVS.hlsl">
+      <Filter>Shaders\DebugScreenQuad</Filter>
+    </FxCompile>
+    <FxCompile Include="DebugScreenQuadPS.hlsl">
+      <Filter>Shaders\DebugScreenQuad</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

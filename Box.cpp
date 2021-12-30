@@ -183,7 +183,8 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapBoxDrawPS, 0u);
 }
 
-void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)
+void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewM,
+	const DirectX::XMMATRIX& in_ViewProjection)
 {
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
 
@@ -191,9 +192,9 @@ void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	nMap->world = DirectX::XMMatrixTranspose(in_world);
-	nMap->worldInvTranspose = MathHelper::InverseTranspose(in_world * in_ViewProj);
-	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
+	nMap->worldView = DirectX::XMMatrixTranspose(in_world);
+	nMap->worldInvTransposeView = DirectX::XMMatrixTranspose(in_world * MathHelper::InverseTranspose(in_ViewM));
+	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 
 }
