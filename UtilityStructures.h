@@ -294,14 +294,12 @@ struct cbCreateNormalMap
 	DirectX::XMMATRIX worldInvTransposeView;
 	DirectX::XMMATRIX worldViewProjection;
 };
-
 struct cbCreateNormalMapInstanced
 {
 	cbCreateNormalMapInstanced() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX invTransposeView;
-	DirectX::XMMATRIX viewProjection;
-
+	DirectX::XMMATRIX worldView[10];
+	DirectX::XMMATRIX worldInvTransposeView[10];
+	DirectX::XMMATRIX worldViewProjection[10];
 };
 
 enum DemoSwitch

@@ -71,12 +71,7 @@ void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
 
-	// Scale and shift quad to lower-right corner.
-	/*DirectX::XMMATRIX world(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.0f, 1.0f);*/
+	//pNormalMapSRV pAmbientSRV0
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);

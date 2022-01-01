@@ -51,6 +51,8 @@ Cylinder::Cylinder(Graphics& gfx,
 		new VertexConstantBuffer<cbDefaultVS>(gfx, coneVSCB, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 
+
+	
 	VertexConstantBuffer<cbCreateNormalMapInstanced>* pVCBNMap =
 		new VertexConstantBuffer<cbCreateNormalMapInstanced>(gfx, normalMapData, 0u, 1u);
 	pNormalMapVSDraw = pVCBNMap->GetVertexConstantBuffer();
@@ -144,9 +146,15 @@ void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
-	nMap->view = DirectX::XMMatrixTranspose(in_ViewM);
-	nMap->invTransposeView = MathHelper::InverseTranspose(in_ViewM);
-	nMap->viewProjection = DirectX::XMMatrixTranspose(in_ViewProjection);
+	for (int i = 0; i < 10; i++)
+	{
+		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
+			MathHelper::InverseTranspose(
+				DirectX::XMLoadFloat4x4(&sCylWorld[i])) * in_ViewM);
+		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewM);
+		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewProjection);
+
+	}
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 }
 

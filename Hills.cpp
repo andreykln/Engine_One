@@ -114,8 +114,8 @@ void Hills::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_wor
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	nMap->worldView = DirectX::XMMatrixTranspose(in_world);
-	nMap->worldInvTransposeView = DirectX::XMMatrixTranspose(in_world * MathHelper::InverseTranspose(in_ViewM));
+	nMap->worldInvTransposeView = (MathHelper::InverseTranspose(in_world) * DirectX::XMMatrixTranspose(in_ViewM));
+	nMap->worldView = DirectX::XMMatrixTranspose(in_world * in_ViewM);
 	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapDraw, 0u);
 }

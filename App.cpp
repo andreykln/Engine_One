@@ -536,18 +536,18 @@ void App::DrawShadowMapDemo()
 
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
-// 	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
+	pShaders->BindVSandIA(CreateNormalMap_VS_PS);
 	pShaders->BindPS(CreateNormalMap_VS_PS);
-// 	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
-// 		camera.GetViewMatrix(), viewProjectionMatrix);
-// 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
-// 
-// 	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), camera.GetViewMatrix(), viewProjectionMatrix);
-// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
+		camera.GetViewMatrix(), viewProjectionMatrix);
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-	/*pShaders->BindVSandIA(CreateNormalMapInstancedVS);
+	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), camera.GetViewMatrix(), viewProjectionMatrix);
+	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
 	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
-	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);*/
+	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
 	pShaders->BindVSandIA(CreateNormalMapSkullVS);
 	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);

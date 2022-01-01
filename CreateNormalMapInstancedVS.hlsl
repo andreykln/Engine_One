@@ -1,8 +1,8 @@
 cbuffer cbNormalMapInstanced : register(b0)
 {
-    float4x4 view;
-    float4x4 invTransposeView;
-    float4x4 viewProjection;
+    float4x4 worldView[10];
+    float4x4 worldInvTransposeView[10];
+    float4x4 worldViewProjection[10];
 };
 
 struct VertexIn
@@ -28,13 +28,11 @@ VertexOut main(VertexIn vin)
 {
     VertexOut vout;
     
-    float4x4 worldView = mul(vin.world, view);
-    float4x4 worldInvTransposeView = mul(vin.world, invTransposeView);
-    float4x4 worldViewProjection = mul(vin.world, viewProjection);
-    vout.normalV = mul(vin.normal, (float3x3) worldInvTransposeView);
-    vout.posH = mul(float4(vin.position, 1.0f), worldViewProjection);
+
+    vout.normalV = mul(vin.normal, (float3x3) worldInvTransposeView[vin.InstanceId]);
+    vout.posH = mul(float4(vin.position, 1.0f), worldViewProjection[vin.InstanceId]);
     
-    vout.posV = mul(float4(vin.position, 1.0f), worldView);
+    vout.posV = mul(float4(vin.position, 1.0f), worldView[vin.InstanceId]);
     
     return vout;
 }

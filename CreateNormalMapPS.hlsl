@@ -12,7 +12,6 @@ float4 main(VertexOut pin) : SV_TARGET
 {
 
     pin.normalV = normalize(pin.normalV);
-
     float4 color = float4(pin.normalV, pin.posV.z);
     return color;
 }
