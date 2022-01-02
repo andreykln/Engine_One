@@ -115,7 +115,12 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeSSAOVS.cso");
 	PS_Init(&pSSAOFullScreenQuadPS, L"Shaders\\Pixel\\ComputeSSAOPS.cso");
-	
+	//SSAO blur
+	VS_IL_Init(&pSSAOBlurVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\SSAOBlurVS.cso");
+	PS_Init(&pSSAOBlurPS, L"Shaders\\Pixel\\SSAOBlurPS.cso");
+
+
 	//debug quad
 	VS_IL_Init(&pDebugQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\DebugScreenQuadVS.cso");
@@ -289,6 +294,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDebugQuadVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::SSAOBlur_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pSSAOBlurVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -408,6 +419,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::DrawDebugTexQuad_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDebugQuadPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::SSAOBlur_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pSSAOBlurPS, nullptr, 0u);
 		break;
 	}
 	default:

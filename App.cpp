@@ -433,6 +433,7 @@ void App::DrawShadowMapDemo()
 	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
 	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
+	pSSAO->BlurAmbientMap(wnd.GetGraphics(), 4, pShaders);
 	//
 	//
 	//

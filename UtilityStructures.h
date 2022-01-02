@@ -354,6 +354,7 @@ enum ShaderPicker
 	CreateNormalMapInstancedVS,
 	ComputeSSAO_VS_PS,
 	DrawDebugTexQuad_VS_PS,
+	SSAOBlur_VS_PS,
 };
 
 enum ParticlePick

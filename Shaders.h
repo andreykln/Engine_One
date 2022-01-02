@@ -171,6 +171,9 @@ private:
 	//compute SSAO
 	ID3D11VertexShader* pSSAOFullScreenQuadVS = nullptr;
 	ID3D11PixelShader* pSSAOFullScreenQuadPS = nullptr;
+	//SSAO blur
+	ID3D11VertexShader* pSSAOBlurVS = nullptr;
+	ID3D11PixelShader* pSSAOBlurPS = nullptr;
 
 	//debug quad
 	ID3D11VertexShader* pDebugQuadVS = nullptr;

@@ -1,6 +1,7 @@
 #pragma once
 #include "DrawableBase.h"
 #include "directxpackedvector.h"
+class Shader;
 class SSAO : public Shape
 {
 public:
@@ -10,6 +11,7 @@ public:
 	void ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj);
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
 	void DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders);
+	void BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader);
 private:
 	struct SSAOConstBuffer
 	{
@@ -23,6 +25,14 @@ private:
 		const float gSurfaceEpsilon = 0.05f;
 	};
 
+	struct SSAOBlur
+	{
+		float texelWidth;
+		float texelHeight;
+		bool horizBool;
+		int pad0;
+	};
+
 	void BuildRandomVectorTexture(Graphics& gfx);
 	void BuildConstantBuffer(Graphics& gfx);
 	void BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight);
@@ -31,7 +41,7 @@ private:
 	void BuildFullScreenQuadBuffers(Graphics& gfx);
 	void BuildSamplers(Graphics& gfx);
 	void BuildDebugScreenQuadData(Graphics& gfx);
-
+	void BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur);
 	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
 
 
@@ -49,9 +59,12 @@ private:
 	ID3D11Buffer* pQuadVertexBuffer = nullptr;
 	ID3D11Buffer* pQuadIndexBuffer = nullptr;
 	ID3D11Buffer* pSSAOConstBuffer = nullptr;
+	ID3D11Buffer* pSSAOBlurBuffer = nullptr;
 	ID3D11SamplerState* pRandomVectorSampler = nullptr;
 	ID3D11SamplerState* pNormalMapSampler = nullptr;
+	ID3D11SamplerState* pBlurSampler = nullptr;
 	D3D11_VIEWPORT vp;
+	SSAOBlur blurConstBuff;
 
 	DirectX::XMFLOAT4 frustumFarCorner[4];
 	DirectX::XMFLOAT4 offsets[14];
