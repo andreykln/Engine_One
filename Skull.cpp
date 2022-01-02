@@ -69,8 +69,8 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
 
-	VertexConstantBuffer<CB_VS_ShadowMapDraw>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_ShadowMapDraw>(gfx, shadowMapVSDraw, 0u, 1u);
+	VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>* pVCBPerObject =
+		new VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>(gfx, shadowMapVSDraw, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 	VertexConstantBuffer<cbCreateNormalMap>* pVCBNMap =
 		new VertexConstantBuffer<cbCreateNormalMap>(gfx, normalMapData, 0u, 1u);
@@ -106,21 +106,38 @@ void Skull::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPo
 	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
 {
+	DirectX::XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	DirectX::XMMATRIX worldViewProjection = in_world * in_ViewProj;
+
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_VS_ShadowMapDraw* shadowVS = reinterpret_cast<CB_VS_ShadowMapDraw*> (mappedData.pData);
+	CB_VS_ShadowMapDrawWithSSAO* shadowVS = reinterpret_cast<CB_VS_ShadowMapDrawWithSSAO*> (mappedData.pData);
 	shadowVS->texTransform = DirectX::XMMatrixIdentity();
 	shadowVS->shadowTransform = newShadowTransform;
 	shadowVS->world = in_world;
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
-	shadowVS->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProj);
+	shadowVS->worldViewProjection = DirectX::XMMatrixTranspose(worldViewProjection);
+	shadowVS->viewProjTex = DirectX::XMMatrixTranspose(worldViewProjection * toTexSpace);
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &pCopyPCBLightsCylinder);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pShadowMapSRV);
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyPCBLightsCylinder, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	CB_PS_ShadowMapDraw* frame = reinterpret_cast<CB_PS_ShadowMapDraw*> (mappedData.pData);
+	if (GetAsyncKeyState('5') & 0x8000)
+	{
+		frame->useSSAO = false;
+
+	}
+	else
+	{
+		frame->useSSAO = true;
+	}
 	frame->cameraPositon = newCamPosition;
 	frame->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pCopyPCBLightsCylinder, 0u);

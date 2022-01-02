@@ -18,7 +18,7 @@ public:
 	cbCreateNormalMap normalMapData;
 	ShadowMapGenVS shadowMapCbuffer;
 	CB_PS_ShadowMapDraw shadowMapDraw;
-	CB_VS_ShadowMapDraw shadowMapVSDraw;
+	CB_VS_ShadowMapDrawWithSSAO shadowMapVSDraw;
 
 	const DirectX::XMMATRIX skullWorld =DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0f) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f);
 private:

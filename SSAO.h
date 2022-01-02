@@ -12,6 +12,7 @@ public:
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
 	void DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders);
 	void BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader);
+	void SetSSAOMapToPS(Graphics& gfx);
 private:
 	struct SSAOConstBuffer
 	{

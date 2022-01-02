@@ -238,7 +238,7 @@ struct CB_PS_ShadowMapDraw
 {
 	CB_PS_ShadowMapDraw() { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 lightDirection;
-	unsigned int numberOfLights = 1;
+	bool useSSAO = true;;
 	DirectX::XMFLOAT3 cameraPositon;
 	int pad0;
 };
@@ -250,6 +250,16 @@ struct CB_VS_ShadowMapDraw
 	DirectX::XMMATRIX worldInvTranspose;
 	DirectX::XMMATRIX texTransform;
 	DirectX::XMMATRIX shadowTransform;
+};
+struct CB_VS_ShadowMapDrawWithSSAO
+{
+	CB_VS_ShadowMapDrawWithSSAO() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX shadowTransform;
+	DirectX::XMMATRIX viewProjTex;
 };
 ///////////////////////
 

@@ -434,6 +434,7 @@ void App::DrawShadowMapDemo()
 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
 	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
 	pSSAO->BlurAmbientMap(wnd.GetGraphics(), 4, pShaders);
+	pSSAO->SetSSAOMapToPS(wnd.GetGraphics());
 	//
 	//
 	//
@@ -457,21 +458,16 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedDraw_VS);
 	pShaders->BindPS(ShaderPicker::DefaultInstanced_PS);
-
-
-
 	//columns
 	pInstancedCylinder->UpdateDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
-
+	//box
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-
-	//box
 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
@@ -497,7 +493,7 @@ void App::DrawShadowMapDemo()
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//	DEBUG
-	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
+// 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);

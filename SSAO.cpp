@@ -289,17 +289,13 @@ void SSAO::BuildSamplers(Graphics& gfx)
 	gfx.pgfx_pDevice->CreateSamplerState(&blurSamplerDesc, &pBlurSampler);
 }
 
-void SSAO::BuildDebugScreenQuadData(Graphics& gfx)
-{
-
-
-
-}
-
-
 
 void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
 {
+	//free previous binding
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
+
 	pShader->BindVSandIA(SSAOBlur_VS_PS);
 	pShader->BindPS(SSAOBlur_VS_PS);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
@@ -352,6 +348,15 @@ void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID
 
 
 
+}
+
+void SSAO::SetSSAOMapToPS(Graphics& gfx)
+{
+
+
+
+
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV1);
 }
 
 void SSAO::BuildConstantBuffer(Graphics& gfx)
