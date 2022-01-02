@@ -23,7 +23,7 @@ public:
 	static ID3D11BlendState* NoRenderTargetWritesBS;
 	static ID3D11BlendState* srsColor;
 	static ID3D11BlendState* additiveBlend;
-
+	static ID3D11BlendState* noBlendBS;
 
 	// Depth/stencil states
 	static ID3D11DepthStencilState* MarkMirrorDSS;

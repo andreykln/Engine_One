@@ -23,8 +23,10 @@ cbuffer cbDefaultVS : register(b0)
 VertexOut main (VertexIn vin)
 {
     VertexOut vout;
-    vout.posV = mul(float4(vin.posL, 1.0f), worldView);
+    vout.posV = mul(float4(vin.posL, 1.0f), worldView).xyz;
     vout.normalV = mul(vin.normalL, (float3x3) worldInvTransposeView);
+		
+	// Transform to homogeneous clip space.
     vout.posH = mul(float4(vin.posL, 1.0f), worldViewProjection);
     
     return vout;

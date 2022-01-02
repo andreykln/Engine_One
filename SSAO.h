@@ -37,7 +37,7 @@ private:
 
 	ID3D11ShaderResourceView* pNormalMapSRV = nullptr;
 	ID3D11ShaderResourceView* pRandomVectorsSRV = nullptr;
-	ID3D11RenderTargetView* pNormalMapTRV = nullptr;
+	ID3D11RenderTargetView* pNormalMapRTV = nullptr;
 	//two for blur
 	ID3D11RenderTargetView* pAmbientRTV0 = nullptr;
 	ID3D11RenderTargetView* pAmbientRTV1 = nullptr;

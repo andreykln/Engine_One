@@ -52,12 +52,15 @@ void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj)
 
 void SSAO::SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv)
 {
-	ID3D11RenderTargetView* renderTargets[1] = { pNormalMapTRV };
+	gfx.pgfx_pDeviceContext->ClearDepthStencilView(
+		gfx.pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	gfx.SetViewport();
+	ID3D11RenderTargetView* renderTargets[1] = { pNormalMapRTV };
 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, renderTargets, dsv);
 	// Clear view space normal to (0,0,-1) and clear depth to be very far away.  
 	//RenderDoc yells at 1e5f interpreting it is INF, but maybe this is OK
 	float clearColor[] = { 0.0f, 0.0f, -1.0f, 1e5f };
-	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pNormalMapTRV, clearColor);
+	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pNormalMapRTV, clearColor);
 }
 
 
@@ -72,7 +75,7 @@ void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
 
 	//pNormalMapSRV pAmbientSRV0
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pAmbientSRV0);
 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
 	shaders->UnbindAll();
@@ -96,7 +99,7 @@ void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight
 	ID3D11Texture2D* normalDepthTexture = nullptr;
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateTexture2D(&texDesc, 0u, &normalDepthTexture));
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateShaderResourceView(normalDepthTexture, 0u, &pNormalMapSRV));
-	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRenderTargetView(normalDepthTexture, 0u, &pNormalMapTRV));
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRenderTargetView(normalDepthTexture, 0u, &pNormalMapRTV));
 	normalDepthTexture->Release();
 
 	ID3D11Texture2D* ambientTex0 = nullptr;

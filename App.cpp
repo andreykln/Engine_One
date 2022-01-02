@@ -433,10 +433,16 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
 		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	wnd.GetGraphics().SetViewport();
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
 
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
+	//diable blend so it won't add up together normals that are behind each other
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
+
 	DrawNormalMap(viewProjectionMatrix);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0, 0u);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, colors, 0xffffffff);
 
 	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
