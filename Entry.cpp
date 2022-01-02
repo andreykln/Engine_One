@@ -7,7 +7,7 @@
 
 static const short resolution_width{ 1280 };
 static const short resolution_height{ 720 };
-
+static const float FOV_max{ 3.141592654f * 0.33f };
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,

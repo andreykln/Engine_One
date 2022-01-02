@@ -7,7 +7,7 @@ SSAO::SSAO(Graphics& gfx, UINT mWidth, UINT mHeight)
 	BuildFullScreenQuadBuffers(gfx);
 	BuildSamplers(gfx);
 	BuildOffsetVectors();
-	BuildFrustumFarCorners(0.5f * DirectX::XM_PI, 1000.0f);
+	BuildFrustumFarCorners(FOV_max, 1000.0f);
 	BuildConstantBuffer(gfx);
 
 }
