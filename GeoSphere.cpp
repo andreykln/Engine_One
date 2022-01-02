@@ -51,6 +51,11 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	AddIndexBuffer(pIndexBuffer);
 
 
+	VertexConstantBuffer<cbCreateNormalMapInstanced>* pVCBNMap =
+		new VertexConstantBuffer<cbCreateNormalMapInstanced>(gfx, normalMapData, 0u, 1u);
+	pNormalMapVSDraw = pVCBNMap->GetVertexConstantBuffer();
+
+
 	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
 		new VertexConstantBuffer<cbDefaultVS>(gfx, geoSphereVSCB, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
@@ -122,5 +127,26 @@ void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFL
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
 	gfx.pgfx_pDeviceContext->Unmap(pLightGeoSphere, 0u);
+}
+
+void GeoSphere::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM, const DirectX::XMMATRIX& in_ViewProjection)
+{
+	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
+	for (int i = 0; i < 10; i++)
+	{
+		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
+			MathHelper::InverseTranspose(
+				DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i])) * in_ViewM);
+		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewM);
+		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewProjection);
+
+	}
+	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 }
 

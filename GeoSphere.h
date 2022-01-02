@@ -5,22 +5,16 @@ class GeoSphere : public Shape
 {
 public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere, DemoSwitch in_switch);
-// 	void DrawSpheres(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt,
-// 		DirectX::XMFLOAT3 camPositon);
-// 	void UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, float dt);
-// 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView);
 	void UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 		DirectX::XMFLOAT3& newLightDirection);
+	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM,
+		const DirectX::XMMATRIX& in_ViewProjection);
 
 
 
 
-// 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
-// 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
-// 		DirectX::XMFLOAT3& newLightDirection);
-// 	void UpdatePSConstBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPositon);
 private:
 	DirectX::XMFLOAT2 sphereTextureOffset;
 	DirectX::XMMATRIX sphereOffset;
@@ -30,6 +24,7 @@ private:
 	CB_VS_ShadowMapDraw shadowMapVSDraw;
 	cbDefaultVS geoSphereVSCB;
 	cbDefaultPS geoSpherePSCB;
+	cbCreateNormalMapInstanced normalMapData;
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator sphere;
@@ -41,7 +36,7 @@ private:
 
 	ID3D11Buffer* pCopyPCBLightsGeoSphere = nullptr;
 	ID3D11Buffer* pCopyVCBMatricesGeoSphere = nullptr;
-
+	ID3D11Buffer* pNormalMapVSDraw = nullptr;
 	//Shadow
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
 	ID3D11Buffer* pShadomMapGenCB = nullptr;

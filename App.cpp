@@ -531,6 +531,13 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
+	//spheres
+	pInstancedGeoSphere->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
+	pInstancedGeoSphere->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+
+
+
+
 	pShaders->BindVSandIA(CreateNormalMapSkullVS);
 	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
