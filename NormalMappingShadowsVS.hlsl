@@ -6,6 +6,7 @@ cbuffer cbDefaultVS : register(b0)
     float4x4 texTransform;
     float4x4 shadowTransform;
     float4x4 matTransform;
+    float4x4 worldViewProjTex[10];
 };
 
 struct VertexIn
@@ -24,6 +25,7 @@ struct VSout
     float3 tangentW : TANGENT;
     float2 Tex : TEXCOORD0;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
 };
 
 
@@ -49,5 +51,6 @@ VSout main(VertexIn vin)
 
     // Generate projective tex-coords to project shadow map onto scene.
     vout.shadowPosH = mul(posW, shadowTransform);
+    vout.SSAOPosH = mul(float4(vin.position, 1.0f), worldViewProjTex[0]);
     return vout;
 }

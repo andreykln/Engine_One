@@ -6,6 +6,7 @@ struct VSout
     float3 tangentW : TANGENT;
     float2 Tex : TEXCOORD0;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
     float tessFactor : TESS;
 };
 
@@ -42,6 +43,7 @@ struct HullOut
     float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
 };
 
 
@@ -63,6 +65,6 @@ HullOut main(
     Output.Tex = ip[i].Tex;
     Output.PosH = ip[i].PosH;
     Output.shadowPosH = ip[i].shadowPosH;
-
+    Output.SSAOPosH = ip[i].SSAOPosH;
 	return Output;
 }

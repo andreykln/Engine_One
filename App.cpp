@@ -464,18 +464,13 @@ void App::DrawShadowMapDemo()
 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
 
-	//box
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
-	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
-	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
-		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-	pDisplacementMappingBox->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 1u, 0, 0, 0);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+// 	pShaders->BindHS(ShaderPicker::DisplacementMapping_VS_DS_HS);
+// 	pShaders->BindDS(ShaderPicker::DisplacementMapping_VS_DS_HS);
 
-	pShaders->UnbindDS();
-	pShaders->UnbindHS();
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	pShaders->UnbindDS();
+// 	pShaders->UnbindHS();
+// 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//spheres
 	pInstancedGeoSphere->UpdateShadowMapDrawInstancedBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
@@ -491,6 +486,11 @@ void App::DrawShadowMapDemo()
 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+	//box
+	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
+		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
+		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
+	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//	DEBUG
 // 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);

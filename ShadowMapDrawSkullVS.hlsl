@@ -27,7 +27,6 @@ struct VSout
 VSout main(VertexIn vin)
 {
     VSout vout;
-    // Transform to world space.
     vout.PosH = mul(float4(vin.position, 1.0f), worldViewProjection);
     vout.PosW = mul(float4(vin.position, 1.0f), world).xyz;
     vout.NormalW = mul(float4(vin.normal, 1.0f), worldInverseTranspose).xyz;

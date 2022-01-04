@@ -101,7 +101,17 @@ void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFL
 {
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
-
+	DirectX::XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	DirectX::XMMATRIX worldViewProjection[10];
+	for (size_t i = 0; i < 10; i++)
+	{
+		DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]);
+		worldViewProjection[i] = temp * in_ViewProj;
+	}
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadowMapVSDraw);
 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadowMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
@@ -114,6 +124,10 @@ void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFL
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
 	shadowVS->cameraPositon = newCamPosition;
 	shadowVS->enableDisplacementMapping = false;
+	for (int i = 0; i < 10; i++)
+	{
+		shadowVS->worldViewProjTex[i] = DirectX::XMMatrixTranspose(worldViewProjection[i] * toTexSpace);
+	}
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 

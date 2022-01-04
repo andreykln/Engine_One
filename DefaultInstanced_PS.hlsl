@@ -8,6 +8,8 @@ struct VSout
     float3 tangentW : TANGENT;
     float2 Tex : TEXCOORD0;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
+
 };
 
 cbuffer cbDefaultPS : register(b0)
@@ -21,12 +23,16 @@ cbuffer cbDefaultPS : register(b0)
     float3 camPositon;
     float fogRange;
     bool disableTexSampling;
+    bool useSSAO;
+    int pad0;
+    int pad1;
 }
 
 
 Texture2D SRVTexture : register(t0);
 Texture2D SRVNormalMap : register(t1);
 Texture2D SRVshadowMap : register(t2);
+Texture2D SSAOAmbientMap : register(t4);
 TextureCube cubeMap : register(t3);
 SamplerState tex0Sample : register(s0);
 SamplerComparisonState shadowSampler : register(s1);
@@ -58,8 +64,17 @@ float4 main(VSout pin) : SV_TARGET
         bumpedNormalW = pin.NormalW;
         shininess = mat.shininess;
     }
+    
+        // Finish texture projection and sample SSAO map.
+    float ambientAccess = 1.0f;
+    if (useSSAO)
+    {
+        pin.SSAOPosH /= pin.SSAOPosH.w;
+        ambientAccess = SSAOAmbientMap.Sample(tex0Sample, pin.SSAOPosH.xy, 0.0f).r;
+    }
+    
     // Light terms.
-    float4 ambient = ambientLight * diffuseAlbedo;
+    float4 ambient = ambientLight * diffuseAlbedo * ambientAccess;
 
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
     float shadowFactor = CalcShadowFactor(shadowSampler, SRVshadowMap, pin.shadowPosH);

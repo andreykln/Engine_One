@@ -151,6 +151,13 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	const DirectX::XMMATRIX& newShadowTransform, const DirectX::XMMATRIX& in_world,
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV, DirectX::XMFLOAT3& newLightDirection)
 {
+	DirectX::XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	DirectX::XMMATRIX worldViewProjection = in_world * in_ViewProj;
+
 	gfx.pgfx_pDeviceContext->DSSetSamplers(0u, 1u, &pSamplerState);
 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSamplerState);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDiffMapHeightMap);
@@ -168,8 +175,9 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	shadowVS->worldInvTranspose = MathHelper::InverseTranspose(in_world);
 	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProj);
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
-	shadowVS->enableDisplacementMapping = true;
+	shadowVS->enableDisplacementMapping = false;
 	shadowVS->cameraPositon = newCamPosition;
+	shadowVS->worldViewProjTex[0] = DirectX::XMMatrixTranspose(worldViewProjection * toTexSpace);
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 
@@ -180,6 +188,15 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
+	if (GetAsyncKeyState('5') & 0x8000)
+	{
+		surface->useSSAO = false;
+
+	}
+	else
+	{
+		surface->useSSAO = true;
+	}
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapBoxDrawPS, 0u);
 }
 

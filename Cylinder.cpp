@@ -107,6 +107,18 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
 	DirectX::XMFLOAT3& newLightDirection)
 {
+	DirectX::XMMATRIX toTexSpace(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	DirectX::XMMATRIX worldViewProjection[10];
+	for (size_t i = 0; i < 10; i++)
+	{
+		DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&sCylWorld[i]);
+		worldViewProjection[i] = temp * in_ViewProj;
+	}
+
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
 
@@ -122,6 +134,11 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	shadowVS->matTransform = DirectX::XMMatrixIdentity();
 	shadowVS->enableDisplacementMapping = false;
 	shadowVS->cameraPositon = newCamPosition;
+
+	for (int i = 0; i < 10; i++)
+	{
+		shadowVS->worldViewProjTex[i] = DirectX::XMMatrixTranspose(worldViewProjection[i] * toTexSpace);
+	}
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapVSDraw, 0u);
 
 
@@ -132,6 +149,15 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
 	surface->camPositon = newCamPosition;
 	surface->lightDirection = newLightDirection;
+	if (GetAsyncKeyState('5') & 0x8000)
+	{
+		surface->useSSAO = false;
+
+	}
+	else
+	{
+		surface->useSSAO = true;
+	}
 	gfx.pgfx_pDeviceContext->Unmap(pShadowMapConeDrawPS, 0u);
 
 }

@@ -6,6 +6,7 @@ struct DomainOut
     float3 TangentW : TANGENT;
     float2 Tex : TEXCOORD;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
 };
 
 
@@ -32,6 +33,7 @@ struct HullOut
     float2 Tex : TEXCOORD;
     float3 tangentW : TANGENT;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
 };
 
 cbuffer CamPos : register(b0)
@@ -72,7 +74,6 @@ DomainOut main(
     //to world space
     dout.PosW = mul(float4(dout.PosW, 1.0f), world);
     dout.shadowPosH = mul(float4(dout.PosW, 1.0f), shadowTransform);
-
 	// Interpolating normal can unnormalize it, so normalize it.
     dout.NormalW = normalize(dout.NormalW);
 	

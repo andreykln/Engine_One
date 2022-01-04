@@ -6,6 +6,7 @@ cbuffer cbDefaultVS : register(b0)
     float4x4 texTransform;
     float4x4 shadowTransform;
     float4x4 matTransform;
+    float4x4 worldViewProjTex[10];
     float3 cameraPosition;
     int pad0;
     bool enableDisplacementMapping;
@@ -27,6 +28,7 @@ struct VertexIn
     float2 texCoord : TexCoordinate;
     float3 tangentLocal : Tangent;
     row_major float4x4 world : WORLD;
+    uint instanceID : SV_InstanceID;
 };
 
 struct VSout
@@ -37,6 +39,7 @@ struct VSout
     float3 tangentW : TANGENT;
     float2 Tex : TEXCOORD0;
     float4 shadowPosH : TEXCOORD1;
+    float4 SSAOPosH : TEXCOORD2;
     float tessFactor : TESS;
 };
 
@@ -85,12 +88,13 @@ VSout main(VertexIn vin)
         float tess = saturate((minTessDistance - d) / (minTessDistance - maxTessFactor));
         //rescale [0,1] --> [minTessfactor, maxTessFactor]
         vout.tessFactor = minTessFactor + tess * (maxTessFactor - minTessFactor);
+        vout.SSAOPosH = float4(vin.position, 1.0f);
     }
     else
     {
         // Generate projective tex-coords to project shadow map onto scene.
         vout.shadowPosH = mul(posW, shadowTransform);
-
+        vout.SSAOPosH = mul(float4(vin.position, 1.0f), worldViewProjTex[vin.instanceID]);
         vout.tessFactor = 0.0f;
     }
     

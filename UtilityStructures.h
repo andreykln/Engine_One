@@ -272,6 +272,7 @@ struct cbDefaultVS
 	DirectX::XMMATRIX texTransform;
 	DirectX::XMMATRIX shadowTransform;
 	DirectX::XMMATRIX matTransform;
+	DirectX::XMMATRIX worldViewProjTex[10];
 	DirectX::XMFLOAT3 cameraPositon;
 	int pad0;
 	bool enableDisplacementMapping = false;
@@ -291,10 +292,10 @@ struct cbDefaultPS
 	const float fogstart = 50.0f;
 	DirectX::XMFLOAT3 camPositon;
 	const float fogRange = 200.0f;
-	bool disableTexSampling = false;
+	BOOL disableTexSampling = false;
+	BOOL useSSAO;
 	int pad0;
 	int pad1;
-	int pad2;
 };
 
 struct cbCreateNormalMap
