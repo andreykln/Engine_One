@@ -24,6 +24,11 @@ ID3D11ShaderResourceView* SSAO::GetRandomVectorSRV()
 
 void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj)
 {
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	//clear previous frame's binding
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
+
+
 	// Bind the ambient map as the render target.  Observe that this pass does not bind 
 	// a depth/stencil buffer--it does not need it, and without one, no depth test is
 	// performed, which is what we want.
@@ -293,8 +298,9 @@ void SSAO::BuildSamplers(Graphics& gfx)
 void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
 {
 	//free previous binding
-	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
+// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+// 
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
 
 	pShader->BindVSandIA(SSAOBlur_VS_PS);
 	pShader->BindPS(SSAOBlur_VS_PS);
@@ -337,7 +343,6 @@ void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID
 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOBlurBuffer);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pInputSRV);
 
-// 	gfx.pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	UINT stride = sizeof(Vertex_IA);
 	UINT offset = 0u;
 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
@@ -345,18 +350,15 @@ void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID
 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNULLSRV);
-
-
+	ID3D11RenderTargetView* pNULLRTV = nullptr;
+	renderTargets[0] = pNULLRTV;
+	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
 
 }
 
 void SSAO::SetSSAOMapToPS(Graphics& gfx)
 {
-
-
-
-
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV1);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV0);
 }
 
 void SSAO::BuildConstantBuffer(Graphics& gfx)
