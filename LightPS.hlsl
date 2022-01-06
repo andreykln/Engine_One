@@ -1,110 +1,72 @@
-struct DirectionalLight
-{
-    float4 ambient;
-    float4 diffuse;
-    float4 specular;
-    float3 direction;
-    float pad;
-};
-
-struct Material
-{
-    float4 ambient;
-    float4 diffuse;
-    float4 specular; // w = specularity power
-    float4 reflect;
-};
-
-void ComputeDirectionalLight(Material mat, DirectionalLight L,
-                               float3 normal, float3 toEye,
-                                out float4 ambient,
-                                out float4 diffuse,
-                                out float4 specular)
-{
-    ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    //The light vector aims opposite the directoion the light rays travel
-    float3 lightVector = -L.direction;
-    
-    ambient = mat.ambient * L.ambient;
-    
-    // Add diffuse and specular term, provided the surface is in 
-	// the line of site of the light.
-    float diffuseFactor = dot(lightVector, normal);
-    
-    // Flatten to avoid dynamic branching.
-	[flatten]
-    if (diffuseFactor > 0.0f)
-    {
-        float3 v = reflect(-lightVector, normal);
-        float specFactor = pow(max(dot(v, toEye), 0.0f), mat.specular.w);
-					
-        diffuse = diffuseFactor * mat.diffuse * L.diffuse;
-        specular = specFactor * mat.specular * L.specular;
-    }
-}
-
-
-cbuffer CBPSDirectionalLight_Fog : register(b0)
-{
-    DirectionalLight directLight[3];
-    Material mat;
-    float4 fogColor;
-    float fogStart;
-    float fogRange;
-    float2 padding;
-};
-
-cbuffer PS_Per_Frame : register(b1)
-{
-    float3 cameraPositon;
-    unsigned int numberOfLights;
-}
-struct VertexIn
-{
-    float3 position : Position;
-    float3 normal : Normal;
-};
+#include "LightHelper.hlsli"
 
 struct VertexOut
 {
-    float4 PosH : SV_Position;
-    float3 PosW : Position;
+    float4 posH : SV_Position;
+    float3 posW : POSITION;
     float3 NormalW : Normal;
+    float2 Tex : TEXCOORD0;
 };
+
+
+cbuffer cbDefaultPS : register(b0)
+{
+    DirectionalLightEx dirLight;
+    MaterialEx mat;
+    float4 fogColor;
+    float4 ambientLight;
+    float3 lightDirection;
+    float fogstart;
+    float3 camPositon;
+    float fogRange;
+    bool enableNormalMapping;
+}
+
+Texture2D SRVTexture : register(t0);
+SamplerState tex0Sample : register(s0);
+
 
 float4 main(VertexOut pin) : SV_TARGET
 {
-    // Interpolating normal can unnormalize it
+    // Fetch the material data.
+    float4 diffuseAlbedo = mat.diffuseAlbedo;
+    float3 fresnelR0 = mat.fresnelR0;
+    float roughness = 1.0f - mat.shininess;
+	
+	// Interpolating normal can unnormalize it, so renormalize it.
     pin.NormalW = normalize(pin.NormalW);
+    float3 bumpedNormalW = pin.NormalW;
+    float4 litColor = SRVTexture.Sample(tex0Sample, pin.Tex);
+        // Vector from point being lit to eye. 
+    float3 toEyeW = normalize(camPositon - pin.posW);
+
+
+    bumpedNormalW = pin.NormalW;
+
     
-    // The toEye vector is used in lighting.
-    float3 toEye = cameraPositon - pin.PosW;
+	// Dynamically look up the texture in the array.
+    diffuseAlbedo *= SRVTexture.Sample(tex0Sample, pin.Tex);
+
+
+    // Light terms.
+    float4 ambient = ambientLight * diffuseAlbedo;
+
+    const float shininess = (mat.shininess);
+    MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
+    DirectionalLightEx dr = dirLight;
+    dr.direction = lightDirection;
     
-    // Cache the distance to the eye from this surface point.
-    float distToEye = length(toEye);
+    float4 result = float4(ComputeDirectionalLightEx(dr, mat, bumpedNormalW, camPositon), 0.0f);
+ 
+
+    litColor = ambient + result;
     
-    //normalize
-    toEye /= distToEye;
-    
-    float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
-    [unroll]
-    for (uint i = 0; i < numberOfLights; ++i)
-    {
-        float4 A, D, S;
-        ComputeDirectionalLight(mat, directLight[i], pin.NormalW, toEye, A, D, S);
-        ambient += A;
-        diffuse += D;
-        specular += S;
-    }
-    float4 litColor = ambient + diffuse + specular;
-    
-    litColor.a = mat.diffuse.a;
-    
+    // Common convention to take alpha from diffuse albedo.
+    litColor.a = diffuseAlbedo.a;
+
     return litColor;
+    
+    
+     
+   
 }

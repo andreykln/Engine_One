@@ -44,11 +44,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	}
 	case DefaultBox:
 	{
-// 		Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-// 		AddBind(pTopology);
-// 		VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
-// 		AddBind(pVB);
-// 		break;
+		VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
+		AddBind(pVB);
+		break;
 	}
 	}
 
@@ -67,22 +65,20 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 			new VertexConstantBuffer<cbCreateNormalMap>(gfx, normapMapData, 0u, 1u);
 		pNormalMapVSDraw = pVCBNormalMap->GetVertexConstantBuffer();
 
-
-		
-
 		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
 		pShadomMapGenCB = pVCBSMGen->GetVertexConstantBuffer();
 		break;
 	}
-	default:
+	case DefaultBox:
 	{
-// 		VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-// 			new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-// 		pCopyVCBMatricesBox = pVCBPerObject->GetVertexConstantBuffer();
-// 		AddBind(pVCBPerObject);
-// 		break;
+		VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
+			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
+		pVSCBufferBoxDemo = pVCBPerObject->GetVertexConstantBuffer();
+		break;
 	}
+	default:
+		break;
 	}
 
 	boxPSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -98,10 +94,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	}
 	else
 	{
-// 		PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-// 			new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-// 		pCopyPCBLightsBox = pLightsCB->GetPixelShaderConstantBuffer();
-// 		AddBind(pLightsCB);
+		PixelShaderConstantBuffer<cbDefaultPS>* pLightsCB =
+			new PixelShaderConstantBuffer<cbDefaultPS>(gfx, boxPSCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+		pPSCBufferBoxDemo = pLightsCB->GetPixelShaderConstantBuffer();
 	}
 
 	std::wstring directory[1];
@@ -124,6 +119,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	case DemoSwitch::DefaultBox:
 	{
 		const wchar_t* diffuseMap = L"Textures\\WoodCrate01.dds";
+		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
+		pDiffMapHeightMap = pSRV->GetSRV();
+
 	}
 	break;
 	}
@@ -214,5 +212,35 @@ void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world
 	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 
+}
+
+void Box::DrawTestBox(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProjection, DirectX::XMFLOAT3 camPos,
+	Shaders* pShaders)
+{
+	gfx.pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	pShaders->BindVSandIA(Light_VS_PS);
+	pShaders->BindPS(Light_VS_PS);
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pVSCBufferBoxDemo);
+	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pPSCBufferBoxDemo);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pDiffMapHeightMap);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSamplerState);
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pVSCBufferBoxDemo);
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pVSCBufferBoxDemo, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultVS* shadowVS = reinterpret_cast<cbDefaultVS*> (mappedData.pData);
+	shadowVS->texTransform = DirectX::XMMatrixIdentity();
+	shadowVS->world = DirectX::XMMatrixTranspose(in_world);
+	shadowVS->viewProjection = DirectX::XMMatrixTranspose(in_ViewProjection);
+	shadowVS->matTransform = DirectX::XMMatrixIdentity();
+	gfx.pgfx_pDeviceContext->Unmap(pVSCBufferBoxDemo, 0u);
+
+
+	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPSCBufferBoxDemo, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+
+	cbDefaultPS* surface = reinterpret_cast<cbDefaultPS*> (mappedData.pData);
+	surface->camPositon = camPos;
+	surface->lightDirection = DirectX::XMFLOAT3(-0.3f, 0.4f, 0.0f);
+	gfx.pgfx_pDeviceContext->Unmap(pPSCBufferBoxDemo, 0u);
 }
 

@@ -13,9 +13,11 @@ App::App()
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
 	pSSAO = new SSAO(wnd.GetGraphics(), resolution_width, resolution_height);
 // 	CreateBilateralHillsBlur();
-// 	CreateBox();
-	CreateShadowMapDemo();
-	CreateHillsWithGPUWaves();
+	CreateBox();
+
+// 	CreateShadowMapDemo();
+// 	CreateHillsWithGPUWaves();
+
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
 // 	CreateBezierPatchTess();
@@ -30,9 +32,11 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 
-	DrawShadowMapDemo();
-	DrawHillsWithGPUWaves();
-// 	DrawBox();
+// 	DrawShadowMapDemo();
+// 	DrawHillsWithGPUWaves();
+
+
+	DrawBox();
 // 	DrawDepthComplexityStencil();
 // 	DrawGaussBlur();
 // 	DrawBilateralHillsBlur();
@@ -226,47 +230,15 @@ void App::DrawGaussBlur()
 
 void App::CreateBox()
 {
-	pBox = new Box(wnd.GetGraphics(), 7.0f, 7.0f, 7.0f, DemoSwitch::DefaultBox);
+	pBox = new Box(wnd.GetGraphics(), 3.0f, 3.0f, 3.0f, DemoSwitch::DefaultBox);
 }
 
 void App::DrawBox()
 {
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	viewProjectionMatrix = GetViewProjectionCamera();
 
-	DirectX::XMFLOAT4X4 test;
-	test._11 = 1.0f;
-	test._12 = 0.0f;
-	test._13 = 0.0f;
-	test._14 = 0.0f;
-
-	test._21 = 0.0f;
-	test._22 = 1.0f;
-	test._23 = 0.0f;
-	test._24 = 0.0f;
-
-	test._31 = 0.0f;
-	test._32 = 0.0f;
-	test._33 = 1.0f;
-	test._34 = 0.0f;
-
-	test._41 = 0.0f;
-	test._42 = 0.0f;
-	test._43 = 50.0f;
-	test._44 = 1.0f;
-	
-	DirectX::XMMATRIX worldTest = DirectX::XMLoadFloat4x4(&test);
-	DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(timer.TotalTime());
-	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(9.0f, 6.0f, 15.0f);
-
-	DirectX::XMMATRIX rotationThenTranlastion = rotation * worldTest;
-	DirectX::XMMATRIX translationThenRotation = worldTest * rotation;
-
-
-// 	pBox->UpdateVSMatrices(wnd.GetGraphics(), rotationThenTranlastion, viewProjectionMatrix);
-// 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+	pBox->DrawTestBox(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix, camera.GetCameraPosition(), pShaders);
+	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 }
 
 

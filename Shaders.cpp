@@ -7,7 +7,7 @@ Shaders::Shaders(Graphics& in_gfx)
 				IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 
-	VS_IL_Init(&pLightVS, IL.light, &pLightIL, IL.nLightElements, L"Shaders\\Vertex\\LightVS.cso");
+	VS_IL_Init(&pLightVS, IL.posNormalTexture, &pLightIL, IL.nPosNormalTexture, L"Shaders\\Vertex\\LightVS.cso");
 	PS_Init(&pLightPS, L"Shaders\\Pixel\\LightPS.cso");
 	
 	//skull sm
