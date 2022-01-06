@@ -21,7 +21,7 @@ cbuffer blurCB : register(b0)
 
 Texture2D normalDepthMap : register(t0);
 Texture2D inputImage : register(t1);
-SamplerState samplerBlur : register(s0);
+SamplerState samplerBlur : register(s2);
 
 float4 main(VertexOut pin) : SV_TARGET
 {

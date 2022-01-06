@@ -36,6 +36,7 @@ Texture2D SSAOAmbientMap : register(t4);
 TextureCube cubeMap : register(t3);
 SamplerState tex0Sample : register(s0);
 SamplerComparisonState shadowSampler : register(s1);
+SamplerState ssaoSampler : register(s2);
 
 
 float4 main(VSout pin) : SV_TARGET
@@ -70,7 +71,7 @@ float4 main(VSout pin) : SV_TARGET
     if (useSSAO)
     {
         pin.SSAOPosH /= pin.SSAOPosH.w;
-        ambientAccess = SSAOAmbientMap.Sample(tex0Sample, pin.SSAOPosH.xy, 0.0f).r;
+        ambientAccess = SSAOAmbientMap.Sample(ssaoSampler, pin.SSAOPosH.xy, 0.0f).r;
     }
     
     // Light terms.

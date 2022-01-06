@@ -493,7 +493,7 @@ void App::DrawShadowMapDemo()
 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//	DEBUG
-// 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
+	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);

@@ -80,8 +80,10 @@ void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
 
 	//pNormalMapSRV pAmbientSRV0 pAmbientSRV1
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pAmbientSRV0);
-	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
+	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pAmbientSRV1);
+	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSAOMapSampler);
+
+// 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
 	shaders->UnbindAll();
 }
@@ -292,20 +294,35 @@ void SSAO::BuildSamplers(Graphics& gfx)
 	blurSamplerDesc.MinLOD = 0;
 	blurSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	gfx.pgfx_pDevice->CreateSamplerState(&blurSamplerDesc, &pBlurSampler);
+
+
+	D3D11_SAMPLER_DESC ssaoMapSamplerDesc;
+	ssaoMapSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; //D3D11_FILTER_MIN_MAG_MIP_LINEAR
+	ssaoMapSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	ssaoMapSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	ssaoMapSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	ssaoMapSamplerDesc.BorderColor[0] = 0.0f;
+	ssaoMapSamplerDesc.BorderColor[1] = 0.0f;
+	ssaoMapSamplerDesc.BorderColor[2] = 0.0f;
+	ssaoMapSamplerDesc.BorderColor[3] = 0.0f;
+
+	ssaoMapSamplerDesc.MipLODBias = 0.0f;
+	ssaoMapSamplerDesc.MaxAnisotropy = 16;
+	ssaoMapSamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	ssaoMapSamplerDesc.MinLOD = 0;
+	ssaoMapSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	gfx.pgfx_pDevice->CreateSamplerState(&ssaoMapSamplerDesc, &pSSAOMapSampler);
+
 }
 
 
 void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
 {
-	//free previous binding
-// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-// 
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
 
 	pShader->BindVSandIA(SSAOBlur_VS_PS);
 	pShader->BindPS(SSAOBlur_VS_PS);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
-
+	gfx.pgfx_pDeviceContext->PSSetSamplers(2u, 1u, &pBlurSampler);
 	for (int i = 0; i < blurCount; i++)
 	{
 		// Ping-pong the two ambient map textures as we apply
@@ -358,6 +375,7 @@ void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID
 
 void SSAO::SetSSAOMapToPS(Graphics& gfx)
 {
+	gfx.pgfx_pDeviceContext->PSSetSamplers(2u, 1u, &pSSAOMapSampler);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV0);
 }
 

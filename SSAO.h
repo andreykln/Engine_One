@@ -30,7 +30,7 @@ private:
 	{
 		float texelWidth;
 		float texelHeight;
-		bool horizBool;
+		BOOL horizBool;
 		int pad0;
 	};
 
@@ -64,6 +64,7 @@ private:
 	ID3D11SamplerState* pRandomVectorSampler = nullptr;
 	ID3D11SamplerState* pNormalMapSampler = nullptr;
 	ID3D11SamplerState* pBlurSampler = nullptr;
+	ID3D11SamplerState* pSSAOMapSampler = nullptr;
 	D3D11_VIEWPORT vp;
 	SSAOBlur blurConstBuff;
 
