@@ -15,7 +15,7 @@ App::App()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
 	pDC = wnd.GetGraphics().pgfx_pDeviceContext.Get();
-
+	wnd.GetGraphics().CreateCBuffers();
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
@@ -389,6 +389,9 @@ void App::CreateShadowMapDemo()
 
 void App::DrawShadowMapDemo()
 {
+	//update every frame
+	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
+
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
 	//shadow map
@@ -511,7 +514,8 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 
 
 
-
+	wnd.GetGraphics().NormalMapCB();
+	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
 	pShaders->BindVSandIA(NormalMap_VS_PS);
 	pShaders->BindPS(NormalMap_VS_PS);
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), pSkull->GetStride(), pSkull->GetOffset());

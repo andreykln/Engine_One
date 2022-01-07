@@ -6,8 +6,11 @@
 #include "DirectXMath.h"
 #include "directxcolors.h"
 #include "CustomException.h"
+#include "UtilityStructures.h"
+#include "MathHelper.h"
 #include <d3dcompiler.h>
 #include <filesystem>
+#include <unordered_map>
 #define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
@@ -19,7 +22,6 @@ public:
 	~Graphics();
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
 	void DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation);
 	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
@@ -28,12 +30,18 @@ public:
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
 	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View);
+
+	void CreateCBuffers();
 	//techniques
+	void NormalMapCB();
 	void NormalMap(const DirectX::XMMATRIX world);
+
+	
 
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
+
 
 #ifdef MY_DEBUG
 public:
@@ -50,14 +58,17 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pgfx_pDeviceContext;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> pgfx_RenderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pgfx_DepthStencilView;
-public:
 #ifdef MY_DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 #endif
 private:
+	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
+	template <typename CBData>
+	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
+
+	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
 	DirectX::XMMATRIX mViewProjection;
 	DirectX::XMMATRIX mView;
-
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
@@ -114,6 +125,32 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 	if (FAILED (hr))
 	{
 		std::wstring message = L"Failed Vertex Buffer creation of ";
+		message += name;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	return pBuffer;
+}
+
+template <typename CBData>
+ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name /*= std::wstring()*/)
+{
+	D3D11_BUFFER_DESC constBufDesc;
+	constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	constBufDesc.ByteWidth = byteWidth;
+	constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+	constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constBufDesc.StructureByteStride = 0u;
+	constBufDesc.MiscFlags = 0u;
+	D3D11_SUBRESOURCE_DATA constBufInitData;
+	constBufInitData.pSysMem = &data;
+	constBufInitData.SysMemPitch = 0;
+	constBufInitData.SysMemSlicePitch = 0;
+	ID3D11Buffer* pBuffer = nullptr;
+	HRESULT hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
+
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Constant Buffer creation of ";
 		message += name;
 		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
 	}

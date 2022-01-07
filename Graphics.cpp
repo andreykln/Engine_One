@@ -167,9 +167,29 @@ void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const Direct
 	mViewProjection = ViewProjection;
 }
 
+void Graphics::CreateCBuffers()
+{
+	cbCreateNormalMap nMap;
+	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
+	constBuffersMap["NormalMap"] = pNMap;
+
+
+}
+
+void Graphics::NormalMapCB()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap["NormalMap"]);
+}
+
 void Graphics::NormalMap(const DirectX::XMMATRIX world)
 {
-
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	pgfx_pDeviceContext->Map(constBuffersMap["NormalMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData);
+	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
+	cBuffer->worldInvTransposeView = (MathHelper::InverseTranspose(world) * DirectX::XMMatrixTranspose(mView));
+	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
+	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
+	pgfx_pDeviceContext->Unmap(constBuffersMap["NormalMap"], 0u);
 }
 
 #ifdef MY_DEBUG
