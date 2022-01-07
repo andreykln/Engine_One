@@ -5,8 +5,6 @@ class Skull : public Shape
 {
 public:
 	Skull(Graphics& gfx, const std::wstring& path);
-	UINT* GetStride();
-	UINT* GetOffset();
 	ID3D11Buffer** GetVertexBuffer();
 
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
@@ -35,8 +33,6 @@ private:
 
 	// attempt at new architecture
 	ID3D11Buffer* pVertexBuffer = nullptr;
-	UINT stride = 0;
-	UINT offset = 0;
 
 };
 

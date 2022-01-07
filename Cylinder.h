@@ -5,6 +5,9 @@ class Cylinder : public Shape
 {
 public:
 	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count);
+	ID3D11Buffer** GetVertexBuffer();
+
+
 	void UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView);
 	void UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
@@ -12,9 +15,9 @@ public:
 	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM,
 		const DirectX::XMMATRIX& in_ViewProjection);
 
+	DirectX::XMMATRIX m_CylWorld[10];
 private:
 	DirectX::XMFLOAT4X4 sCylWorld[10];
-	DirectX::XMMATRIX m_CylWorld[10];
 
 	GeometryGenerator::MeshData mesh;
 	GeometryGenerator cylinderParts;
@@ -35,5 +38,7 @@ private:
 	UINT offset[2] = { 0,0 };
 
 
+	//new architect
+	ID3D11Buffer* pVertexBuffer = nullptr;
 };
 

@@ -87,8 +87,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	}
 	file.close();
 
-	stride = sizeof(vbPosNormalTexTangent);
-	pVertexBuffer = gfx.CreateVertexBuffer(verticesFromTXT, false, false, L"SkullVerticess");
+	pVertexBuffer = gfx.CreateVertexBuffer(verticesFromTXT, false, false, L"SkullVertices");
 
 // 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 // 	AddBind(pVertexBuffer);
@@ -121,15 +120,6 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 }
 
 
-UINT* Skull::GetStride()
-{
-	return &stride;
-}
-
-UINT* Skull::GetOffset()
-{
-	return &offset;
-}
 
 ID3D11Buffer**  Skull::GetVertexBuffer()
 {

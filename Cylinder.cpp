@@ -3,10 +3,10 @@ Cylinder::Cylinder(Graphics& gfx,
 	float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count)
 {
 	cylinderParts.CreateCylinder(bottom_radius, top_radius, height, slice_count, stack_count, mesh);
-	std::vector<Vertex_IA> vertices(mesh.vertices.size());
+// 	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
 
-	std::vector<Vertices_Full> verticesWithNormals(mesh.vertices.size());
+	std::vector<vbPosNormalTexTangent> vertices(mesh.vertices.size());
 
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
@@ -15,12 +15,11 @@ Cylinder::Cylinder(Graphics& gfx,
 		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
 		DirectX::XMFLOAT3 tg = mesh.vertices[i].tangentU;
 
-		verticesWithNormals[i].pos = p;
-		verticesWithNormals[i].normal = n;
-		verticesWithNormals[i].tex = t;
-		verticesWithNormals[i].tangent = tg;
+		vertices[i].pos = p;
+		vertices[i].normal = n;
+		vertices[i].tex = t;
+		vertices[i].tangent = tg;
 	}
-
 	//build world matrices for 10 columns
 	for (int i = 0; i < 5; ++i)
 	{
@@ -30,17 +29,21 @@ Cylinder::Cylinder(Graphics& gfx,
 		DirectX::XMStoreFloat4x4(&sCylWorld[i * 2 + 1],
 			DirectX::XMMatrixTranslation(5.0f, 1.5f, -10.0f + i * 5.0f));
 	}
-	std::vector<DirectX::XMFLOAT4X4> cylWorlds(10);
 	for (size_t i = 0; i < 10; i++)
 	{
-		cylWorlds[i] = sCylWorld[i];
+		m_CylWorld[i] = DirectX::XMLoadFloat4x4(&sCylWorld[i]);
 	}
+	//new
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Cylinder vertices");
 
-	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, verticesWithNormals, cylWorlds, L"IstancedVB");
-	pIAbuffers[0] = pVertexBuffer->GetVertexData();
-	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
-	stride[0] = sizeof(Vertices_Full);
-	stride[1] = sizeof(DirectX::XMFLOAT4X4);
+	//
+
+
+// 	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, verticesWithNormals, cylWorlds, L"IstancedVB");
+// 	pIAbuffers[0] = pVertexBuffer->GetVertexData();
+// 	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
+// 	stride[0] = sizeof(Vertices_Full);
+// 	stride[1] = sizeof(DirectX::XMFLOAT4X4);
 
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
@@ -88,9 +91,15 @@ Cylinder::Cylinder(Graphics& gfx,
 	AddBind(pTexSampler);
 }
 
+ID3D11Buffer** Cylinder::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
+
+
 void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
 {
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -119,7 +128,7 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 		worldViewProjection[i] = temp * in_ViewProj;
 	}
 
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -165,7 +174,7 @@ void Cylinder::UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCa
 void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM,
 	const DirectX::XMMATRIX& in_ViewProjection)
 {
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
 

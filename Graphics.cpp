@@ -172,8 +172,6 @@ void Graphics::CreateCBuffers()
 	cbCreateNormalMap nMap;
 	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
 	constBuffersMap["NormalMap"] = pNMap;
-
-
 }
 
 void Graphics::NormalMapCB()

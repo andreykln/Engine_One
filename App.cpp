@@ -515,12 +515,21 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 
 
 	wnd.GetGraphics().NormalMapCB();
-	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
 	pShaders->BindVSandIA(NormalMap_VS_PS);
 	pShaders->BindPS(NormalMap_VS_PS);
-	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), pSkull->GetStride(), pSkull->GetOffset());
-	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);
+	const UINT stride = sizeof(vbPosNormalTexTangent);
+	const UINT offset = 0;
+	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
+	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
+// 	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);
 	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+
+	pDC->IASetVertexBuffers(0u, 1u, pInstancedCylinder->GetVertexBuffer(), &stride, &offset);
+	for (int i = 0; i < 10; i++)
+	{
+		wnd.GetGraphics().NormalMap(pInstancedCylinder->m_CylWorld[i]);
+		pInstancedCylinder->BindAndDrawIndexed(wnd.GetGraphics());
+	}
 
 }
 
