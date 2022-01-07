@@ -12,8 +12,21 @@ struct InputLayout
 		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, sizeof(DirectX::XMFLOAT3) * 2,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-	
 
+	////// MAIN
+	static const UINT nPosNormalTexcTangent = 4;
+	const D3D11_INPUT_ELEMENT_DESC posNormalTexcTangent[nPosNormalTexcTangent] =
+	{
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u}
+	};
+	////// END OF MAIN
 	static const UINT nPosNormalTexCoordTangent = 4;
 	const D3D11_INPUT_ELEMENT_DESC posNormalTexCoordTangent[nPosNormalTexCoordTangent] =
 	{

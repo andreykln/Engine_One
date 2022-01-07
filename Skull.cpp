@@ -18,7 +18,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	UINT triangles = 0;
 
 	skullMatData.ambient = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
-	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662, 0.663f, 1.0f);
+	skullMatData.diffuse = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 1.0f);
 	skullMatData.specular = DirectX::XMFLOAT4(0.66f, 0.662f, 0.663f, 16.0f);
 
 	dirLightEX.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
@@ -43,12 +43,37 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	file >> ignore >> triangles;
 	file >> ignore >> ignore >> ignore >> ignore;
 
-	std::vector<Vertices> verticesFromTXT(vertices);
+	std::vector<vbPosNormalTexTangent> verticesFromTXT(vertices);
 
 	for (size_t i = 0; i < vertices; i++)
 	{
-		file >> verticesFromTXT[i].position.x >> verticesFromTXT[i].position.y >> verticesFromTXT[i].position.z >>
+		using namespace DirectX;
+		file >> verticesFromTXT[i].pos.x >> verticesFromTXT[i].pos.y >> verticesFromTXT[i].pos.z >>
 			verticesFromTXT[i].normal.x >> verticesFromTXT[i].normal.y >> verticesFromTXT[i].normal.z;
+		verticesFromTXT[i].tex = { 0.0f, 0.0f };
+
+		XMVECTOR P = XMLoadFloat3(&verticesFromTXT[i].pos);
+		XMVECTOR N = XMLoadFloat3(&verticesFromTXT[i].normal);
+		// Generate a tangent vector so normal mapping works.  We aren't applying
+		// a texture map to the skull, so we just need any tangent vector so that
+		// the math works out to give us the original interpolated vertex normal.
+		XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		auto a = XMVector3Dot(N, up);
+		auto b = XMVectorGetX(XMVector3Dot(N, up));
+		auto c = fabsf(XMVectorGetX(XMVector3Dot(N, up)));
+
+		if (fabsf(XMVectorGetX(XMVector3Dot(N, up))) < 1.0f - 0.001f)
+		{
+			XMVECTOR T = XMVector3Normalize(XMVector3Cross(up, N));
+			DirectX::XMStoreFloat3(&verticesFromTXT[i].tangent, T);
+		}
+		else
+		{
+			up = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+			XMVECTOR T = XMVector3Normalize(XMVector3Cross(N, up));
+			DirectX::XMStoreFloat3(&verticesFromTXT[i].tangent, T);
+		}
+
 	}
 	file >> ignore >> ignore >> ignore;
 
@@ -62,9 +87,11 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	}
 	file.close();
 
+	stride = sizeof(vbPosNormalTexTangent);
+	pVertexBuffer = gfx.CreateVertexBuffer(verticesFromTXT, false, false, L"SkullVerticess");
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
-	AddBind(pVertexBuffer);
+// 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
+// 	AddBind(pVertexBuffer);
 
 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
 	AddIndexBuffer(pIndexBuffer);
@@ -72,9 +99,13 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>(gfx, shadowMapVSDraw, 0u, 1u);
 	pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
+
+	////// used in new normal map
 	VertexConstantBuffer<cbCreateNormalMap>* pVCBNMap =
 		new VertexConstantBuffer<cbCreateNormalMap>(gfx, normalMapData, 0u, 1u);
 	pNormalMapGenerate = pVCBNMap->GetVertexConstantBuffer();
+	////
+
 
 	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 		new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
@@ -89,6 +120,21 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	pCopyPCBLightsCylinder = pLightsCB->GetPixelShaderConstantBuffer();
 }
 
+
+UINT* Skull::GetStride()
+{
+	return &stride;
+}
+
+UINT* Skull::GetOffset()
+{
+	return &offset;
+}
+
+ID3D11Buffer**  Skull::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
 
 void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
 {

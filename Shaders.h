@@ -178,5 +178,12 @@ private:
 	//debug quad
 	ID3D11VertexShader* pDebugQuadVS = nullptr;
 	ID3D11PixelShader* pDebugQuadPS = nullptr;
+
+	//Default shaders
+	ID3D11InputLayout* pPosNormalTexcTangentIL = nullptr;
+	//Normal Map
+	ID3D11VertexShader* pNormalMapVS = nullptr;
+	ID3D11PixelShader* pNormalMapPS = nullptr;
+
 };
 

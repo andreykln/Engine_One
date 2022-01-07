@@ -123,10 +123,6 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 	pgfx_pDeviceContext->ClearDepthStencilView(pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void Graphics::SetProjection(DirectX::XMMATRIX in_projection) noexcept
-{
-	projection = in_projection;
-}
 
 void Graphics::DrawIndexed(UINT count) const noexcept
 {
@@ -164,6 +160,17 @@ void Graphics::SetViewport()
 	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 }
 
+
+void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View)
+{
+	mView = View;
+	mViewProjection = ViewProjection;
+}
+
+void Graphics::NormalMap(const DirectX::XMMATRIX world)
+{
+
+}
 
 #ifdef MY_DEBUG
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
@@ -215,8 +222,5 @@ void Graphics::CheckFileExistence(Graphics* gfx, const std::wstring& path)
 
 #endif
 
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept
-{
-	return projection;
-}
+
 

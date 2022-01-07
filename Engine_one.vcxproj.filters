@@ -61,6 +61,9 @@
     <Filter Include="Shaders\ShadowMap">
       <UniqueIdentifier>{f5a78cf6-206e-4676-b203-1d5783dda107}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default">
+      <UniqueIdentifier>{a49ab7b8-80fe-41fa-9696-7ea3e18615b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -609,6 +612,12 @@
     </FxCompile>
     <FxCompile Include="NormalMappingShadowPS.hlsl">
       <Filter>Shaders\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalMapVS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalMapPS.hlsl">
+      <Filter>Shaders\Default</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

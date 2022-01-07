@@ -11,6 +11,21 @@ struct Vertex_IA
 	DirectX::XMFLOAT2 tex;
 };
 
+
+///////// MAIN
+struct vbPosNormalTexTangent
+{
+	vbPosNormalTexTangent() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f) {};
+	vbPosNormalTexTangent(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v,
+		float tX, float tY, float tZ)
+		: pos(posX, posY, posZ), normal(normX, normY, normZ), tex(u, v), tangent(tX, tY, tZ) {}
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 tex;
+	DirectX::XMFLOAT3 tangent;
+};
+////////END MAIN
+
 struct Vertices_Full
 {
 	Vertices_Full() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f) {};
@@ -298,6 +313,7 @@ struct cbDefaultPS
 	int pad1;
 };
 
+/// need this
 struct cbCreateNormalMap
 {
 	cbCreateNormalMap() { ZeroMemory(this, sizeof(this)); }
@@ -366,6 +382,8 @@ enum ShaderPicker
 	ComputeSSAO_VS_PS,
 	DrawDebugTexQuad_VS_PS,
 	SSAOBlur_VS_PS,
+	NormalMap_VS_PS, //default
+
 };
 
 enum ParticlePick

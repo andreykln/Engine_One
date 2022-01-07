@@ -19,7 +19,6 @@ public:
 	~Graphics();
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void SetProjection(DirectX::XMMATRIX in_projection) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	void DrawIndexed(UINT count) const noexcept;
 	void DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation);
@@ -27,8 +26,15 @@ public:
 	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
 	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
-// 	void SetVertexShader(ID3D11VertexShader* pVertexShader, std::wstring& path);
 	void SetViewport();
+	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View);
+	//techniques
+	void NormalMap(const DirectX::XMMATRIX world);
+
+	//buffers
+	template <typename T>
+	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
+
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);
@@ -49,8 +55,10 @@ public:
 	ID3D11Debug* debugDevice = nullptr;
 #endif
 private:
+	DirectX::XMMATRIX mViewProjection;
+	DirectX::XMMATRIX mView;
+
 	HWND windowHandle;
-	DirectX::XMMATRIX projection = DirectX::XMMatrixIdentity();
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
@@ -74,4 +82,41 @@ private:
 public:
 
 };
+
+template <typename T>
+ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name)
+{
+	D3D11_BUFFER_DESC desc;
+	if (streamOut)
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+	else
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	if (dynamic)
+	{
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	}
+	else
+	{
+		desc.Usage = D3D11_USAGE_IMMUTABLE;
+		desc.CPUAccessFlags = 0u;
+	}
+	desc.ByteWidth = static_cast<UINT>(sizeof(T) * vertices.size());//size of the structure
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = 0; //only for structured buffer
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = vertices.data();
+	initData.SysMemPitch = 0;
+	initData.SysMemSlicePitch = 0;
+	ID3D11Buffer* pBuffer = nullptr;
+	HRESULT hr = pgfx_pDevice->CreateBuffer(&desc, &initData, &pBuffer);
+
+	if (FAILED (hr))
+	{
+		std::wstring message = L"Failed Vertex Buffer creation of ";
+		message += name;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	return pBuffer;
+}
 

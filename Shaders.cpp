@@ -127,6 +127,10 @@ Shaders::Shaders(Graphics& in_gfx)
 	PS_Init(&pDebugQuadPS, L"Shaders\\Pixel\\DebugScreenQuadPS.cso");
 
 
+	//Default Shaders
+	VS_IL_Init(&pNormalMapVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\NormalMapVS.cso");
+	PS_Init(&pNormalMapPS, L"Shaders\\Pixel\\NormalMapPS.cso");
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -300,6 +304,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pSSAOBlurVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::NormalMap_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexcTangentIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pNormalMapVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -424,6 +434,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::SSAOBlur_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSSAOBlurPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::NormalMap_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMapPS, nullptr, 0u);
 		break;
 	}
 	default:
