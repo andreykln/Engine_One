@@ -5,6 +5,11 @@ class GeoSphere : public Shape
 {
 public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere, DemoSwitch in_switch);
+	ID3D11Buffer** GetVertexBuffer();
+	ID3D11Buffer* GetIndexBuffer();
+	UINT GetIndexCount();
+
+
 	void UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView);
 	void UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
@@ -14,7 +19,7 @@ public:
 
 
 
-
+	DirectX::XMMATRIX m_SphereWorld[10];
 private:
 	DirectX::XMFLOAT2 sphereTextureOffset;
 	DirectX::XMMATRIX sphereOffset;
@@ -47,6 +52,13 @@ private:
 	ID3D11Buffer* pIAbuffers[2];
 	UINT stride[2]{};
 	UINT offset[2] = { 0,0 };
+
+
+
+	//new architect
+	ID3D11Buffer* pVertexBuffer = nullptr;
+	ID3D11Buffer* pIndexBuffer = nullptr;
+	UINT indexCount = 0;
 
 };
 

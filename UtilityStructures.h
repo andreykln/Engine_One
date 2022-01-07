@@ -24,6 +24,21 @@ struct vbPosNormalTexTangent
 	DirectX::XMFLOAT2 tex;
 	DirectX::XMFLOAT3 tangent;
 };
+
+struct cbShadowMap
+{
+	cbShadowMap() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX lightWVP;
+	DirectX::XMMATRIX texTransform;
+};
+
+struct cbCreateNormalMap
+{
+	cbCreateNormalMap() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX worldView;
+	DirectX::XMMATRIX worldInvTransposeView;
+	DirectX::XMMATRIX worldViewProjection;
+};
 ////////END MAIN
 
 struct Vertices_Full
@@ -313,14 +328,7 @@ struct cbDefaultPS
 	int pad1;
 };
 
-/// need this
-struct cbCreateNormalMap
-{
-	cbCreateNormalMap() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMMATRIX worldView;
-	DirectX::XMMATRIX worldInvTransposeView;
-	DirectX::XMMATRIX worldViewProjection;
-};
+
 struct cbCreateNormalMapInstanced
 {
 	cbCreateNormalMapInstanced() { ZeroMemory(this, sizeof(this)); }
@@ -369,20 +377,16 @@ enum ShaderPicker
 	Particle_ExplosionDraw_VS_GS_PS,
 	Particle_FountainStreamOut_VS_GS,
 	Particle_FountainDraw_VS_GS_PS,
-	ShadowMap_VS_PS,
-	ShadowMapGen_VS_PS,
 	ShadowMapGenSkull_VS_PS,
 	ShadowMapDrawSkull_VS_PS,
 	DefaultInstanced_PS,
 	ShadowMapInstancedGen_VS,
 	ShadowMapInstancedDraw_VS,
-	CreateNormalMap_VS_PS,
-	CreateNormalMapSkullVS,
-	CreateNormalMapInstancedVS,
 	ComputeSSAO_VS_PS,
 	DrawDebugTexQuad_VS_PS,
 	SSAOBlur_VS_PS,
-	NormalMap_VS_PS, //default
+	NormalMap_VS_PS, //new architecture
+	ShadowMap_VS_PS, //new architecture
 
 };
 

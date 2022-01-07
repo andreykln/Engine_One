@@ -78,8 +78,8 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	file >> ignore >> ignore >> ignore;
 
 
-	UINT indexCount = 3 * triangles;
-	std::vector<UINT> indices(indexCount);
+	UINT indexNum = 3 * triangles;
+	std::vector<UINT> indices(indexNum);
 
 	for (size_t i = 0; i < triangles; ++i)
 	{
@@ -91,9 +91,10 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 
 // 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
 // 	AddBind(pVertexBuffer);
-
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
+	indexCount = indices.size();
+	pIndexBuffer = gfx.CreateIndexBuffer(indices, L"Skull index buffer");
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
 
 	VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>* pVCBPerObject =
 		new VertexConstantBuffer<CB_VS_ShadowMapDrawWithSSAO>(gfx, shadowMapVSDraw, 0u, 1u);
@@ -124,6 +125,16 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 ID3D11Buffer**  Skull::GetVertexBuffer()
 {
 	return &pVertexBuffer;
+}
+
+ID3D11Buffer* Skull::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT Skull::GetIndexCount()
+{
+	return indexCount;
 }
 
 void Skull::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)

@@ -33,21 +33,11 @@ Cylinder::Cylinder(Graphics& gfx,
 	{
 		m_CylWorld[i] = DirectX::XMLoadFloat4x4(&sCylWorld[i]);
 	}
-	//new
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Cylinder vertices");
-
-	//
-
-
-// 	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, verticesWithNormals, cylWorlds, L"IstancedVB");
-// 	pIAbuffers[0] = pVertexBuffer->GetVertexData();
-// 	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
-// 	stride[0] = sizeof(Vertices_Full);
-// 	stride[1] = sizeof(DirectX::XMFLOAT4X4);
+	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Cylinder index buffer");
+	indexCount = mesh.indices.size();
 
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"CylinderIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
 
 
 	VertexConstantBuffer<cbDefaultVS>* pVCBPerObject =
@@ -97,17 +87,27 @@ ID3D11Buffer** Cylinder::GetVertexBuffer()
 }
 
 
+ID3D11Buffer* Cylinder::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT Cylinder::GetIndexCount()
+{
+	return indexCount;
+}
+
 void Cylinder::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
 {
 // 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
-	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightView);
-	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pShadomMapGenCB);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pShadomMapGenCB, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	ShadowMapGenVS* pMatrices = reinterpret_cast<ShadowMapGenVS*>(mappedData.pData);
+// 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(in_lightView);
+// 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+// 	gfx.pgfx_pDeviceContext->Unmap(pShadomMapGenCB, 0u);
 }
 
 
@@ -176,20 +176,20 @@ void Cylinder::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_
 {
 // 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
 
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
-	for (int i = 0; i < 10; i++)
-	{
-		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
-			MathHelper::InverseTranspose(
-				DirectX::XMLoadFloat4x4(&sCylWorld[i])) * in_ViewM);
-		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewM);
-		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewProjection);
-
-	}
-	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
+// 	for (int i = 0; i < 10; i++)
+// 	{
+// 		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
+// 			MathHelper::InverseTranspose(
+// 				DirectX::XMLoadFloat4x4(&sCylWorld[i])) * in_ViewM);
+// 		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewM);
+// 		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sCylWorld[i]) * in_ViewProjection);
+// 
+// 	}
+// 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 }
 

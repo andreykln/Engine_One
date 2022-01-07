@@ -87,10 +87,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\ParticleFountainGS.cso");
 	VS_IL_Init(&pParticleFountainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFountainVS.cso");
 
-	//shadow map
-	VS_IL_Init(&pShadowMapVS, IL.posNormalTexCoordTangent,
-		&pPosNormalTexCTangentIL, IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\NormalMappingShadowsVS.cso");
-	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\NormalMappingShadowPS.cso");
 
 	//shadow map generation
 	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
@@ -105,12 +101,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
 
 	//SSAO
-	//NormalMap generation  
-	VS_IL_Init(&pCreateNormalMapVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
-		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\CreateNormalMapVS.cso");
-	PS_Init(&pCreateNormalMapPS, L"Shaders\\Pixel\\CreateNormalMapPS.cso");
-	VS_Init(&pCreateNormalMapSkullVS, L"Shaders\\Vertex\\CreateNormalMapSkullVS.cso");
-	VS_Init(&pCreateNormalMapInstancedVS, L"Shaders\\Vertex\\CreateNormalMapInstancedVS.cso");
 	//compute ssao
 	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeSSAOVS.cso");
@@ -128,8 +118,12 @@ Shaders::Shaders(Graphics& in_gfx)
 
 
 	//Default Shaders
+	//normal map and posNormalTexcTangent layout
 	VS_IL_Init(&pNormalMapVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\NormalMapVS.cso");
 	PS_Init(&pNormalMapPS, L"Shaders\\Pixel\\NormalMapPS.cso");
+	//shadow map
+	VS_Init(&pShadowMapVS, L"Shaders\\Vertex\\ShadowMapVS.cso");
+	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\ShadowMapPS.cso");
 
 }
 
@@ -232,18 +226,6 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleFountainVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::ShadowMap_VS_PS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::ShadowMapGen_VS_PS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapGenVS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::ShadowMapGenSkull_VS_PS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pSkullSMIL);
@@ -268,24 +250,6 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::CreateNormalMap_VS_PS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::CreateNormalMapSkullVS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pSkullSMIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapSkullVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::CreateNormalMapInstancedVS:
-	{
-		GetContext(*pSgfx)->IASetInputLayout(pShadowMapInstancedIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pCreateNormalMapInstancedVS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::ComputeSSAO_VS_PS:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
@@ -308,6 +272,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexcTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pNormalMapVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexcTangentIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
 		break;
 	}
 	default:
@@ -391,16 +361,6 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::ShadowMap_VS_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::ShadowMapGen_VS_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapGenPS, nullptr, 0u);
-		break;
-	}
 	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pSkullSMPS, nullptr, 0u);
@@ -414,11 +374,6 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::DefaultInstanced_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::CreateNormalMap_VS_PS:
-	{
-		pSgfx->pgfx_pDeviceContext->PSSetShader(pCreateNormalMapPS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::ComputeSSAO_VS_PS:
@@ -439,6 +394,11 @@ void Shaders::BindPS(ShaderPicker shader)
 	case ShaderPicker::NormalMap_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pNormalMapPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
 		break;
 	}
 	default:

@@ -6,7 +6,8 @@ class Cylinder : public Shape
 public:
 	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count);
 	ID3D11Buffer** GetVertexBuffer();
-
+	ID3D11Buffer* GetIndexBuffer();
+	UINT GetIndexCount();
 
 	void UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView);
 	void UpdateDrawInstancedBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
@@ -40,5 +41,7 @@ private:
 
 	//new architect
 	ID3D11Buffer* pVertexBuffer = nullptr;
+	ID3D11Buffer* pIndexBuffer = nullptr;
+	UINT indexCount = 0;
 };
 

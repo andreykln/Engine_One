@@ -6,6 +6,12 @@ class Hills : public Shape
 {
 public:
 	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n);
+	ID3D11Buffer** GetVertexBuffer();
+	ID3D11Buffer* GetIndexBuffer();
+	UINT GetIndexCount();
+
+
+
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
 		const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj, ID3D11ShaderResourceView* pShadowMapSRV,
@@ -34,5 +40,11 @@ private:
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;
 	ShadowMapGenVS shadowMapCbuffer;
+
+
+	//new architect
+	ID3D11Buffer* pVertexBuffer = nullptr;
+	ID3D11Buffer* pIndexBuffer = nullptr;
+	UINT indexCount = 0;
 };
 

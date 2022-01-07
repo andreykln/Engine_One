@@ -77,11 +77,16 @@ private:
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
 	GaussianBlur* pGaussianBlur = nullptr;
 	DepthComplexity* pDepthArr[3];
- 	Box* pBox = nullptr;
 	Box* pDisplacementMappingBox = nullptr;
+	//NEW ARCH
+	Cylinder* pCylinder = nullptr;
+	Hills* pPlate = nullptr;
+	Box* pBox = nullptr;
+	GeoSphere* pGeoSphere = nullptr;
+
+		////////////
 	Cylinder* pInstancedCylinder = nullptr;
 	GeoSphere* pInstancedGeoSphere = nullptr;
- 	GeoSphere* pGeoSphere = nullptr;
   	Hills* pHills = nullptr;
  	Skull* pSkull = nullptr;
 	QuadTessellation* pQuadTess = nullptr;

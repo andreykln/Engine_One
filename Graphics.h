@@ -33,15 +33,16 @@ public:
 
 	void CreateCBuffers();
 	//techniques
-	void NormalMapCB();
+	void NormalMapBindConstBuffer();
 	void NormalMap(const DirectX::XMMATRIX world);
 
-	
+	void ShadowMapBindConstBuffer();
+	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
 
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
-
+	ID3D11Buffer* CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name = std::wstring());
 
 #ifdef MY_DEBUG
 public:
@@ -89,9 +90,6 @@ private:
 		D3D_FEATURE_LEVEL_9_2,
 		D3D_FEATURE_LEVEL_9_1,
 	};
-
-public:
-
 };
 
 template <typename T>

@@ -13,7 +13,7 @@ App::App()
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
 	pSSAO = new SSAO(wnd.GetGraphics(), resolution_width, resolution_height);
 	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
+// 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
 	pDC = wnd.GetGraphics().pgfx_pDeviceContext.Get();
 	wnd.GetGraphics().CreateCBuffers();
 // 	CreateBilateralHillsBlur();
@@ -335,71 +335,81 @@ void App::SetDefaultRTVAndViewPort()
 
 void App::DrawSceneToShadowMap()
 {
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	viewProjectionMatrix = GetViewProjectionCamera();
-	DirectX::XMMATRIX WVP =
-		DirectX::XMMatrixTranslation(0.0f, 6.0f, 0.0) * DirectX::XMMatrixScaling(0.3f, 0.3f, 0.3f) *
-		shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
 
-	/*pShaders->BindVSandIA(ShaderPicker::ShadowMapGenSkull_VS_PS);
-	pShaders->BindPS(ShaderPicker::ShadowMapGenSkull_VS_PS);
-	pSkull->UpdateShadomMapGenBuffers(wnd.GetGraphics(),
-		WVP, camera.GetCameraPosition());
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());*/
-
-	pShaders->BindVSandIA(ShaderPicker::ShadowMapInstancedGen_VS);
- 	pShaders->BindPS(ShaderPicker::ShadowMapGen_VS_PS);
-
-	//copy in argument
 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
 	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
+	wnd.GetGraphics().ShadowMapBindConstBuffer();
+	pShaders->BindVSandIA(ShadowMap_VS_PS);
+	pShaders->BindPS(ShadowMap_VS_PS);
 
-	pInstancedCylinder->UpdateShadowMapGenBuffersInstanced(wnd.GetGraphics(), VP);
-	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0u, 0u, 0u);
+	const UINT stride = sizeof(vbPosNormalTexTangent);
+	const UINT offset = 0;
+	//skull
+	wnd.GetGraphics().ShadowMap(pSkull->skullWorld, VP);
+	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
 
+	//cylinders
+	pDC->IASetVertexBuffers(0u, 1u, pCylinder->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pCylinder->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	const UINT mCylIndCount = pCylinder->GetIndexCount();
+	for (int i = 0; i < 10; i++)
+	{
+		wnd.GetGraphics().ShadowMap(pCylinder->m_CylWorld[i], VP);
+		pDC->DrawIndexed(mCylIndCount, 0u, 0u);
+	}
+	//plate
+	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().ShadowMap(DirectX::XMMatrixIdentity(), VP);;
+	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
 
-	pInstancedGeoSphere->UpdateShadowMapGenBuffersInstanced(wnd.GetGraphics(), VP);
-	pInstancedGeoSphere->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
-
-	pShaders->BindVSandIA(ShaderPicker::ShadowMapGen_VS_PS);
-
-	pHills->UpdateShadomMapGenBuffers(wnd.GetGraphics(),
-		shapes.Get_m_GridWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection(), camera.GetCameraPosition());
-	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-
-	WVP = shapes.Get_m_BoxWorld() * shapes.GetCameraOffset() * pShadowMap->GetLighViewProjection();
-
-	pDisplacementMappingBox->UpdateShadomMapGenBuffers(wnd.GetGraphics(), WVP, camera.GetCameraPosition());
-	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
+	//cube
+	pDC->IASetVertexBuffers(0u, 1u, pBox->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pBox->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().ShadowMap(shapes.Get_m_BoxWorld(), VP);;
+	pDC->DrawIndexed(pBox->GetIndexCount(), 0u, 0u);
+	//spheres
+	pDC->IASetVertexBuffers(0u, 1u, pGeoSphere->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pGeoSphere->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	const UINT mSphereIndCount = pGeoSphere->GetIndexCount();
+	for (int i = 0; i < 10; i++)
+	{
+		wnd.GetGraphics().ShadowMap(pGeoSphere->m_SphereWorld[i], VP);
+		pDC->DrawIndexed(mSphereIndCount, 0u, 0u);
+	}
 
 }
 
 void App::CreateShadowMapDemo()
 {
 	pSky = new Sky(wnd.GetGraphics());
-	pDisplacementMappingBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 2.0f, DemoSwitch::ShadowMap);
+	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 2.0f, DemoSwitch::ShadowMap);
  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
-	pHills = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
-	pInstancedCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
-	pInstancedGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap);
+	pPlate = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
+	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
+	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap);
 
 
 }
 
 void App::DrawShadowMapDemo()
 {
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	//update every frame
 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
 	//shadow map
-// 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-// 	pShadowMap->UpdateScene(timer.DeltaTime());
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
-// 	DrawSceneToShadowMap();
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
+	pShadowMap->UpdateScene(timer.DeltaTime());
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
+	DrawSceneToShadowMap();
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	//
 	//SSAO
 	//
@@ -495,42 +505,47 @@ void App::DrawShadowMapDemo()
 
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
-	/*pShaders->BindVSandIA(CreateNormalMap_VS_PS);
-	pShaders->BindPS(CreateNormalMap_VS_PS);
-	pDisplacementMappingBox->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(),
-		camera.GetViewMatrix(), viewProjectionMatrix);
-	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
-
-	pHills->UpdateNormalMapBuffer(wnd.GetGraphics(), shapes.Get_m_GridWorld(), camera.GetViewMatrix(), viewProjectionMatrix);
-	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-
-	pShaders->BindVSandIA(CreateNormalMapInstancedVS);
-	pInstancedCylinder->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
-	pInstancedCylinder->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
-
-	//spheres
-	pInstancedGeoSphere->UpdateNormalMapBuffer(wnd.GetGraphics(), camera.GetViewMatrix(), viewProjectionMatrix);
-	pInstancedGeoSphere->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);*/
-
-
-
-	wnd.GetGraphics().NormalMapCB();
+	wnd.GetGraphics().NormalMapBindConstBuffer();
 	pShaders->BindVSandIA(NormalMap_VS_PS);
 	pShaders->BindPS(NormalMap_VS_PS);
+
 	const UINT stride = sizeof(vbPosNormalTexTangent);
 	const UINT offset = 0;
-	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
+	//skull
 	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
-// 	pSkull->UpdateNormalMap(wnd.GetGraphics(), pSkull->skullWorld, camera.GetViewMatrix(), viewProjectionMatrix);
-	pSkull->BindAndDrawIndexed(wnd.GetGraphics());
+	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
 
-	pDC->IASetVertexBuffers(0u, 1u, pInstancedCylinder->GetVertexBuffer(), &stride, &offset);
+	//cylinders
+	pDC->IASetVertexBuffers(0u, 1u, pCylinder->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pCylinder->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	const UINT mCylIndCount = pCylinder->GetIndexCount();
 	for (int i = 0; i < 10; i++)
 	{
-		wnd.GetGraphics().NormalMap(pInstancedCylinder->m_CylWorld[i]);
-		pInstancedCylinder->BindAndDrawIndexed(wnd.GetGraphics());
+		wnd.GetGraphics().NormalMap(pCylinder->m_CylWorld[i]);
+		pDC->DrawIndexed(mCylIndCount, 0u, 0u);
 	}
+	//plate
+	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().NormalMap(DirectX::XMMatrixIdentity());;
+	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
 
+	//cube
+	pDC->IASetVertexBuffers(0u, 1u, pBox->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pBox->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().NormalMap(shapes.Get_m_BoxWorld());;
+	pDC->DrawIndexed(pBox->GetIndexCount(), 0u, 0u);
+	//spheres
+	pDC->IASetVertexBuffers(0u, 1u, pGeoSphere->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pGeoSphere->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	const UINT mSphereIndCount = pGeoSphere->GetIndexCount();
+	for (int i = 0; i < 10; i++)
+	{
+		wnd.GetGraphics().NormalMap(pGeoSphere->m_SphereWorld[i]);
+		pDC->DrawIndexed(mSphereIndCount, 0u, 0u);
+	}
 }
 
 void App::CreateBezierPatchTess()

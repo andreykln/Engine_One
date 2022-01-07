@@ -556,15 +556,6 @@
     <FxCompile Include="CreateNormalMapPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="CreateNormalMapVS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
-    </FxCompile>
-    <FxCompile Include="CreateNormalMapInstancedVS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
-    </FxCompile>
-    <FxCompile Include="CreateNormalMapSkullVS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
-    </FxCompile>
     <FxCompile Include="ComputeSSAOVS.hlsl">
       <Filter>Shaders\SSAO</Filter>
     </FxCompile>
@@ -617,6 +608,12 @@
       <Filter>Shaders\Default</Filter>
     </FxCompile>
     <FxCompile Include="NormalMapPS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMapVS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMapPS.hlsl">
       <Filter>Shaders\Default</Filter>
     </FxCompile>
   </ItemGroup>

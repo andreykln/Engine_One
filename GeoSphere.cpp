@@ -4,10 +4,8 @@
 GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_centerSphere, DemoSwitch in_switch)
 	: centerSphere(in_centerSphere), currentDemo(in_switch)
 {
-
-
 	sphere.CreateGeosphere(radius, numSubdivisions, mesh);
-	std::vector<Vertices_Full> vertices(mesh.vertices.size());
+	std::vector<vbPosNormalTexTangent> vertices(mesh.vertices.size());
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
@@ -33,22 +31,25 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 		DirectX::XMStoreFloat4x4(&sGeoSphereWorld[i * 2 + 1],
 			DirectX::XMMatrixTranslation(5.0f, 3.5f, -10.0f + i * 5.0f));
 	}
-	std::vector<DirectX::XMFLOAT4X4> geoSphereWorld(10);
+
 	for (size_t i = 0; i < 10; i++)
 	{
-		geoSphereWorld[i] = sGeoSphereWorld[i];
+		m_SphereWorld[i] = DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]);
 	}
 
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Spheres Vertex buffer");
+	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Spheres Index Buffer");
+	indexCount = mesh.indices.size();
 
 
-	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, vertices, geoSphereWorld, L"IstancedVB");
-	pIAbuffers[0] = pVertexBuffer->GetVertexData();
-	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
-	stride[0] = sizeof(Vertices_Full);
-	stride[1] = sizeof(DirectX::XMFLOAT4X4);
-
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"GeoSphereIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
+// 	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, vertices, geoSphereWorld, L"IstancedVB");
+// 	pIAbuffers[0] = pVertexBuffer->GetVertexData();
+// 	pIAbuffers[1] = pVertexBuffer->GetInstancedData();
+// 	stride[0] = sizeof(Vertices_Full);
+// 	stride[1] = sizeof(DirectX::XMFLOAT4X4);
+// 
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"GeoSphereIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
 
 
 	VertexConstantBuffer<cbCreateNormalMapInstanced>* pVCBNMap =
@@ -83,6 +84,21 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 	AddBind(pTexSampler);
 }
 
+
+ID3D11Buffer** GeoSphere::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
+
+ID3D11Buffer* GeoSphere::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT GeoSphere::GetIndexCount()
+{
+	return indexCount;
+}
 
 void GeoSphere::UpdateShadowMapGenBuffersInstanced(Graphics& gfx, const DirectX::XMMATRIX& in_lightView)
 {
@@ -145,22 +161,22 @@ void GeoSphere::UpdateShadowMapDrawInstancedBuffers(Graphics& gfx, DirectX::XMFL
 
 void GeoSphere::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_ViewM, const DirectX::XMMATRIX& in_ViewProjection)
 {
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
-
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
-	for (int i = 0; i < 10; i++)
-	{
-		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
-			MathHelper::InverseTranspose(
-				DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i])) * in_ViewM);
-		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewM);
-		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewProjection);
-
-	}
-	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 2u, pIAbuffers, stride, offset);
+// 
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	cbCreateNormalMapInstanced* nMap = reinterpret_cast<cbCreateNormalMapInstanced*> (mappedData.pData);
+// 	for (int i = 0; i < 10; i++)
+// 	{
+// 		nMap->worldInvTransposeView[i] = DirectX::XMMatrixTranspose(
+// 			MathHelper::InverseTranspose(
+// 				DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i])) * in_ViewM);
+// 		nMap->worldView[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewM);
+// 		nMap->worldViewProjection[i] = DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&sGeoSphereWorld[i]) * in_ViewProjection);
+// 
+// 	}
+// 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 }
 

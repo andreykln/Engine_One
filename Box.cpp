@@ -7,20 +7,8 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 {
 
 	box.CreateBox(width, height, depth, mesh);
-	std::vector<Vertex_IA> vertices(mesh.vertices.size());
 
-	for (UINT i = 0; i < mesh.vertices.size(); i++)
-	{
-		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
-		DirectX::XMFLOAT3 n = mesh.vertices[i].normal;
-		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
-
-		vertices[i].pos = p;
- 		vertices[i].normal = n;
-		vertices[i].tex = t;
-	}
-
-	std::vector<Vertices_Full> verticesNormal(mesh.vertices.size());
+	std::vector<vbPosNormalTexTangent> vertices(mesh.vertices.size());
 	for (UINT i = 0; i < mesh.vertices.size(); i++)
 	{
 		DirectX::XMFLOAT3 p = mesh.vertices[i].position;
@@ -28,30 +16,20 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 		DirectX::XMFLOAT2 t = mesh.vertices[i].TexC;
 		DirectX::XMFLOAT3 tg = mesh.vertices[i].tangentU;
 
-		verticesNormal[i].pos = p;
-		verticesNormal[i].normal = n;
-		verticesNormal[i].tex = t;
-		verticesNormal[i].tangent = tg;
+		vertices[i].pos = p;
+		vertices[i].normal = n;
+		vertices[i].tex = t;
+		vertices[i].tangent = tg;
 	}
 
-	switch (currentDemo)
-	{
-	case ShadowMap:
-	{
-		VertexBuffer* pVB = new VertexBuffer(gfx, verticesNormal, L"BoxNormal.");
-		AddBind(pVB);
-		break;
-	}
-	case DefaultBox:
-	{
-		VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"Box.");
-		AddBind(pVB);
-		break;
-	}
-	}
-
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
-	AddIndexBuffer(pIndexBuffer);
+// 	VertexBuffer* pVB = new VertexBuffer(gfx, verticesNormal, L"BoxNormal.");
+// 	AddBind(pVB);
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Cube vertex buffer");
+	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Cube index Buffer");
+	indexCount = mesh.indices.size();
+	
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"BoxIndexBuffer.");
+// 	AddIndexBuffer(pIndexBuffer);
 
 	switch (currentDemo)
 	{
@@ -61,9 +39,9 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 			new VertexConstantBuffer<cbDefaultVS>(gfx, boxVSCB, 0u, 1u);
 		pShadowMapVSDraw = pVCBPerObject->GetVertexConstantBuffer();
 		//copy for normal map so it won't occupy the same memory causing flickering
-		VertexConstantBuffer<cbCreateNormalMap>* pVCBNormalMap =
-			new VertexConstantBuffer<cbCreateNormalMap>(gfx, normapMapData, 0u, 1u);
-		pNormalMapVSDraw = pVCBNormalMap->GetVertexConstantBuffer();
+// 		VertexConstantBuffer<cbCreateNormalMap>* pVCBNormalMap =
+// 			new VertexConstantBuffer<cbCreateNormalMap>(gfx, normapMapData, 0u, 1u);
+// 		pNormalMapVSDraw = pVCBNormalMap->GetVertexConstantBuffer();
 
 		VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
 			new VertexConstantBuffer<ShadowMapGenVS>(gfx, shadowMapCbuffer, 0u, 1u);
@@ -130,6 +108,21 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	pSamplerState = pTexSampler->GetSamplerState();
 
+}
+
+ID3D11Buffer** Box::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
+
+ID3D11Buffer* Box::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT Box::GetIndexCount()
+{
+	return indexCount;
 }
 
 void Box::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)
@@ -201,16 +194,16 @@ void Box::UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosi
 void Box::UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewM,
 	const DirectX::XMMATRIX& in_ViewProjection)
 {
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
-
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
-	nMap->worldInvTransposeView = (MathHelper::InverseTranspose(in_world) * DirectX::XMMatrixTranspose(in_ViewM));
-	nMap->worldView = DirectX::XMMatrixTranspose(in_world * in_ViewM);
-	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
-	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pNormalMapVSDraw);
+// 
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pNormalMapVSDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	cbCreateNormalMap* nMap = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
+// 	nMap->worldInvTransposeView = (MathHelper::InverseTranspose(in_world) * DirectX::XMMatrixTranspose(in_ViewM));
+// 	nMap->worldView = DirectX::XMMatrixTranspose(in_world * in_ViewM);
+// 	nMap->worldViewProjection = DirectX::XMMatrixTranspose(in_world * in_ViewProjection);
+// 	gfx.pgfx_pDeviceContext->Unmap(pNormalMapVSDraw, 0u);
 
 }
 

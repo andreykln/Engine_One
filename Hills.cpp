@@ -5,7 +5,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	: width(in_width), depth(in_depth), m(in_m), n(in_n)
 {
 	landscapeGenerated.CreateGrid(width, depth, m, n, grid);
-	std::vector<Vertices_Full> vertices(grid.vertices.size());
+	std::vector<vbPosNormalTexTangent> vertices(grid.vertices.size());
 
 	for (size_t i = 0; i < grid.vertices.size(); ++i)
 	{
@@ -15,11 +15,15 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 		vertices[i].tex = grid.vertices[i].TexC;
 		vertices[i].tangent = grid.vertices[i].tangentU;
 	}
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
-	AddBind(pVertexBuffer);
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Plate vertex buffer");
+	pIndexBuffer = gfx.CreateIndexBuffer(grid.indices, L"Plate index buffer");
+	indexCount = grid.indices.size();
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
+// 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"Hills");
+// 	AddBind(pVertexBuffer);
+// 
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, grid.indices, L"HillsIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
 
 
 	VertexConstantBuffer<ShadowMapGenVS>* pVCBSMGen =
@@ -61,6 +65,21 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);
+}
+
+ID3D11Buffer** Hills::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
+
+ID3D11Buffer* Hills::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT Hills::GetIndexCount()
+{
+	return indexCount;
 }
 
 void Hills::UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition)

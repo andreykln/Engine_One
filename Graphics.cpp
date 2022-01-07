@@ -172,9 +172,13 @@ void Graphics::CreateCBuffers()
 	cbCreateNormalMap nMap;
 	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
 	constBuffersMap["NormalMap"] = pNMap;
+
+	cbShadowMap smMap;
+	ID3D11Buffer* pSMap = CreateConstantBuffer(&smMap, sizeof(cbShadowMap), L"Shadow map cBuffer");
+	constBuffersMap["ShadowMap"] = pSMap;
 }
 
-void Graphics::NormalMapCB()
+void Graphics::NormalMapBindConstBuffer()
 {
 	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap["NormalMap"]);
 }
@@ -182,7 +186,7 @@ void Graphics::NormalMapCB()
 void Graphics::NormalMap(const DirectX::XMMATRIX world)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	pgfx_pDeviceContext->Map(constBuffersMap["NormalMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData);
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap["NormalMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
 	cBuffer->worldInvTransposeView = (MathHelper::InverseTranspose(world) * DirectX::XMMatrixTranspose(mView));
 	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
@@ -190,7 +194,48 @@ void Graphics::NormalMap(const DirectX::XMMATRIX world)
 	pgfx_pDeviceContext->Unmap(constBuffersMap["NormalMap"], 0u);
 }
 
+void Graphics::ShadowMapBindConstBuffer()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap["ShadowMap"]);
+}
+
+void Graphics::ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap["ShadowMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbShadowMap* pMatrices = reinterpret_cast<cbShadowMap*>(mappedData.pData);
+	pMatrices->lightWVP = DirectX::XMMatrixTranspose(world * lightViewProj);
+	pMatrices->texTransform = DirectX::XMMatrixIdentity();
+	pgfx_pDeviceContext->Unmap(constBuffersMap["ShadowMap"], 0u);
+}
+
 #ifdef MY_DEBUG
+
+ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name)
+{
+	D3D11_BUFFER_DESC desc;
+	desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.ByteWidth = (sizeof(UINT) * indices.size());
+	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	desc.CPUAccessFlags = 0u;
+	desc.MiscFlags = 0u;
+	desc.StructureByteStride = sizeof(UINT);
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = indices.data();
+	initData.SysMemPitch = 0u;
+	initData.SysMemSlicePitch = 0u;
+
+	ID3D11Buffer* pBuffer = nullptr;
+	HRESULT hr =  pgfx_pDevice->CreateBuffer(&desc, &initData, &pBuffer);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Index Buffer creation of ";
+		message += name;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	return pBuffer;
+}
+
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
 {
 	if (child != nullptr)

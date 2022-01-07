@@ -139,10 +139,6 @@ private:
 	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
 	ID3D11GeometryShader* pParticleFountainGS = nullptr;
 
-	//ShadowMap
-	ID3D11VertexShader* pShadowMapVS = nullptr;
-	ID3D11PixelShader* pShadowMapPS = nullptr;
-
 	//shadow map generation
 	ID3D11VertexShader* pShadowMapGenVS = nullptr;
 	ID3D11PixelShader* pShadowMapGenPS = nullptr;
@@ -162,12 +158,6 @@ private:
 	//main light shader with shadow map
 	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
 	
-	//SSAO normal map
-	ID3D11VertexShader* pCreateNormalMapVS = nullptr;
-	ID3D11PixelShader* pCreateNormalMapPS = nullptr;
-	ID3D11VertexShader* pCreateNormalMapSkullVS = nullptr;
-	ID3D11VertexShader* pCreateNormalMapInstancedVS = nullptr;
-
 	//compute SSAO
 	ID3D11VertexShader* pSSAOFullScreenQuadVS = nullptr;
 	ID3D11PixelShader* pSSAOFullScreenQuadPS = nullptr;
@@ -179,11 +169,15 @@ private:
 	ID3D11VertexShader* pDebugQuadVS = nullptr;
 	ID3D11PixelShader* pDebugQuadPS = nullptr;
 
+	//NEW ARCHITECTURE
 	//Default shaders
 	ID3D11InputLayout* pPosNormalTexcTangentIL = nullptr;
 	//Normal Map
 	ID3D11VertexShader* pNormalMapVS = nullptr;
 	ID3D11PixelShader* pNormalMapPS = nullptr;
+	//ShadowMap
+	ID3D11VertexShader* pShadowMapVS = nullptr;
+	ID3D11PixelShader* pShadowMapPS = nullptr;
 
 };
 
