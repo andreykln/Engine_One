@@ -5,17 +5,18 @@ class Sky : public Shape
 {
 public:
 	Sky(Graphics& gfx);
-	void UpdateVSMatricesAndCubeMap(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj);
-	void DrawSky(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj);
-	ID3D11ShaderResourceView** GetSkyCubeMap();
+	ID3D11Buffer** GetVertexBuffer();
+	ID3D11Buffer* GetIndexBuffer();
+	UINT GetIndexCount();
 
 	//grasscube1024 desertcube1024 sunsetcube1024 snowcube1024
 	std::wstring skyBoxName = L"grasscube1024";
 private:
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
-	CB_VS_WorldViewProjection WVPmatrix;
-	ID3D11Buffer* pCopyWVPBuffer = nullptr;
-	ID3D11SamplerState* pSamplerState = nullptr;
-	ID3D11ShaderResourceView* pCubeMapSRV = nullptr;
+	ID3D11Buffer* pVertexBuffer = nullptr;
+	ID3D11Buffer* pIndexBuffer = nullptr;
+	UINT indexCount = 0;
+
+
 };

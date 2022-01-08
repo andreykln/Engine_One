@@ -11,65 +11,23 @@ Sky::Sky(Graphics& gfx)
 		vertices[i] = mesh.vertices[i].position;
 	}
 
-	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"SkyVerticess");
-	AddBind(pVB);
-
-	IndexBuffer* pIB = new IndexBuffer(gfx, mesh.indices, L"SkyIndices_");
-	AddIndexBuffer(pIB);
-
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
-
-
-// 	std::wstring directory[1];
-// 	directory[0] = L"Textures\\grasscube1024.dds"; //desertcube1024  grasscube1024  sunsetcube1024  snowcube1024
-// 	pCubeMapSRV = ShaderResourceView::CreateCubeMap(gfx, directory);
-
-
-// 	VertexConstantBuffer<CB_VS_WorldViewProjection>* pVCBPerObject =
-// 		new VertexConstantBuffer<CB_VS_WorldViewProjection>(gfx, WVPmatrix, 0u, 1u);
-// 	pCopyWVPBuffer = pVCBPerObject->GetVertexConstantBuffer();
-// 	AddBind(pVCBPerObject);
-
-
-	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.BorderColor[0] = 0.0f;
-	samplerDesc.BorderColor[1] = 0.0f;
-	samplerDesc.BorderColor[2] = 0.0f;
-	samplerDesc.BorderColor[3] = 0.0f;
-
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateSamplerState(&samplerDesc, &pSamplerState));
-
-
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"SkyBox vertices");
+	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"SkybBox indices");
+	indexCount = mesh.indices.size();
 }
 
-void Sky::UpdateVSMatricesAndCubeMap(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj)
+ID3D11Buffer** Sky::GetVertexBuffer()
 {
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyWVPBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-// 	CB_VS_WorldViewProjection* pMatrices = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
-// 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(worldViewProj);
-// 	gfx.pgfx_pDeviceContext->Unmap(pCopyWVPBuffer, 0u);
-
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pCubeMapSRV);
+	return &pVertexBuffer;
 }
 
-void Sky::DrawSky(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj)
+ID3D11Buffer* Sky::GetIndexBuffer()
 {
-// 	UpdateVSMatricesAndCubeMap(gfx, worldViewProj);
-	BindAndDrawIndexed(gfx);
+	return pIndexBuffer;
 }
 
-ID3D11ShaderResourceView** Sky::GetSkyCubeMap()
+UINT Sky::GetIndexCount()
 {
-	return &pCubeMapSRV;
+	return indexCount;
 }
+

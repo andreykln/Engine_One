@@ -401,8 +401,6 @@ void App::CreateShadowMapDemo()
 	pPlate = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap);
-
-
 }
 
 void App::DrawShadowMapDemo()
@@ -503,7 +501,12 @@ void App::DrawShadowMapDemo()
 	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
 	wnd.GetGraphics().ConstBufferVSMatricesBind();
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID, ID, camera.GetCameraPosition());
-	pSky->DrawSky(wnd.GetGraphics(), DirectX::XMMatrixIdentity());
+	stride = sizeof(DirectX::XMFLOAT3);
+	pDC->IASetVertexBuffers(0u, 1u, pSky->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSky->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
+
+// 	pSky->DrawSky(wnd.GetGraphics(), DirectX::XMMatrixIdentity());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);

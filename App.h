@@ -85,7 +85,8 @@ private:
 	Hills* pPlate = nullptr;
 	Box* pBox = nullptr;
 	GeoSphere* pGeoSphere = nullptr;
-
+	UINT stride = 0u;
+	UINT offset = 0u;
 		////////////
 	Cylinder* pInstancedCylinder = nullptr;
 	GeoSphere* pInstancedGeoSphere = nullptr;
