@@ -460,12 +460,6 @@
     <FxCompile Include="InstancedSkullPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="SkyVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="SkyPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="SphereCubeMap.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
@@ -614,6 +608,12 @@
       <Filter>Shaders\Default</Filter>
     </FxCompile>
     <FxCompile Include="ShadowMapPS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyVS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyPS.hlsl">
       <Filter>Shaders\Default</Filter>
     </FxCompile>
   </ItemGroup>

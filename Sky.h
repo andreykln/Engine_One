@@ -9,6 +9,8 @@ public:
 	void DrawSky(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj);
 	ID3D11ShaderResourceView** GetSkyCubeMap();
 
+	//grasscube1024 desertcube1024 sunsetcube1024 snowcube1024
+	std::wstring skyBoxName = L"grasscube1024";
 private:
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;

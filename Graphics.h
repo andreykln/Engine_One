@@ -8,6 +8,12 @@
 #include "CustomException.h"
 #include "UtilityStructures.h"
 #include "MathHelper.h"
+// #include "ShaderResourceView.h"
+//////////////////////////////////////////////////////////////////////////
+#include "DirectXTex/DirectXTex/DirectXTexP.h"
+#include "DirectXTex/DirectXTex/DirectXTex.h"
+#include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.h"
+//////////////////////////////////////////////////////////////////////////
 #include <d3dcompiler.h>
 #include <filesystem>
 #include <unordered_map>
@@ -32,12 +38,22 @@ public:
 	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View);
 
 	void CreateCBuffers();
+	void CreateSRVs();
+	void CreateAndBindSamplers();
 	//techniques
-	void NormalMapBindConstBuffer();
+	void ConstBufferNormalMapBind();
 	void NormalMap(const DirectX::XMMATRIX world);
 
-	void ShadowMapBindConstBuffer();
+	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
+
+	void ConstBufferVSMatricesBind();
+	void VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform,
+		const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform,
+		const DirectX::XMFLOAT3& cameraPositon);
+
+	//skybox is in third slot of PS
+	void BindCubeMap(std::wstring& skyBoxName) const;
 
 	//buffers
 	template <typename T>
@@ -50,6 +66,7 @@ public:
 	std::string wstrTostr(const std::wstring& wstr);
 	void CheckFileExistence(Graphics& gfx, const std::wstring& path);
 	void CheckFileExistence(Graphics* gfx, const std::wstring& path);
+	void CheckFileExistence(const std::wstring& path);
 private:
 	void SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& name);
 #endif
@@ -66,8 +83,14 @@ private:
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
-
+	ID3D11ShaderResourceView* CreateSRVtoDiffuseMap(std::wstring& in_path);
+	ID3D11ShaderResourceView* CreateSRVtoCubeMap(std::wstring& in_path);
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
+	std::unordered_map<std::string, std::pair<int, std::wstring>> diffuseMaps;
+	std::unordered_map<std::string, std::pair<int, std::wstring>> normalMaps;
+	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
+	std::vector<ID3D11SamplerState*> samplers;
+
 	DirectX::XMMATRIX mViewProjection;
 	DirectX::XMMATRIX mView;
 	HWND windowHandle;
@@ -90,6 +113,13 @@ private:
 		D3D_FEATURE_LEVEL_9_2,
 		D3D_FEATURE_LEVEL_9_1,
 	};
+
+	const DirectX::XMMATRIX toTexSpace = {
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f };
+
 };
 
 template <typename T>

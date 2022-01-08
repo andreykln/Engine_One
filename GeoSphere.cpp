@@ -76,9 +76,9 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions, bool in_
 
 	std::wstring directory[1];
 
-	directory[0] = L"Textures\\stone.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
-	AddBind(pSRV);
+// 	directory[0] = L"Textures\\stone.dds";
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
+// 	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);

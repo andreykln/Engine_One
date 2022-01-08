@@ -85,20 +85,20 @@ Box::Box(Graphics& gfx, float width, float height, float depth, DemoSwitch demo)
 	case DemoSwitch::ShadowMap:
 	{
 		//directory[0] = L"Textures\\bricks3.dds";
-		const wchar_t* diffuseMap = L"Textures\\bricks3.dds";
-		const wchar_t* path = L"Textures\\bricks3_nmap.dds";
-		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, path);
-		pNormalMap = pSRVN->GetSRV();
-
-		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
-		pDiffMapHeightMap = pSRV->GetSRV();
-		break;
+// 		const wchar_t* diffuseMap = L"Textures\\bricks3.dds";
+// 		const wchar_t* path = L"Textures\\bricks3_nmap.dds";
+// 		ShaderResourceView* pSRVN = new ShaderResourceView(gfx, path);
+// 		pNormalMap = pSRVN->GetSRV();
+// 
+// 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
+// 		pDiffMapHeightMap = pSRV->GetSRV();
+// 		break;
 	}
 	case DemoSwitch::DefaultBox:
 	{
-		const wchar_t* diffuseMap = L"Textures\\WoodCrate01.dds";
-		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
-		pDiffMapHeightMap = pSRV->GetSRV();
+// 		const wchar_t* diffuseMap = L"Textures\\WoodCrate01.dds";
+// 		ShaderResourceView* pSRV = new ShaderResourceView(gfx, diffuseMap);
+// 		pDiffMapHeightMap = pSRV->GetSRV();
 
 	}
 	break;

@@ -15,7 +15,17 @@ App::App()
 	viewProjectionMatrix = GetViewProjectionCamera();
 // 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
 	pDC = wnd.GetGraphics().pgfx_pDeviceContext.Get();
+
+	///
+	/// init
+	////
 	wnd.GetGraphics().CreateCBuffers();
+	wnd.GetGraphics().CreateSRVs();
+	wnd.GetGraphics().CreateAndBindSamplers();
+	////////
+	///////
+	/////////
+
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
@@ -339,7 +349,7 @@ void App::DrawSceneToShadowMap()
 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
 	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
-	wnd.GetGraphics().ShadowMapBindConstBuffer();
+	wnd.GetGraphics().ConstBufferShadowMapBind();
 	pShaders->BindVSandIA(ShadowMap_VS_PS);
 	pShaders->BindPS(ShadowMap_VS_PS);
 
@@ -399,10 +409,10 @@ void App::DrawShadowMapDemo()
 {
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 	//update every frame
 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
 
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	viewProjectionMatrix = GetViewProjectionCamera();
 	//shadow map
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
@@ -430,10 +440,10 @@ void App::DrawShadowMapDemo()
 
 	
 	SetDefaultRTVAndViewPort();
-	pShadowMap->SetShadowSampler(wnd.GetGraphics());
+// 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 	
 	//cubemap for specular reflections
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, pSky->GetSkyCubeMap());
+// 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, pSky->GetSkyCubeMap());
 
 
 	auto newLightDirection = pShadowMap->GetNewLightDirection();
@@ -491,11 +501,13 @@ void App::DrawShadowMapDemo()
 
 	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
 	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
-	pSky->DrawSky(wnd.GetGraphics(), viewProjectionMatrix);
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID, ID, camera.GetCameraPosition());
+	pSky->DrawSky(wnd.GetGraphics(), DirectX::XMMatrixIdentity());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
-	//release shadow map srv
+	//release shadow map SRV
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pNULLSRV);
 
@@ -505,7 +517,7 @@ void App::DrawShadowMapDemo()
 
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
-	wnd.GetGraphics().NormalMapBindConstBuffer();
+	wnd.GetGraphics().ConstBufferNormalMapBind();
 	pShaders->BindVSandIA(NormalMap_VS_PS);
 	pShaders->BindPS(NormalMap_VS_PS);
 

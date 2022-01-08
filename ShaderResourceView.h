@@ -1,7 +1,7 @@
 #pragma once
 #include "Bindable.h"
-#include "DirectXTex/DirectXTex/DirectXTexP.h"
-#include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.h"
+// #include "DirectXTex/DirectXTex/DirectXTexP.h"
+// #include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.h"
 
 class ShaderResourceView : public Bindable
 {
@@ -15,6 +15,7 @@ public:
 	ShaderResourceView(std::wstring* in_path, UINT in_NumofTextures);
 	ID3D11ShaderResourceView* GetTextureArray(Graphics& gfx);
 	static ID3D11ShaderResourceView* CreateCubeMap(Graphics& gfx, std::wstring* in_path);
+
 	void Bind(Graphics& gfx) noexcept override;
 	~ShaderResourceView()
 	{

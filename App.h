@@ -79,6 +79,8 @@ private:
 	DepthComplexity* pDepthArr[3];
 	Box* pDisplacementMappingBox = nullptr;
 	//NEW ARCH
+	//for empty pass to constant buffers
+	const DirectX::XMMATRIX ID = DirectX::XMMatrixIdentity();
 	Cylinder* pCylinder = nullptr;
 	Hills* pPlate = nullptr;
 	Box* pBox = nullptr;

@@ -39,6 +39,26 @@ struct cbCreateNormalMap
 	DirectX::XMMATRIX worldInvTransposeView;
 	DirectX::XMMATRIX worldViewProjection;
 };
+
+struct cbDefaultMatricesVS
+{
+	cbDefaultMatricesVS() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX viewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX shadowTransform;
+	DirectX::XMMATRIX matTransform;
+	DirectX::XMMATRIX worldViewProjTex;
+	DirectX::XMFLOAT3 cameraPositon;
+	int pad0;
+	BOOL enableDisplacementMapping = false;
+// 	int pad1;
+// 	int pad2;
+// 	int pad3;
+};
+
+
 ////////END MAIN
 
 struct Vertices_Full

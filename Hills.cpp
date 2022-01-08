@@ -56,12 +56,12 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	directory[0] = L"Textures\\floor.dds";
 	normalMap[0] = L"Textures\\floor_nmap.dds";
 
-	ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
-		gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
-	AddBind(pSRVHeightMap);
-
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
-	AddBind(pSRV);
+// 	ShaderResourceView* pSRVHeightMap = new ShaderResourceView(
+// 		gfx, normalMap, 1u, (UINT)std::size(normalMap), ShaderType::Pixel);
+// 	AddBind(pSRVHeightMap);
+// 
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
+// 	AddBind(pSRV);
 
 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
 	AddBind(pTexSampler);

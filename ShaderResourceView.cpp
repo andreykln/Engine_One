@@ -3,7 +3,8 @@
 #include <cassert>
 // #include "DirectXTex/DirectXTex/DirectXTexP.h"
 // #include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.h"
-#include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
+
+//#include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
 
 //create SRV for each texture
 ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UINT in_startSlot, UINT in_NumSRVs, ShaderType target)
@@ -55,12 +56,12 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, std::wstring* in_path, UIN
 			for (size_t level = 0; level < textureMetaData.mipLevels; ++level)
 			{
 				size_t index = textureMetaData.ComputeIndex(level, item, 0);
-				const Image& img = image[index];
-				assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
-				
-				textureInitData[idx].pSysMem = img.pixels;
-				textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
-				textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
+// 				const Image& img = image[index];
+// 				assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
+// 				
+// 				textureInitData[idx].pSysMem = img.pixels;
+// 				textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
+// 				textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
 				++idx;
 			}
 		}
@@ -110,10 +111,6 @@ ShaderResourceView::ShaderResourceView(std::wstring* in_path, UINT in_NumofTextu
 	}
 	textureMetaData.arraySize = numTextures;
 
-// 	DirectX::CreateShaderResourceView(GetDevice(gfx), ImagesArray.data(),
-// 										numTextures * textureMetaData.mipLevels,
-// 										textureMetaData, &pSRVTexArray);
-
 }
 
 ShaderResourceView::ShaderResourceView(Graphics& gfx, const wchar_t* path)
@@ -160,12 +157,12 @@ ShaderResourceView::ShaderResourceView(Graphics& gfx, const wchar_t* path)
 		for (size_t level = 0; level < textureMetaData.mipLevels; ++level)
 		{
 			size_t index = textureMetaData.ComputeIndex(level, item, 0);
-			const Image& img = image[index];
-			assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
-
-			textureInitData[idx].pSysMem = img.pixels;
-			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
-			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
+// 			const Image& img = image[index];
+// 			assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
+// 
+// 			textureInitData[idx].pSysMem = img.pixels;
+// 			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
+// 			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
 			++idx;
 		}
 	}
@@ -239,14 +236,14 @@ ID3D11ShaderResourceView* ShaderResourceView::CreateCubeMap(Graphics& gfx, std::
 	{
 		for (size_t level = 0; level < texMetadata.mipLevels; ++level)
 		{
-			size_t index = texMetadata.ComputeIndex(level, item, 0);
-			const Image& img = image[index];
-			assert(idx < (texMetadata.mipLevels* texMetadata.arraySize));
-
-			textureInitData[idx].pSysMem = img.pixels;
-			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
-			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
-			++idx;
+// 			size_t index = texMetadata.ComputeIndex(level, item, 0);
+// 			const Image& img = image[index];
+// 			assert(idx < (texMetadata.mipLevels* texMetadata.arraySize));
+// 
+// 			textureInitData[idx].pSysMem = img.pixels;
+// 			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
+// 			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
+// 			++idx;
 		}
 	}
 	ID3D11Texture2D* pTexture;

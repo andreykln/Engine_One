@@ -204,7 +204,9 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="QuadTessellation.cpp" />
     <ClCompile Include="RenderStates.cpp" />
-    <ClCompile Include="ShaderResourceView.cpp" />
+    <ClCompile Include="ShaderResourceView.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skull.cpp">
@@ -288,7 +290,9 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LightHelper.h" />
-    <ClInclude Include="ShaderResourceView.h" />
+    <ClInclude Include="ShaderResourceView.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Skull.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

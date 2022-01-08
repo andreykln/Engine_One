@@ -1,5 +1,7 @@
 #include "Graphics.h"
-// #include "D3Dcommon.h"
+#include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
+
+
 Graphics::Graphics(HWND wnd)
 {
 	windowHandle = wnd;
@@ -171,42 +173,173 @@ void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
 	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
-	constBuffersMap["NormalMap"] = pNMap;
+	constBuffersMap.insert(std::make_pair("NormalMap", pNMap));
 
 	cbShadowMap smMap;
 	ID3D11Buffer* pSMap = CreateConstantBuffer(&smMap, sizeof(cbShadowMap), L"Shadow map cBuffer");
-	constBuffersMap["ShadowMap"] = pSMap;
+	constBuffersMap.insert(std::make_pair("ShadowMap", pSMap));
+
+	cbDefaultMatricesVS vsMatricesCB;
+	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), L"Default VS with matrices CB");
+	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
 }
 
-void Graphics::NormalMapBindConstBuffer()
+void Graphics::CreateSRVs()
 {
-	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap["NormalMap"]);
+	////Cubemap
+	const size_t numOfCubeMaps = 4;
+	std::vector<std::wstring> names;
+	names.push_back(L"grasscube1024");
+	names.push_back(L"desertcube1024");
+	names.push_back(L"sunsetcube1024");
+	names.push_back(L"snowcube1024");
+
+	for (int i = 0; i < numOfCubeMaps; i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += names[i] + L".dds";
+		pTemp = CreateSRVtoCubeMap(path);
+		cubeMaps.insert(std::make_pair(names[i], pTemp));
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+
+
+}
+
+void Graphics::CreateAndBindSamplers()
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	//linear
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST0 = nullptr;
+	HRESULT hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST0);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST0);
+
+	//anisotropic
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	ID3D11SamplerState* pST1 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST1);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST1);
+
+	//shadow sampler
+	samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST2 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST2);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST2);
+
+
+	for (int i = 0; i < samplers.size(); i++)
+	{
+		pgfx_pDeviceContext->PSSetSamplers(i, 1u, &samplers[i]);
+	}
+
+
+}
+
+void Graphics::ConstBufferNormalMapBind()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at("NormalMap"));
 }
 
 void Graphics::NormalMap(const DirectX::XMMATRIX world)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap["NormalMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("NormalMap"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
 	cBuffer->worldInvTransposeView = (MathHelper::InverseTranspose(world) * DirectX::XMMatrixTranspose(mView));
 	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
 	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
-	pgfx_pDeviceContext->Unmap(constBuffersMap["NormalMap"], 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("NormalMap"), 0u);
 }
 
-void Graphics::ShadowMapBindConstBuffer()
+void Graphics::ConstBufferShadowMapBind()
 {
-	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap["ShadowMap"]);
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at("ShadowMap"));
 }
 
 void Graphics::ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap["ShadowMap"], 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ShadowMap"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
 	cbShadowMap* pMatrices = reinterpret_cast<cbShadowMap*>(mappedData.pData);
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(world * lightViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	pgfx_pDeviceContext->Unmap(constBuffersMap["ShadowMap"], 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ShadowMap"), 0u);
+}
+
+void Graphics::ConstBufferVSMatricesBind()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at("defaultVS"));
+
+}
+
+void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform,
+	const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform, const DirectX::XMFLOAT3& cameraPositon)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("defaultVS"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultMatricesVS* pMatrices = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
+	pMatrices->cameraPositon = cameraPositon;
+	pMatrices->matTransform = DirectX::XMMatrixTranspose(matTransform);
+	pMatrices->shadowTransform = DirectX::XMMatrixTranspose(shadowTransform);
+	pMatrices->texTransform = DirectX::XMMatrixTranspose(texTransform);
+	pMatrices->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
+	pMatrices->world = DirectX::XMMatrixTranspose(world);
+	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(world);
+	pMatrices->worldViewProjTex = DirectX::XMMatrixTranspose(world * mViewProjection * toTexSpace);
+	pMatrices->enableDisplacementMapping = false;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultVS"), 0u);
+}
+
+void Graphics::BindCubeMap(std::wstring& skyBoxName) const
+{
+	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &cubeMaps.at(skyBoxName));
 }
 
 #ifdef MY_DEBUG
@@ -263,6 +396,90 @@ void Graphics::SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& 
 	SetDebugName(child, name);
 }
 
+
+
+ID3D11ShaderResourceView* Graphics::CreateSRVtoCubeMap(std::wstring& in_path)
+{
+	CheckFileExistence(in_path);
+	DirectX::TexMetadata textureMetaData;
+	DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
+	LoadFromDDSFile(in_path.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, *pImageData);
+	textureMetaData = pImageData->GetMetadata();
+	DXGI_FORMAT textureFormat = textureMetaData.format;
+	const DirectX::Image* image = pImageData->GetImage(0, 0, 0);
+
+	/////automatic creation of shader resource view including texture.
+// 	DirectX::CreateShaderResourceView(
+// 		GetDevice(gfx),
+// 		image, textureMetaData.mipLevels,
+// 		textureMetaData,
+// 		&pShaderResourceView);
+	////end of automatic
+
+
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Format = textureFormat;
+	texDesc.Width = (UINT)textureMetaData.width;
+	texDesc.Height = (UINT)textureMetaData.height;
+	texDesc.ArraySize = (UINT)textureMetaData.arraySize;
+	texDesc.MipLevels = (UINT)textureMetaData.mipLevels;
+	texDesc.SampleDesc.Count = 1u;
+	texDesc.SampleDesc.Quality = 0u;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0u;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	const size_t amountOfTextures = textureMetaData.mipLevels * textureMetaData.arraySize;
+	D3D11_SUBRESOURCE_DATA* textureInitData = new D3D11_SUBRESOURCE_DATA[amountOfTextures];
+
+	size_t idx = 0;
+	for (size_t item = 0; item < textureMetaData.arraySize; ++item)
+	{
+		for (size_t level = 0; level < textureMetaData.mipLevels; ++level)
+		{
+			size_t index = textureMetaData.ComputeIndex(level, item, 0);
+			const Image& img = image[index];
+			assert(idx < (textureMetaData.mipLevels* textureMetaData.arraySize));
+				
+			textureInitData[idx].pSysMem = img.pixels;
+			textureInitData[idx].SysMemPitch = static_cast<DWORD>(img.rowPitch);
+			textureInitData[idx].SysMemSlicePitch = static_cast<DWORD>(img.slicePitch);
+			++idx;
+		}
+	}
+	ID3D11Texture2D* pTexture = nullptr;
+
+	HRESULT hr = pgfx_pDevice->CreateTexture2D(&texDesc, textureInitData, &pTexture);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Texture2D creation of ";
+		message += in_path;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
+	shaderResDesc.Format = textureMetaData.format;
+	shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	shaderResDesc.Texture2D.MipLevels = (UINT)textureMetaData.mipLevels;
+	shaderResDesc.Texture2D.MostDetailedMip = 0u;
+
+	ID3D11ShaderResourceView* pSRV = nullptr;
+
+	hr = pgfx_pDevice->CreateShaderResourceView(pTexture, &shaderResDesc, &pSRV);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed SRV Cubemap creation of ";
+		message += in_path;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+
+	delete[] textureInitData;
+	pImageData->Release();
+	
+	return pSRV;
+}
+
 void Graphics::CheckFileExistence(Graphics& gfx, const std::wstring& path)
 {
 	if (!std::filesystem::exists(path.c_str()))
@@ -280,6 +497,16 @@ void Graphics::CheckFileExistence(Graphics* gfx, const std::wstring& path)
 		//can't append string literal message to this string for some reason. 
 		//I'll leave it like that, it's better than nothing
 		MessageBox(gfx->GetWindowHandle(), gfx->wstrTostr(path).c_str(), NULL, MB_OK);
+	}
+}
+
+void Graphics::CheckFileExistence(const std::wstring& path)
+{
+	if (!std::filesystem::exists(path.c_str()))
+	{
+		std::wstring message = L"Missing DDS file for ";
+		message += path;
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
 	}
 }
 

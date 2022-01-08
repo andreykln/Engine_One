@@ -21,15 +21,15 @@ Sky::Sky(Graphics& gfx)
 	AddBind(pTopology);
 
 
-	std::wstring directory[1];
-	directory[0] = L"Textures\\grasscube1024.dds"; //desertcube1024  grasscube1024  sunsetcube1024  snowcube1024
-	pCubeMapSRV = ShaderResourceView::CreateCubeMap(gfx, directory);
+// 	std::wstring directory[1];
+// 	directory[0] = L"Textures\\grasscube1024.dds"; //desertcube1024  grasscube1024  sunsetcube1024  snowcube1024
+// 	pCubeMapSRV = ShaderResourceView::CreateCubeMap(gfx, directory);
 
 
-	VertexConstantBuffer<CB_VS_WorldViewProjection>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_WorldViewProjection>(gfx, WVPmatrix, 0u, 1u);
-	pCopyWVPBuffer = pVCBPerObject->GetVertexConstantBuffer();
-	AddBind(pVCBPerObject);
+// 	VertexConstantBuffer<CB_VS_WorldViewProjection>* pVCBPerObject =
+// 		new VertexConstantBuffer<CB_VS_WorldViewProjection>(gfx, WVPmatrix, 0u, 1u);
+// 	pCopyWVPBuffer = pVCBPerObject->GetVertexConstantBuffer();
+// 	AddBind(pVCBPerObject);
 
 
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -54,18 +54,18 @@ Sky::Sky(Graphics& gfx)
 
 void Sky::UpdateVSMatricesAndCubeMap(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj)
 {
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyWVPBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
-	CB_VS_WorldViewProjection* pMatrices = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
-	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(worldViewProj);
-	gfx.pgfx_pDeviceContext->Unmap(pCopyWVPBuffer, 0u);
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyWVPBuffer, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+// 	CB_VS_WorldViewProjection* pMatrices = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
+// 	pMatrices->worldViewProjection = DirectX::XMMatrixTranspose(worldViewProj);
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyWVPBuffer, 0u);
 
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pCubeMapSRV);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pCubeMapSRV);
 }
 
 void Sky::DrawSky(Graphics& gfx, const DirectX::XMMATRIX& worldViewProj)
 {
-	UpdateVSMatricesAndCubeMap(gfx, worldViewProj);
+// 	UpdateVSMatricesAndCubeMap(gfx, worldViewProj);
 	BindAndDrawIndexed(gfx);
 }
 
