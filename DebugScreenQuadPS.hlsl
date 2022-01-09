@@ -4,11 +4,17 @@ struct VertexOut
     float2 tex : TEXCOORD;
 };
 
-Texture2D texToDraw : register(t0);
-SamplerState sam : register(s0);
+Texture2D texToDraw : register(t5);
+//random vector map
+SamplerState smpLinearWrap : register(s0);
+SamplerState smpAnisotropicWrap : register(s1);
+SamplerComparisonState smpShadowMap : register(s2);
+SamplerState smpNormalMap : register(s3);
+//blur map
+SamplerState smpLinearClamp : register(s4);
 
 float4 main(VertexOut pin) : SV_TARGET
 {
-    float4 col = texToDraw.Sample(sam, pin.tex);
+    float4 col = texToDraw.Sample(smpLinearClamp, pin.tex);
     return col;
 }

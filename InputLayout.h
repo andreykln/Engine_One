@@ -2,6 +2,8 @@
 #include "Bindable.h"
 struct InputLayout 
 {
+	////// MAIN
+
 	static const UINT nPosNormalTexture = 3;
 	const D3D11_INPUT_ELEMENT_DESC posNormalTexture[nPosNormalTexture] =
 	{
@@ -13,7 +15,6 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
 
-	////// MAIN
 	static const UINT nPosNormalTexcTangent = 4;
 	const D3D11_INPUT_ELEMENT_DESC posNormalTexcTangent[nPosNormalTexcTangent] =
 	{

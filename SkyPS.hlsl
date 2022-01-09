@@ -10,7 +10,6 @@ TextureCube cubeMap : register(t4);
 
 //random vector map
 SamplerState smpLinearWrap : register(s0);
-
 SamplerState smpAnisotropicWrap : register(s1);
 SamplerComparisonState smpShadowMap : register(s2);
 SamplerState smpNormalMap : register(s3);

@@ -19,9 +19,16 @@ cbuffer blurCB : register(b0)
     int pad0;
 };
 
-Texture2D normalDepthMap : register(t0);
-Texture2D inputImage : register(t1);
-SamplerState samplerBlur : register(s2);
+Texture2D normalMapSRV : register(t3);
+Texture2D inputImage : register(t5);
+
+//random vector map
+SamplerState smpLinearWrap : register(s0);
+SamplerState smpAnisotropicWrap : register(s1);
+SamplerComparisonState smpShadowMap : register(s2);
+SamplerState smpNormalMap : register(s3);
+//blur map
+SamplerState smpLinearClamp : register(s4);
 
 float4 main(VertexOut pin) : SV_TARGET
 {
@@ -35,10 +42,10 @@ float4 main(VertexOut pin) : SV_TARGET
         texOffset = float2(0.0f, texelHeight);
     }
     // The center value always contributes to the sum.
-    float4 color = weights[5] * inputImage.SampleLevel(samplerBlur, pin.texC, 0.0);
+    float4 color = weights[5] * inputImage.SampleLevel(smpLinearClamp, pin.texC, 0.0);
     float totalWeight = weights[5];
     
-    float4 centerNormalDepth = normalDepthMap.SampleLevel(samplerBlur, pin.texC, 0.0f);
+    float4 centerNormalDepth = normalMapSRV.SampleLevel(smpLinearClamp, pin.texC, 0.0f);
     for (float i = -blurRadius; i <= blurRadius; ++i)
     {
 		// We already added in the center weight.
@@ -47,8 +54,8 @@ float4 main(VertexOut pin) : SV_TARGET
 
         float2 tex = pin.texC + i * texOffset;
 
-        float4 neighborNormalDepth = normalDepthMap.SampleLevel(
-			samplerBlur, tex, 0.0f);
+        float4 neighborNormalDepth = normalMapSRV.SampleLevel(
+			smpLinearClamp, tex, 0.0f);
 
 		//
 		// If the center value and neighbor values differ too much (either in 
@@ -63,7 +70,7 @@ float4 main(VertexOut pin) : SV_TARGET
 
 			// Add neighbor pixel to blur.
             color += weight * inputImage.SampleLevel(
-				samplerBlur, tex, 0.0);
+				smpLinearClamp, tex, 0.0);
 		
             totalWeight += weight;
         }

@@ -47,6 +47,8 @@ public:
 	void ReleaseNormalMapResource();
 	void ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT& ssaoViewport,
 		ID3D11ShaderResourceView* randomVecSRV,	ID3D11ShaderResourceView* pNormalMapSRV);
+	void BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV0, ID3D11RenderTargetView* pAmbientMapRTV1,
+		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
 
 	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
@@ -56,7 +58,7 @@ public:
 		const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform,
 		const DirectX::XMFLOAT3& cameraPositon);
 
-	//skybox is in third slot of PS
+	//skybox is in 5th(0 indexed) slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
 	void BindDiffuseMap(std::wstring& diffMapName) const;
 	void BindNormalMap(std::wstring& normalMapName) const;
@@ -85,6 +87,9 @@ public:
 	ID3D11Debug* debugDevice = nullptr;
 #endif
 private:
+	void BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV,
+		D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur);
+
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
@@ -128,6 +133,8 @@ private:
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f };
 
+	//////////////////////////////////////////////////////////////////////////
+	ID3D11Buffer* TESTCBUFFER = nullptr;
 };
 
 template <typename T>

@@ -11,31 +11,25 @@ public:
 	UINT GetQuadIndexCount();
 	cbComputeSSAO& GetAndBuildConstantBufferData();
 	ID3D11ShaderResourceView* GetRandomVectorSRV();
-	ID3D11RenderTargetView* GetAmbientRTV();
 	D3D11_VIEWPORT& GetSSAOViewport();
 
-
-
-
-
-
-
-	ID3D11ShaderResourceView* GetNormalMapSRV();
-	void ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj);
+	ID3D11RenderTargetView* GetAmbientMapRTV0();
+	ID3D11RenderTargetView* GetAmbientMapRTV1();
+	ID3D11ShaderResourceView* GetAmbientMapSRV0();
+	ID3D11ShaderResourceView* GetAmbientMapSRV1();
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
-	void DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders);
-	void BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader);
-	void SetSSAOMapToPS(Graphics& gfx);
+	ID3D11ShaderResourceView* GetNormalMapSRV();
+
+
+
+
+
+
+
 private:
 
 
-	struct SSAOBlur
-	{
-		float texelWidth;
-		float texelHeight;
-		BOOL horizBool;
-		int pad0;
-	};
+
 	////new
 	void BuildRandomVectorTexture(Graphics& gfx);
 	void BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight);
@@ -44,9 +38,9 @@ private:
 	void BuildFullScreenQuadBuffers(Graphics& gfx);
 	///////
 // 	void BuildSamplers(Graphics& gfx);
-	void BuildDebugScreenQuadData(Graphics& gfx);
-	void BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur);
-	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
+// 	void BuildDebugScreenQuadData(Graphics& gfx);
+// 	void BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur);
+// 	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
 
 
 	ID3D11ShaderResourceView* pNormalMapSRV = nullptr;
@@ -69,7 +63,7 @@ private:
 // 	ID3D11SamplerState* pBlurSampler = nullptr;
 // 	ID3D11SamplerState* pSSAOMapSampler = nullptr;
 	D3D11_VIEWPORT vp;
-	SSAOBlur blurConstBuff;
+// 	SSAOBlur blurConstBuff;
 	cbComputeSSAO computeSSAOcbuff;
 
 	DirectX::XMFLOAT4 frustumFarCorner[4];

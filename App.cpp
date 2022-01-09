@@ -351,9 +351,6 @@ void App::DrawSceneToShadowMap()
 
 	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
 	wnd.GetGraphics().ConstBufferShadowMapBind();
-	pShaders->BindVSandIA(ShadowMap_VS_PS);
-	pShaders->BindPS(ShadowMap_VS_PS);
-
 	stride = sizeof(vbPosNormalTexTangent);
 	offset = 0; 
 	//skull
@@ -416,39 +413,44 @@ void App::DrawShadowMapDemo()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
 
-	//shadow map
+	//////////////////////////////////////////////////////////////////////////
+	pShaders->BindVSandIA(ShadowMap_VS_PS);
+	pShaders->BindPS(ShadowMap_VS_PS);
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	pDC->RSSetState(0u);
-	//
-	//SSAO
-	//
+
+	//normal map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//disable blend so it won't add up together normals that are behind each other
 	pDC->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
 	DrawNormalMap(viewProjectionMatrix);
 	pDC->OMSetBlendState(0u, colors, 0xffffffff);
 
-	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
-	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	//////////////////////////////////////////////////////////////////////////
+	pShaders->BindVSandIA(ComputeSSAO_VS_PS);
+	pShaders->BindPS(ComputeSSAO_VS_PS);
 	stride = sizeof(vbPosNormalTex);
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 
-	wnd.GetGraphics().ComputeSSAO(pSSAO->GetAmbientRTV(), pSSAO->GetSSAOViewport(), 
+	wnd.GetGraphics().ComputeSSAO(pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(), 
 		pSSAO->GetRandomVectorSRV(), pSSAO->GetNormalMapSRV());
-
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
-	//to create a new one in the next frame
+
+	//////////////////////////////////////////////////////////////////////////
+	pShaders->BindVSandIA(SSAOBlur_VS_PS);
+	pShaders->BindPS(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
+		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
+	pShaders->UnbindVS();
+	pShaders->UnbindPS();
 	wnd.GetGraphics().ReleaseNormalMapResource();
-// 	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
-// 	pSSAO->BlurAmbientMap(wnd.GetGraphics(), 4, pShaders);
+
 // 	pSSAO->SetSSAOMapToPS(wnd.GetGraphics());
-	//
-	//
-	//
+	//to generate a new one in the next frame
 
 	
 	SetDefaultRTVAndViewPort();
@@ -504,8 +506,24 @@ void App::DrawShadowMapDemo()
 // 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 // 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
-	//	DEBUG
+	////	DEBUG
 // 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
+	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
+	pShaders->BindPS(DrawDebugTexQuad_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	//release for the SSAO pass
+	pDC->PSSetShaderResources(5u, 1u, &pNullSRV);
+
+
+
+
 
 
 	pDC->RSSetState(RenderStates::NoCullRS);

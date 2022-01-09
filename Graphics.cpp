@@ -174,6 +174,7 @@ void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
 	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
+	TESTCBUFFER = pNMap;
 	constBuffersMap.insert(std::make_pair("NormalMap", pNMap));
 
 	cbShadowMap smMap;
@@ -184,6 +185,9 @@ void Graphics::CreateCBuffers()
 	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), L"Default VS with matrices CB");
 	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
 
+	cbBlurSSAO ssaoBlurData;
+	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(&ssaoBlurData, sizeof(cbBlurSSAO), L"SSAO blur settings");
+	constBuffersMap.insert(std::make_pair("ssaoBlur", pssaoBlurData));
 }
 
 void Graphics::CreateRuntimeCBuffers(cbComputeSSAO& ssaoBuffer)
@@ -260,17 +264,21 @@ void Graphics::ConstBufferNormalMapBind()
 void Graphics::NormalMap(const DirectX::XMMATRIX world)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("NormalMap"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("NormalMap"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
 	cBuffer->worldInvTransposeView = (MathHelper::InverseTranspose(world) * DirectX::XMMatrixTranspose(mView));
 	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
 	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("NormalMap"), 0u);
+
 }
 
 void Graphics::ReleaseNormalMapResource()
 {
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	//random vector map
+	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pNullSRV);
+	//normal-depth map
 	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNullSRV);
 }
 
@@ -296,7 +304,7 @@ void Graphics::ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT&
 
 	DirectX::XMMATRIX projectionToTextureSpace = mProjection * toTexSpace;
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("computeSSAO"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("computeSSAO"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbComputeSSAO* pBuffer = reinterpret_cast<cbComputeSSAO*>(mappedData.pData);
 	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(projectionToTextureSpace);
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("computeSSAO"), 0u);
@@ -404,6 +412,61 @@ void Graphics::SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& 
 
 
 
+
+void Graphics::BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV0, ID3D11RenderTargetView* pAmbientMapRTV1,
+	ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort)
+{
+	for (int i = 0; i < blurCount; i++)
+	{
+		// Ping-pong the two ambient map textures as we apply
+		// horizontal and vertical blur passes.
+		BlurSSAOMap(pAmbientMapSRV0, pAmbientMapRTV1, ssaoViewPort, true);
+		BlurSSAOMap(pAmbientMapSRV1, pAmbientMapRTV0, ssaoViewPort, false);
+	}
+	//for reading in final draw calls
+	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pAmbientMapSRV0);
+// 	//release input for blurs
+// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+// 	pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNULLSRV);
+
+}
+
+void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV,
+	D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur)
+{
+	ID3D11RenderTargetView* renderTargets[1] = { pOutputRTV };
+	pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
+	pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
+	pgfx_pDeviceContext->RSSetViewports(1u, &ssaoViewPort);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoBlur"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbBlurSSAO* pBuffer = reinterpret_cast<cbBlurSSAO*>(mappedData.pData);
+	if (horizontalBlur)
+	{
+		pBuffer->horizBool = true;
+	}
+	else
+	{
+		pBuffer->horizBool = false;
+	}
+	pBuffer->texelHeight = 1.0f / vp.Height;
+	pBuffer->texelWidth = 1.0f / vp.Width;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ssaoBlur"), 0u);
+
+	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at("ssaoBlur"));
+	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pInputSRV);
+
+	//IA vertex buffer and index is already set from normal map
+	pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
+
+	//unbind for the next blur pass
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNULLSRV);
+	ID3D11RenderTargetView* pNULLRTV = nullptr;
+	renderTargets[0] = pNULLRTV;
+	pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
+}
 
 ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)
 {

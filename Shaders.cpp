@@ -112,7 +112,7 @@ Shaders::Shaders(Graphics& in_gfx)
 
 
 	//debug quad
-	VS_IL_Init(&pDebugQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
+	VS_IL_Init(&pDebugQuadVS, IL.posNormalTexture, &pPosNormalTexIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\DebugScreenQuadVS.cso");
 	PS_Init(&pDebugQuadPS, L"Shaders\\Pixel\\DebugScreenQuadPS.cso");
 
@@ -258,7 +258,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::DrawDebugTexQuad_VS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pLightAndTextureIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDebugQuadVS, nullptr, 0u);
 		break;
 	}

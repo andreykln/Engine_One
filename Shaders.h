@@ -179,5 +179,7 @@ private:
 	ID3D11VertexShader* pShadowMapVS = nullptr;
 	ID3D11PixelShader* pShadowMapPS = nullptr;
 
+	ID3D11InputLayout* pPosNormalTexIL = nullptr;
+
 };
 

@@ -35,10 +35,7 @@ ID3D11ShaderResourceView* SSAO::GetRandomVectorSRV()
 	return pRandomVectorsSRV;
 }
 
-ID3D11RenderTargetView* SSAO::GetAmbientRTV()
-{
-	return pAmbientRTV0;
-}
+
 
 D3D11_VIEWPORT& SSAO::GetSSAOViewport()
 {
@@ -46,34 +43,25 @@ D3D11_VIEWPORT& SSAO::GetSSAOViewport()
 }
 
 
-void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj)
+
+ID3D11RenderTargetView* SSAO::GetAmbientMapRTV0()
 {
-// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-// 	//clear previous frame's binding
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
-// 
-// 
-// 	// Bind the ambient map as the render target.  Observe that this pass does not bind 
-// 	// a depth/stencil buffer--it does not need it, and without one, no depth test is
-// 	// performed, which is what we want.
-// 	ID3D11RenderTargetView* renderTargets[1] = { pAmbientRTV0 };
-// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], 0u);
-// 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pAmbientRTV0, DirectX::Colors::Black);
-// 	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
-// 
-// 	UINT stride = sizeof(Vertex_IA);
-// 	UINT offset = 0u;
-// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
-// 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
-// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
-// 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
-// 
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pRandomVectorsSRV);
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNormalMapSRV);
+	return pAmbientRTV0;
+}
 
+ID3D11RenderTargetView* SSAO::GetAmbientMapRTV1()
+{
+	return pAmbientRTV1;
+}
 
-	UpdateSSAOConstBuffer(gfx, mProj);
-	gfx.pgfx_pDeviceContext->DrawIndexed(6u, 0u, 0u);
+ID3D11ShaderResourceView* SSAO::GetAmbientMapSRV0()
+{
+	return pAmbientSRV0;
+}
+
+ID3D11ShaderResourceView* SSAO::GetAmbientMapSRV1()
+{
+	return pAmbientSRV1;
 }
 
 void SSAO::SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv)
@@ -89,24 +77,6 @@ void SSAO::SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv
 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pNormalMapRTV, clearColor);
 }
 
-
-void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
-{
-	shaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
-	shaders->BindPS(DrawDebugTexQuad_VS_PS);
-	gfx.pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	UINT stride = sizeof(Vertex_IA);
-	UINT offset = 0u;
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
-	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
-
-	//pNormalMapSRV pAmbientSRV0 pAmbientSRV1
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pAmbientSRV1);
-
-// 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
-	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
-	shaders->UnbindAll();
-}
 
 void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight)
 {
@@ -240,66 +210,60 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 
 
 
-void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
-{
+// void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
+// {
+// 
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
+// 	for (int i = 0; i < blurCount; i++)
+// 	{
+// 		// Ping-pong the two ambient map textures as we apply
+// 		// horizontal and vertical blur passes.
+// 		BlurAmbientMap(gfx, pAmbientSRV0, pAmbientRTV1, true);
+// 		BlurAmbientMap(gfx, pAmbientSRV1, pAmbientRTV0, false);
+// 
+// 	}
+// 	pShader->UnbindVS();
+// 	pShader->UnbindPS();
+// }
 
-	pShader->BindVSandIA(SSAOBlur_VS_PS);
-	pShader->BindPS(SSAOBlur_VS_PS);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
-	for (int i = 0; i < blurCount; i++)
-	{
-		// Ping-pong the two ambient map textures as we apply
-		// horizontal and vertical blur passes.
-		BlurAmbientMap(gfx, pAmbientSRV0, pAmbientRTV1, true);
-		BlurAmbientMap(gfx, pAmbientSRV1, pAmbientRTV0, false);
+// void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur)
+// {
+// 	ID3D11RenderTargetView* renderTargets[1] = { pOutputRTV };
+// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
+// 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
+// 	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOBlurBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// // 	SSAOBlur* pBuffer = reinterpret_cast<SSAOBlur*>(mappedData.pData);
+// // 	if (horizontalBlur)
+// // 	{
+// // 		pBuffer->horizBool = true;
+// // 	}
+// // 	else
+// // 	{
+// // 		pBuffer->horizBool = false;
+// // 	}
+// // 	pBuffer->texelHeight = 1.0f / vp.Height;
+// // 	pBuffer->texelWidth = 1.0f / vp.Width;
+// // 	gfx.pgfx_pDeviceContext->Unmap(pSSAOBlurBuffer, 0u);
+// 
+// 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOBlurBuffer);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pInputSRV);
+// 
+// 	UINT stride = sizeof(Vertex_IA);
+// 	UINT offset = 0u;
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
+// 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+// 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
+// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNULLSRV);
+// 	ID3D11RenderTargetView* pNULLRTV = nullptr;
+// 	renderTargets[0] = pNULLRTV;
+// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
+// 
+// }
 
-	}
-	pShader->UnbindVS();
-	pShader->UnbindPS();
-}
-
-void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur)
-{
-	ID3D11RenderTargetView* renderTargets[1] = { pOutputRTV };
-	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
-	gfx.pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
-	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOBlurBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	SSAOBlur* pBuffer = reinterpret_cast<SSAOBlur*>(mappedData.pData);
-	if (horizontalBlur)
-	{
-		pBuffer->horizBool = true;
-	}
-	else
-	{
-		pBuffer->horizBool = false;
-	}
-	pBuffer->texelHeight = 1.0f / vp.Height;
-	pBuffer->texelWidth = 1.0f / vp.Width;
-	gfx.pgfx_pDeviceContext->Unmap(pSSAOBlurBuffer, 0u);
-
-	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOBlurBuffer);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pInputSRV);
-
-	UINT stride = sizeof(Vertex_IA);
-	UINT offset = 0u;
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
-	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
-	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
-	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNULLSRV);
-	ID3D11RenderTargetView* pNULLRTV = nullptr;
-	renderTargets[0] = pNULLRTV;
-	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
-
-}
-
-void SSAO::SetSSAOMapToPS(Graphics& gfx)
-{
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV0);
-}
 
 cbComputeSSAO& SSAO::GetAndBuildConstantBufferData()
 {
@@ -359,19 +323,3 @@ void SSAO::BuildRandomVectorTexture(Graphics& gfx)
 	pTex->Release();
 }
 
-void SSAO::UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView)
-{
-	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
-	static const XMMATRIX T(
-		0.5f, 0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
-	viewToTextureSpace = DirectX::XMMatrixMultiply(mView, T);
-
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	SSAOConstBuffer* pBuffer = reinterpret_cast<SSAOConstBuffer*>(mappedData.pData);
-// 	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(viewToTextureSpace);
-// 	gfx.pgfx_pDeviceContext->Unmap(pSSAOConstBuffer, 0u);
-}

@@ -80,6 +80,15 @@ struct cbComputeSSAO
 	const float gOcclusionFadeEnd = 2.0f;
 	const float gSurfaceEpsilon = 0.05f;
 };
+
+struct cbBlurSSAO
+{
+	float texelWidth;
+	float texelHeight;
+	BOOL horizBool;
+	int pad0;
+};
+
 ////////END MAIN
 
 struct Vertices_Full
