@@ -5,11 +5,24 @@ SSAO::SSAO(Graphics& gfx, UINT mWidth, UINT mHeight)
 	BuildTextureViewsAndViewport(gfx, mWidth, mHeight);
 	BuildRandomVectorTexture(gfx);
 	BuildFullScreenQuadBuffers(gfx);
-	BuildSamplers(gfx);
 	BuildOffsetVectors();
 	BuildFrustumFarCorners(FOV_max, 1000.0f);
-	BuildConstantBuffer(gfx);
 
+}
+
+ID3D11Buffer** SSAO::GetQuadVertexBuffer()
+{
+	return &pQuadVertexBuffer;
+}
+
+ID3D11Buffer* SSAO::GetQuadIndexBuffer()
+{
+	return pQuadIndexBuffer;
+}
+
+UINT SSAO::GetQuadIndexCount()
+{
+	return quadIndexCount;
 }
 
 ID3D11ShaderResourceView* SSAO::GetNormalMapSRV()
@@ -22,33 +35,41 @@ ID3D11ShaderResourceView* SSAO::GetRandomVectorSRV()
 	return pRandomVectorsSRV;
 }
 
+ID3D11RenderTargetView* SSAO::GetAmbientRTV()
+{
+	return pAmbientRTV0;
+}
+
+D3D11_VIEWPORT& SSAO::GetSSAOViewport()
+{
+	return vp;
+}
+
+
 void SSAO::ComputeSSAO(Graphics& gfx, DirectX::XMMATRIX mProj)
 {
-	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-	//clear previous frame's binding
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
-
-
-	// Bind the ambient map as the render target.  Observe that this pass does not bind 
-	// a depth/stencil buffer--it does not need it, and without one, no depth test is
-	// performed, which is what we want.
-	ID3D11RenderTargetView* renderTargets[1] = { pAmbientRTV0 };
-	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], 0u);
-	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pAmbientRTV0, DirectX::Colors::Black);
-	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
-
-	UINT stride = sizeof(Vertex_IA);
-	UINT offset = 0u;
-	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
-	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
-	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
-	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
-
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pRandomVectorsSRV);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNormalMapSRV);
-
-	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pNormalMapSampler);
-	gfx.pgfx_pDeviceContext->PSSetSamplers(1u, 1u, &pRandomVectorSampler);
+// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+// 	//clear previous frame's binding
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
+// 
+// 
+// 	// Bind the ambient map as the render target.  Observe that this pass does not bind 
+// 	// a depth/stencil buffer--it does not need it, and without one, no depth test is
+// 	// performed, which is what we want.
+// 	ID3D11RenderTargetView* renderTargets[1] = { pAmbientRTV0 };
+// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], 0u);
+// 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(pAmbientRTV0, DirectX::Colors::Black);
+// 	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
+// 
+// 	UINT stride = sizeof(Vertex_IA);
+// 	UINT offset = 0u;
+// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
+// 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
+// 	gfx.pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
+// 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOConstBuffer);
+// 
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pRandomVectorsSRV);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pNormalMapSRV);
 
 
 	UpdateSSAOConstBuffer(gfx, mProj);
@@ -81,7 +102,6 @@ void SSAO::DrawDebugScreenQuad(Graphics& gfx, Shaders* shaders)
 
 	//pNormalMapSRV pAmbientSRV0 pAmbientSRV1
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pAmbientSRV1);
-	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSAOMapSampler);
 
 // 	gfx.pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pRandomVectorSampler);
 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
@@ -191,129 +211,33 @@ void SSAO::BuildOffsetVectors()
 
 void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 {
-	Vertex_IA v[4];
+	std::vector<vbPosNormalTex> vertices(4);
 
-	v[0].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	v[1].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
-	v[2].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
-	v[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[1].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
+	vertices[2].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
+	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
 
 	// Store far plane frustum corner indices in Normal.x slot.
-	v[0].normal = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	v[1].normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-	v[2].normal = DirectX::XMFLOAT3(2.0f, 0.0f, 0.0f);
-	v[3].normal = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
+	vertices[0].normal = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	vertices[1].normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	vertices[2].normal = DirectX::XMFLOAT3(2.0f, 0.0f, 0.0f);
+	vertices[3].normal = DirectX::XMFLOAT3(3.0f, 0.0f, 0.0f);
 
-	v[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	v[1].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
-	v[2].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
-	v[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-
-
-	D3D11_BUFFER_DESC buffDesc;
-	buffDesc.ByteWidth = 4 * sizeof(Vertex_IA);
-	buffDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	buffDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	buffDesc.CPUAccessFlags = 0u;
-	buffDesc.MiscFlags = 0u;
-	buffDesc.StructureByteStride = 0u;
-	D3D11_SUBRESOURCE_DATA subresData;
-	subresData.pSysMem = v;
-
-	gfx.pgfx_pDevice->CreateBuffer(&buffDesc, &subresData, &pQuadVertexBuffer);
-
-	USHORT indices[6] =
+	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	vertices[1].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+	vertices[2].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+	vertices[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	pQuadVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"ssao quad");
+	std::vector<UINT> indices = 
 	{
 		0, 1, 2,
 		0, 2, 3
 	};
-	D3D11_BUFFER_DESC indexBuffDesc;
-	indexBuffDesc.ByteWidth = 6 * sizeof(USHORT);
-	indexBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBuffDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	indexBuffDesc.CPUAccessFlags = 0u;
-	indexBuffDesc.MiscFlags = 0u;
-	indexBuffDesc.StructureByteStride = 0u;
-
-	D3D11_SUBRESOURCE_DATA subresData0;
-	subresData0.pSysMem = indices;
-	gfx.pgfx_pDevice->CreateBuffer(&indexBuffDesc, &subresData0, &pQuadIndexBuffer);
+	pQuadIndexBuffer = gfx.CreateIndexBuffer(indices, L"SSAO quad");
+	quadIndexCount = indices.size();
 }
 
-void SSAO::BuildSamplers(Graphics& gfx)
-{
-	D3D11_SAMPLER_DESC samplerRandomDesc;
-	samplerRandomDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-	samplerRandomDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerRandomDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerRandomDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerRandomDesc.BorderColor[0] = 0.0f;
-	samplerRandomDesc.BorderColor[1] = 0.0f;
-	samplerRandomDesc.BorderColor[2] = 0.0f;
-	samplerRandomDesc.BorderColor[3] = 0.0f;
-
-	samplerRandomDesc.MipLODBias = 0.0f;
-	samplerRandomDesc.MaxAnisotropy = 16;
-	samplerRandomDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerRandomDesc.MinLOD = 0;
-	samplerRandomDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	gfx.pgfx_pDevice->CreateSamplerState(&samplerRandomDesc, &pRandomVectorSampler);
-
-	D3D11_SAMPLER_DESC samplerNormalMap;
-	samplerNormalMap.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-	samplerNormalMap.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerNormalMap.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerNormalMap.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerNormalMap.BorderColor[0] = 0.0f;
-	samplerNormalMap.BorderColor[1] = 0.0f;
-	samplerNormalMap.BorderColor[2] = 0.0f;
-	// Set a very far depth value if sampling outside of the NormalDepth map
-	// so we do not get false occlusions.
-	samplerNormalMap.BorderColor[3] = 1e5f;
-	samplerNormalMap.MipLODBias = 0.0f;
-	samplerNormalMap.MaxAnisotropy = 16;
-	samplerNormalMap.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerNormalMap.MinLOD = 0;
-	samplerNormalMap.MaxLOD = D3D11_FLOAT32_MAX;
-	gfx.pgfx_pDevice->CreateSamplerState(&samplerNormalMap, &pNormalMapSampler);
-
-
-	D3D11_SAMPLER_DESC blurSamplerDesc;
-	blurSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
-	blurSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	blurSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	blurSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	blurSamplerDesc.BorderColor[0] = 0.0f;
-	blurSamplerDesc.BorderColor[1] = 0.0f;
-	blurSamplerDesc.BorderColor[2] = 0.0f;
-	blurSamplerDesc.BorderColor[3] = 0.0f;
-
-	blurSamplerDesc.MipLODBias = 0.0f;
-	blurSamplerDesc.MaxAnisotropy = 16;
-	blurSamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	blurSamplerDesc.MinLOD = 0;
-	blurSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	gfx.pgfx_pDevice->CreateSamplerState(&blurSamplerDesc, &pBlurSampler);
-
-
-	D3D11_SAMPLER_DESC ssaoMapSamplerDesc;
-	ssaoMapSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; //D3D11_FILTER_MIN_MAG_MIP_LINEAR
-	ssaoMapSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-	ssaoMapSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-	ssaoMapSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	ssaoMapSamplerDesc.BorderColor[0] = 0.0f;
-	ssaoMapSamplerDesc.BorderColor[1] = 0.0f;
-	ssaoMapSamplerDesc.BorderColor[2] = 0.0f;
-	ssaoMapSamplerDesc.BorderColor[3] = 0.0f;
-
-	ssaoMapSamplerDesc.MipLODBias = 0.0f;
-	ssaoMapSamplerDesc.MaxAnisotropy = 16;
-	ssaoMapSamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	ssaoMapSamplerDesc.MinLOD = 0;
-	ssaoMapSamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	gfx.pgfx_pDevice->CreateSamplerState(&ssaoMapSamplerDesc, &pSSAOMapSampler);
-
-}
 
 
 void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
@@ -322,7 +246,6 @@ void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
 	pShader->BindVSandIA(SSAOBlur_VS_PS);
 	pShader->BindPS(SSAOBlur_VS_PS);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
-	gfx.pgfx_pDeviceContext->PSSetSamplers(2u, 1u, &pBlurSampler);
 	for (int i = 0; i < blurCount; i++)
 	{
 		// Ping-pong the two ambient map textures as we apply
@@ -375,37 +298,20 @@ void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID
 
 void SSAO::SetSSAOMapToPS(Graphics& gfx)
 {
-	gfx.pgfx_pDeviceContext->PSSetSamplers(2u, 1u, &pSSAOMapSampler);
 	gfx.pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pAmbientSRV0);
 }
 
-void SSAO::BuildConstantBuffer(Graphics& gfx)
+cbComputeSSAO& SSAO::GetAndBuildConstantBufferData()
 {
-	SSAOConstBuffer cBuff;
 	for (int i = 0; i < 14; i++)
 	{
-		cBuff.offsetVectors[i] = DirectX::XMLoadFloat4(&offsets[i]);
+		computeSSAOcbuff.offsetVectors[i] = DirectX::XMLoadFloat4(&offsets[i]);
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		cBuff.frustumFarCorners[i] = frustumFarCorner[i];
+		computeSSAOcbuff.frustumFarCorners[i] = frustumFarCorner[i];
 	}
-
-	D3D11_BUFFER_DESC buffDesc;
-	buffDesc.ByteWidth = sizeof(SSAOConstBuffer);
-	buffDesc.Usage = D3D11_USAGE_DYNAMIC;
-	buffDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	buffDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	buffDesc.MiscFlags = 0u;
-	buffDesc.StructureByteStride = 0u;
-	D3D11_SUBRESOURCE_DATA subresData;
-	subresData.pSysMem = &cBuff;
-	gfx.pgfx_pDevice->CreateBuffer(&buffDesc, &subresData, &pSSAOConstBuffer);
-
-	buffDesc.ByteWidth = sizeof(SSAOBlur);
-	D3D11_SUBRESOURCE_DATA subresBlurData;
-	subresBlurData.pSysMem = &blurConstBuff;
-	gfx.pgfx_pDevice->CreateBuffer(&buffDesc, &subresBlurData, &pSSAOBlurBuffer);
+	return computeSSAOcbuff;
 }
 
 void SSAO::BuildRandomVectorTexture(Graphics& gfx)
@@ -463,9 +369,9 @@ void SSAO::UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView)
 		0.5f, 0.5f, 0.0f, 1.0f);
 	viewToTextureSpace = DirectX::XMMatrixMultiply(mView, T);
 
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	SSAOConstBuffer* pBuffer = reinterpret_cast<SSAOConstBuffer*>(mappedData.pData);
-	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(viewToTextureSpace);
-	gfx.pgfx_pDeviceContext->Unmap(pSSAOConstBuffer, 0u);
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOConstBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	SSAOConstBuffer* pBuffer = reinterpret_cast<SSAOConstBuffer*>(mappedData.pData);
+// 	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(viewToTextureSpace);
+// 	gfx.pgfx_pDeviceContext->Unmap(pSSAOConstBuffer, 0u);
 }

@@ -22,6 +22,7 @@ App::App()
 	wnd.GetGraphics().CreateCBuffers();
 	wnd.GetGraphics().CreateSRVs();
 	wnd.GetGraphics().CreateAndBindSamplers();
+	wnd.GetGraphics().CreateRuntimeCBuffers(pSSAO->GetAndBuildConstantBufferData());
 	////////
 	///////
 	/////////
@@ -353,8 +354,8 @@ void App::DrawSceneToShadowMap()
 	pShaders->BindVSandIA(ShadowMap_VS_PS);
 	pShaders->BindPS(ShadowMap_VS_PS);
 
-	const UINT stride = sizeof(vbPosNormalTexTangent);
-	const UINT offset = 0;
+	stride = sizeof(vbPosNormalTexTangent);
+	offset = 0; 
 	//skull
 	wnd.GetGraphics().ShadowMap(pSkull->skullWorld, VP);
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
@@ -401,34 +402,47 @@ void App::CreateShadowMapDemo()
 	pPlate = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u, false, DemoSwitch::ShadowMap);
+
+
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
+
 }
 
 void App::DrawShadowMapDemo()
 {
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 	//update every frame
-	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix());
-
 	viewProjectionMatrix = GetViewProjectionCamera();
+	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
+
 	//shadow map
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::ShadowMapBiasRS);
+	pDC->RSSetState(RenderStates::ShadowMapBiasRS);
 	DrawSceneToShadowMap();
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+	pDC->RSSetState(0u);
 	//
 	//SSAO
 	//
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//disable blend so it won't add up together normals that are behind each other
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
+	pDC->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
 	DrawNormalMap(viewProjectionMatrix);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, colors, 0xffffffff);
+	pDC->OMSetBlendState(0u, colors, 0xffffffff);
 
-// 	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
-// 	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	pShaders->BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	pShaders->BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+
+	wnd.GetGraphics().ComputeSSAO(pSSAO->GetAmbientRTV(), pSSAO->GetSSAOViewport(), 
+		pSSAO->GetRandomVectorSRV(), pSSAO->GetNormalMapSRV());
+
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	//to create a new one in the next frame
+	wnd.GetGraphics().ReleaseNormalMapResource();
 // 	pSSAO->ComputeSSAO(wnd.GetGraphics(), camera.GetProjecion());
 // 	pSSAO->BlurAmbientMap(wnd.GetGraphics(), 4, pShaders);
 // 	pSSAO->SetSSAOMapToPS(wnd.GetGraphics());
@@ -494,8 +508,8 @@ void App::DrawShadowMapDemo()
 // 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 
 
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pDC->RSSetState(RenderStates::NoCullRS);
+	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
 
 	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
 	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
@@ -506,13 +520,13 @@ void App::DrawShadowMapDemo()
 	pDC->IASetIndexBuffer(pSky->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
 
-// 	pSky->DrawSky(wnd.GetGraphics(), DirectX::XMMatrixIdentity());
 
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+
+	pDC->RSSetState(0u);
+	pDC->OMSetDepthStencilState(0u, 0u);
 	//release shadow map SRV
-	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &pNULLSRV);
+// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+// 	pDC->PSSetShaderResources(2u, 1u, &pNULLSRV);
 
 
 	

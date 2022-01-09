@@ -1,5 +1,5 @@
 
-cbuffer SSAOConstBuffer : register(b0)
+cbuffer SSAOConstBuffer : register(b1)
 {
     float4x4 viewToTexSpace;
     float4 offsetVectors[14];

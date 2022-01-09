@@ -1,4 +1,4 @@
-cbuffer SSAOConstBuffer : register(b0)
+cbuffer SSAOConstBuffer : register(b1)
 {
     float4x4 viewToTexSpace;
     float4 offsetVectors[14];
@@ -10,11 +10,17 @@ cbuffer SSAOConstBuffer : register(b0)
     const float gSurfaceEpsilon;
 };
 
-SamplerState normalMapSmp : register(s0);
-SamplerState randomVecSmp : register(s1);
+//random vector map
+SamplerState smpLinearWrap : register(s0);
+SamplerState smpAnisotropicWrap : register(s1);
+SamplerComparisonState smpShadowMap : register(s2);
+SamplerState smpNormalMap : register(s3);
+//blur map
+SamplerState smpLinearClamp : register(s4);
 
-Texture2D randomVectorSRV : register(t0);
-Texture2D normalMapSRV : register(t1);
+
+Texture2D randomVectorSRV : register(t2);
+Texture2D normalMapSRV : register(t3);
 
 static const int sampleCount = 14;
 
@@ -66,7 +72,7 @@ float4 main(VertexOut pin) : SV_Target
 
 	// Get viewspace normal and z-coord of this pixel.  The tex-coords for
 	// the fullscreen quad we drew are already in uv-space.
-    float4 normalDepth = normalMapSRV.SampleLevel(normalMapSmp, pin.Tex, 0.0f);
+    float4 normalDepth = normalMapSRV.SampleLevel(smpNormalMap, pin.Tex, 0.0f);
  
     float3 n = normalDepth.xyz;
     float pz = normalDepth.w;
@@ -82,7 +88,7 @@ float4 main(VertexOut pin) : SV_Target
     float3 p = (pz / a) * b;
 	
 	// Extract random vector and map from [0,1] --> [-1, +1].
-    float3 randVec = 2.0f * randomVectorSRV.SampleLevel(randomVecSmp, 4.0f * pin.Tex, 0.0f).rgb - 1.0f;
+    float3 randVec = 2.0f * randomVectorSRV.SampleLevel(smpLinearWrap, 4.0f * pin.Tex, 0.0f).rgb - 1.0f;
 
     float occlusionSum = 0.0f;
 	
@@ -109,7 +115,7 @@ float4 main(VertexOut pin) : SV_Target
 		// the depth of q, as q is just an arbitrary point near p and might
 		// occupy empty space).  To find the nearest depth we look it up in the depthmap.
 
-        float rz = normalMapSRV.SampleLevel(normalMapSmp, projQ.xy, 0.0f).a;
+        float rz = normalMapSRV.SampleLevel(smpNormalMap, projQ.xy, 0.0f).a;
 
 		// Reconstruct full view space position r = (rx,ry,rz).  We know r
 		// lies on the ray of q, so there exists a t such that r = t*q.

@@ -52,9 +52,6 @@
     <Filter Include="Shaders\Domain">
       <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\SSAO">
-      <UniqueIdentifier>{e064d239-05e9-47ba-b909-11364194cc43}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\DebugScreenQuad">
       <UniqueIdentifier>{e9b5b56f-d936-41db-a249-da96d54597af}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,9 @@
     </Filter>
     <Filter Include="Shaders\Default">
       <UniqueIdentifier>{a49ab7b8-80fe-41fa-9696-7ea3e18615b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Default\SSAO">
+      <UniqueIdentifier>{e064d239-05e9-47ba-b909-11364194cc43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -551,10 +551,10 @@
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="ComputeSSAOVS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
+      <Filter>Shaders\Default\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="ComputeSSAOPS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
+      <Filter>Shaders\Default\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="DebugScreenQuadVS.hlsl">
       <Filter>Shaders\DebugScreenQuad</Filter>
@@ -563,10 +563,10 @@
       <Filter>Shaders\DebugScreenQuad</Filter>
     </FxCompile>
     <FxCompile Include="SSAOBlurVS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
+      <Filter>Shaders\Default\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="SSAOBlurPS.hlsl">
-      <Filter>Shaders\SSAO</Filter>
+      <Filter>Shaders\Default\SSAO</Filter>
     </FxCompile>
     <FxCompile Include="ShadowMapGenVS.hlsl">
       <Filter>Shaders\ShadowMap</Filter>

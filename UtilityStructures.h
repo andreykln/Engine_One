@@ -13,6 +13,17 @@ struct Vertex_IA
 
 
 ///////// MAIN
+
+struct vbPosNormalTex
+{
+	vbPosNormalTex() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
+	vbPosNormalTex(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v)
+		: pos(posX, posY, posZ), normal(normX, normY, normZ), tex(u, v) {}
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 tex;
+};
+
 struct vbPosNormalTexTangent
 {
 	vbPosNormalTexTangent() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f), tangent(0.0f, 0.0f, 0.0f) {};
@@ -58,7 +69,17 @@ struct cbDefaultMatricesVS
 // 	int pad3;
 };
 
+struct cbComputeSSAO
+{
+	DirectX::XMMATRIX viewToTexSpace;
+	DirectX::XMVECTOR offsetVectors[14];
+	DirectX::XMFLOAT4 frustumFarCorners[4];
 
+	const float gOcclusionRadius = 0.5f;
+	const float gOcclusionFadeStart = 0.2f;
+	const float gOcclusionFadeEnd = 2.0f;
+	const float gSurfaceEpsilon = 0.05f;
+};
 ////////END MAIN
 
 struct Vertices_Full

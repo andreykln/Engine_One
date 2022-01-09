@@ -163,10 +163,11 @@ void Graphics::SetViewport()
 }
 
 
-void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View)
+void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View, const DirectX::XMMATRIX& Projection)
 {
 	mView = View;
 	mViewProjection = ViewProjection;
+	mProjection = Projection;
 }
 
 void Graphics::CreateCBuffers()
@@ -182,105 +183,74 @@ void Graphics::CreateCBuffers()
 	cbDefaultMatricesVS vsMatricesCB;
 	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), L"Default VS with matrices CB");
 	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
+
+}
+
+void Graphics::CreateRuntimeCBuffers(cbComputeSSAO& ssaoBuffer)
+{
+	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, sizeof(cbComputeSSAO), L"Compute SSAO CB");
+	constBuffersMap.insert(std::make_pair("computeSSAO", pssaoBuff));
+
 }
 
 void Graphics::CreateSRVs()
 {
 	////Cubemap
 	const size_t numOfCubeMaps = 4;
-	std::vector<std::wstring> names;
-	names.push_back(L"grasscube1024");
-	names.push_back(L"desertcube1024");
-	names.push_back(L"sunsetcube1024");
-	names.push_back(L"snowcube1024");
+	std::vector<std::wstring> cubemapFiles;
+	cubemapFiles.push_back(L"grasscube1024");
+	cubemapFiles.push_back(L"desertcube1024");
+	cubemapFiles.push_back(L"sunsetcube1024");
+	cubemapFiles.push_back(L"snowcube1024");
 
 	for (int i = 0; i < numOfCubeMaps; i++)
 	{
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
-		path += names[i] + L".dds";
-		pTemp = CreateSRVtoCubeMap(path);
-		cubeMaps.insert(std::make_pair(names[i], pTemp));
+		path += cubemapFiles[i] + L".dds";
+		pTemp = CreateSRV(path, true);
+		cubeMaps.insert(std::make_pair(cubemapFiles[i], pTemp));
 	}
-	//////////////////////////////////////////////////////////////////////////
 
+	std::vector<std::wstring> diffuseMapNames;
+	diffuseMapNames.push_back(L"bricks3");
+	diffuseMapNames.push_back(L"flame");
+	diffuseMapNames.push_back(L"flare");
+	diffuseMapNames.push_back(L"flarealpha");
+	diffuseMapNames.push_back(L"floor");
+	diffuseMapNames.push_back(L"grass");
+	diffuseMapNames.push_back(L"ice");
+	diffuseMapNames.push_back(L"stones");
+	diffuseMapNames.push_back(L"water1");
+	diffuseMapNames.push_back(L"water2");
+	diffuseMapNames.push_back(L"waves0");
+	diffuseMapNames.push_back(L"WoodCrate01");
 
+	for (int i = 0; i < diffuseMapNames.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += diffuseMapNames[i] + L".dds";
+		pTemp = CreateSRV(path, false);
+		diffuseMaps.insert(std::make_pair(diffuseMapNames[i], pTemp));
+	}
+	std::vector<std::wstring> normalMapNames;
+	normalMapNames.push_back(L"bricks3_nmap");
+	normalMapNames.push_back(L"floor_nmap");
+	normalMapNames.push_back(L"stones_nmap");
+	normalMapNames.push_back(L"waves0");
+	normalMapNames.push_back(L"waves1");
+	for (int i = 0; i < normalMapNames.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += normalMapNames[i] + L".dds";
+		pTemp = CreateSRV(path, false);
+		diffuseMaps.insert(std::make_pair(normalMapNames[i], pTemp));
+	}
 
 }
 
-void Graphics::CreateAndBindSamplers()
-{
-	D3D11_SAMPLER_DESC samplerDesc;
-	//linear
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.BorderColor[0] = 0.0f;
-	samplerDesc.BorderColor[1] = 0.0f;
-	samplerDesc.BorderColor[2] = 0.0f;
-	samplerDesc.BorderColor[3] = 0.0f;
-
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	ID3D11SamplerState* pST0 = nullptr;
-	HRESULT hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST0);
-	if (FAILED(hr))
-	{
-		std::wstring message = L"Failed Sampler creation";
-		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
-	}
-	samplers.push_back(pST0);
-
-	//anisotropic
-	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	ID3D11SamplerState* pST1 = nullptr;
-	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST1);
-	if (FAILED(hr))
-	{
-		std::wstring message = L"Failed Sampler creation";
-		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
-	}
-	samplers.push_back(pST1);
-
-	//shadow sampler
-	samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-	samplerDesc.BorderColor[0] = 0.0f;
-	samplerDesc.BorderColor[1] = 0.0f;
-	samplerDesc.BorderColor[2] = 0.0f;
-	samplerDesc.BorderColor[3] = 0.0f;
-
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 16;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	ID3D11SamplerState* pST2 = nullptr;
-	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST2);
-	if (FAILED(hr))
-	{
-		std::wstring message = L"Failed Sampler creation";
-		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
-	}
-	samplers.push_back(pST2);
-
-
-	for (int i = 0; i < samplers.size(); i++)
-	{
-		pgfx_pDeviceContext->PSSetSamplers(i, 1u, &samplers[i]);
-	}
-
-
-}
 
 void Graphics::ConstBufferNormalMapBind()
 {
@@ -296,6 +266,43 @@ void Graphics::NormalMap(const DirectX::XMMATRIX world)
 	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
 	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("NormalMap"), 0u);
+}
+
+void Graphics::ReleaseNormalMapResource()
+{
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNullSRV);
+}
+
+void Graphics::ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT& ssaoViewport,
+	ID3D11ShaderResourceView* randomVecSRV, ID3D11ShaderResourceView* pNormalMapSRV)
+{
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	//clear previous frame's binding
+// 	pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &pNULLSRV);
+
+	// Bind the ambient map as the render target.  Observe that this pass does not bind 
+	// a depth/stencil buffer--it does not need it, and without one, no depth test is
+	// performed, which is what we want.
+	ID3D11RenderTargetView* renderTargets[1] = { pAmbientRTV0 };
+	pgfx_pDeviceContext->OMSetRenderTargets(1u, &renderTargets[0], 0u);
+	pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
+	pgfx_pDeviceContext->RSSetViewports(1u, &ssaoViewport);
+
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at("computeSSAO"));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("computeSSAO"));
+	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &randomVecSRV);
+	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNormalMapSRV);
+
+	DirectX::XMMATRIX projectionToTextureSpace = mProjection * toTexSpace;
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("computeSSAO"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbComputeSSAO* pBuffer = reinterpret_cast<cbComputeSSAO*>(mappedData.pData);
+	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(projectionToTextureSpace);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("computeSSAO"), 0u);
+
+
+
 }
 
 void Graphics::ConstBufferShadowMapBind()
@@ -339,10 +346,9 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 
 void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 {
-	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &cubeMaps.at(skyBoxName));
+	pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &cubeMaps.at(skyBoxName));
 }
 
-#ifdef MY_DEBUG
 
 ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name)
 {
@@ -398,7 +404,8 @@ void Graphics::SetDeviceDebugName(ID3D11DeviceChild* child, const std::wstring& 
 
 
 
-ID3D11ShaderResourceView* Graphics::CreateSRVtoCubeMap(std::wstring& in_path)
+
+ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)
 {
 	CheckFileExistence(in_path);
 	DirectX::TexMetadata textureMetaData;
@@ -427,7 +434,14 @@ ID3D11ShaderResourceView* Graphics::CreateSRVtoCubeMap(std::wstring& in_path)
 	texDesc.SampleDesc.Quality = 0u;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0u;
-	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	if (cubeMap)
+	{
+		texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	}
+	else
+	{
+		texDesc.MiscFlags = 0u;
+	}
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	const size_t amountOfTextures = textureMetaData.mipLevels * textureMetaData.arraySize;
@@ -460,7 +474,14 @@ ID3D11ShaderResourceView* Graphics::CreateSRVtoCubeMap(std::wstring& in_path)
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
 	shaderResDesc.Format = textureMetaData.format;
-	shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	if (cubeMap)
+	{
+		shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	}
+	else
+	{
+		shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	}
 	shaderResDesc.Texture2D.MipLevels = (UINT)textureMetaData.mipLevels;
 	shaderResDesc.Texture2D.MostDetailedMip = 0u;
 
@@ -510,7 +531,117 @@ void Graphics::CheckFileExistence(const std::wstring& path)
 	}
 }
 
-#endif
+
+
+//0-LinearWrap, 1-AnisotropicWrap, 2-ShadowMap, 3-NormalMap, 4-LinearClamp(ssao blur map)
+void Graphics::CreateAndBindSamplers()
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	//linear
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST0 = nullptr;
+	HRESULT hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST0);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST0);
+
+	//anisotropic
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	ID3D11SamplerState* pST1 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST1);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST1);
+
+	//shadow sampler
+	samplerDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST2 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST2);
+	if (FAILED(hr))
+	{
+		std::wstring message = L"Failed Sampler creation";
+		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+	}
+	samplers.push_back(pST2);
+
+	//Normal map 
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	// Set a very far depth value if sampling outside of the NormalDepth map
+	// so we do not get false occlusions.
+	samplerDesc.BorderColor[3] = 1e5f;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST3 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST3);
+	samplers.push_back(pST3);
+
+	//LinearClamp, SSAO blur map
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.BorderColor[0] = 0.0f;
+	samplerDesc.BorderColor[1] = 0.0f;
+	samplerDesc.BorderColor[2] = 0.0f;
+	samplerDesc.BorderColor[3] = 0.0f;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	ID3D11SamplerState* pST4 = nullptr;
+	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST4);
+	samplers.push_back(pST4);
+
+	//bind all samplers once and at the creation
+	for (int i = 0; i < samplers.size(); i++)
+	{
+		pgfx_pDeviceContext->PSSetSamplers(i, 1u, &samplers[i]);
+	}
+}
+
 
 
 

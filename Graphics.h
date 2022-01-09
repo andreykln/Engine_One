@@ -35,14 +35,18 @@ public:
 	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
-	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View);
+	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View, const DirectX::XMMATRIX& Projection);
 
 	void CreateCBuffers();
+	void CreateRuntimeCBuffers(cbComputeSSAO& ssauBuffer);
 	void CreateSRVs();
 	void CreateAndBindSamplers();
 	//techniques
 	void ConstBufferNormalMapBind();
 	void NormalMap(const DirectX::XMMATRIX world);
+	void ReleaseNormalMapResource();
+	void ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT& ssaoViewport,
+		ID3D11ShaderResourceView* randomVecSRV,	ID3D11ShaderResourceView* pNormalMapSRV);
 
 	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
@@ -54,7 +58,8 @@ public:
 
 	//skybox is in third slot of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
-
+	void BindDiffuseMap(std::wstring& diffMapName) const;
+	void BindNormalMap(std::wstring& normalMapName) const;
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
@@ -83,16 +88,18 @@ private:
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
-	ID3D11ShaderResourceView* CreateSRVtoDiffuseMap(std::wstring& in_path);
-	ID3D11ShaderResourceView* CreateSRVtoCubeMap(std::wstring& in_path);
+	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
-	std::unordered_map<std::string, std::pair<int, std::wstring>> diffuseMaps;
-	std::unordered_map<std::string, std::pair<int, std::wstring>> normalMaps;
+	//contains indices for corresponding texture in texture array
+	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> diffuseMaps;
+	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
+	///
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::vector<ID3D11SamplerState*> samplers;
 
 	DirectX::XMMATRIX mViewProjection;
 	DirectX::XMMATRIX mView;
+	DirectX::XMMATRIX mProjection;
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
@@ -114,6 +121,7 @@ private:
 		D3D_FEATURE_LEVEL_9_1,
 	};
 
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 	const DirectX::XMMATRIX toTexSpace = {
 		0.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, -0.5f, 0.0f, 0.0f,
