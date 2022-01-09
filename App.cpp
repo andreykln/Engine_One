@@ -442,6 +442,24 @@ void App::DrawShadowMapDemo()
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	//////////////////////////////////////////////////////////////////////////
+	//TESTING
+// 	SetDefaultRTVAndViewPort();
+// 
+// 	ID3D11ShaderResourceView* pSRVV = pSSAO->GetAmbientMapSRV0();
+// 	pDC->PSSetShaderResources(5u, 1u, &pSRVV);
+// 	pShaders->BindVSandIA(SSAOBlur_VS_PS);
+//  	pShaders->BindPS(SSAOBlur_VS_PS);
+// 
+// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetSSAOViewport(), false);
+// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV1(), pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(), false);
+// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV1(), pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(), false);
+// 
+// 
+// 	ID3D11RenderTargetView* pNULLRTV = nullptr;
+// 	pDC->OMSetRenderTargets(1u, &pNULLRTV, 0u);
+
+	//TESTING
+	//////////////////////////////////////////////////////////////////////////
 	pShaders->BindVSandIA(SSAOBlur_VS_PS);
 	pShaders->BindPS(SSAOBlur_VS_PS);
 	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
@@ -450,8 +468,6 @@ void App::DrawShadowMapDemo()
 	pShaders->UnbindPS();
 	wnd.GetGraphics().ReleaseNormalMapResource();
 
-// 	pSSAO->SetSSAOMapToPS(wnd.GetGraphics());
-	//to generate a new one in the next frame
 
 	
 	SetDefaultRTVAndViewPort();
@@ -515,17 +531,14 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV1();
+	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
 
-// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
 
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	//release for the SSAO pass
 	pDC->PSSetShaderResources(5u, 1u, &pNullSRV);
-
-
-
 
 
 

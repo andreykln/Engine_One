@@ -450,7 +450,7 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 	pgfx_pDeviceContext->RSSetViewports(1u, &ssaoViewPort);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoBlur"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoBlur"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbBlurSSAO* pBuffer = reinterpret_cast<cbBlurSSAO*>(mappedData.pData);
 	if (horizontalBlur)
 	{
@@ -469,13 +469,13 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 
 	//IA vertex buffer and index is already set from normal map
 	pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
-
 	//unbind for the next blur pass
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNULLSRV);
 	ID3D11RenderTargetView* pNULLRTV = nullptr;
 	renderTargets[0] = pNULLRTV;
 	pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
+
 }
 
 ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)

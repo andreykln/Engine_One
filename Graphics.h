@@ -87,9 +87,10 @@ public:
 	ID3D11Debug* debugDevice = nullptr;
 #endif
 private:
+public:
 	void BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV,
 		D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur);
-
+private:
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
