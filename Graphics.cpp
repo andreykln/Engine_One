@@ -256,7 +256,7 @@ void Graphics::CreateSRVs()
 		std::wstring path = L"Textures\\";
 		path += normalMapNames[i] + L".dds";
 		pTemp = CreateSRV(path, false);
-		diffuseMaps.insert(std::make_pair(normalMapNames[i], pTemp));
+		normalMaps.insert(std::make_pair(normalMapNames[i], pTemp));
 	}
 
 }
