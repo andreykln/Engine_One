@@ -38,7 +38,7 @@ public:
 	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View, const DirectX::XMMATRIX& Projection);
 
 	void CreateCBuffers();
-	void CreateRuntimeCBuffers(cbComputeSSAO& ssauBuffer);
+	void CreateRuntimeCBuffers(cbComputeSSAOconstData& ssauBuffer);
 	void CreateSRVs();
 	void CreateAndBindSamplers();
 	//techniques

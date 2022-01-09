@@ -1,6 +1,5 @@
 cbuffer SSAOConstBuffer : register(b1)
 {
-    float4x4 viewToTexSpace;
     float4 offsetVectors[14];
     float4 frustumFarCorners[4];
 
@@ -9,6 +8,11 @@ cbuffer SSAOConstBuffer : register(b1)
     const float gOcclusionFadeEnd;
     const float gSurfaceEpsilon;
 };
+
+cbuffer SSAOPerFrame : register(b2)
+{
+    float4x4 viewToTexSpace;
+}
 
 //random vector map
 SamplerState smpLinearWrap : register(s0);

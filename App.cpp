@@ -425,9 +425,10 @@ void App::DrawShadowMapDemo()
 	//normal map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	//disable blend so it won't add up together normals that are behind each other
-	pDC->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
+	//FOR SOME REASON NOT NEEDED ANYMORE
+// 	pDC->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
 	DrawNormalMap(viewProjectionMatrix);
-	pDC->OMSetBlendState(0u, colors, 0xffffffff);
+// 	pDC->OMSetBlendState(0u, colors, 0xffffffff);
 
 	//////////////////////////////////////////////////////////////////////////
 	pShaders->BindVSandIA(ComputeSSAO_VS_PS);
@@ -514,6 +515,8 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV1();
+
 // 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
 
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);

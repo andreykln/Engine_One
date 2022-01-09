@@ -72,6 +72,10 @@ struct cbDefaultMatricesVS
 struct cbComputeSSAO
 {
 	DirectX::XMMATRIX viewToTexSpace;
+};
+
+struct cbComputeSSAOconstData
+{
 	DirectX::XMVECTOR offsetVectors[14];
 	DirectX::XMFLOAT4 frustumFarCorners[4];
 

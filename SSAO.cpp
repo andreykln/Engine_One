@@ -265,16 +265,21 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 // }
 
 
-cbComputeSSAO& SSAO::GetAndBuildConstantBufferData()
+cbComputeSSAOconstData& SSAO::GetAndBuildConstantBufferData()
 {
 	for (int i = 0; i < 14; i++)
 	{
-		computeSSAOcbuff.offsetVectors[i] = DirectX::XMLoadFloat4(&offsets[i]);
+		computeSSAOData.offsetVectors[i] = DirectX::XMLoadFloat4(&offsets[i]);
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		computeSSAOcbuff.frustumFarCorners[i] = frustumFarCorner[i];
+		computeSSAOData.frustumFarCorners[i] = frustumFarCorner[i];
 	}
+	return computeSSAOData;
+}
+
+cbComputeSSAO& SSAO::GetConstBufferSSAODataPerFrame()
+{
 	return computeSSAOcbuff;
 }
 

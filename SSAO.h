@@ -9,7 +9,8 @@ public:
 	ID3D11Buffer** GetQuadVertexBuffer();
 	ID3D11Buffer* GetQuadIndexBuffer();
 	UINT GetQuadIndexCount();
-	cbComputeSSAO& GetAndBuildConstantBufferData();
+	cbComputeSSAOconstData& GetAndBuildConstantBufferData();
+	cbComputeSSAO& GetConstBufferSSAODataPerFrame();
 	ID3D11ShaderResourceView* GetRandomVectorSRV();
 	D3D11_VIEWPORT& GetSSAOViewport();
 
@@ -65,6 +66,7 @@ private:
 	D3D11_VIEWPORT vp;
 // 	SSAOBlur blurConstBuff;
 	cbComputeSSAO computeSSAOcbuff;
+	cbComputeSSAOconstData computeSSAOData;
 
 	DirectX::XMFLOAT4 frustumFarCorner[4];
 	DirectX::XMFLOAT4 offsets[14];

@@ -188,12 +188,18 @@ void Graphics::CreateCBuffers()
 	cbBlurSSAO ssaoBlurData;
 	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(&ssaoBlurData, sizeof(cbBlurSSAO), L"SSAO blur settings");
 	constBuffersMap.insert(std::make_pair("ssaoBlur", pssaoBlurData));
+
+	cbComputeSSAO ssaoComputeMatrix;
+	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(&ssaoComputeMatrix, sizeof(cbComputeSSAO), L"ssao compute matrix");
+	constBuffersMap.insert(std::make_pair("ssaoPerFrame", pssaoComputeMatrix));
+
+
 }
 
-void Graphics::CreateRuntimeCBuffers(cbComputeSSAO& ssaoBuffer)
+void Graphics::CreateRuntimeCBuffers(cbComputeSSAOconstData& ssaoBuffer)
 {
-	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, sizeof(cbComputeSSAO), L"Compute SSAO CB");
-	constBuffersMap.insert(std::make_pair("computeSSAO", pssaoBuff));
+	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, sizeof(cbComputeSSAOconstData), L"Compute SSAO CB");
+	constBuffersMap.insert(std::make_pair("ssaoConstData", pssaoBuff));
 
 }
 
@@ -297,18 +303,22 @@ void Graphics::ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT&
 	pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
 	pgfx_pDeviceContext->RSSetViewports(1u, &ssaoViewport);
 
-	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at("computeSSAO"));
-	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("computeSSAO"));
-	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &randomVecSRV);
-	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNormalMapSRV);
 
 	DirectX::XMMATRIX projectionToTextureSpace = mProjection * toTexSpace;
+	cbComputeSSAO temp;
+	temp.viewToTexSpace = projectionToTextureSpace;
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("computeSSAO"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoPerFrame"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbComputeSSAO* pBuffer = reinterpret_cast<cbComputeSSAO*>(mappedData.pData);
 	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(projectionToTextureSpace);
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("computeSSAO"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ssaoPerFrame"), 0u);
 
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at("ssaoConstData"));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("ssaoConstData"));
+	pgfx_pDeviceContext->PSSetConstantBuffers(2u, 1u, &constBuffersMap.at("ssaoPerFrame"));
+
+	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &randomVecSRV);
+	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNormalMapSRV);
 
 
 }
@@ -321,7 +331,7 @@ void Graphics::ConstBufferShadowMapBind()
 void Graphics::ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ShadowMap"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ShadowMap"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbShadowMap* pMatrices = reinterpret_cast<cbShadowMap*>(mappedData.pData);
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(world * lightViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
@@ -338,7 +348,7 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 	const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform, const DirectX::XMFLOAT3& cameraPositon)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("defaultVS"), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("defaultVS"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* pMatrices = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
 	pMatrices->cameraPositon = cameraPositon;
 	pMatrices->matTransform = DirectX::XMMatrixTranspose(matTransform);
