@@ -39,9 +39,9 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 
 
 	
-	planePSCB.mat.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
-	planePSCB.mat.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
-	planePSCB.mat.shininess = 0.9f;
+	plateMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+	plateMaterial.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
+	plateMaterial.shininess = 0.9f;
 	planePSCB.dirLight.strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 
@@ -63,8 +63,6 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 // 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u, (UINT)std::size(directory), ShaderType::Pixel);
 // 	AddBind(pSRV);
 
-	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
 }
 
 ID3D11Buffer** Hills::GetVertexBuffer()

@@ -408,7 +408,7 @@ void App::CreateShadowMapDemo()
 void App::DrawShadowMapDemo()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	
 	//update every frame
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
@@ -424,13 +424,9 @@ void App::DrawShadowMapDemo()
 
 	//normal map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	//disable blend so it won't add up together normals that are behind each other
-	//FOR SOME REASON NOT NEEDED ANYMORE
-// 	pDC->OMSetBlendState(RenderStates::noBlendBS, colors, 0xffffffff);
 	DrawNormalMap(viewProjectionMatrix);
-// 	pDC->OMSetBlendState(0u, colors, 0xffffffff);
 
-	//////////////////////////////////////////////////////////////////////////
+
 	pShaders->BindVSandIA(ComputeSSAO_VS_PS);
 	pShaders->BindPS(ComputeSSAO_VS_PS);
 	stride = sizeof(vbPosNormalTex);
@@ -441,25 +437,6 @@ void App::DrawShadowMapDemo()
 		pSSAO->GetRandomVectorSRV(), pSSAO->GetNormalMapSRV());
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
-	//////////////////////////////////////////////////////////////////////////
-	//TESTING
-// 	SetDefaultRTVAndViewPort();
-// 
-// 	ID3D11ShaderResourceView* pSRVV = pSSAO->GetAmbientMapSRV0();
-// 	pDC->PSSetShaderResources(5u, 1u, &pSRVV);
-// 	pShaders->BindVSandIA(SSAOBlur_VS_PS);
-//  	pShaders->BindPS(SSAOBlur_VS_PS);
-// 
-// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetSSAOViewport(), false);
-// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV1(), pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(), false);
-// 	wnd.GetGraphics().BlurSSAOMap(pSSAO->GetAmbientMapSRV1(), pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(), false);
-// 
-// 
-// 	ID3D11RenderTargetView* pNULLRTV = nullptr;
-// 	pDC->OMSetRenderTargets(1u, &pNULLRTV, 0u);
-
-	//TESTING
-	//////////////////////////////////////////////////////////////////////////
 	pShaders->BindVSandIA(SSAOBlur_VS_PS);
 	pShaders->BindPS(SSAOBlur_VS_PS);
 	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
@@ -467,17 +444,15 @@ void App::DrawShadowMapDemo()
 	pShaders->UnbindVS();
 	pShaders->UnbindPS();
 	wnd.GetGraphics().ReleaseNormalMapResource();
-
-
-	
 	SetDefaultRTVAndViewPort();
-// 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
+
+	//////////////////////////////////////////////////////////////////////////
 	
-	//cubemap for specular reflections
-// 	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, pSky->GetSkyCubeMap());
+	
 
-
+	
 	auto newLightDirection = pShadowMap->GetNewLightDirection();
+
 	//Skull
 // 	pShaders->BindVSandIA(ShaderPicker::ShadowMapDrawSkull_VS_PS);
 // 	pShaders->BindPS(ShaderPicker::ShadowMapDrawSkull_VS_PS);
@@ -511,18 +486,39 @@ void App::DrawShadowMapDemo()
 
 
 	//plane
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+	pShaders->BindVSandIA(DefaultLight_VS_PS);
+	pShaders->BindPS(DefaultLight_VS_PS);
+	stride = sizeof(vbPosNormalTexTangent);
+	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	bool usessao;
+	if (GetAsyncKeyState(GetAsyncKeyState('5') & 0x8000))
+		usessao = false;
+	else
+		usessao = true;
+	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, pPlate->plateScaling, pShadowMap->GetShadowTransform(),
+		ID, camera.GetCameraPosition());
+
+	wnd.GetGraphics().SetDefaultLightData();
+	wnd.GetGraphics().DefaultLightUpdate(pPlate->plateMaterial, camera.GetCameraPosition(),
+		false, newLightDirection, usessao, pPlate->diffuseMap, pPlate->normalMap);
+
+	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
+	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
 // 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 // 	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 // 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
 // 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 // 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
 // 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-	//box
+// 	//box
 // 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 // 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,
 // 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 // 	pDisplacementMappingBox->BindAndDrawIndexed(wnd.GetGraphics());
 
+	//////////////////////////////////////////////////////////////////////////
 	////	DEBUG
 // 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
@@ -559,9 +555,9 @@ void App::DrawShadowMapDemo()
 	pDC->RSSetState(0u);
 	pDC->OMSetDepthStencilState(0u, 0u);
 	//release shadow map SRV
-// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-// 	pDC->PSSetShaderResources(2u, 1u, &pNULLSRV);
-
+	ID3D11ShaderResourceView* pNULLSRV = nullptr;
+	pDC->PSSetShaderResources(2u, 1u, &pNULLSRV);
+	//////////////////////////////////////////////////////////////////////////
 
 	
 }

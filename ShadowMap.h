@@ -12,7 +12,7 @@ public:
 	};
 
 	ShadowMapGen(Graphics& gfx, UINT width, UINT height);
-	ID3D11ShaderResourceView* DepthMapSRV();
+	ID3D11ShaderResourceView** DepthMapSRV();
 	void SetShadowSampler(Graphics& gfx);
 	void BindDSVandSetNullRenderTarget(Graphics& gfx);
 	void UpdateScene(float dt);

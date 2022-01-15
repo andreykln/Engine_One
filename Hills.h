@@ -9,8 +9,12 @@ public:
 	ID3D11Buffer** GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
 	UINT GetIndexCount();
+	MaterialEx plateMaterial;
+	const std::wstring diffuseMap = L"floor";
+	const std::wstring normalMap = L"floor_nmap";
+	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
 
-
+	//////////////////////////////////////////////////////////////////////////
 
 	void UpdateShadomMapGenBuffers(Graphics& gfx, const DirectX::XMMATRIX& in_lightWorld, DirectX::XMFLOAT3 newCamPosition);
 	void UpdateShadowMapDrawBuffers(Graphics& gfx, DirectX::XMFLOAT3 newCamPosition, const DirectX::XMMATRIX& newShadowTransform,
@@ -18,13 +22,11 @@ public:
 		DirectX::XMFLOAT3& newLightDirection);
 	void UpdateNormalMapBuffer(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewM,
 		const DirectX::XMMATRIX& in_ViewProjection);
-
 private:
 	float width{};
 	float depth{};
 	UINT m{};
 	UINT n{};
-	const DirectX::XMMATRIX plateScaling = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
 
 	ID3D11Buffer* pShadomMapGenCB = nullptr;
 	ID3D11Buffer* pShadowMapVSDraw = nullptr;
@@ -36,6 +38,9 @@ private:
 	cbDefaultVS planeVSCB;
 	cbDefaultPS planePSCB;
 	cbCreateNormalMap normalMapData;
+
+
+
 
 	GeometryGenerator::MeshData grid;
 	GeometryGenerator landscapeGenerated;

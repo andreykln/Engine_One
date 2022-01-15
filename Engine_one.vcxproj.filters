@@ -616,6 +616,12 @@
     <FxCompile Include="SkyPS.hlsl">
       <Filter>Shaders\Default</Filter>
     </FxCompile>
+    <FxCompile Include="DefaultLightVS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="DefaultLightPS.hlsl">
+      <Filter>Shaders\Default</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

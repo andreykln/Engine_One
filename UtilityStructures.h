@@ -64,9 +64,6 @@ struct cbDefaultMatricesVS
 	DirectX::XMFLOAT3 cameraPositon;
 	int pad0;
 	BOOL enableDisplacementMapping = false;
-// 	int pad1;
-// 	int pad2;
-// 	int pad3;
 };
 
 struct cbComputeSSAO
@@ -92,6 +89,29 @@ struct cbBlurSSAO
 	BOOL horizBool;
 	int pad0;
 };
+
+struct cbDefaultLightPSdata
+{
+	DirectionalLightEx dirLight;
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	float fogstart = 50.0f;
+
+	float fogRange = 200.0f;
+	int pad2;
+	int pad3;
+
+};
+
+struct cbDefaultLightPSPerFrame
+{
+	MaterialEx mat;
+	DirectX::XMFLOAT3 camPositon;
+	BOOL disableTexSampling;
+	DirectX::XMFLOAT3 lightDirection;
+	BOOL useSSAO;
+};
+
 
 ////////END MAIN
 
@@ -441,7 +461,7 @@ enum ShaderPicker
 	SSAOBlur_VS_PS,
 	NormalMap_VS_PS, //new architecture
 	ShadowMap_VS_PS, //new architecture
-
+	DefaultLight_VS_PS,
 };
 
 enum ParticlePick

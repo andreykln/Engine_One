@@ -181,5 +181,8 @@ private:
 
 	ID3D11InputLayout* pPosNormalTexIL = nullptr;
 
+	//default Light
+	ID3D11VertexShader* pDefaultLightVS = nullptr;
+	ID3D11PixelShader* pDefaultLightPS = nullptr;
 };
 

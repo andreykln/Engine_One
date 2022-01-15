@@ -124,7 +124,9 @@ Shaders::Shaders(Graphics& in_gfx)
 	//shadow map
 	VS_Init(&pShadowMapVS, L"Shaders\\Vertex\\ShadowMapVS.cso");
 	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\ShadowMapPS.cso");
-
+	//default light
+	VS_IL_Init(&pDefaultLightVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\DefaultLightVS.cso");
+	PS_Init(&pDefaultLightPS, L"Shaders\\Pixel\\DefaultLightPS.cso");
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -280,6 +282,12 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::DefaultLight_VS_PS:
+	{
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexcTangentIL);
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pDefaultLightVS, nullptr, 0u);
+		break;
+	}
 	default:
 	break;
 	}
@@ -290,10 +298,10 @@ void Shaders::BindPS(ShaderPicker shader)
 	switch (shader)
 	{
 	case ShaderPicker::LightAndTexture_VS_PS:
-		{
+	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
 		break;
-		}
+	}
 	case ShaderPicker::Light_VS_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
@@ -309,7 +317,7 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::BlurTexture_PS :
+	case ShaderPicker::BlurTexture_PS:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
 		break;
@@ -400,12 +408,17 @@ void Shaders::BindPS(ShaderPicker shader)
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
 		break;
-	}
+
+ 	case ShaderPicker::DefaultLight_VS_PS:
+ 	{
+ 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDefaultLightPS, nullptr, 0u);
+ 		break;
+ 	}
 	default:
 		break;
 	}
+	}
 }
-
 void Shaders::BindGS(ShaderPicker shader)
 {
 	switch (shader)

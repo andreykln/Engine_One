@@ -15,6 +15,6 @@ SamplerState smpLinearClamp : register(s4);
 
 float4 main(VertexOut pin) : SV_TARGET
 {
-    float4 col = texToDraw.Sample(smpLinearClamp, pin.tex);
-    return col;
+    float4 c = texToDraw.Sample(smpLinearClamp, pin.tex);
+    return float4(c.rrr, 1.0f);
 }

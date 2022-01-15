@@ -173,25 +173,54 @@ void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const Direct
 void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
-	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), L"normal map cBuffer");
-	TESTCBUFFER = pNMap;
+	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), true, L"normal map cBuffer");
 	constBuffersMap.insert(std::make_pair("NormalMap", pNMap));
 
 	cbShadowMap smMap;
-	ID3D11Buffer* pSMap = CreateConstantBuffer(&smMap, sizeof(cbShadowMap), L"Shadow map cBuffer");
+	ID3D11Buffer* pSMap = CreateConstantBuffer(&smMap, sizeof(cbShadowMap), true, L"Shadow map cBuffer");
 	constBuffersMap.insert(std::make_pair("ShadowMap", pSMap));
 
 	cbDefaultMatricesVS vsMatricesCB;
-	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), L"Default VS with matrices CB");
+	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), true, L"Default VS with matrices CB");
 	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
 
 	cbBlurSSAO ssaoBlurData;
-	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(&ssaoBlurData, sizeof(cbBlurSSAO), L"SSAO blur settings");
+	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(&ssaoBlurData, sizeof(cbBlurSSAO), true, L"SSAO blur settings");
 	constBuffersMap.insert(std::make_pair("ssaoBlur", pssaoBlurData));
 
 	cbComputeSSAO ssaoComputeMatrix;
-	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(&ssaoComputeMatrix, sizeof(cbComputeSSAO), L"ssao compute matrix");
+	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(&ssaoComputeMatrix, sizeof(cbComputeSSAO), true, L"ssao compute matrix");
 	constBuffersMap.insert(std::make_pair("ssaoPerFrame", pssaoComputeMatrix));
+
+	cbDefaultLightPSdata defLight;
+	defLight.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	defLight.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	defLight.dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
+	defLight.fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	defLight.fogstart = 50.0f;
+	defLight.fogRange = 200.0f;
+
+	ID3D11Buffer* pDefLight = CreateConstantBuffer(&defLight, sizeof(cbDefaultLightPSdata), false, L"default light constant data");
+	constBuffersMap.insert(std::make_pair("defaultLightData", pDefLight));
+
+	cbDefaultLightPSPerFrame defLightPerFrame;
+	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(&defLightPerFrame, sizeof(cbDefaultLightPSPerFrame), true, L"default light per frame");
+	constBuffersMap.insert(std::make_pair("defaultLightPerFrame", pDefLightPF));
+
+	cbDefaultLightPSdata defLightPerFrameTEST;
+	ID3D11Buffer* pDefLightPFTEST = CreateConstantBuffer(&defLightPerFrameTEST, sizeof(cbDefaultLightPSdata), true, L"default light per frame");
+	constBuffersMap.insert(std::make_pair("defaultLightDataTEST", pDefLightPFTEST));
+
+	struct testStruct
+	{
+		int x = 0;
+		int y = 1;
+		int z = 2;
+		int w = 3;
+	};
+	testStruct TTTTT;
+	ID3D11Buffer* pTTT = CreateConstantBuffer(&TTTTT, sizeof(testStruct), false, L"TEST THING");
+	constBuffersMap.insert(std::make_pair("TEST", pTTT));
 
 
 }
@@ -478,6 +507,42 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 
 }
 
+void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOOL disableTexSamling,
+	DirectX::XMFLOAT3& lightDir, BOOL useSSAO, const std::wstring& diffuseMap, const std::wstring& normalMap)
+{
+	BindDiffuseMap(diffuseMap);
+	BindNormalMap(normalMap);
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	pgfx_pDeviceContext->Map(constBuffersMap.at("defaultLightPerFrame"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
+	cbDefaultLightPSPerFrame* pBuffer = reinterpret_cast<cbDefaultLightPSPerFrame*>(mappedData.pData);
+	pBuffer->camPositon = camPos;
+	pBuffer->disableTexSampling = disableTexSamling;
+	pBuffer->lightDirection = lightDir;
+	pBuffer->mat = mat;
+	pBuffer->useSSAO = useSSAO;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultLightPerFrame"), 0u);
+
+
+// 	pgfx_pDeviceContext->Map(constBuffersMap.at("defaultLightDataTEST"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
+// 	cbDefaultLightPSdata* pTEST = reinterpret_cast<cbDefaultLightPSdata*>(mappedData.pData);
+// 	pTEST->fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+// 	pTEST->ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+// 	pTEST->dirLight.direction = DirectX::XMFLOAT3(0.25f, 0.25f, 0.35f);
+// 	pTEST->dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
+// 	
+// 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultLightDataTEST"), 0u);
+
+
+
+}
+
+void Graphics::SetDefaultLightData()
+{
+	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at("defaultLightData"));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("defaultLightPerFrame"));
+
+}
+
 ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)
 {
 	CheckFileExistence(in_path);
@@ -572,6 +637,16 @@ ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMa
 	pImageData->Release();
 	
 	return pSRV;
+}
+
+void Graphics::BindDiffuseMap(const std::wstring& diffMapName) const
+{
+	pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(diffMapName));
+}
+
+void Graphics::BindNormalMap(const std::wstring& normalMapName) const
+{
+	pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &normalMaps.at(normalMapName));
 }
 
 void Graphics::CheckFileExistence(Graphics& gfx, const std::wstring& path)

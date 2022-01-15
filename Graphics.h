@@ -49,6 +49,9 @@ public:
 		ID3D11ShaderResourceView* randomVecSRV,	ID3D11ShaderResourceView* pNormalMapSRV);
 	void BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV0, ID3D11RenderTargetView* pAmbientMapRTV1,
 		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
+	void DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOOL disableTexSamling,
+		DirectX::XMFLOAT3& lightDir, BOOL useSSAO, const std::wstring& diffuseMap, const std::wstring& normalMap);
+	void SetDefaultLightData();
 
 	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
@@ -60,8 +63,6 @@ public:
 
 	//skybox is in 5th(0 indexed) slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
-	void BindDiffuseMap(std::wstring& diffMapName) const;
-	void BindNormalMap(std::wstring& normalMapName) const;
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
@@ -93,9 +94,14 @@ public:
 private:
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
-	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name = std::wstring());
+	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, bool dynamic, const std::wstring& name = std::wstring());
 	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
+	//bind to register 0
+	void BindDiffuseMap(const std::wstring& diffMapName) const;
+	//bind to register 1
+	void BindNormalMap(const std::wstring& normalMapName) const;
+
 	//contains indices for corresponding texture in texture array
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> diffuseMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
@@ -112,7 +118,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDrawReflectionState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pMarkMirror;
-
 	D3D11_VIEWPORT vp;
 	D3D_FEATURE_LEVEL featureLevelIsSupported = {};
 	UINT featureLevelNum = 7;
@@ -134,8 +139,6 @@ private:
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f };
 
-	//////////////////////////////////////////////////////////////////////////
-	ID3D11Buffer* TESTCBUFFER = nullptr;
 };
 
 template <typename T>
@@ -176,12 +179,18 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 }
 
 template <typename CBData>
-ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byteWidth, const std::wstring& name /*= std::wstring()*/)
+ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byteWidth, bool dynamic, const std::wstring& name)
 {
 	D3D11_BUFFER_DESC constBufDesc;
-	constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	if (dynamic)
+		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	else
+		constBufDesc.CPUAccessFlags = 0u;
 	constBufDesc.ByteWidth = byteWidth;
-	constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+	if (dynamic)
+		constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
+	else
+		constBufDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	constBufDesc.StructureByteStride = 0u;
 	constBufDesc.MiscFlags = 0u;
@@ -190,6 +199,7 @@ ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byte
 	constBufInitData.SysMemPitch = 0;
 	constBufInitData.SysMemSlicePitch = 0;
 	ID3D11Buffer* pBuffer = nullptr;
+
 	HRESULT hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
 
 	if (FAILED(hr))

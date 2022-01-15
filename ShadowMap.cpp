@@ -68,9 +68,9 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 
 }
 
-ID3D11ShaderResourceView* ShadowMapGen::DepthMapSRV()
+ID3D11ShaderResourceView** ShadowMapGen::DepthMapSRV()
 {
-	return pDepthMapSRV;
+	return &pDepthMapSRV;
 }
 
 void ShadowMapGen::SetShadowSampler(Graphics& gfx)
@@ -99,7 +99,7 @@ void ShadowMapGen::UpdateScene(float dt)
 
 DirectX::XMMATRIX ShadowMapGen::GetShadowTransform()
 {
-	return DirectX::XMMatrixTranspose(shadowTransform);
+	return shadowTransform;
 }
 
 DirectX::XMMATRIX ShadowMapGen::GetLightProjection()
