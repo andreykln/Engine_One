@@ -110,6 +110,30 @@ struct cbDefaultLightPSPerFrame
 	DirectX::XMFLOAT3 lightDirection;
 	BOOL useSSAO;
 };
+
+
+struct cbGPUWavesVSConstData
+{
+	cbGPUWavesVSConstData() { ZeroMemory(this, sizeof(this)); }
+	float spatialStep;
+	float displacementMapTexelSize[2];
+	float padding;
+};
+
+struct cbVSTesselationWaves
+{
+	cbVSTesselationWaves() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX worldViewProjection;
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX texTransform;
+	DirectX::XMMATRIX waveDispTexTransform0;
+	DirectX::XMMATRIX waveDispTexTransform1;
+	DirectX::XMMATRIX waveNormalTexTransform0;
+	DirectX::XMMATRIX waveNormalTexTransform1;
+	DirectX::XMFLOAT3 cameraPosition;
+};
+
 struct CBufferNames
 {
 	const std::string normalMap = "NormalMap";
@@ -121,17 +145,10 @@ struct CBufferNames
 	const std::string ssaoConstData = "ssaoConstData";
 	const std::string defaultLightPerFrame = "defaultLightPerFrame";
 	const std::string defaultLightData = "defaultLightData";
+	const std::string tessWavesMatrices = "tessWavesMatrices";
 	const std::string gpuWavesInitData = "GPUWavesVSInitData";
+	
 };
-
-struct cbGPUWavesVSConstData
-{
-	cbGPUWavesVSConstData() { ZeroMemory(this, sizeof(this)); }
-	float spatialStep;
-	float displacementMapTexelSize[2];
-	float padding;
-};
-
 ////////END MAIN
 
 struct Vertices_Full

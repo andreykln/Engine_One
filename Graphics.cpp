@@ -162,13 +162,14 @@ void Graphics::SetViewport()
 }
 
 
-void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos)
+void Graphics::SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
+	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt)
 {
 	mView = View;
 	mViewProjection = ViewProjection;
 	mProjection = Projection;
 	mCameraPosition = camPos;
+	deltaTime = dt;
 }
 
 void Graphics::SetShadowTransform(const DirectX::XMMATRIX& shadowTransform)
@@ -212,6 +213,10 @@ void Graphics::CreateCBuffers()
 	ID3D11Buffer* pDefLight = CreateConstantBuffer(defLight, false, "default light constant data");
 	constBuffersMap.insert(std::make_pair(cbNames.defaultLightData, pDefLight));
 
+	cbVSTesselationWaves tessWavesVS;
+	ID3D11Buffer* pTessWavesVS = CreateConstantBuffer(tessWavesVS, true, "tessellation waves vertex shader CB");
+	constBuffersMap.insert(std::make_pair(cbNames.tessWavesMatrices, pTessWavesVS));
+
 }
 
 
@@ -246,7 +251,7 @@ void Graphics::CreateSRVs()
 	diffuseMapNames.push_back(L"stones");
 	diffuseMapNames.push_back(L"water1");
 	diffuseMapNames.push_back(L"water2");
-	diffuseMapNames.push_back(L"waves0");
+// 	diffuseMapNames.push_back(L"waves0");
 	diffuseMapNames.push_back(L"WoodCrate01");
 
 	for (int i = 0; i < diffuseMapNames.size(); i++)
@@ -372,6 +377,95 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 	pMatrices->worldViewProjTex = DirectX::XMMatrixTranspose(world * mViewProjection * toTexSpace);
 	pMatrices->enableDisplacementMapping = false;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
+}
+
+
+
+void Graphics::SetDispWavesShaderRes(const std::wstring& normalMap0, const std::wstring& normalMap1, const std::wstring& diffuseMap)
+{
+	pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &normalMaps.at(normalMap0));
+	pgfx_pDeviceContext->DSSetShaderResources(1u, 1u, &normalMaps.at(normalMap1));
+	pgfx_pDeviceContext->DSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.tessWavesMatrices));
+
+	pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(diffuseMap));
+	pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &normalMaps.at(normalMap0));
+	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &normalMaps.at(normalMap1));
+
+
+}
+
+void Graphics::UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialEx& mat)
+{
+	DirectX::XMFLOAT2 waveDispOffset0 = DirectX::XMFLOAT2(0.0f, 0.0f);
+	DirectX::XMFLOAT2 waveDispOffset1 = DirectX::XMFLOAT2(0.0f, 0.0f);
+	DirectX::XMFLOAT2 waveNormalOffset0 = DirectX::XMFLOAT2(0.0f, 0.0f);
+	DirectX::XMFLOAT2 waveNormalOffset1 = DirectX::XMFLOAT2(0.0f, 0.0f);
+
+	DirectX::XMMATRIX waveDispTexTransform0;
+	DirectX::XMMATRIX waveDispTexTransform1;
+	DirectX::XMMATRIX waveNormalTransform0;
+	DirectX::XMMATRIX waveNormalTransform1;
+
+	waveDispOffset0.x += 0.01f * deltaTime;
+	waveDispOffset0.y += 0.03f * deltaTime;
+
+	waveDispOffset1.x += 0.01f * deltaTime;
+	waveDispOffset1.y += 0.03f * deltaTime;
+
+	DirectX::XMMATRIX waveScale0 = DirectX::XMMatrixScaling(2.0f, 2.0f, 1.0f);
+	DirectX::XMMATRIX waveOffset0 = DirectX::XMMatrixTranslation(waveDispOffset0.x, waveDispOffset0.y, 0.0f);
+	waveDispTexTransform0 = DirectX::XMMatrixMultiply(waveScale0, waveOffset0);
+
+	DirectX::XMMATRIX waveScale1 = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	DirectX::XMMATRIX waveOffset1 = DirectX::XMMatrixTranslation(waveDispOffset1.x, waveDispOffset1.y, 0.0f);
+	waveDispTexTransform1 = DirectX::XMMatrixMultiply(waveScale1, waveOffset1);
+
+	waveNormalOffset0.x += 0.05f * deltaTime;
+	waveNormalOffset0.y += 0.2f * deltaTime;
+
+	waveNormalOffset1.x += 0.02f * deltaTime;
+	waveNormalOffset1.y += 0.05f * deltaTime;
+
+	waveScale0 = DirectX::XMMatrixScaling(22.0f, 22.0f, 1.0f);
+	waveOffset0 = DirectX::XMMatrixTranslation(waveNormalOffset0.x, waveNormalOffset0.y, 0.0f);
+	waveNormalTransform0 = DirectX::XMMatrixMultiply(waveScale0, waveOffset0);
+
+	waveScale1 = DirectX::XMMatrixScaling(16.0f, 16.0f, 1.0f);
+	waveOffset1 = DirectX::XMMatrixTranslation(waveNormalOffset1.x, waveNormalOffset1.y, 0.0f);
+	waveNormalTransform1 = DirectX::XMMatrixMultiply(waveScale1, waveOffset1);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.tessWavesMatrices), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbVSTesselationWaves* pVSCB = reinterpret_cast<cbVSTesselationWaves*>(mappedData.pData);
+	pVSCB->cameraPosition = mCameraPosition;
+	pVSCB->texTransform = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	pVSCB->world = DirectX::XMMatrixTranspose(world);
+	pVSCB->worldInvTranspose = MathHelper::InverseTranspose(world);
+	pVSCB->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
+	pVSCB->waveDispTexTransform0 = DirectX::XMMatrixTranspose(waveDispTexTransform0);
+	pVSCB->waveDispTexTransform1 = DirectX::XMMatrixTranspose(waveDispTexTransform1);
+	pVSCB->waveNormalTexTransform0 = DirectX::XMMatrixTranspose(waveNormalTransform0);
+	pVSCB->waveNormalTexTransform1 = DirectX::XMMatrixTranspose(waveNormalTransform1);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.tessWavesMatrices), 0u);
+
+
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbDefaultLightPSPerFrame* psBuff = reinterpret_cast<cbDefaultLightPSPerFrame*> (mappedData.pData);
+	psBuff->camPositon = mCameraPosition;
+	psBuff->disableTexSampling = false;
+	psBuff->lightDirection = mNewLightDirection;
+	psBuff->mat = mat;
+	psBuff->useSSAO = false;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
+
+
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbDefaultMatricesVS* frameDS = reinterpret_cast<cbDefaultMatricesVS*> (mappedData.pData);
+	frameDS->cameraPositon = mCameraPosition;
+	frameDS->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
+
 }
 
 void Graphics::BindCubeMap(std::wstring& skyBoxName) const
@@ -752,11 +846,13 @@ void Graphics::CreateAndBindSamplers()
 	hr = pgfx_pDevice->CreateSamplerState(&samplerDesc, &pST4);
 	samplers.push_back(pST4);
 
-	//bind all samplers once and at the creation
+	//bind all samplers to PS once and at the creation
 	for (int i = 0; i < samplers.size(); i++)
 	{
 		pgfx_pDeviceContext->PSSetSamplers(i, 1u, &samplers[i]);
 	}
+	//tessellation waves
+	pgfx_pDeviceContext->DSSetSamplers(0u, 1u, &samplers[1]);
 }
 
 

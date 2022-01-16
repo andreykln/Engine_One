@@ -27,7 +27,6 @@ private:
 	void CreateGaussBlur();
 	void DrawGaussBlur();
 	void CreateBox();
-	void DrawBox();
 	void CreateDepthComplexityStencil();
 	void DrawDepthComplexityStencil();
 
@@ -66,7 +65,7 @@ private:
 	Shaders* pShaders = nullptr;
 
 	ShadowMapGen* pShadowMap = nullptr;
-
+	DisplacementWaves* pDispWaves = nullptr;
 	SSAO* pSSAO = nullptr;
 
 	ParticleSystem* pParticle = nullptr;

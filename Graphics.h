@@ -35,8 +35,8 @@ public:
 	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
-	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos);
+	void SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
+		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt);
 	void SetShadowTransform(const DirectX::XMMATRIX& shadowTransform);
 	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
@@ -61,6 +61,9 @@ public:
 
 	void ConstBufferVSMatricesBind();
 	void VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform, const DirectX::XMMATRIX& matTransform);
+
+	void SetDispWavesShaderRes(const std::wstring& normalMap0, const std::wstring& normalMap1, const std::wstring& diffuseMap);
+	void UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialEx& mat);
 
 	//skybox is in 5th(0 indexed) slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
@@ -110,12 +113,15 @@ private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::vector<ID3D11SamplerState*> samplers;
 
+	//common per frame updates
 	DirectX::XMMATRIX mViewProjection;
 	DirectX::XMMATRIX mView;
 	DirectX::XMMATRIX mProjection;
 	DirectX::XMMATRIX mShadowTransform;
 	DirectX::XMFLOAT3 mCameraPosition;
 	DirectX::XMFLOAT3 mNewLightDirection;
+	float deltaTime;
+
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;

@@ -26,7 +26,7 @@ cbuffer cbDefaultMatricesVS : register(b0)
     float4x4 shadowTransform;
     float4x4 matTransform;
     float4x4 worldViewProjTex;
-    float3 cameraPositon;
+    float3 cameraPosition;
     int pad0;
     bool enableDisplacementMapping;
 }

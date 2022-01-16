@@ -52,11 +52,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
 
-	VS_IL_Init(&pDisplacementWavesVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
-		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementWavesVS.cso");
-	PS_Init(&pDisplacementWavesPS, L"Shaders\\Pixel\\DisplacementWavesPS.cso");
-	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\DisplacementWavesHS.cso");
-	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\DisplacementWavesDS.cso");
 
 	//Terrain
 	VS_IL_Init(&pTerrainVS, IL.terrainHeightMap, &pTerrainIL, IL.nTerrainHeightMap, L"Shaders\\Vertex\\TerrainVS.cso");
@@ -127,6 +122,14 @@ Shaders::Shaders(Graphics& in_gfx)
 	//default light
 	VS_IL_Init(&pDefaultLightVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\DefaultLightVS.cso");
 	PS_Init(&pDefaultLightPS, L"Shaders\\Pixel\\DefaultLightPS.cso");
+
+	//Displacement waves
+	VS_IL_Init(&pDisplacementWavesVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL,
+		IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\TessellationWavesVS.cso");
+	PS_Init(&pDisplacementWavesPS, L"Shaders\\Pixel\\TessellationWavesPS.cso");
+	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\TessellationWavesHS.cso");
+	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\TessellationWavesDS.cso");
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -183,7 +186,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexCTangentIL);
+		GetContext(*pSgfx)->IASetInputLayout(pPosNormalTexcTangentIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pDisplacementWavesVS, nullptr, 0u);
 		break;
 

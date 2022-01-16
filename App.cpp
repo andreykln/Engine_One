@@ -391,6 +391,7 @@ void App::CreateShadowMapDemo()
 	pPlate = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u);
+	pDispWaves = new DisplacementWaves(wnd.GetGraphics());
 	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 }
 
@@ -400,7 +401,8 @@ void App::DrawShadowMapDemo()
 	
 	//update every frame
 	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().SetMatrices(viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion(), camera.GetCameraPosition());
+	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
+		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime());
 
 	//shadow map
 	pShaders->BindVSandIA(ShadowMap_VS_PS);
@@ -499,23 +501,36 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	//DEBUG quad
-	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
-	pShaders->BindPS(DrawDebugTexQuad_VS_PS);
-	stride = sizeof(vbPosNormalTex);
-	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-
-	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-
-	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+// 	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
+// 	pShaders->BindPS(DrawDebugTexQuad_VS_PS);
+// 	stride = sizeof(vbPosNormalTex);
+// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
 	//release for the SSAO pass
 	pDC->PSSetShaderResources(5u, 1u, &pNullSRV);
+	//////////////////////////////////////////////////////////////////////////
 
+	//Displacement waves
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+
+	pShaders->BindVSandIA(DisplacementWaves_VS_HS_DS_PS);
+	pShaders->BindPS(DisplacementWaves_VS_HS_DS_PS);
+	pShaders->BindHS(DisplacementWaves_VS_HS_DS_PS);
+	pShaders->BindDS(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().SetDispWavesShaderRes(pDispWaves->normalMap0, pDispWaves->normalMap1, pDispWaves->diffuseMap);
+	wnd.GetGraphics().UpdateDispWavesCBuffers(ID, pDispWaves->wavesMaterial);
+	pDC->IASetVertexBuffers(0u, 1u, pDispWaves->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pDispWaves->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pDispWaves->GetIndexCount(), 0u, 0u);
+	pShaders->UnbindAll();
 
 	//Skybox
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(RenderStates::NoCullRS);
 	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
 

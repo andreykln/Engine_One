@@ -67,6 +67,9 @@
     <Filter Include="Shaders\Default\GPUWaves">
       <UniqueIdentifier>{faaf85d9-3d2c-4d2f-a7a7-03ac917893f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\GPUWaves\TesselationWaves">
+      <UniqueIdentifier>{7463ef03-1d1b-450d-9e50-0c4377502c50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -624,6 +627,18 @@
     </FxCompile>
     <FxCompile Include="DefaultLightPS.hlsl">
       <Filter>Shaders\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="TessellationWavesDS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\TesselationWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="TessellationWavesHS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\TesselationWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="TessellationWavesPS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\TesselationWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="TessellationWavesVS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\TesselationWaves</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

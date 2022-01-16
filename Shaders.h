@@ -102,10 +102,6 @@ private:
 	ID3D11HullShader* pDisplacementMappingHS = nullptr;
 
 	//displacement waves
-	ID3D11VertexShader* pDisplacementWavesVS = nullptr;
-	ID3D11PixelShader* pDisplacementWavesPS = nullptr;
-	ID3D11HullShader* pDisplacementWavesHS = nullptr;
-	ID3D11DomainShader* pDisplacementWavesDS = nullptr;
 
 	//terrain with height map
 	ID3D11VertexShader* pTerrainVS = nullptr;
@@ -184,5 +180,12 @@ private:
 	//default Light
 	ID3D11VertexShader* pDefaultLightVS = nullptr;
 	ID3D11PixelShader* pDefaultLightPS = nullptr;
+
+	//Displacement waves
+	ID3D11VertexShader* pDisplacementWavesVS = nullptr;
+	ID3D11PixelShader* pDisplacementWavesPS = nullptr;
+	ID3D11HullShader* pDisplacementWavesHS = nullptr;
+	ID3D11DomainShader* pDisplacementWavesDS = nullptr;
+
 };
 
