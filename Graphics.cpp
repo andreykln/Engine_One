@@ -1,7 +1,6 @@
 #include "Graphics.h"
 #include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
 
-
 Graphics::Graphics(HWND wnd)
 {
 	windowHandle = wnd;
@@ -174,39 +173,39 @@ void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
 	ID3D11Buffer* pNMap = CreateConstantBuffer(nMap, true, L"normal map cBuffer");
-	constBuffersMap.insert(std::make_pair("NormalMap", pNMap));
+	constBuffersMap.insert(std::make_pair(cbNames.normalMap, pNMap));
 
 	cbShadowMap smMap;
 	ID3D11Buffer* pSMap = CreateConstantBuffer(smMap, true, L"Shadow map cBuffer");
-	constBuffersMap.insert(std::make_pair("ShadowMap", pSMap));
+	constBuffersMap.insert(std::make_pair(cbNames.shadowMap, pSMap));
 
 	cbDefaultMatricesVS vsMatricesCB;
 	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, true, L"Default VS with matrices CB");
-	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
+	constBuffersMap.insert(std::make_pair(cbNames.defaultVS, pvsMatricesCB));
 
 	cbBlurSSAO ssaoBlurData;
 	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(ssaoBlurData, true, L"SSAO blur settings");
-	constBuffersMap.insert(std::make_pair("ssaoBlur", pssaoBlurData));
+	constBuffersMap.insert(std::make_pair(cbNames.ssaoBlur, pssaoBlurData));
 
 	cbComputeSSAO ssaoComputeMatrix;
 	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(ssaoComputeMatrix, true, L"ssao compute matrix");
-	constBuffersMap.insert(std::make_pair("ssaoPerFrame", pssaoComputeMatrix));
+	constBuffersMap.insert(std::make_pair(cbNames.ssaoPerFrame, pssaoComputeMatrix));
 
 
 	cbDefaultLightPSPerFrame defLightPerFrame;
 	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(defLightPerFrame, true, L"default light per frame");
-	constBuffersMap.insert(std::make_pair("defaultLightPerFrame", pDefLightPF));
+	constBuffersMap.insert(std::make_pair(cbNames.defaultLightPerFrame, pDefLightPF));
 
 	cbDefaultLightPSdata defLight;
 	ID3D11Buffer* pDefLight = CreateConstantBuffer(defLight, false, L"default light constant data");
-	constBuffersMap.insert(std::make_pair("defaultLightData", pDefLight));
+	constBuffersMap.insert(std::make_pair(cbNames.defaultLightData, pDefLight));
 
 }
 
 void Graphics::CreateRuntimeCBuffers(cbComputeSSAOconstData& ssaoBuffer)
 {
 	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, L"Compute SSAO CB");
-	constBuffersMap.insert(std::make_pair("ssaoConstData", pssaoBuff));
+	constBuffersMap.insert(std::make_pair(cbNames.ssaoConstData, pssaoBuff));
 
 }
 
@@ -277,12 +276,12 @@ void Graphics::ConstBufferNormalMapBind()
 void Graphics::NormalMap(const DirectX::XMMATRIX world)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("NormalMap"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.normalMap), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbCreateNormalMap* cBuffer = reinterpret_cast<cbCreateNormalMap*> (mappedData.pData);
 	cBuffer->worldInvTransposeView = (MathHelper::InverseTranspose(world) * DirectX::XMMatrixTranspose(mView));
 	cBuffer->worldView = DirectX::XMMatrixTranspose(world * mView);
 	cBuffer->worldViewProjection = DirectX::XMMatrixTranspose(world * mViewProjection);
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("NormalMap"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.normalMap), 0u);
 
 }
 
@@ -315,14 +314,14 @@ void Graphics::ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT&
 	cbComputeSSAO temp;
 	temp.viewToTexSpace = projectionToTextureSpace;
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoPerFrame"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.ssaoPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbComputeSSAO* pBuffer = reinterpret_cast<cbComputeSSAO*>(mappedData.pData);
 	pBuffer->viewToTexSpace = DirectX::XMMatrixTranspose(projectionToTextureSpace);
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ssaoPerFrame"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.ssaoPerFrame), 0u);
 
-	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at("ssaoConstData"));
-	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("ssaoConstData"));
-	pgfx_pDeviceContext->PSSetConstantBuffers(2u, 1u, &constBuffersMap.at("ssaoPerFrame"));
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.ssaoConstData));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.ssaoConstData));
+	pgfx_pDeviceContext->PSSetConstantBuffers(2u, 1u, &constBuffersMap.at(cbNames.ssaoPerFrame));
 
 	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &randomVecSRV);
 	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &pNormalMapSRV);
@@ -332,22 +331,22 @@ void Graphics::ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT&
 
 void Graphics::ConstBufferShadowMapBind()
 {
-	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at("ShadowMap"));
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.shadowMap));
 }
 
 void Graphics::ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ShadowMap"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.shadowMap), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbShadowMap* pMatrices = reinterpret_cast<cbShadowMap*>(mappedData.pData);
 	pMatrices->lightWVP = DirectX::XMMatrixTranspose(world * lightViewProj);
 	pMatrices->texTransform = DirectX::XMMatrixIdentity();
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ShadowMap"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.shadowMap), 0u);
 }
 
 void Graphics::ConstBufferVSMatricesBind()
 {
-	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at("defaultVS"));
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
 
 }
 
@@ -355,7 +354,7 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 	const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform, const DirectX::XMFLOAT3& cameraPositon)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("defaultVS"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* pMatrices = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
 	pMatrices->cameraPositon = cameraPositon;
 	pMatrices->matTransform = DirectX::XMMatrixTranspose(matTransform);
@@ -366,7 +365,7 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 	pMatrices->worldInvTranspose = MathHelper::InverseTranspose(world);
 	pMatrices->worldViewProjTex = DirectX::XMMatrixTranspose(world * mViewProjection * toTexSpace);
 	pMatrices->enableDisplacementMapping = false;
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultVS"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
 }
 
 void Graphics::BindCubeMap(std::wstring& skyBoxName) const
@@ -454,7 +453,7 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 	pgfx_pDeviceContext->RSSetViewports(1u, &ssaoViewPort);
 
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at("ssaoBlur"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.ssaoBlur), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbBlurSSAO* pBuffer = reinterpret_cast<cbBlurSSAO*>(mappedData.pData);
 	if (horizontalBlur)
 	{
@@ -466,9 +465,9 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 	}
 	pBuffer->texelHeight = 1.0f / vp.Height;
 	pBuffer->texelWidth = 1.0f / vp.Width;
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("ssaoBlur"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.ssaoBlur), 0u);
 
-	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at("ssaoBlur"));
+	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.ssaoBlur));
 	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pInputSRV);
 
 	//IA vertex buffer and index is already set from normal map
@@ -489,57 +488,21 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOO
 	BindDiffuseMap(diffuseMap);
 	BindNormalMap(normalMap);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
-	pgfx_pDeviceContext->Map(constBuffersMap.at("defaultLightPerFrame"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
+	pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
 	cbDefaultLightPSPerFrame* pBuffer = reinterpret_cast<cbDefaultLightPSPerFrame*>(mappedData.pData);
 	pBuffer->camPositon = camPos;
 	pBuffer->disableTexSampling = disableTexSamling;
 	pBuffer->lightDirection = lightDir;
 	pBuffer->mat = mat;
 	pBuffer->useSSAO = useSSAO;
-	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultLightPerFrame"), 0u);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
 
 }
 
 void Graphics::SetDefaultLightData()
 {
-	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at("defaultLightData"));
-	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("defaultLightPerFrame"));
-
-}
-
-ID3D11Buffer* Graphics::CreateConstantBuffer(const cbDefaultLightPSdata& data, const UINT byteWidth)
-{
-	D3D11_BUFFER_DESC constBufDesc;
-	constBufDesc.CPUAccessFlags = 0u;
-	constBufDesc.ByteWidth = sizeof(data);
-	constBufDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constBufDesc.StructureByteStride = 0u;
-	constBufDesc.MiscFlags = 0u;
-	D3D11_SUBRESOURCE_DATA constBufInitData;
-	constBufInitData.pSysMem = &data;
-	constBufInitData.SysMemPitch = 0;
-	constBufInitData.SysMemSlicePitch = 0;
-	ID3D11Buffer* pBuffer = nullptr;
-	HRESULT hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
-	// 	if (dynamic)
-	// 	{
-	// 		hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
-	// 	}
-	// 	else
-	// 	{
-	// 		hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pConstantLightData);
-	// 	}
-	// 
-
-
-// 	if (FAILED(hr))
-// 	{
-// 		std::wstring message = L"Failed Constant Buffer creation of ";
-// 		message += name;
-// 		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
-// 	}
-	return pBuffer;
+	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultLightData));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.defaultLightPerFrame));
 
 }
 

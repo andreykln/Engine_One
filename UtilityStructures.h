@@ -110,7 +110,18 @@ struct cbDefaultLightPSPerFrame
 	DirectX::XMFLOAT3 lightDirection;
 	BOOL useSSAO;
 };
-
+struct CBufferNames
+{
+	const std::string normalMap = "NormalMap";
+	const std::string shadowMap = "ShadowMap";
+	const std::string defaultVS = "defaultVS";
+	const std::string ssaoBlur = "ssaoBlur";
+	const std::string ssaoPerFrame = "ssaoPerFrame";
+	//init at runtime
+	const std::string ssaoConstData = "ssaoConstData";
+	const std::string defaultLightPerFrame = "defaultLightPerFrame";
+	const std::string defaultLightData = "defaultLightData";
+};
 
 ////////END MAIN
 

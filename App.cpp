@@ -516,7 +516,7 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	bool usessao = true;
-	if (GetAsyncKeyState(GetAsyncKeyState('5') & 0x8000))
+	if (GetAsyncKeyState('5') & 0x8000)
 		usessao = false;
 	else
 		usessao = true;
@@ -530,12 +530,7 @@ void App::DrawShadowMapDemo()
 
 	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
 	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
-// 	pShaders->BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
-// 	pHills->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
-// 		pShadowMap->GetShadowTransform(), shapes.Get_m_GridWorld() * shapes.GetCameraOffset(),
-// 		viewProjectionMatrix, pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
-// 	pShadowMap->SetShadowSampler(wnd.GetGraphics());
-// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+
 // 	//box
 // 	pDisplacementMappingBox->UpdateShadowMapDrawBuffers(wnd.GetGraphics(), camera.GetCameraPosition(),
 // 		pShadowMap->GetShadowTransform(), shapes.Get_m_BoxWorld() * shapes.GetCameraOffset(), viewProjectionMatrix,

@@ -92,14 +92,12 @@ public:
 	void BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV,
 		D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur);
 private:
-	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, bool dynamic, const std::wstring& name = std::wstring());
-	//template version causes a bug(?) with non dynamic buffer data
-	ID3D11Buffer* CreateConstantBuffer(const cbDefaultLightPSdata& data, const UINT byteWidth);
 
 	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
 
+	const CBufferNames cbNames;
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
 	//bind to register 0
 	void BindDiffuseMap(const std::wstring& diffMapName) const;
