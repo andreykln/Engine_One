@@ -25,7 +25,7 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 // 	cbPSPerObject.mat.specular = DirectX::XMFLOAT4(0.3f, 0.3f, 0.3f, 128.0f);
 // 	cbPSPerObject.mat.reflect = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
 
-	wavesMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
+	wavesMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.9f);
 	wavesMaterial.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	wavesMaterial.shininess = 0.7f;
 

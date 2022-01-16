@@ -402,7 +402,7 @@ void App::DrawShadowMapDemo()
 	//update every frame
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
-		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime());
+		camera.GetProjecion(), camera.GetCameraPosition(), timer.TotalTime());
 
 	//shadow map
 	pShaders->BindVSandIA(ShadowMap_VS_PS);
@@ -516,6 +516,8 @@ void App::DrawShadowMapDemo()
 	//////////////////////////////////////////////////////////////////////////
 
 	//Displacement waves
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	pShaders->BindVSandIA(DisplacementWaves_VS_HS_DS_PS);
@@ -530,6 +532,8 @@ void App::DrawShadowMapDemo()
 	pShaders->UnbindAll();
 
 	//Skybox
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, blendFactorsZero, 0xffffffff);
+
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(RenderStates::NoCullRS);
 	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
