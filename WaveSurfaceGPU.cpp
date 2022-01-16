@@ -5,29 +5,31 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	geoGen.CreateGrid((float)numColumns, (float)numRows, 200, 200, mesh);
 	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.85f, 0.4f);
 
-	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
-	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
-
-	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
-	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
-	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-
-	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 0.5f);
-	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 0.5f);
-	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-
-	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
-	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
-	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
-	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-
-	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
-	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+// 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
+// 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+// 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+// 
+// 	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
+// 	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
+// 	directionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
+// 	directionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+// 
+// 	directionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+// 	directionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.20f, 0.20f, 0.20f, 0.5f);
+// 	directionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.65f, 0.65f, 0.65f, 0.5f);
+// 	directionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+// 
+// 	directionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+// 	directionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 0.5f);
+// 	directionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.5f);
+// 	directionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
+// 
+// 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+// 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+// 	directionalLight.mat.specular = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 32.0f);
+// 	directionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	std::vector<vbPosNormalTex> vertices;
+	
 
 	vertices.resize(mesh.vertices.size());
 	for (UINT i = 0; i < mesh.vertices.size(); ++i)
@@ -36,28 +38,28 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 		vertices[i].normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 		vertices[i].tex = mesh.vertices[i].TexC;
 	}
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"GPU waves vertex buffer");
 
-	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"GPU_Waves.");
-	AddBind(pVB);
+// 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"GPU_Waves.");
+// 	AddBind(pVB);
 
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pTopology);
+	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"GPU waves index buffer");
+	indexCount = mesh.indices.size();
+	GetAndBuildConstantBufferData();
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"WaveSurfaceIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"WaveSurfaceIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
+// 	VertexConstantBuffer<CB_VS_Transform>* pVCB =
+// 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer();
+// 	AddBind(pVCB);
 
-	VertexConstantBuffer<CB_VS_Transform>* pVCB =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVertexConstantBuffer = pVCB->GetVertexConstantBuffer();
-	AddBind(pVCB);
 
-	vsConsts.spatialStep = wave.SpatialStep();
-	vsConsts.displacementMapTexelSize[0] = 1.0f / numColumns;
-	vsConsts.displacementMapTexelSize[1] = 1.0f / numRows;
-
-	VertexConstantBuffer<CB_VS_GPUWaves_consts>* pVCB0 =
-		new VertexConstantBuffer<CB_VS_GPUWaves_consts>(gfx, vsConsts, 1u, 1u);
-	AddBind(pVCB0);
+// 	VertexConstantBuffer<CB_VS_GPUWaves_consts>* pVCB0 =
+// 		new VertexConstantBuffer<CB_VS_GPUWaves_consts>(gfx, vsConsts, 1u, 1u);
+// 	AddBind(pVCB0);
 
 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCB =
 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
@@ -149,6 +151,29 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	pCopyCScbuffer = pCSBuf->GetComputeShaderConstantBuffer();
 	AddBind(pCSBuf);
 
+}
+
+ID3D11Buffer** WaveSurfaceGPU::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
+
+ID3D11Buffer* WaveSurfaceGPU::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
+
+UINT WaveSurfaceGPU::GetIndexCount()
+{
+	return indexCount;
+}
+
+cbGPUWavesVSConstData& WaveSurfaceGPU::GetAndBuildConstantBufferData()
+{
+	vsConsts.spatialStep = wave.SpatialStep();
+	vsConsts.displacementMapTexelSize[0] = 1.0f / numColumns;
+	vsConsts.displacementMapTexelSize[1] = 1.0f / numRows;
+	return vsConsts;
 }
 
 void WaveSurfaceGPU::UpdateSolution(Graphics& gfx, float dt)

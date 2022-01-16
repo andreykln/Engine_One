@@ -64,6 +64,9 @@
     <Filter Include="Shaders\Default\DebugScreenQuad">
       <UniqueIdentifier>{e9b5b56f-d936-41db-a249-da96d54597af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\GPUWaves">
+      <UniqueIdentifier>{faaf85d9-3d2c-4d2f-a7a7-03ac917893f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">

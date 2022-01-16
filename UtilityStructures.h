@@ -121,6 +121,15 @@ struct CBufferNames
 	const std::string ssaoConstData = "ssaoConstData";
 	const std::string defaultLightPerFrame = "defaultLightPerFrame";
 	const std::string defaultLightData = "defaultLightData";
+	const std::string gpuWavesInitData = "GPUWavesVSInitData";
+};
+
+struct cbGPUWavesVSConstData
+{
+	cbGPUWavesVSConstData() { ZeroMemory(this, sizeof(this)); }
+	float spatialStep;
+	float displacementMapTexelSize[2];
+	float padding;
 };
 
 ////////END MAIN
@@ -272,13 +281,7 @@ struct CB_CS_GPUWaves
 	int padding[2];
 };
 
-struct CB_VS_GPUWaves_consts
-{
-	CB_VS_GPUWaves_consts() { ZeroMemory(this, sizeof(this)); }
-	float spatialStep;
-	float displacementMapTexelSize[2];
-	float padding;
-};
+
 
 struct TreePointSprite
 {

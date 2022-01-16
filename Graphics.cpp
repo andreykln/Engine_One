@@ -216,7 +216,7 @@ void Graphics::CreateCBuffers()
 
 void Graphics::CreateRuntimeCBuffers(cbComputeSSAOconstData& ssaoBuffer)
 {
-	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, L"Compute SSAO CB");
+	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, false, L"Compute SSAO CB");
 	constBuffersMap.insert(std::make_pair(cbNames.ssaoConstData, pssaoBuff));
 
 }
