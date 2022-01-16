@@ -173,61 +173,39 @@ void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const Direct
 void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
-	ID3D11Buffer* pNMap = CreateConstantBuffer(&nMap, sizeof(cbCreateNormalMap), true, L"normal map cBuffer");
+	ID3D11Buffer* pNMap = CreateConstantBuffer(nMap, true, L"normal map cBuffer");
 	constBuffersMap.insert(std::make_pair("NormalMap", pNMap));
 
 	cbShadowMap smMap;
-	ID3D11Buffer* pSMap = CreateConstantBuffer(&smMap, sizeof(cbShadowMap), true, L"Shadow map cBuffer");
+	ID3D11Buffer* pSMap = CreateConstantBuffer(smMap, true, L"Shadow map cBuffer");
 	constBuffersMap.insert(std::make_pair("ShadowMap", pSMap));
 
 	cbDefaultMatricesVS vsMatricesCB;
-	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, sizeof(cbDefaultMatricesVS), true, L"Default VS with matrices CB");
+	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, true, L"Default VS with matrices CB");
 	constBuffersMap.insert(std::make_pair("defaultVS", pvsMatricesCB));
 
 	cbBlurSSAO ssaoBlurData;
-	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(&ssaoBlurData, sizeof(cbBlurSSAO), true, L"SSAO blur settings");
+	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(ssaoBlurData, true, L"SSAO blur settings");
 	constBuffersMap.insert(std::make_pair("ssaoBlur", pssaoBlurData));
 
 	cbComputeSSAO ssaoComputeMatrix;
-	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(&ssaoComputeMatrix, sizeof(cbComputeSSAO), true, L"ssao compute matrix");
+	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(ssaoComputeMatrix, true, L"ssao compute matrix");
 	constBuffersMap.insert(std::make_pair("ssaoPerFrame", pssaoComputeMatrix));
 
-	cbDefaultLightPSdata defLight;
-	defLight.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
-	defLight.dirLight.direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	defLight.dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
-	defLight.fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	defLight.fogstart = 50.0f;
-	defLight.fogRange = 200.0f;
-
-	ID3D11Buffer* pDefLight = CreateConstantBuffer(&defLight, sizeof(cbDefaultLightPSdata), false, L"default light constant data");
-	constBuffersMap.insert(std::make_pair("defaultLightData", pDefLight));
 
 	cbDefaultLightPSPerFrame defLightPerFrame;
-	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(&defLightPerFrame, sizeof(cbDefaultLightPSPerFrame), true, L"default light per frame");
+	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(defLightPerFrame, true, L"default light per frame");
 	constBuffersMap.insert(std::make_pair("defaultLightPerFrame", pDefLightPF));
 
-	cbDefaultLightPSdata defLightPerFrameTEST;
-	ID3D11Buffer* pDefLightPFTEST = CreateConstantBuffer(&defLightPerFrameTEST, sizeof(cbDefaultLightPSdata), true, L"default light per frame");
-	constBuffersMap.insert(std::make_pair("defaultLightDataTEST", pDefLightPFTEST));
-
-	struct testStruct
-	{
-		int x = 0;
-		int y = 1;
-		int z = 2;
-		int w = 3;
-	};
-	testStruct TTTTT;
-	ID3D11Buffer* pTTT = CreateConstantBuffer(&TTTTT, sizeof(testStruct), false, L"TEST THING");
-	constBuffersMap.insert(std::make_pair("TEST", pTTT));
-
+	cbDefaultLightPSdata defLight;
+	ID3D11Buffer* pDefLight = CreateConstantBuffer(defLight, false, L"default light constant data");
+	constBuffersMap.insert(std::make_pair("defaultLightData", pDefLight));
 
 }
 
 void Graphics::CreateRuntimeCBuffers(cbComputeSSAOconstData& ssaoBuffer)
 {
-	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, sizeof(cbComputeSSAOconstData), L"Compute SSAO CB");
+	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, L"Compute SSAO CB");
 	constBuffersMap.insert(std::make_pair("ssaoConstData", pssaoBuff));
 
 }
@@ -464,9 +442,6 @@ void Graphics::BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV
 	}
 	//for reading in final draw calls
 	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pAmbientMapSRV0);
-// 	//release input for blurs
-// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-// 	pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNULLSRV);
 
 }
 
@@ -510,6 +485,7 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOOL disableTexSamling,
 	DirectX::XMFLOAT3& lightDir, BOOL useSSAO, const std::wstring& diffuseMap, const std::wstring& normalMap)
 {
+
 	BindDiffuseMap(diffuseMap);
 	BindNormalMap(normalMap);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -522,24 +498,48 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOO
 	pBuffer->useSSAO = useSSAO;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultLightPerFrame"), 0u);
 
-
-// 	pgfx_pDeviceContext->Map(constBuffersMap.at("defaultLightDataTEST"), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
-// 	cbDefaultLightPSdata* pTEST = reinterpret_cast<cbDefaultLightPSdata*>(mappedData.pData);
-// 	pTEST->fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-// 	pTEST->ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
-// 	pTEST->dirLight.direction = DirectX::XMFLOAT3(0.25f, 0.25f, 0.35f);
-// 	pTEST->dirLight.strength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
-// 	
-// 	pgfx_pDeviceContext->Unmap(constBuffersMap.at("defaultLightDataTEST"), 0u);
-
-
-
 }
 
 void Graphics::SetDefaultLightData()
 {
 	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at("defaultLightData"));
 	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at("defaultLightPerFrame"));
+
+}
+
+ID3D11Buffer* Graphics::CreateConstantBuffer(const cbDefaultLightPSdata& data, const UINT byteWidth)
+{
+	D3D11_BUFFER_DESC constBufDesc;
+	constBufDesc.CPUAccessFlags = 0u;
+	constBufDesc.ByteWidth = sizeof(data);
+	constBufDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constBufDesc.StructureByteStride = 0u;
+	constBufDesc.MiscFlags = 0u;
+	D3D11_SUBRESOURCE_DATA constBufInitData;
+	constBufInitData.pSysMem = &data;
+	constBufInitData.SysMemPitch = 0;
+	constBufInitData.SysMemSlicePitch = 0;
+	ID3D11Buffer* pBuffer = nullptr;
+	HRESULT hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
+	// 	if (dynamic)
+	// 	{
+	// 		hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
+	// 	}
+	// 	else
+	// 	{
+	// 		hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pConstantLightData);
+	// 	}
+	// 
+
+
+// 	if (FAILED(hr))
+// 	{
+// 		std::wstring message = L"Failed Constant Buffer creation of ";
+// 		message += name;
+// 		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+// 	}
+	return pBuffer;
 
 }
 

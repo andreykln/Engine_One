@@ -94,18 +94,20 @@ public:
 private:
 	//byteWidth needed because sizeof(CBData) is giving wrong number for some reason.
 	template <typename CBData>
-	ID3D11Buffer* CreateConstantBuffer(const CBData& data, const UINT byteWidth, bool dynamic, const std::wstring& name = std::wstring());
+	ID3D11Buffer* CreateConstantBuffer(const CBData& data, bool dynamic, const std::wstring& name = std::wstring());
+	//template version causes a bug(?) with non dynamic buffer data
+	ID3D11Buffer* CreateConstantBuffer(const cbDefaultLightPSdata& data, const UINT byteWidth);
+
 	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
+
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;
 	//bind to register 0
 	void BindDiffuseMap(const std::wstring& diffMapName) const;
 	//bind to register 1
 	void BindNormalMap(const std::wstring& normalMapName) const;
 
-	//contains indices for corresponding texture in texture array
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> diffuseMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
-	///
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::vector<ID3D11SamplerState*> samplers;
 
@@ -179,14 +181,15 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 }
 
 template <typename CBData>
-ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byteWidth, bool dynamic, const std::wstring& name)
+ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, bool dynamic, const std::wstring& name)
 {
 	D3D11_BUFFER_DESC constBufDesc;
 	if (dynamic)
 		constBufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	else
 		constBufDesc.CPUAccessFlags = 0u;
-	constBufDesc.ByteWidth = byteWidth;
+	constBufDesc.ByteWidth = sizeof(CBData);
+
 	if (dynamic)
 		constBufDesc.Usage = D3D11_USAGE_DYNAMIC;
 	else
@@ -199,7 +202,6 @@ ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, const UINT byte
 	constBufInitData.SysMemPitch = 0;
 	constBufInitData.SysMemSlicePitch = 0;
 	ID3D11Buffer* pBuffer = nullptr;
-
 	HRESULT hr = pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
 
 	if (FAILED(hr))

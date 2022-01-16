@@ -96,7 +96,6 @@ struct cbDefaultLightPSdata
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
 	float fogstart = 50.0f;
-
 	float fogRange = 200.0f;
 	int pad2;
 	int pad3;

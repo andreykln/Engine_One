@@ -483,8 +483,31 @@ void App::DrawShadowMapDemo()
 // 		pShadowMap->GetShadowTransform(), viewProjectionMatrix,
 // 		pShadowMap->DepthMapSRV(), pShadowMap->GetNewLightDirection());
 // 	pInstancedGeoSphere->BindAndDrawInstancedIndexed(wnd.GetGraphics(), 10, 0, 0, 0);
+	//////////////////////////////////////////////////////////////////////////
+// 	cbDefaultLightPSdata defLight;
+// 	D3D11_BUFFER_DESC constBufDesc;
+// 	constBufDesc.CPUAccessFlags = 0u;
+// 	constBufDesc.ByteWidth = sizeof(cbDefaultLightPSdata);
+// 	constBufDesc.Usage = D3D11_USAGE_IMMUTABLE;
+// 	constBufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+// 	constBufDesc.StructureByteStride = 0u;
+// 	constBufDesc.MiscFlags = 0u;
+// 	D3D11_SUBRESOURCE_DATA constBufInitData;
+// 	constBufInitData.pSysMem = &defLight;
+// 	constBufInitData.SysMemPitch = 0;
+// 	constBufInitData.SysMemSlicePitch = 0;
+// 	ID3D11Buffer* pBuffer = nullptr;
 
+// 	wnd.GetGraphics().pgfx_pDevice->CreateBuffer(&constBufDesc, &constBufInitData, &pBuffer);
+// 	wnd.GetGraphics().constBuffersMap.insert(std::make_pair("defaultLightData", pBuffer));
 
+// 	ID3D11Buffer* pTest = wnd.GetGraphics().constBuffersMap.at("defaultLightData");
+// 	ID3D11Buffer* pTest0 = wnd.GetGraphics().pConstantLightData;
+
+// 	pDC->PSSetConstantBuffers(0u, 1u, &pTest);
+	
+
+	//////////////////////////////////////////////////////////////////////////
 	//plane
 	wnd.GetGraphics().ConstBufferVSMatricesBind();
 	pShaders->BindVSandIA(DefaultLight_VS_PS);
@@ -492,7 +515,7 @@ void App::DrawShadowMapDemo()
 	stride = sizeof(vbPosNormalTexTangent);
 	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-	bool usessao;
+	bool usessao = true;
 	if (GetAsyncKeyState(GetAsyncKeyState('5') & 0x8000))
 		usessao = false;
 	else
@@ -503,6 +526,7 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().SetDefaultLightData();
 	wnd.GetGraphics().DefaultLightUpdate(pPlate->plateMaterial, camera.GetCameraPosition(),
 		false, newLightDirection, usessao, pPlate->diffuseMap, pPlate->normalMap);
+
 
 	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
 	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
@@ -520,7 +544,6 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	////	DEBUG
-// 	pSSAO->DrawDebugScreenQuad(wnd.GetGraphics(), pShaders);
 	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
 	pShaders->BindPS(DrawDebugTexQuad_VS_PS);
 	stride = sizeof(vbPosNormalTex);
@@ -557,7 +580,6 @@ void App::DrawShadowMapDemo()
 	//release shadow map SRV
 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
 	pDC->PSSetShaderResources(2u, 1u, &pNULLSRV);
-	//////////////////////////////////////////////////////////////////////////
 
 	
 }
