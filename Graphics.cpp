@@ -162,11 +162,23 @@ void Graphics::SetViewport()
 }
 
 
-void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View, const DirectX::XMMATRIX& Projection)
+void Graphics::SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
+	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos)
 {
 	mView = View;
 	mViewProjection = ViewProjection;
 	mProjection = Projection;
+	mCameraPosition = camPos;
+}
+
+void Graphics::SetShadowTransform(const DirectX::XMMATRIX& shadowTransform)
+{
+	mShadowTransform = shadowTransform;
+}
+
+void Graphics::UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection)
+{
+	mNewLightDirection = newLightDirection;
 }
 
 void Graphics::CreateCBuffers()
@@ -350,15 +362,14 @@ void Graphics::ConstBufferVSMatricesBind()
 
 }
 
-void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform,
-	const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform, const DirectX::XMFLOAT3& cameraPositon)
+void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform, const DirectX::XMMATRIX& matTransform)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* pMatrices = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
-	pMatrices->cameraPositon = cameraPositon;
+	pMatrices->cameraPositon = mCameraPosition;
 	pMatrices->matTransform = DirectX::XMMatrixTranspose(matTransform);
-	pMatrices->shadowTransform = DirectX::XMMatrixTranspose(shadowTransform);
+	pMatrices->shadowTransform = DirectX::XMMatrixTranspose(mShadowTransform);
 	pMatrices->texTransform = DirectX::XMMatrixTranspose(texTransform);
 	pMatrices->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
 	pMatrices->world = DirectX::XMMatrixTranspose(world);
@@ -481,8 +492,8 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 
 }
 
-void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOOL disableTexSamling,
-	DirectX::XMFLOAT3& lightDir, BOOL useSSAO, const std::wstring& diffuseMap, const std::wstring& normalMap)
+void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
+	const std::wstring& diffuseMap, const std::wstring& normalMap)
 {
 
 	BindDiffuseMap(diffuseMap);
@@ -490,9 +501,9 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOO
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
 	cbDefaultLightPSPerFrame* pBuffer = reinterpret_cast<cbDefaultLightPSPerFrame*>(mappedData.pData);
-	pBuffer->camPositon = camPos;
+	pBuffer->camPositon = mCameraPosition;
 	pBuffer->disableTexSampling = disableTexSamling;
-	pBuffer->lightDirection = lightDir;
+	pBuffer->lightDirection = mNewLightDirection;
 	pBuffer->mat = mat;
 	pBuffer->useSSAO = useSSAO;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);

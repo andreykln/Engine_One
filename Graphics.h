@@ -35,8 +35,10 @@ public:
 	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
-	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View, const DirectX::XMMATRIX& Projection);
-
+	void SetMatrices(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
+		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos);
+	void SetShadowTransform(const DirectX::XMMATRIX& shadowTransform);
+	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
 	void CreateRuntimeCBuffers(cbComputeSSAOconstData& ssauBuffer);
 	void CreateSRVs();
@@ -49,17 +51,15 @@ public:
 		ID3D11ShaderResourceView* randomVecSRV,	ID3D11ShaderResourceView* pNormalMapSRV);
 	void BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV0, ID3D11RenderTargetView* pAmbientMapRTV1,
 		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
-	void DefaultLightUpdate(MaterialEx& mat, DirectX::XMFLOAT3 camPos, BOOL disableTexSamling,
-		DirectX::XMFLOAT3& lightDir, BOOL useSSAO, const std::wstring& diffuseMap, const std::wstring& normalMap);
+	void DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
+		const std::wstring& diffuseMap, const std::wstring& normalMap);
 	void SetDefaultLightData();
 
 	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
 
 	void ConstBufferVSMatricesBind();
-	void VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform,
-		const DirectX::XMMATRIX& shadowTransform, const DirectX::XMMATRIX& matTransform,
-		const DirectX::XMFLOAT3& cameraPositon);
+	void VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform, const DirectX::XMMATRIX& matTransform);
 
 	//skybox is in 5th(0 indexed) slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
@@ -112,6 +112,9 @@ private:
 	DirectX::XMMATRIX mViewProjection;
 	DirectX::XMMATRIX mView;
 	DirectX::XMMATRIX mProjection;
+	DirectX::XMMATRIX mShadowTransform;
+	DirectX::XMFLOAT3 mCameraPosition;
+	DirectX::XMFLOAT3 mNewLightDirection;
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
