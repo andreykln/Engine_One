@@ -265,7 +265,7 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 // }
 
 
-cbComputeSSAOconstData& SSAO::GetAndBuildConstantBufferData()
+cbComputeSSAOconstData SSAO::GetAndBuildConstantBufferData()
 {
 	for (int i = 0; i < 14; i++)
 	{

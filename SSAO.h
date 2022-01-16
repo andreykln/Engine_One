@@ -9,7 +9,7 @@ public:
 	ID3D11Buffer** GetQuadVertexBuffer();
 	ID3D11Buffer* GetQuadIndexBuffer();
 	UINT GetQuadIndexCount();
-	cbComputeSSAOconstData& GetAndBuildConstantBufferData();
+	cbComputeSSAOconstData GetAndBuildConstantBufferData();
 	cbComputeSSAO& GetConstBufferSSAODataPerFrame();
 	ID3D11ShaderResourceView* GetRandomVectorSRV();
 	D3D11_VIEWPORT& GetSSAOViewport();

@@ -51,6 +51,7 @@ private:
 
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;
+	CBufferNames cbNames;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

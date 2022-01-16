@@ -184,42 +184,37 @@ void Graphics::UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection)
 void Graphics::CreateCBuffers()
 {
 	cbCreateNormalMap nMap;
-	ID3D11Buffer* pNMap = CreateConstantBuffer(nMap, true, L"normal map cBuffer");
+	ID3D11Buffer* pNMap = CreateConstantBuffer(nMap, true, "normal map cBuffer");
 	constBuffersMap.insert(std::make_pair(cbNames.normalMap, pNMap));
 
 	cbShadowMap smMap;
-	ID3D11Buffer* pSMap = CreateConstantBuffer(smMap, true, L"Shadow map cBuffer");
+	ID3D11Buffer* pSMap = CreateConstantBuffer(smMap, true, "Shadow map cBuffer");
 	constBuffersMap.insert(std::make_pair(cbNames.shadowMap, pSMap));
 
 	cbDefaultMatricesVS vsMatricesCB;
-	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, true, L"Default VS with matrices CB");
+	ID3D11Buffer* pvsMatricesCB = CreateConstantBuffer(vsMatricesCB, true, "Default VS with matrices CB");
 	constBuffersMap.insert(std::make_pair(cbNames.defaultVS, pvsMatricesCB));
 
 	cbBlurSSAO ssaoBlurData;
-	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(ssaoBlurData, true, L"SSAO blur settings");
+	ID3D11Buffer* pssaoBlurData = CreateConstantBuffer(ssaoBlurData, true, "SSAO blur settings");
 	constBuffersMap.insert(std::make_pair(cbNames.ssaoBlur, pssaoBlurData));
 
 	cbComputeSSAO ssaoComputeMatrix;
-	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(ssaoComputeMatrix, true, L"ssao compute matrix");
+	ID3D11Buffer* pssaoComputeMatrix = CreateConstantBuffer(ssaoComputeMatrix, true, "ssao compute matrix");
 	constBuffersMap.insert(std::make_pair(cbNames.ssaoPerFrame, pssaoComputeMatrix));
 
 
 	cbDefaultLightPSPerFrame defLightPerFrame;
-	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(defLightPerFrame, true, L"default light per frame");
+	ID3D11Buffer* pDefLightPF = CreateConstantBuffer(defLightPerFrame, true, "default light per frame");
 	constBuffersMap.insert(std::make_pair(cbNames.defaultLightPerFrame, pDefLightPF));
 
 	cbDefaultLightPSdata defLight;
-	ID3D11Buffer* pDefLight = CreateConstantBuffer(defLight, false, L"default light constant data");
+	ID3D11Buffer* pDefLight = CreateConstantBuffer(defLight, false, "default light constant data");
 	constBuffersMap.insert(std::make_pair(cbNames.defaultLightData, pDefLight));
 
 }
 
-void Graphics::CreateRuntimeCBuffers(cbComputeSSAOconstData& ssaoBuffer)
-{
-	ID3D11Buffer* pssaoBuff = CreateConstantBuffer(ssaoBuffer, false, L"Compute SSAO CB");
-	constBuffersMap.insert(std::make_pair(cbNames.ssaoConstData, pssaoBuff));
 
-}
 
 void Graphics::CreateSRVs()
 {

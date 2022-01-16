@@ -40,7 +40,8 @@ public:
 	void SetShadowTransform(const DirectX::XMMATRIX& shadowTransform);
 	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
-	void CreateRuntimeCBuffers(cbComputeSSAOconstData& ssauBuffer);
+	template<typename CBuffer>
+	void CreateRuntimeCBuffers(CBuffer& data, const std::string& name);
 	void CreateSRVs();
 	void CreateAndBindSamplers();
 	//techniques
@@ -93,7 +94,7 @@ public:
 		D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur);
 private:
 	template <typename CBData>
-	ID3D11Buffer* CreateConstantBuffer(const CBData& data, bool dynamic, const std::wstring& name = std::wstring());
+	ID3D11Buffer* CreateConstantBuffer(const CBData& data, bool dynamic, const std::string& name = std::string());
 
 	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
 
@@ -144,6 +145,14 @@ private:
 
 };
 
+template<typename CBuffer>
+void Graphics::CreateRuntimeCBuffers(CBuffer& data, const std::string& name)
+{
+	ID3D11Buffer* pBuffer = CreateConstantBuffer(data, false, "Compute and create default SSAO CB");
+	constBuffersMap.insert(std::make_pair(name, pBuffer));
+
+}
+
 template <typename T>
 ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name)
 {
@@ -182,7 +191,7 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 }
 
 template <typename CBData>
-ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, bool dynamic, const std::wstring& name)
+ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, bool dynamic, const std::string& name)
 {
 	D3D11_BUFFER_DESC constBufDesc;
 	if (dynamic)
@@ -207,9 +216,9 @@ ID3D11Buffer* Graphics::CreateConstantBuffer(const CBData& data, bool dynamic, c
 
 	if (FAILED(hr))
 	{
-		std::wstring message = L"Failed Constant Buffer creation of ";
+		std::string message = "Failed Constant Buffer creation of ";
 		message += name;
-		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
+		MessageBoxA(windowHandle, message.c_str(), NULL, MB_OK);
 	}
 	return pBuffer;
 }

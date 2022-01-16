@@ -22,7 +22,9 @@ App::App()
 	wnd.GetGraphics().CreateCBuffers();
 	wnd.GetGraphics().CreateSRVs();
 	wnd.GetGraphics().CreateAndBindSamplers();
-	wnd.GetGraphics().CreateRuntimeCBuffers(pSSAO->GetAndBuildConstantBufferData());
+
+	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
+	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData);
 	////////
 
 // 	CreateBilateralHillsBlur();
