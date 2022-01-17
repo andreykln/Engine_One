@@ -525,7 +525,7 @@ void App::DrawShadowMapDemo()
 	pShaders->BindHS(DisplacementWaves_VS_HS_DS_PS);
 	pShaders->BindDS(DisplacementWaves_VS_HS_DS_PS);
 	wnd.GetGraphics().SetDispWavesShaderRes(pDispWaves->normalMap0, pDispWaves->normalMap1, pDispWaves->diffuseMap);
-	wnd.GetGraphics().UpdateDispWavesCBuffers(ID, pDispWaves->wavesMaterial);
+	wnd.GetGraphics().UpdateDispWavesCBuffers(pDispWaves->wavesWorld, pDispWaves->wavesMaterial);
 	pDC->IASetVertexBuffers(0u, 1u, pDispWaves->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pDispWaves->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pDispWaves->GetIndexCount(), 0u, 0u);

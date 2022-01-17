@@ -35,14 +35,10 @@ ID3D11ShaderResourceView* SSAO::GetRandomVectorSRV()
 	return pRandomVectorsSRV;
 }
 
-
-
 D3D11_VIEWPORT& SSAO::GetSSAOViewport()
 {
 	return vp;
 }
-
-
 
 ID3D11RenderTargetView* SSAO::GetAmbientMapRTV0()
 {
@@ -115,14 +111,12 @@ void SSAO::BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight
 	ambientTex0->Release();
 	ambientTex1->Release();
 
-
 	vp.Width = mWidth / 2.0f;
 	vp.Height = mHeight / 2.0f;
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
-
 }
 
 void SSAO::BuildFrustumFarCorners(float fovy, float farZ)
@@ -140,7 +134,7 @@ void SSAO::BuildFrustumFarCorners(float fovy, float farZ)
 
 void SSAO::BuildOffsetVectors()
 {
-	// Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube
+// Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube
 // and the 6 center points along each cube face.  We always alternate the points on 
 // opposites sides of the cubes.  This way we still get the vectors spread out even
 // if we choose to use less than 14 samples.
@@ -207,62 +201,6 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 	pQuadIndexBuffer = gfx.CreateIndexBuffer(indices, L"SSAO quad");
 	quadIndexCount = indices.size();
 }
-
-
-
-// void SSAO::BlurAmbientMap(Graphics& gfx, int blurCount, Shaders* pShader)
-// {
-// 
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pNormalMapSRV);
-// 	for (int i = 0; i < blurCount; i++)
-// 	{
-// 		// Ping-pong the two ambient map textures as we apply
-// 		// horizontal and vertical blur passes.
-// 		BlurAmbientMap(gfx, pAmbientSRV0, pAmbientRTV1, true);
-// 		BlurAmbientMap(gfx, pAmbientSRV1, pAmbientRTV0, false);
-// 
-// 	}
-// 	pShader->UnbindVS();
-// 	pShader->UnbindPS();
-// }
-
-// void SSAO::BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur)
-// {
-// 	ID3D11RenderTargetView* renderTargets[1] = { pOutputRTV };
-// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
-// 	gfx.pgfx_pDeviceContext->ClearRenderTargetView(renderTargets[0], DirectX::Colors::Black);
-// 	gfx.pgfx_pDeviceContext->RSSetViewports(1u, &vp);
-// 
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pSSAOBlurBuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// // 	SSAOBlur* pBuffer = reinterpret_cast<SSAOBlur*>(mappedData.pData);
-// // 	if (horizontalBlur)
-// // 	{
-// // 		pBuffer->horizBool = true;
-// // 	}
-// // 	else
-// // 	{
-// // 		pBuffer->horizBool = false;
-// // 	}
-// // 	pBuffer->texelHeight = 1.0f / vp.Height;
-// // 	pBuffer->texelWidth = 1.0f / vp.Width;
-// // 	gfx.pgfx_pDeviceContext->Unmap(pSSAOBlurBuffer, 0u);
-// 
-// 	gfx.pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &pSSAOBlurBuffer);
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pInputSRV);
-// 
-// 	UINT stride = sizeof(Vertex_IA);
-// 	UINT offset = 0u;
-// 	gfx.pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pQuadVertexBuffer, &stride, &offset);
-// 	gfx.pgfx_pDeviceContext->IASetIndexBuffer(pQuadIndexBuffer, DXGI_FORMAT_R16_UINT, 0u);
-// 	gfx.pgfx_pDeviceContext->DrawIndexed(6, 0u, 0u);
-// 	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNULLSRV);
-// 	ID3D11RenderTargetView* pNULLRTV = nullptr;
-// 	renderTargets[0] = pNULLRTV;
-// 	gfx.pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
-// 
-// }
 
 
 cbComputeSSAOconstData SSAO::GetAndBuildConstantBufferData()

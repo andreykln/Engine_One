@@ -21,28 +21,12 @@ public:
 	void SetNormalDepthRenderTarget(Graphics& gfx, ID3D11DepthStencilView* dsv);
 	ID3D11ShaderResourceView* GetNormalMapSRV();
 
-
-
-
-
-
-
 private:
-
-
-
-	////new
 	void BuildRandomVectorTexture(Graphics& gfx);
 	void BuildTextureViewsAndViewport(Graphics& gfx, UINT mWidth, UINT mHeight);
 	void BuildFrustumFarCorners(float fovy, float farZ);
 	void BuildOffsetVectors();
 	void BuildFullScreenQuadBuffers(Graphics& gfx);
-	///////
-// 	void BuildSamplers(Graphics& gfx);
-// 	void BuildDebugScreenQuadData(Graphics& gfx);
-// 	void BlurAmbientMap(Graphics& gfx, ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV, bool horizontalBlur);
-// 	void UpdateSSAOConstBuffer(Graphics& gfx, DirectX::XMMATRIX mView);
-
 
 	ID3D11ShaderResourceView* pNormalMapSRV = nullptr;
 	ID3D11ShaderResourceView* pRandomVectorsSRV = nullptr;
@@ -53,29 +37,16 @@ private:
 	ID3D11ShaderResourceView* pAmbientSRV0 = nullptr;
 	ID3D11ShaderResourceView* pAmbientSRV1 = nullptr;
 
-
-
-// 	ID3D11Buffer* pQuadVertexBuffer = nullptr;
-// 	ID3D11Buffer* pQuadIndexBuffer = nullptr;
 	ID3D11Buffer* pSSAOConstBuffer = nullptr;
 	ID3D11Buffer* pSSAOBlurBuffer = nullptr;
-// 	ID3D11SamplerState* pRandomVectorSampler = nullptr;
-// 	ID3D11SamplerState* pNormalMapSampler = nullptr;
-// 	ID3D11SamplerState* pBlurSampler = nullptr;
-// 	ID3D11SamplerState* pSSAOMapSampler = nullptr;
+	ID3D11Buffer* pQuadVertexBuffer = nullptr;
+	ID3D11Buffer* pQuadIndexBuffer = nullptr;
+	UINT quadIndexCount = 0;
 	D3D11_VIEWPORT vp;
-// 	SSAOBlur blurConstBuff;
 	cbComputeSSAO computeSSAOcbuff;
 	cbComputeSSAOconstData computeSSAOData;
 
 	DirectX::XMFLOAT4 frustumFarCorner[4];
 	DirectX::XMFLOAT4 offsets[14];
 	DirectX::XMMATRIX viewToTextureSpace;
-
-
-	//new architect
-	ID3D11Buffer* pQuadVertexBuffer = nullptr;
-	ID3D11Buffer* pQuadIndexBuffer = nullptr;
-	UINT quadIndexCount = 0;
-
 };
