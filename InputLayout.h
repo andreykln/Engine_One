@@ -27,6 +27,19 @@ struct InputLayout
 		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
+
+
+	static const UINT nTerrainHeightMap = 3;
+	const D3D11_INPUT_ELEMENT_DESC terrainHeightMap[nTerrainHeightMap] =
+	{
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
+		D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"TEXCOORD", 1u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+	};
+
 	////// END OF MAIN
 	static const UINT nPosNormalTexCoordTangent = 4;
 	const D3D11_INPUT_ELEMENT_DESC posNormalTexCoordTangent[nPosNormalTexCoordTangent] =
@@ -124,16 +137,7 @@ struct InputLayout
 		D3D11_INPUT_PER_INSTANCE_DATA, 1},
 	};
 
-	static const UINT nTerrainHeightMap = 3;
-	const D3D11_INPUT_ELEMENT_DESC terrainHeightMap[nInstancedSkull] =
-	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
-		D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		{"TEXCOORD", 1u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-	};
+
 
 	static const UINT nParticle = 5;
 	const D3D11_INPUT_ELEMENT_DESC particle[nParticle] =

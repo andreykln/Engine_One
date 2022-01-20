@@ -70,6 +70,9 @@
     <Filter Include="Shaders\Default\GPUWaves\TesselationWaves">
       <UniqueIdentifier>{7463ef03-1d1b-450d-9e50-0c4377502c50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\Terrain">
+      <UniqueIdentifier>{2d5271eb-44a9-4eea-9a12-e7820dc8445c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -639,6 +642,18 @@
     </FxCompile>
     <FxCompile Include="TessellationWavesVS.hlsl">
       <Filter>Shaders\Default\GPUWaves\TesselationWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="Terrain_VS.hlsl">
+      <Filter>Shaders\Default\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="Terrain_HS.hlsl">
+      <Filter>Shaders\Default\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="Terrain_DS.hlsl">
+      <Filter>Shaders\Default\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="Terrain_PS.hlsl">
+      <Filter>Shaders\Default\Terrain</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

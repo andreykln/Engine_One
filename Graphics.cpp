@@ -217,6 +217,10 @@ void Graphics::CreateCBuffers()
 	ID3D11Buffer* pTessWavesVS = CreateConstantBuffer(tessWavesVS, true, "tessellation waves vertex shader CB");
 	constBuffersMap.insert(std::make_pair(cbNames.tessWavesMatrices, pTessWavesVS));
 
+	cbHSTerrainPerFrame terrainHS;
+	ID3D11Buffer* pterrHS = CreateConstantBuffer(terrainHS, true, "terrain world view planes");
+	constBuffersMap.insert(std::make_pair(cbNames.terrainHSPlainsData, pterrHS));
+
 }
 
 
@@ -251,8 +255,9 @@ void Graphics::CreateSRVs()
 	diffuseMapNames.push_back(L"stones");
 	diffuseMapNames.push_back(L"water1");
 	diffuseMapNames.push_back(L"water2");
-// 	diffuseMapNames.push_back(L"waves0");
+	diffuseMapNames.push_back(L"snow");
 	diffuseMapNames.push_back(L"WoodCrate01");
+	diffuseMapNames.push_back(L"blend");
 
 	for (int i = 0; i < diffuseMapNames.size(); i++)
 	{
@@ -277,8 +282,35 @@ void Graphics::CreateSRVs()
 		normalMaps.insert(std::make_pair(normalMapNames[i], pTemp));
 	}
 
+	//terrain layer maps
+	const int numOfTex = 4;
+	std::wstring layers[numOfTex];
+	layers[0] = L"Textures\\Terrain\\grass.dds";;
+	layers[1] = L"Textures\\Terrain\\darkdirt.dds";
+	layers[2] = L"Textures\\Terrain\\stone.dds";
+	layers[3] = L"Textures\\Terrain\\lightdirt.dds";
+// 	ID3D11ShaderResourceView* pLayerMaps = nullptr;
+	ID3D11ShaderResourceView** pSRVArray = new ID3D11ShaderResourceView* [numOfTex];
+
+	CreateSRVArray(&pSRVArray[0], 4, layers);
+	diffuseMapArray.insert(std::make_pair(L"TerrainLayerMaps", &pSRVArray[0]));
+
+
+
 }
 
+
+void Graphics::AddSRVToMap(const std::wstring& name, ID3D11ShaderResourceView* pSRV, bool diffuse, bool normal)
+{
+	if (diffuse)
+	{
+		diffuseMaps.insert(std::make_pair(name, pSRV));
+	}
+	if (normal)
+	{
+		normalMaps.insert(std::make_pair(name, pSRV));
+	}
+}
 
 void Graphics::ConstBufferNormalMapBind()
 {
@@ -468,6 +500,46 @@ void Graphics::UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialE
 
 }
 
+
+void Graphics::SetTerrainShaderResAndUpdateCbuffers(const DirectX::XMMATRIX world,
+	const std::wstring blendMap, const std::wstring snowMap,
+	ID3D11ShaderResourceView* pHeightMapDS,
+	ID3D11ShaderResourceView* pHeightMapVS)
+{
+   
+	DirectX::XMFLOAT4 worldPlanes[6];
+	ExtractFrustumPlanes(worldPlanes, world * mViewProjection);
+
+	pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapVS);
+
+	pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pHeightMapDS);
+
+	pgfx_pDeviceContext->PSSetShaderResources(2u, 1u, &diffuseMaps.at(blendMap));
+	pgfx_pDeviceContext->PSSetShaderResources(3u, 1u, &diffuseMaps.at(snowMap));
+
+	pgfx_pDeviceContext->HSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.terrainHSPlainsData));
+	pgfx_pDeviceContext->DSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
+	pgfx_pDeviceContext->PSSetConstantBuffers(2u, 1u, &constBuffersMap.at(cbNames.terrainTexelInfo));
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.terrainHSPlainsData), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbHSTerrainPerFrame* pHullShader = reinterpret_cast<cbHSTerrainPerFrame*>(mappedData.pData);
+	pHullShader->cameraPosition = mCameraPosition;
+	pHullShader->worldFrustumPlanes[0] = worldPlanes[0];
+	pHullShader->worldFrustumPlanes[1] = worldPlanes[1];
+	pHullShader->worldFrustumPlanes[2] = worldPlanes[2];
+	pHullShader->worldFrustumPlanes[3] = worldPlanes[3];
+	pHullShader->worldFrustumPlanes[4] = worldPlanes[4];
+	pHullShader->worldFrustumPlanes[5] = worldPlanes[5];
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.terrainHSPlainsData), 0u);
+
+
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	cbDefaultMatricesVS* pDomainShader = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
+	pDomainShader->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
+	pDomainShader->world = DirectX::XMMatrixTranspose(world);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
+}
+
 void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 {
 	pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &cubeMaps.at(skyBoxName));
@@ -497,6 +569,36 @@ ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const
 		MessageBoxW(windowHandle, message.c_str(), NULL, MB_OK);
 	}
 	return pBuffer;
+}
+
+
+void Graphics::CreateSRVArray(ID3D11ShaderResourceView** pSRV, UINT nImages, std::wstring* in_path)
+{
+	DirectX::TexMetadata textureMetaData;
+	std::vector<DirectX::Image> ImagesArray;
+
+	for (size_t i = 0; i < nImages; ++i)
+	{
+		DirectX::ScratchImage* pImageData = new DirectX::ScratchImage();
+		LoadFromDDSFile(in_path[i].c_str(), DirectX::DDS_FLAGS_NONE, &textureMetaData, *pImageData);
+		for (size_t mip = 0; mip < textureMetaData.mipLevels; ++mip)
+		{
+			const DirectX::Image* image = pImageData->GetImage(mip, 0, 0);
+			DirectX::Image toPush;
+			toPush.format = textureMetaData.format;
+			toPush.height = textureMetaData.height;
+			toPush.rowPitch = image->rowPitch;
+			toPush.slicePitch = image->slicePitch;
+			toPush.width = textureMetaData.width;
+			toPush.pixels = image->pixels;
+			ImagesArray.push_back(toPush);
+		}
+	}
+	textureMetaData.arraySize = nImages;
+	DirectX::CreateShaderResourceView(pgfx_pDevice.Get(), ImagesArray.data(),
+		nImages * textureMetaData.mipLevels,
+		textureMetaData, pSRV);
+
 }
 
 void Graphics::SetDebugName(ID3D11DeviceChild* child, const std::wstring& name)
@@ -597,6 +699,21 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL 
 	pBuffer->useSSAO = useSSAO;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
 
+}
+
+void Graphics::TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO)
+{
+	pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, diffuseMapArray.at(L"TerrainLayerMaps"));
+	pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &normalMaps.at(L"TerrainHeightMap"));
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData);
+	cbDefaultLightPSPerFrame* pBuffer = reinterpret_cast<cbDefaultLightPSPerFrame*>(mappedData.pData);
+	pBuffer->camPositon = mCameraPosition;
+	pBuffer->disableTexSampling = disableTexSamling;
+	pBuffer->lightDirection = mDefaultLightDirection;
+	pBuffer->mat = mat;
+	pBuffer->useSSAO = useSSAO;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
 }
 
 void Graphics::SetDefaultLightData()
@@ -710,6 +827,68 @@ void Graphics::BindDiffuseMap(const std::wstring& diffMapName) const
 void Graphics::BindNormalMap(const std::wstring& normalMapName) const
 {
 	pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &normalMaps.at(normalMapName));
+}
+
+void Graphics::ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M)
+{
+	using namespace DirectX;
+	//
+	// Left
+	//
+	DirectX::XMFLOAT4X4 M;
+	DirectX::XMStoreFloat4x4(&M, _M);
+
+	planes[0].x = M(0, 3) + M(0, 0);
+	planes[0].y = M(1, 3) + M(1, 0);
+	planes[0].z = M(2, 3) + M(2, 0);
+	planes[0].w = M(3, 3) + M(3, 0);
+
+	//
+	// Right
+	//
+	planes[1].x = M(0, 3) - M(0, 0);
+	planes[1].y = M(1, 3) - M(1, 0);
+	planes[1].z = M(2, 3) - M(2, 0);
+	planes[1].w = M(3, 3) - M(3, 0);
+
+	//
+	// Bottom
+	//
+	planes[2].x = M(0, 3) + M(0, 1);
+	planes[2].y = M(1, 3) + M(1, 1);
+	planes[2].z = M(2, 3) + M(2, 1);
+	planes[2].w = M(3, 3) + M(3, 1);
+
+	//
+	// Top
+	//
+	planes[3].x = M(0, 3) - M(0, 1);
+	planes[3].y = M(1, 3) - M(1, 1);
+	planes[3].z = M(2, 3) - M(2, 1);
+	planes[3].w = M(3, 3) - M(3, 1);
+
+	//
+	// Near
+	//
+	planes[4].x = M(0, 2);
+	planes[4].y = M(1, 2);
+	planes[4].z = M(2, 2);
+	planes[4].w = M(3, 2);
+
+	//
+	// Far
+	//
+	planes[5].x = M(0, 3) - M(0, 2);
+	planes[5].y = M(1, 3) - M(1, 2);
+	planes[5].z = M(2, 3) - M(2, 2);
+	planes[5].w = M(3, 3) - M(3, 2);
+
+	// Normalize the plane equations.
+	for (int i = 0; i < 6; ++i)
+	{
+		DirectX::XMVECTOR v = DirectX::XMPlaneNormalize(DirectX::XMLoadFloat4(&planes[i]));
+		DirectX::XMStoreFloat4(&planes[i], v);
+	}
 }
 
 void Graphics::CheckFileExistence(Graphics& gfx, const std::wstring& path)
@@ -853,6 +1032,8 @@ void Graphics::CreateAndBindSamplers()
 	}
 	//tessellation waves
 	pgfx_pDeviceContext->DSSetSamplers(0u, 1u, &samplers[1]);
+	//terrain height map
+	pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &samplers[0]);
 }
 
 

@@ -147,8 +147,38 @@ struct CBufferNames
 	const std::string defaultLightData = "defaultLightData";
 	const std::string tessWavesMatrices = "tessWavesMatrices";
 	const std::string gpuWavesInitData = "GPUWavesVSInitData";
+	const std::string terrainHSPlainsData = "terrainHullShaderPlanes";
+	const std::string terrainTexelInfo = "terrainTexelInfo";
 	
 };
+
+struct vbPosTexBoundsY
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 tex;
+	DirectX::XMFLOAT2 boundsY;
+};
+
+
+struct cbHSTerrainPerFrame
+{
+	cbHSTerrainPerFrame() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMFLOAT4 worldFrustumPlanes[6];
+	DirectX::XMFLOAT3 cameraPosition;
+	float padding = 0.0f;
+
+
+};
+
+struct cbPSerrainTexel
+{
+	cbPSerrainTexel() { ZeroMemory(this, sizeof(this)); }
+	float texelCellSpaceU;
+	float texelCellSpaceV;
+	float worldCellSpace;
+	float padding;
+};
+
 ////////END MAIN
 
 struct Vertices_Full
@@ -202,24 +232,9 @@ struct CB_PS_NormalMappingState
 	int padding[3] = { 0,0,0 };
 };
 
-struct CB_HS_TerrainPerFrame
-{
-	CB_HS_TerrainPerFrame() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMFLOAT4 worldFrustumPlanes[6];
-	DirectX::XMFLOAT3 cameraPosition;
-	float padding = 0.0f;
-	
 
-};
 
-struct CB_PS_Terrain
-{
-	CB_PS_Terrain() { ZeroMemory(this, sizeof(this)); }
-	float texelCellSpaceU;
-	float texelCellSpaceV;
-	float worldCellSpace;
-	float padding;
-};
+
 
 struct CB_VS_WorldViewProjection
 {
@@ -472,7 +487,7 @@ enum ShaderPicker
 	CubeMap_PS,
 	DisplacementMapping_VS_DS_HS,
 	DisplacementWaves_VS_HS_DS_PS,
-	TerrainHeightMap_VS_PS_DS_HS_PS,
+	TerrainHeightMap,
 	Particles_FireStreamOut_VS_GS,
 	Particles_FireDraw_VS_GS_PS,
 	Particles_RainStreamOut_VS_GS,

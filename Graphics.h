@@ -41,8 +41,9 @@ public:
 	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
 	template<typename CBuffer>
-	void CreateRuntimeCBuffers(CBuffer& data, const std::string& name);
+	void CreateRuntimeCBuffers(CBuffer& data, const std::string& name, const std::string& description);
 	void CreateSRVs();
+	void AddSRVToMap(const std::wstring& name, ID3D11ShaderResourceView* pSRV, bool diffuse, bool normal);
 	void CreateAndBindSamplers();
 	//techniques
 	void ConstBufferNormalMapBind();
@@ -54,6 +55,7 @@ public:
 		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
 	void DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
 		const std::wstring& diffuseMap, const std::wstring& normalMap);
+	void TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO);
 	void SetDefaultLightData();
 
 	void ConstBufferShadowMapBind();
@@ -62,16 +64,23 @@ public:
 	void ConstBufferVSMatricesBind();
 	void VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const DirectX::XMMATRIX texTransform, const DirectX::XMMATRIX& matTransform);
 
+	//displacement waves
 	void SetDispWavesShaderRes(const std::wstring& normalMap0, const std::wstring& normalMap1, const std::wstring& diffuseMap);
 	void UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialEx& mat);
 
-	//skybox is in 5th(0 indexed) slot  of PS
+	//terrain
+	void SetTerrainShaderResAndUpdateCbuffers(const DirectX::XMMATRIX world,
+		const std::wstring blendMap, const std::wstring snowMap,
+		ID3D11ShaderResourceView* pHeightMapDS,
+		ID3D11ShaderResourceView* pHeightMapVS);
+	//skybox is in 4th slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
 	ID3D11Buffer* CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name = std::wstring());
 
+	void CreateSRVArray(ID3D11ShaderResourceView** pSRV, UINT nImages, std::wstring* in_path);
 #ifdef MY_DEBUG
 public:
 	void SetDebugName(ID3D11DeviceChild* child, const std::wstring& name);
@@ -108,7 +117,13 @@ private:
 	//bind to register 1
 	void BindNormalMap(const std::wstring& normalMapName) const;
 
+	//techniques
+	//terrain
+	void  ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M);
+
+
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> diffuseMaps;
+	std::unordered_map<std::wstring, ID3D11ShaderResourceView**> diffuseMapArray;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::vector<ID3D11SamplerState*> samplers;
@@ -120,6 +135,7 @@ private:
 	DirectX::XMMATRIX mShadowTransform;
 	DirectX::XMFLOAT3 mCameraPosition;
 	DirectX::XMFLOAT3 mNewLightDirection;
+	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735, 0.57335);
 	float deltaTime;
 
 	HWND windowHandle;
@@ -152,9 +168,9 @@ private:
 };
 
 template<typename CBuffer>
-void Graphics::CreateRuntimeCBuffers(CBuffer& data, const std::string& name)
+void Graphics::CreateRuntimeCBuffers(CBuffer& data, const std::string& name, const std::string& description)
 {
-	ID3D11Buffer* pBuffer = CreateConstantBuffer(data, false, "Compute and create default SSAO CB");
+	ID3D11Buffer* pBuffer = CreateConstantBuffer(data, false, description);
 	constBuffersMap.insert(std::make_pair(name, pBuffer));
 
 }

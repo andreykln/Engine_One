@@ -410,6 +410,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="DisplacementMappingDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
@@ -470,6 +471,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="DisturbWavesCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
@@ -489,6 +491,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="HillsAllLightPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -535,6 +538,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="LightAndTextureArrayPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -560,6 +564,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="MirrorRoomPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -585,6 +590,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="CubePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -605,6 +611,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="NormalMappingShadowPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -667,6 +674,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ParticleFireGS.hlsl">
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -713,6 +721,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ParticleRainGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
@@ -751,6 +760,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ParticleSOVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -759,6 +769,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ParticlePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -775,6 +786,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="LightPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -791,6 +803,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="QuadTessDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
@@ -821,6 +834,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="QuadTessPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -967,6 +981,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Domain\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="TerrainHS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
@@ -978,6 +993,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Hull\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="TerrainPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -986,6 +1002,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="TerrainVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -994,6 +1011,49 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Terrain_DS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Domain</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Domain\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Terrain_HS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Hull\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Terrain_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Pixel\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Terrain_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Shaders\Vertex\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="TessellationWavesDS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Domain</ShaderType>

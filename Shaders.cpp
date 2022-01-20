@@ -53,11 +53,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
 
 
-	//Terrain
-	VS_IL_Init(&pTerrainVS, IL.terrainHeightMap, &pTerrainIL, IL.nTerrainHeightMap, L"Shaders\\Vertex\\TerrainVS.cso");
-	HS_Init(&pTerrainHS, L"Shaders\\Hull\\TerrainHS.cso");
-	DS_Init(&pTerrainDS, L"Shaders\\Domain\\TerrainDS.cso");
-	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\TerrainPS.cso");
 
 	//Particles fire
 	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
@@ -130,6 +125,13 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\TessellationWavesHS.cso");
 	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\TessellationWavesDS.cso");
 
+	//Terrain
+	VS_IL_Init(&pTerrainVS, IL.terrainHeightMap, &pTerrainIL, IL.nTerrainHeightMap, L"Shaders\\Vertex\\Terrain_VS.cso");
+	HS_Init(&pTerrainHS, L"Shaders\\Hull\\Terrain_HS.cso");
+	DS_Init(&pTerrainDS, L"Shaders\\Domain\\Terrain_DS.cso");
+	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\Terrain_PS.cso");
+
+
 }
 
 void Shaders::BindVSandIA(ShaderPicker shader)
@@ -191,7 +193,7 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 		break;
 
 	}
-	case ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS:
+	case ShaderPicker::TerrainHeightMap:
 	{
 		GetContext(*pSgfx)->IASetInputLayout(pTerrainIL);
 		pSgfx->pgfx_pDeviceContext->VSSetShader(pTerrainVS, nullptr, 0u);
@@ -355,7 +357,7 @@ void Shaders::BindPS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pDisplacementWavesPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS:
+	case ShaderPicker::TerrainHeightMap:
 	{
 		pSgfx->pgfx_pDeviceContext->PSSetShader(pTerrainPS, nullptr, 0u);
 		break;
@@ -527,7 +529,7 @@ void Shaders::BindHS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->HSSetShader(pDisplacementWavesHS, 0u, 0u);
 		break;
 	}
-	case ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS:
+	case ShaderPicker::TerrainHeightMap:
 	{
 		pSgfx->pgfx_pDeviceContext->HSSetShader(pTerrainHS, 0u, 0u);
 		break;
@@ -554,7 +556,7 @@ void Shaders::BindDS(ShaderPicker shader)
 		pSgfx->pgfx_pDeviceContext->DSSetShader(pDisplacementWavesDS, 0u, 0u);
 		break;
 	}
-	case ShaderPicker::TerrainHeightMap_VS_PS_DS_HS_PS:
+	case ShaderPicker::TerrainHeightMap:
 	{
 		pSgfx->pgfx_pDeviceContext->DSSetShader(pTerrainDS, 0u, 0u);
 		break;

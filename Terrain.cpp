@@ -2,36 +2,14 @@
 
 Terrain::Terrain(Graphics& gfx)
 {
-	cbDirectionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbDirectionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbDirectionalLight.dirLight[0].direction = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	cbDirectionalLight.dirLight[0].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 
-	cbDirectionalLight.dirLight[1].ambient = DirectX::XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	cbDirectionalLight.dirLight[1].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	cbDirectionalLight.dirLight[1].direction = DirectX::XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
-	cbDirectionalLight.dirLight[1].specular = DirectX::XMFLOAT4(0.35f, 0.35f, 0.35f, 1.0f);
 
-	cbDirectionalLight.dirLight[2].ambient = DirectX::XMFLOAT4(0.5, 0.5f, 0.5f, 1.0f);
-	cbDirectionalLight.dirLight[2].diffuse = DirectX::XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);
-	cbDirectionalLight.dirLight[2].direction = DirectX::XMFLOAT3(0.0f, -0.707f, -0.707f);
-	cbDirectionalLight.dirLight[2].specular = DirectX::XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-
-	cbDirectionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-	cbDirectionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	cbDirectionalLight.mat.specular = DirectX::XMFLOAT4(0.15f, 0.15f, 0.15f, 8.0f);
-	cbDirectionalLight.mat.reflect = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pCBDirLight =
-		new PixelShaderConstantBuffer(gfx, cbDirectionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pCBDirLight);
-
-	terrainInitInfo.BlendMapFilename = L"Textures\\Terrain\\blend.dds";
+// 	terrainInitInfo.BlendMapFilename = L"Textures\\Terrain\\blend.dds";
 	terrainInitInfo.LayerMapFilename0 = L"Textures\\Terrain\\grass.dds";
 	terrainInitInfo.LayerMapFilename1 = L"Textures\\Terrain\\darkdirt.dds";
 	terrainInitInfo.LayerMapFilename2 = L"Textures\\Terrain\\stone.dds";
 	terrainInitInfo.LayerMapFilename3 = L"Textures\\Terrain\\lightdirt.dds";
-	terrainInitInfo.LayerMapFilename4 = L"Textures\\Terrain\\snow.dds";
+// 	terrainInitInfo.LayerMapFilename4 = L"Textures\\Terrain\\snow.dds";
 	terrainInitInfo.HeightMapFilename = L"Textures\\Terrain\\terrain.raw";
 	terrainInitInfo.cellSpacing = 0.5f; //0.5f
 	terrainInitInfo.HeightMapHeight = 2049;//
@@ -41,14 +19,6 @@ Terrain::Terrain(Graphics& gfx)
 	terrainConstants.texelCellSpaceU = 1.0f / terrainInitInfo.HeightMapWidth;
 	terrainConstants.texelCellSpaceV = 1.0f / terrainInitInfo.HeightMapHeight;
 	terrainConstants.worldCellSpace = terrainInitInfo.cellSpacing;
-	PixelShaderConstantBuffer<CB_PS_Terrain>* pCBPSTerrainContants =
-		new PixelShaderConstantBuffer(gfx, terrainConstants, 2u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pCBPSTerrainContants);
-
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pCBPSPerFrame =
-		new PixelShaderConstantBuffer(gfx, cbPsPerFrame, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pPSBufferCopy = pCBPSPerFrame->GetPixelShaderConstantBuffer();
-	AddBind(pCBPSPerFrame);
 
 
 	numPatchVertRows = ((terrainInitInfo.HeightMapHeight - 1) / cellsPerPatch) + 1;
@@ -102,11 +72,10 @@ Terrain::Terrain(Graphics& gfx)
 	gfx.pgfx_pDevice->CreateShaderResourceView(hMapTex, &srvDesc, &pHeightMapDS);
 	gfx.pgfx_pDevice->CreateShaderResourceView(hMapTex, &srvDesc, &pHeightMapPS);
 
-
 	hMapTex->Release();
 
 	//Vertex buffer
-	std::vector<TerrainVB> patchVertices((uint64_t)numPatchVertCols * (uint64_t)numPatchVertRows);
+	std::vector<vbPosTexBoundsY> patchVertices((uint64_t)numPatchVertCols * (uint64_t)numPatchVertRows);
 	float halfWidth = 0.5f * GetWidth();
 	float halfDepth = 0.5f * GetDepth();
 
@@ -139,9 +108,10 @@ Terrain::Terrain(Graphics& gfx)
 		}
 	}
 
-	VertexBuffer* pVB = new VertexBuffer(gfx, patchVertices, L"TerrainGrid_");
-	AddBind(pVB);
-
+	pVertexBuffer = gfx.CreateVertexBuffer(patchVertices, false, false, L"TerrainGrid");
+// 	VertexBuffer* pVB = new VertexBuffer(gfx, patchVertices, L"TerrainGrid_");
+// 	AddBind(pVB);
+// 
 	//TODO where is this used
 	numPatchVertices = numPatchVertRows * numPatchVertCols;
 
@@ -165,94 +135,76 @@ Terrain::Terrain(Graphics& gfx)
 		}
 	}
 
-	IndexBuffer* pIB = new IndexBuffer(gfx, indices, L"TerrainIndices_");
-	AddIndexBuffer(pIB);
-	TextureSampler* pTexSamplerVS = new TextureSampler(gfx, ShaderType::Vertex);
-	AddBind(pTexSamplerVS);
+	pIndexBuffer = gfx.CreateIndexBuffer(indices, L"Terrain indices");
+	indexCount = indices.size();
 
-	TextureSampler* pTexSamplerPS = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSamplerPS);
+	terrainMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	terrainMaterial.fresnelR0 = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
+	terrainMaterial.shininess = 0.05f;
+	
 
-	TextureSampler* pTexSamplerDS = new TextureSampler(gfx, ShaderType::Domain);
-	AddBind(pTexSamplerDS);
+}
 
-	HullShaderConstantBuffer<CB_HS_TerrainPerFrame>* pHSCB = 
-		new HullShaderConstantBuffer(gfx, HullShaderCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pHSBufferCopy = pHSCB->GetHullShaderConstantBuffer();
-	AddBind(pHSCB);
+ID3D11Buffer** Terrain::GetVertexBuffer()
+{
+	return &pVertexBuffer;
+}
 
-	DomainShaderConstantBuffer<CB_VS_WorldViewProjection>* pDSCB =
-		new DomainShaderConstantBuffer(gfx, DomainShaderCB, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pDSBufferCopy = pDSCB->GetDomainShaderConstantBuffer();
-	AddBind(pDSCB);
+ID3D11Buffer* Terrain::GetIndexBuffer()
+{
+	return pIndexBuffer;
+}
 
-	std::wstring layers[4];
-	std::wstring snowLayer[1];
-	layers[0] = terrainInitInfo.LayerMapFilename0;
-	layers[1] = terrainInitInfo.LayerMapFilename1;
-	layers[2] = terrainInitInfo.LayerMapFilename2;
-	layers[3] = terrainInitInfo.LayerMapFilename3;
-	snowLayer[0] = terrainInitInfo.LayerMapFilename4;
-
-	ShaderResourceView* pLayerMaps = new ShaderResourceView(layers, std::size(layers));
-	pTerrainLayerMaps = pLayerMaps->GetTextureArray(gfx);
-
-	ShaderResourceView* pSnowLayer = new ShaderResourceView(gfx, snowLayer, 3u, 1u, ShaderType::Pixel);
-	AddBind(pSnowLayer);
-
-	std::wstring blendMap[1];
-	blendMap[0]= terrainInitInfo.BlendMapFilename;
-	ShaderResourceView* pBlendMap = new ShaderResourceView(gfx, blendMap, 2u, 1u, ShaderType::Pixel);
-	AddBind(pBlendMap);
-
+UINT Terrain::GetIndexCount()
+{
+	return indexCount;
 }
 
 void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP)
 {
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(-10.0f, -20.0f, 0.0f);
-	DirectX::XMFLOAT4 worldPlanes[6];
-	ExtractFrustumPlanes(worldPlanes, world * WVP);
-	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapVS);
-	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pHeightMapDS);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pHeightMapPS);
-	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pTerrainLayerMaps);
+// 	DirectX::XMFLOAT4 worldPlanes[6];
+// 	ExtractFrustumPlanes(worldPlanes, terrainWorld * WVP);
+// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapVS);
+// 	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pHeightMapDS);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pHeightMapPS);
+// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pTerrainLayerMaps);
 
 
 
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pHSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_HS_TerrainPerFrame* pHullShader = reinterpret_cast<CB_HS_TerrainPerFrame*>(mappedData.pData);
-	pHullShader->cameraPosition = camPosition;
-	pHullShader->worldFrustumPlanes[0] = worldPlanes[0];
-	pHullShader->worldFrustumPlanes[1] = worldPlanes[1];
-	pHullShader->worldFrustumPlanes[2] = worldPlanes[2];
-	pHullShader->worldFrustumPlanes[3] = worldPlanes[3];
-	pHullShader->worldFrustumPlanes[4] = worldPlanes[4];
-	pHullShader->worldFrustumPlanes[5] = worldPlanes[5];
-
-	gfx.pgfx_pDeviceContext->Unmap(pHSBufferCopy, 0u);
-
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pDSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_VS_WorldViewProjection* pDomainShader = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
-	pDomainShader->worldViewProjection = DirectX::XMMatrixTranspose(WVP);
-	pDomainShader->world = DirectX::XMMatrixTranspose(world);
-
-	gfx.pgfx_pDeviceContext->Unmap(pDSBufferCopy, 0u);
-
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-	frame->cameraPositon = camPosition;
-
-	if (GetAsyncKeyState('0') & 0x8000)
-		frame->numberOfLights = 0;
-	if (GetAsyncKeyState('1') & 0x8000)
-		frame->numberOfLights = 1;
-	if (GetAsyncKeyState('2') & 0x8000)
-		frame->numberOfLights = 2;
-	if (GetAsyncKeyState('3') & 0x8000)
-		frame->numberOfLights = 3;
-
-	gfx.pgfx_pDeviceContext->Unmap(pPSBufferCopy, 0u);
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pHSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_HS_TerrainPerFrame* pHullShader = reinterpret_cast<CB_HS_TerrainPerFrame*>(mappedData.pData);
+// 	pHullShader->cameraPosition = camPosition;
+// 	pHullShader->worldFrustumPlanes[0] = worldPlanes[0];
+// 	pHullShader->worldFrustumPlanes[1] = worldPlanes[1];
+// 	pHullShader->worldFrustumPlanes[2] = worldPlanes[2];
+// 	pHullShader->worldFrustumPlanes[3] = worldPlanes[3];
+// 	pHullShader->worldFrustumPlanes[4] = worldPlanes[4];
+// 	pHullShader->worldFrustumPlanes[5] = worldPlanes[5];
+// 
+// 	gfx.pgfx_pDeviceContext->Unmap(pHSBufferCopy, 0u);
+// 
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pDSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_VS_WorldViewProjection* pDomainShader = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
+// 	pDomainShader->worldViewProjection = DirectX::XMMatrixTranspose(WVP);
+// 	pDomainShader->world = DirectX::XMMatrixTranspose(terrainWorld);
+// 
+// 	gfx.pgfx_pDeviceContext->Unmap(pDSBufferCopy, 0u);
+// 
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
+// 	frame->cameraPositon = camPosition;
+// 
+// 	if (GetAsyncKeyState('0') & 0x8000)
+// 		frame->numberOfLights = 0;
+// 	if (GetAsyncKeyState('1') & 0x8000)
+// 		frame->numberOfLights = 1;
+// 	if (GetAsyncKeyState('2') & 0x8000)
+// 		frame->numberOfLights = 2;
+// 	if (GetAsyncKeyState('3') & 0x8000)
+// 		frame->numberOfLights = 3;
+// 
+// 	gfx.pgfx_pDeviceContext->Unmap(pPSBufferCopy, 0u);
 
 }
 

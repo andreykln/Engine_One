@@ -103,12 +103,6 @@ private:
 
 	//displacement waves
 
-	//terrain with height map
-	ID3D11VertexShader* pTerrainVS = nullptr;
-	ID3D11InputLayout* pTerrainIL = nullptr;
-	ID3D11HullShader* pTerrainHS = nullptr;
-	ID3D11DomainShader* pTerrainDS = nullptr;
-	ID3D11PixelShader* pTerrainPS = nullptr;
 
 	//particles fire
 	ID3D11InputLayout*    pSOIL = nullptr;
@@ -165,6 +159,8 @@ private:
 	ID3D11VertexShader* pDebugQuadVS = nullptr;
 	ID3D11PixelShader* pDebugQuadPS = nullptr;
 
+
+
 	//NEW ARCHITECTURE
 	//Default shaders
 	ID3D11InputLayout* pPosNormalTexcTangentIL = nullptr;
@@ -186,6 +182,16 @@ private:
 	ID3D11PixelShader* pDisplacementWavesPS = nullptr;
 	ID3D11HullShader* pDisplacementWavesHS = nullptr;
 	ID3D11DomainShader* pDisplacementWavesDS = nullptr;
+
+	//terrain with height map
+	ID3D11VertexShader* pTerrainVS = nullptr;
+	ID3D11InputLayout* pTerrainIL = nullptr;
+	ID3D11HullShader* pTerrainHS = nullptr;
+	ID3D11DomainShader* pTerrainDS = nullptr;
+	ID3D11PixelShader* pTerrainPS = nullptr;
+
+
+
 
 };
 
