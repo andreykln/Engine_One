@@ -154,10 +154,7 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3& oldLightDir)
 		0.5f, 0.5f, 0.0f, 1.0f);
 	XMMATRIX S = V * P * T;
 
-
 	lightViewProjection = V * P;
-
-
 	shadowTransform = S;
 	lightProj = P;
 	lightView = V;

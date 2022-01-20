@@ -2,17 +2,9 @@
 
 Terrain::Terrain(Graphics& gfx)
 {
-
-
-// 	terrainInitInfo.BlendMapFilename = L"Textures\\Terrain\\blend.dds";
-	terrainInitInfo.LayerMapFilename0 = L"Textures\\Terrain\\grass.dds";
-	terrainInitInfo.LayerMapFilename1 = L"Textures\\Terrain\\darkdirt.dds";
-	terrainInitInfo.LayerMapFilename2 = L"Textures\\Terrain\\stone.dds";
-	terrainInitInfo.LayerMapFilename3 = L"Textures\\Terrain\\lightdirt.dds";
-// 	terrainInitInfo.LayerMapFilename4 = L"Textures\\Terrain\\snow.dds";
 	terrainInitInfo.HeightMapFilename = L"Textures\\Terrain\\terrain.raw";
-	terrainInitInfo.cellSpacing = 0.5f; //0.5f
-	terrainInitInfo.HeightMapHeight = 2049;//
+	terrainInitInfo.cellSpacing = 0.5f; 
+	terrainInitInfo.HeightMapHeight = 2049;
 	terrainInitInfo.HeightMapWidth = 2049;
 	terrainInitInfo.HeightScale = 50.0f;
 
@@ -109,11 +101,8 @@ Terrain::Terrain(Graphics& gfx)
 	}
 
 	pVertexBuffer = gfx.CreateVertexBuffer(patchVertices, false, false, L"TerrainGrid");
-// 	VertexBuffer* pVB = new VertexBuffer(gfx, patchVertices, L"TerrainGrid_");
-// 	AddBind(pVB);
-// 
 	//TODO where is this used
-	numPatchVertices = numPatchVertRows * numPatchVertCols;
+// 	numPatchVertices = numPatchVertRows * numPatchVertCols;
 
 	//Index buffer
 	numPatchQuadFaces = (numPatchVertCols - 1) * (numPatchVertRows - 1);
@@ -158,54 +147,6 @@ ID3D11Buffer* Terrain::GetIndexBuffer()
 UINT Terrain::GetIndexCount()
 {
 	return indexCount;
-}
-
-void Terrain::SetSRVAndCBuffers(Graphics& gfx, DirectX::XMFLOAT3 camPosition, DirectX::XMMATRIX WVP)
-{
-// 	DirectX::XMFLOAT4 worldPlanes[6];
-// 	ExtractFrustumPlanes(worldPlanes, terrainWorld * WVP);
-// 	gfx.pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pHeightMapVS);
-// 	gfx.pgfx_pDeviceContext->DSSetShaderResources(0u, 1u, &pHeightMapDS);
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(1u, 1u, &pHeightMapPS);
-// 	gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &pTerrainLayerMaps);
-
-
-
-// 	D3D11_MAPPED_SUBRESOURCE mappedData;
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pHSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CB_HS_TerrainPerFrame* pHullShader = reinterpret_cast<CB_HS_TerrainPerFrame*>(mappedData.pData);
-// 	pHullShader->cameraPosition = camPosition;
-// 	pHullShader->worldFrustumPlanes[0] = worldPlanes[0];
-// 	pHullShader->worldFrustumPlanes[1] = worldPlanes[1];
-// 	pHullShader->worldFrustumPlanes[2] = worldPlanes[2];
-// 	pHullShader->worldFrustumPlanes[3] = worldPlanes[3];
-// 	pHullShader->worldFrustumPlanes[4] = worldPlanes[4];
-// 	pHullShader->worldFrustumPlanes[5] = worldPlanes[5];
-// 
-// 	gfx.pgfx_pDeviceContext->Unmap(pHSBufferCopy, 0u);
-// 
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pDSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CB_VS_WorldViewProjection* pDomainShader = reinterpret_cast<CB_VS_WorldViewProjection*>(mappedData.pData);
-// 	pDomainShader->worldViewProjection = DirectX::XMMatrixTranspose(WVP);
-// 	pDomainShader->world = DirectX::XMMatrixTranspose(terrainWorld);
-// 
-// 	gfx.pgfx_pDeviceContext->Unmap(pDSBufferCopy, 0u);
-// 
-// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pPSBufferCopy, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-// 	CB_PS_PerFrameUpdate* frame = reinterpret_cast<CB_PS_PerFrameUpdate*> (mappedData.pData);
-// 	frame->cameraPositon = camPosition;
-// 
-// 	if (GetAsyncKeyState('0') & 0x8000)
-// 		frame->numberOfLights = 0;
-// 	if (GetAsyncKeyState('1') & 0x8000)
-// 		frame->numberOfLights = 1;
-// 	if (GetAsyncKeyState('2') & 0x8000)
-// 		frame->numberOfLights = 2;
-// 	if (GetAsyncKeyState('3') & 0x8000)
-// 		frame->numberOfLights = 3;
-// 
-// 	gfx.pgfx_pDeviceContext->Unmap(pPSBufferCopy, 0u);
-
 }
 
 int Terrain::GetNumQuadFaces()
@@ -341,64 +282,3 @@ float Terrain::GetDepth()
 	return (terrainInitInfo.HeightMapHeight - 1) * terrainInitInfo.cellSpacing;
 }
 
-void Terrain::ExtractFrustumPlanes(DirectX::XMFLOAT4 planes[6], DirectX::CXMMATRIX _M)
-{
-	using namespace DirectX;
-	//
-	// Left
-	//
-	DirectX::XMFLOAT4X4 M;
-	DirectX::XMStoreFloat4x4(&M, _M);
-
-	planes[0].x = M(0, 3) + M(0, 0);
-	planes[0].y = M(1, 3) + M(1, 0);
-	planes[0].z = M(2, 3) + M(2, 0);
-	planes[0].w = M(3, 3) + M(3, 0);
-
-	//
-	// Right
-	//
-	planes[1].x = M(0, 3) - M(0, 0);
-	planes[1].y = M(1, 3) - M(1, 0);
-	planes[1].z = M(2, 3) - M(2, 0);
-	planes[1].w = M(3, 3) - M(3, 0);
-
-	//
-	// Bottom
-	//
-	planes[2].x = M(0, 3) + M(0, 1);
-	planes[2].y = M(1, 3) + M(1, 1);
-	planes[2].z = M(2, 3) + M(2, 1);
-	planes[2].w = M(3, 3) + M(3, 1);
-
-	//
-	// Top
-	//
-	planes[3].x = M(0, 3) - M(0, 1);
-	planes[3].y = M(1, 3) - M(1, 1);
-	planes[3].z = M(2, 3) - M(2, 1);
-	planes[3].w = M(3, 3) - M(3, 1);
-
-	//
-	// Near
-	//
-	planes[4].x = M(0, 2);
-	planes[4].y = M(1, 2);
-	planes[4].z = M(2, 2);
-	planes[4].w = M(3, 2);
-
-	//
-	// Far
-	//
-	planes[5].x = M(0, 3) - M(0, 2);
-	planes[5].y = M(1, 3) - M(1, 2);
-	planes[5].z = M(2, 3) - M(2, 2);
-	planes[5].w = M(3, 3) - M(3, 2);
-
-	// Normalize the plane equations.
-	for (int i = 0; i < 6; ++i)
-	{
-		DirectX::XMVECTOR v = DirectX::XMPlaneNormalize(DirectX::XMLoadFloat4(&planes[i]));
-		DirectX::XMStoreFloat4(&planes[i], v);
-	}
-}

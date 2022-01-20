@@ -52,9 +52,6 @@
     <Filter Include="Shaders\Domain">
       <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\ShadowMap">
-      <UniqueIdentifier>{f5a78cf6-206e-4676-b203-1d5783dda107}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders\Default">
       <UniqueIdentifier>{a49ab7b8-80fe-41fa-9696-7ea3e18615b2}</UniqueIdentifier>
     </Filter>
@@ -391,26 +388,11 @@
     <FxCompile Include="CubeVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="CubePS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="LightVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="LightPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="LightAndTextureVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="LightAndTexturePS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="MirrorRoomPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="LightAndTextureArrayPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="DepthCompVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
@@ -466,9 +448,6 @@
     <FxCompile Include="InstancedSkullVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="InstancedSkullPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="SphereCubeMap.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
@@ -483,30 +462,6 @@
     </FxCompile>
     <FxCompile Include="DisplacementMappingVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementWavesVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementWavesPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementWavesHS.hlsl">
-      <Filter>Shaders\Hull</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementWavesDS.hlsl">
-      <Filter>Shaders\Domain</Filter>
-    </FxCompile>
-    <FxCompile Include="TerrainVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="TerrainHS.hlsl">
-      <Filter>Shaders\Hull</Filter>
-    </FxCompile>
-    <FxCompile Include="TerrainDS.hlsl">
-      <Filter>Shaders\Domain</Filter>
-    </FxCompile>
-    <FxCompile Include="TerrainPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="ParticleFireSOGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
@@ -553,9 +508,6 @@
     <FxCompile Include="ParticleFountainGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="DefaultInstanced_PS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
     <FxCompile Include="CreateNormalMapPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
@@ -576,36 +528,6 @@
     </FxCompile>
     <FxCompile Include="SSAOBlurPS.hlsl">
       <Filter>Shaders\Default\SSAO</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapGenVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapDrawInstancedVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapDrawSkullVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapGenInstancedVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapGenSkullVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="NormalMappingShadowsVS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapSkullGenPS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapGenPS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="ShadowMapDrawSkullPS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
-    </FxCompile>
-    <FxCompile Include="NormalMappingShadowPS.hlsl">
-      <Filter>Shaders\ShadowMap</Filter>
     </FxCompile>
     <FxCompile Include="NormalMapVS.hlsl">
       <Filter>Shaders\Default</Filter>

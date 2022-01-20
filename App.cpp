@@ -30,9 +30,9 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateHillsWithGPUWaves();
-	CreateTerrain();
+// 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -49,9 +49,9 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawHillsWithGPUWaves();
-	DrawTerrain();
+// 	DrawTerrain();
 
 
 // 	DrawBox();
@@ -675,8 +675,6 @@ void App::DrawTerrain()
 	pShaders->BindPS(ShaderPicker::TerrainHeightMap);
 	wnd.GetGraphics().SetDefaultLightData();
 
-// 	DirectX::XMFLOAT4 worldPlanes[6];
-// 	pTerrain->ExtractFrustumPlanes(worldPlanes, viewProjectionMatrix);
 	wnd.GetGraphics().SetTerrainShaderResAndUpdateCbuffers(pTerrain->terrainWorld, pTerrain->blendMap, pTerrain->snow,
 		pTerrain->pHeightMapDS, pTerrain->pHeightMapVS);
 	wnd.GetGraphics().TerrainLightUpdate(pTerrain->terrainMaterial, false, false);
@@ -691,11 +689,9 @@ void App::DrawTerrain()
 		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
 	}
 
-// 	pTerrain->SetSRVAndCBuffers(wnd.GetGraphics(), camera.GetCameraPosition(), viewProjectionMatrix);
 	pDC->IASetVertexBuffers(0u, 1u, pTerrain->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pTerrain->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
-// 	pTerrain->BindAndDrawIndexed(wnd.GetGraphics(), pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
 
 
 	// PARTICLES
