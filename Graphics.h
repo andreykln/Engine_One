@@ -8,7 +8,7 @@
 #include "CustomException.h"
 #include "UtilityStructures.h"
 #include "MathHelper.h"
-// #include "ShaderResourceView.h"
+// #include "Shaders.h"
 //////////////////////////////////////////////////////////////////////////
 #include "DirectXTex/DirectXTex/DirectXTexP.h"
 #include "DirectXTex/DirectXTex/DirectXTex.h"
@@ -20,6 +20,7 @@
 #define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
+
 
 class Graphics
 {
@@ -36,7 +37,7 @@ public:
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
 	void SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt);
+		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt, float totalTime);
 	void SetShadowTransform(const DirectX::XMMATRIX& shadowTransform);
 	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
@@ -75,9 +76,12 @@ public:
 		ID3D11ShaderResourceView* pHeightMapVS);
 	//skybox is in 4th slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
+
+// 	void DrawParticle(Shaders* pShaders, DirectX::XMFLOAT3& emitPos, ParticlePick particle);
 	//buffers
 	template <typename T>
-	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring());
+	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring(),
+		const UINT numMaxParticles = 1);
 	ID3D11Buffer* CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name = std::wstring());
 
 	void CreateSRVArray(ID3D11ShaderResourceView** pSRV, UINT nImages, std::wstring* in_path);
@@ -135,8 +139,9 @@ private:
 	DirectX::XMMATRIX mShadowTransform;
 	DirectX::XMFLOAT3 mCameraPosition;
 	DirectX::XMFLOAT3 mNewLightDirection;
-	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735, 0.57335);
-	float deltaTime;
+	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57335f);
+	float mDeltaTime;
+	float mTotalTime;
 
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
@@ -176,11 +181,16 @@ void Graphics::CreateRuntimeCBuffers(CBuffer& data, const std::string& name, con
 }
 
 template <typename T>
-ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name)
+ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name,
+	const UINT numMaxParticles)
 {
 	D3D11_BUFFER_DESC desc;
 	if (streamOut)
+	{
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.CPUAccessFlags = 0u;
+	}
 	else
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	if (dynamic)
@@ -193,7 +203,7 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.CPUAccessFlags = 0u;
 	}
-	desc.ByteWidth = static_cast<UINT>(sizeof(T) * vertices.size());//size of the structure
+	desc.ByteWidth = static_cast<UINT>(sizeof(T) * vertices.size()) * numMaxParticles;
 	desc.MiscFlags = 0;
 	desc.StructureByteStride = 0; //only for structured buffer
 	D3D11_SUBRESOURCE_DATA initData;

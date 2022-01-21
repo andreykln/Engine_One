@@ -72,7 +72,7 @@ DomainOut main(
     dout.Tex = bary.x * tri[0].Tex + bary.y * tri[1].Tex + bary.z * tri[2].Tex;
 
     //to world space
-    dout.PosW = mul(float4(dout.PosW, 1.0f), world);
+    dout.PosW = mul(float4(dout.PosW, 1.0f), world).xyz;
     dout.shadowPosH = mul(float4(dout.PosW, 1.0f), shadowTransform);
 	// Interpolating normal can unnormalize it, so normalize it.
     dout.NormalW = normalize(dout.NormalW);

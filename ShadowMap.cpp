@@ -5,8 +5,8 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 {
 	mViewport.TopLeftX = 0.0f;
 	mViewport.TopLeftY = 0.0f;
-	mViewport.Width = mWidth;
-	mViewport.Height = mHeight;
+	mViewport.Width = (FLOAT)mWidth;
+	mViewport.Height = (FLOAT)mHeight;
 	mViewport.MinDepth = 0.0f;
 	mViewport.MaxDepth = 1.0f;
 

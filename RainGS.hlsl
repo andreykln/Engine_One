@@ -1,11 +1,19 @@
 #define PT_EMITTER 0
 #define PT_FLARE 1
 static const float3 accelW = { -1.0f, -9.8f, 0.0f };
-cbuffer cbPerFrame
+cbuffer cbDefaultMatricesVS : register(b0)
 {
+    float4x4 world;
     float4x4 viewProjection;
+    float4x4 worldInvTranspose;
+    float4x4 texTransform;
+    float4x4 shadowTransform;
+    float4x4 matTransform;
+    float4x4 worldViewProjTex;
     float3 cameraPosition;
-};
+    int pad0;
+    bool enableDisplacementMapping;
+}
 
 struct VertexOut
 {

@@ -70,6 +70,9 @@
     <Filter Include="Shaders\Default\Terrain">
       <UniqueIdentifier>{2d5271eb-44a9-4eea-9a12-e7820dc8445c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\Particles">
+      <UniqueIdentifier>{e5135a00-a325-4ee7-9d74-792bbe96f856}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -385,15 +388,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="CubeVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="LightVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="LightAndTextureVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="DepthCompVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
@@ -405,9 +399,6 @@
     </FxCompile>
     <FxCompile Include="Circle_CylinderGS.hlsl">
       <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="HillsAllLightPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="HorizontalGaussianBlurCS.hlsl">
       <Filter>Shaders\Compute</Filter>
@@ -433,9 +424,6 @@
     <FxCompile Include="GPUWavesVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
     </FxCompile>
-    <FxCompile Include="QuadTessellationPassVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="QuadTessHS.hlsl">
       <Filter>Shaders\Hull</Filter>
     </FxCompile>
@@ -445,13 +433,7 @@
     <FxCompile Include="QuadTessPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
-    <FxCompile Include="InstancedSkullVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="SphereCubeMap.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="MainLightPS.hlsl">
       <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="DisplacementMappingHS.hlsl">
@@ -462,54 +444,6 @@
     </FxCompile>
     <FxCompile Include="DisplacementMappingVS.hlsl">
       <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFireSOGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticlePS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleSOVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFireVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFireGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleRainVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleRainSOGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleRainPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleRainGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleExplosionSOGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleExplosionVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleExplosionGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFountainVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFountainSOGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="ParticleFountainGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="CreateNormalMapPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
     </FxCompile>
     <FxCompile Include="ComputeSSAOVS.hlsl">
       <Filter>Shaders\Default\SSAO</Filter>
@@ -576,6 +510,51 @@
     </FxCompile>
     <FxCompile Include="Terrain_PS.hlsl">
       <Filter>Shaders\Default\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="StreamOutVS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="RainVS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FountainVS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FireVS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="ExplosionVS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="ExplosionGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="ExplosionSOGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FireGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FireSOGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FountainGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="FountainSOGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="RainGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="RainPS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="RainSOGS.hlsl">
+      <Filter>Shaders\Default\Particles</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

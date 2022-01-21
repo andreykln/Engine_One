@@ -1,4 +1,3 @@
-
 struct Particle
 {
     float3 initialPosW : POSITION;
@@ -9,6 +8,6 @@ struct Particle
 };
 
 Particle main(Particle vin)
-{  
+{
     return vin;
 }

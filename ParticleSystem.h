@@ -4,22 +4,21 @@
 
 class ParticleSystem : public Shape
 {
-	struct Particle
-	{
-		DirectX::XMFLOAT3 initialPos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT3 initialVel = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT2 size = DirectX::XMFLOAT2(0.0f, 0.0f);
-		float age = 0.0f;
-		unsigned int type = 0;
-	};
-
 public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
+	ID3D11Buffer** GetDrawVertexBuffer();
+	ID3D11Buffer** GetStreamOutVertexBuffer();
+
+
+
+
 	void DrawParticle(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime, ParticlePick particle);
 	void Reset();
 
 
+	const std::wstring fireTex = L"flame";
+	const std::wstring raindTex = L"raindrop";
 private:
 	void UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime);
 	void BindToSOStage(Graphics& gfx);

@@ -52,32 +52,6 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
 
-
-
-	//Particles fire
-	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\ParticleFireSOGS.cso");
-	VS_IL_Init(&pSOVS, IL.particleSO, &pSOIL, IL.nParticleStreamOut, L"Shaders\\Vertex\\ParticleSOVS.cso");
-	VS_IL_Init(&pParticleFireVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFireVS.cso");
-	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\ParticleFireGS.cso");
-	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
-
-	//particles rain
-	GS_SO_Init(&pParticleRainGSSO, L"Shaders\\Geometry\\ParticleRainSOGS.cso");
-	GS_Init(&pParticleRainGS, L"Shaders\\Geometry\\ParticleRainGS.cso");
-	VS_IL_Init(&pParticleRainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleRainVS.cso");
-	PS_Init(&pParticleRainPS, L"Shaders\\Pixel\\ParticleRainPS.cso");
-
-	//particles explosion
-	GS_SO_Init(&pParticleExplosionSOGS, L"Shaders\\Geometry\\ParticleExplosionSOGS.cso");
-	GS_Init(&pParticleExplosionGS, L"Shaders\\Geometry\\ParticleExplosionGS.cso");
-	VS_IL_Init(&pParticleExplosionVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleExplosionVS.cso");
-
-	//fountain
-	GS_SO_Init(&pParticleFountainSOGS, L"Shaders\\Geometry\\ParticleFountainSOGS.cso");
-	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\ParticleFountainGS.cso");
-	VS_IL_Init(&pParticleFountainVS, IL.particle, &pParticleDrawIL, IL.nParticle, L"Shaders\\Vertex\\ParticleFountainVS.cso");
-
-
 	//shadow map generation
 	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
 	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
@@ -130,6 +104,31 @@ Shaders::Shaders(Graphics& in_gfx)
 	HS_Init(&pTerrainHS, L"Shaders\\Hull\\Terrain_HS.cso");
 	DS_Init(&pTerrainDS, L"Shaders\\Domain\\Terrain_DS.cso");
 	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\Terrain_PS.cso");
+
+	//////////////////////////////////////////////////////////////////////////
+	//Particle Stream out
+	VS_IL_Init(&pParticleStreamOutVS, IL.particleStreamOutIL, &pParticleStreamOutIL, IL.nParticleStreamOut, L"Shaders\\Vertex\\StreamOutVS.cso");
+	//Particles fire
+	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\FireSOGS.cso");
+	VS_IL_Init(&pParticleFireVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\FireVS.cso");
+	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\FireGS.cso");
+	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
+	//particles rain
+	GS_SO_Init(&pParticleRainGSSO, L"Shaders\\Geometry\\RainSOGS.cso");
+	GS_Init(&pParticleRainGS, L"Shaders\\Geometry\\RainGS.cso");
+	VS_IL_Init(&pParticleRainVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\RainVS.cso");
+	PS_Init(&pParticleRainPS, L"Shaders\\Pixel\\RainPS.cso");
+
+	//particles explosion
+	GS_SO_Init(&pParticleExplosionSOGS, L"Shaders\\Geometry\\ExplosionSOGS.cso");
+	GS_Init(&pParticleExplosionGS, L"Shaders\\Geometry\\ExplosionGS.cso");
+	VS_IL_Init(&pParticleExplosionVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\ExplosionVS.cso");
+
+	//fountain
+	GS_SO_Init(&pParticleFountainSOGS, L"Shaders\\Geometry\\FountainSOGS.cso");
+	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\FountainGS.cso");
+	VS_IL_Init(&pParticleFountainVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\FountainVS.cso");
+	//////////////////////////////////////////////////////////////////////////
 
 
 }
@@ -203,10 +202,10 @@ void Shaders::BindVSandIA(ShaderPicker shader)
 	case ShaderPicker::Particles_FireStreamOut_VS_GS:
 	case ShaderPicker::Particles_RainStreamOut_VS_GS:
 	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
-	case ShaderPicker::Particle_FountainStreamOut_VS_GS:
+	case ShaderPicker::Particle_FountainStreamOut_VS_GS: 
 	{
-		GetContext(*pSgfx)->IASetInputLayout(pSOIL);
-		pSgfx->pgfx_pDeviceContext->VSSetShader(pSOVS, nullptr, 0u);
+		GetContext(*pSgfx)->IASetInputLayout(pParticleStreamOutIL);//this one
+		pSgfx->pgfx_pDeviceContext->VSSetShader(pParticleStreamOutVS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::Particles_FireDraw_VS_GS_PS:

@@ -3,35 +3,37 @@
 ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	: maxParticles(maxParticles)
 {
-
 	// The initial particle emitter has type 0 and age 0.  The rest
 // of the particle attributes do not apply to an emitter.
 	Particle p;
 	//Vertex buffer for Stream-Out
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_DEFAULT;
-	vbd.ByteWidth = sizeof(Particle); 
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0u;
-	vbd.MiscFlags = 0u;
-	vbd.StructureByteStride = 0u;
-	D3D11_SUBRESOURCE_DATA initDataParticle;
-	initDataParticle.pSysMem = &p;
+// 	D3D11_BUFFER_DESC vbd;
+// 	vbd.Usage = D3D11_USAGE_DEFAULT;
+// 	vbd.ByteWidth = sizeof(Particle); 
+// 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+// 	vbd.CPUAccessFlags = 0u;
+// 	vbd.MiscFlags = 0u;
+// 	vbd.StructureByteStride = 0u;
+// 	D3D11_SUBRESOURCE_DATA initDataParticle;
+// 	initDataParticle.pSysMem = &p;
 
-	gfx.pgfx_pDevice->CreateBuffer(&vbd, &initDataParticle, &pInitVB);
+// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, &initDataParticle, &pInitVB);
 	
 	//ping-pong buffers for stream out and drawing
-	vbd.ByteWidth = sizeof(Particle) * maxParticles;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
-	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pStreamOutVB);
-	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
+// 	vbd.ByteWidth = sizeof(Particle) * maxParticles;
+// 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pStreamOutVB);
+// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
 
 	randomTexSRV = CreateRandomTexture1DSRV(gfx);
-	
+	std::vector<Particle> vertices;
+	vertices.push_back(p);
+	pStreamOutVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer SO", maxParticles);
+	pDrawVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer draw", maxParticles);
 
 
-	TextureSampler* pGSSOsampler = new TextureSampler(gfx, ShaderType::Geometry);
-	pSSGSSO = pGSSOsampler->GetSamplerState();
+// 	TextureSampler* pGSSOsampler = new TextureSampler(gfx, ShaderType::Geometry);
+// 	pSSGSSO = pGSSOsampler->GetSamplerState();
 
 	//this ptr used only in manual binding, so release pointer 
 	GSSOparticleFireData.emitterPositon = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -48,15 +50,15 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	pGSParticleDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
 	pGSCBDraw = nullptr;
 
-	const wchar_t* filePath = L"Textures\\flame.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, filePath);
-	psFireDrawTexture = pSRV->GetSRV();
-	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	pSSDrawPixel = pTexSampler->GetSamplerState();
-
-	filePath = L"Textures\\raindrop.dds";
-	ShaderResourceView* pRainSrv = new ShaderResourceView(gfx, filePath);
-	psRainDropTexture = pRainSrv->GetSRV();
+// 	const wchar_t* filePath = L"Textures\\flame.dds";
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, filePath);
+// 	psFireDrawTexture = pSRV->GetSRV();
+// 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
+// 	pSSDrawPixel = pTexSampler->GetSamplerState();
+// 
+// 	filePath = L"Textures\\raindrop.dds";
+// 	ShaderResourceView* pRainSrv = new ShaderResourceView(gfx, filePath);
+// 	psRainDropTexture = pRainSrv->GetSRV();
 
 }
 

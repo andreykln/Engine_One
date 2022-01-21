@@ -1,8 +1,16 @@
-cbuffer cbPerFrame
+cbuffer cbDefaultMatricesVS : register(b0)
 {
+    float4x4 world;
     float4x4 viewProjection;
+    float4x4 worldInvTranspose;
+    float4x4 texTransform;
+    float4x4 shadowTransform;
+    float4x4 matTransform;
+    float4x4 worldViewProjTex;
     float3 cameraPosition;
-};
+    int pad0;
+    bool enableDisplacementMapping;
+}
 
 struct VertexOut
 {

@@ -21,6 +21,6 @@ private:
 	GeometryGenerator::MeshData mesh;
 	ID3D11Buffer* pVertexBuffer = nullptr;
 	ID3D11Buffer* pIndexBuffer = nullptr;
-	UINT indexCount = 0;
+	int indexCount = 0;
 
 };

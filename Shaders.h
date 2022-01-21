@@ -1,8 +1,8 @@
 #pragma once
 #include "Bindable.h"
-#include "UtilityStructures.h"
-#include "Shape.h"
-#include "BindableBase.h"
+// #include "UtilityStructures.h"
+// #include "Shape.h"
+// #include "BindableBase.h"
 #include "InputLayout.h"
 
 class Shaders : public Bindable
@@ -104,30 +104,7 @@ private:
 	//displacement waves
 
 
-	//particles fire
-	ID3D11InputLayout*    pSOIL = nullptr;
-	ID3D11InputLayout*    pParticleDrawIL = nullptr;
-	ID3D11VertexShader*   pSOVS = nullptr;
-	ID3D11GeometryShader* pSOFireGS = nullptr;
-	ID3D11VertexShader*   pParticleFireVS = nullptr;
-	ID3D11GeometryShader* pParticleFireGS = nullptr;
-	ID3D11PixelShader*    pParticleFirePS = nullptr;
-
-	//particles rain
-	ID3D11VertexShader* pParticleRainVS = nullptr;
-	ID3D11GeometryShader* pParticleRainGS = nullptr;
-	ID3D11GeometryShader* pParticleRainGSSO = nullptr;
-	ID3D11PixelShader* pParticleRainPS = nullptr;
-
-	//particles explosion
-	ID3D11VertexShader* pParticleExplosionVS = nullptr;
-	ID3D11GeometryShader* pParticleExplosionSOGS = nullptr;
-	ID3D11GeometryShader* pParticleExplosionGS = nullptr;
-
-	//particles fountain
-	ID3D11VertexShader* pParticleFountainVS = nullptr;
-	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
-	ID3D11GeometryShader* pParticleFountainGS = nullptr;
+	
 
 	//shadow map generation
 	ID3D11VertexShader* pShadowMapGenVS = nullptr;
@@ -190,7 +167,31 @@ private:
 	ID3D11DomainShader* pTerrainDS = nullptr;
 	ID3D11PixelShader* pTerrainPS = nullptr;
 
+	//particles
+	ID3D11VertexShader* pParticleStreamOutVS = nullptr;
+	ID3D11InputLayout* pParticleStreamOutIL = nullptr;
+	//particles fire
+	ID3D11InputLayout*    pParticleDrawIL = nullptr;
+	ID3D11GeometryShader* pSOFireGS = nullptr;
+	ID3D11VertexShader*   pParticleFireVS = nullptr;
+	ID3D11GeometryShader* pParticleFireGS = nullptr;
+	ID3D11PixelShader*    pParticleFirePS = nullptr;
 
+	//particles rain
+	ID3D11VertexShader* pParticleRainVS = nullptr;
+	ID3D11GeometryShader* pParticleRainGS = nullptr;
+	ID3D11GeometryShader* pParticleRainGSSO = nullptr;
+	ID3D11PixelShader* pParticleRainPS = nullptr;
+
+	//particles explosion
+	ID3D11VertexShader* pParticleExplosionVS = nullptr;
+	ID3D11GeometryShader* pParticleExplosionSOGS = nullptr;
+	ID3D11GeometryShader* pParticleExplosionGS = nullptr;
+
+	//particles fountain
+	ID3D11VertexShader* pParticleFountainVS = nullptr;
+	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
+	ID3D11GeometryShader* pParticleFountainGS = nullptr;
 
 
 };

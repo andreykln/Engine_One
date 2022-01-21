@@ -163,13 +163,14 @@ void Graphics::SetViewport()
 
 
 void Graphics::SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt)
+	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt, float totalTime)
 {
 	mView = View;
 	mViewProjection = ViewProjection;
 	mProjection = Projection;
 	mCameraPosition = camPos;
-	deltaTime = dt;
+	mDeltaTime = dt;
+	mTotalTime = totalTime;
 }
 
 void Graphics::SetShadowTransform(const DirectX::XMMATRIX& shadowTransform)
@@ -258,6 +259,7 @@ void Graphics::CreateSRVs()
 	diffuseMapNames.push_back(L"snow");
 	diffuseMapNames.push_back(L"WoodCrate01");
 	diffuseMapNames.push_back(L"blend");
+	diffuseMapNames.push_back(L"raindrop");
 
 	for (int i = 0; i < diffuseMapNames.size(); i++)
 	{
@@ -439,11 +441,11 @@ void Graphics::UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialE
 	DirectX::XMMATRIX waveNormalTransform0;
 	DirectX::XMMATRIX waveNormalTransform1;
 
-	waveDispOffset0.x += 0.01f * deltaTime;
-	waveDispOffset0.y += 0.03f * deltaTime;
+	waveDispOffset0.x += 0.01f * mTotalTime;
+	waveDispOffset0.y += 0.03f * mTotalTime;
 
-	waveDispOffset1.x += 0.01f * deltaTime;
-	waveDispOffset1.y += 0.03f * deltaTime;
+	waveDispOffset1.x += 0.01f * mTotalTime;
+	waveDispOffset1.y += 0.03f * mTotalTime;
 
 	DirectX::XMMATRIX waveScale0 = DirectX::XMMatrixScaling(2.0f, 2.0f, 1.0f);
 	DirectX::XMMATRIX waveOffset0 = DirectX::XMMatrixTranslation(waveDispOffset0.x, waveDispOffset0.y, 0.0f);
@@ -453,11 +455,11 @@ void Graphics::UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialE
 	DirectX::XMMATRIX waveOffset1 = DirectX::XMMatrixTranslation(waveDispOffset1.x, waveDispOffset1.y, 0.0f);
 	waveDispTexTransform1 = DirectX::XMMatrixMultiply(waveScale1, waveOffset1);
 
-	waveNormalOffset0.x += 0.05f * deltaTime;
-	waveNormalOffset0.y += 0.2f * deltaTime;
+	waveNormalOffset0.x += 0.05f * mTotalTime;
+	waveNormalOffset0.y += 0.2f * mTotalTime;
 
-	waveNormalOffset1.x += 0.02f * deltaTime;
-	waveNormalOffset1.y += 0.05f * deltaTime;
+	waveNormalOffset1.x += 0.02f * mTotalTime;
+	waveNormalOffset1.y += 0.05f * mTotalTime;
 
 	waveScale0 = DirectX::XMMatrixScaling(22.0f, 22.0f, 1.0f);
 	waveOffset0 = DirectX::XMMatrixTranslation(waveNormalOffset0.x, waveNormalOffset0.y, 0.0f);
@@ -545,6 +547,11 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 	pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &cubeMaps.at(skyBoxName));
 }
 
+
+// void Graphics::DrawParticle(Shaders* pShaders, DirectX::XMFLOAT3& emitPos, ParticlePick particle)
+// {
+// 
+// }
 
 ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name)
 {

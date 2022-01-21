@@ -179,6 +179,15 @@ struct cbPSerrainTexel
 	float padding;
 };
 
+struct Particle
+{
+	DirectX::XMFLOAT3 initialPos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3 initialVel = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT2 size = DirectX::XMFLOAT2(0.0f, 0.0f);
+	float age = 0.0f;
+	unsigned int type = 0;
+};
+
 ////////END MAIN
 
 struct Vertices_Full
@@ -365,14 +374,6 @@ struct CB_GS_StreamOut
 	float padding[3] = {0.0f, 0.0f, 0.0f};
 };
 
-struct Particle
-{
-	DirectX::XMFLOAT3 initialPos;
-	DirectX::XMFLOAT3 initialVel;
-	DirectX::XMFLOAT2 size;
-	float age;
-	unsigned int type;
-};
 
 //
 // shadow map

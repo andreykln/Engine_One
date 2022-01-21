@@ -23,6 +23,6 @@ VertexOut main(VertexIn vin)
 {
     VertexOut vout;
     vout.posH = mul(float4(vin.posL, 1.0f), lightWVP);
-    vout.tex = mul(float4(vin.texC, 0.0f, 1.0f), texTransform);
+    vout.tex = mul(float4(vin.texC, 0.0f, 1.0f), texTransform).xy;
     return vout;
 }
