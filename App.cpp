@@ -7,7 +7,6 @@
 App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
-	rStates.InitializeAll(wnd.GetGraphics());
 	const int smapSize = 2048;
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
 	pSSAO = new SSAO(wnd.GetGraphics(), resolution_width, resolution_height);
@@ -42,6 +41,7 @@ App::App()
 
 void App::DoFrame()
 {
+	viewProjectionMatrix = GetViewProjectionCamera();
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
@@ -122,11 +122,15 @@ void App::CreateHillsWithGPUWaves()
 
 void App::DrawHillsWithGPUWaves()
 {
-// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
+
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::GPUWaves_VS);
 	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix,
@@ -255,8 +259,8 @@ void App::DrawDepthComplexityStencil()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityCountDSS, 0);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityCountDSS, 0);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().CullCounterClockwiseRS);
 
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
@@ -267,8 +271,8 @@ void App::DrawDepthComplexityStencil()
 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 // disable transparency for overdraw counting
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::NoCullRS);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().NoCullRS);
 // 
 // 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
 // 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -283,15 +287,15 @@ void App::DrawDepthComplexityStencil()
 	pDepthArr[1]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 	pDepthArr[2]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 3);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 3);
 	pDepthArr[0]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.5f, 0.0f, 0.0f });
 	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 2);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 2);
 	pDepthArr[1]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 1.0f, 0.54f, 0.117f });
 	pDepthArr[1]->BindAndDrawIndexed(wnd.GetGraphics());
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::DepthComplexityReadDSS, 1);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 1);
 	pDepthArr[2]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.0f, 0.5f, 0.0f });
 	pDepthArr[2]->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -410,7 +414,7 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().BindPS(ShadowMap_VS_PS);
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
-	pDC->RSSetState(RenderStates::ShadowMapBiasRS);
+	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
 	DrawSceneToShadowMap();
 	pDC->RSSetState(0u);
 
@@ -517,7 +521,7 @@ void App::DrawShadowMapDemo()
 	//////////////////////////////////////////////////////////////////////////
 
 	//Displacement waves
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
@@ -533,11 +537,11 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().UnbindAll();
 
 	//Skybox
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pDC->RSSetState(RenderStates::NoCullRS);
-	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
+	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);
@@ -609,7 +613,7 @@ void App::CreateBezierPatchTess()
 
 void App::DrawBezierPatchTess()
 {
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
 
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -25.0f, 0.0f), camera.GetCameraPosition());
@@ -651,11 +655,11 @@ void App::CreateTerrain()
 
 // 	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 
-//  	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
- 	//pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
-//  	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
+//   	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
+  	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
+//   	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
 
-// 	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 2000);
+//  	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 2000);
 
 
 }
@@ -663,11 +667,10 @@ void App::CreateTerrain()
 
 void App::DrawTerrain()
 {
-	viewProjectionMatrix = GetViewProjectionCamera();
 	stride = sizeof(vbPosTexBoundsY);
 	offset = 0;
 	// TERRAIN
-	wnd.GetGraphics().UnbindAll();
+	/*wnd.GetGraphics().UnbindAll();
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::TerrainHeightMap);
 	wnd.GetGraphics().BindHS(ShaderPicker::TerrainHeightMap);
 	wnd.GetGraphics().BindDS(ShaderPicker::TerrainHeightMap);
@@ -678,6 +681,7 @@ void App::DrawTerrain()
 		pTerrain->pHeightMapDS, pTerrain->pHeightMapVS);
 	wnd.GetGraphics().TerrainLightUpdate(pTerrain->terrainMaterial, false, false);
 
+
 	//bind camera to terrain surface
 // 	DirectX::XMFLOAT3 camPos = camera.GetCameraPosition();
 // 	float y = pTerrain->GetHeight(camPos.x, camPos.z, camPos.y);
@@ -685,26 +689,31 @@ void App::DrawTerrain()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
 	if (GetAsyncKeyState('6') & 0x8000)
 	{
-		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::WireframeRS);
+		wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
 	}
 
 	pDC->IASetVertexBuffers(0u, 1u, pTerrain->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pTerrain->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-	pDC->DrawIndexed(pTerrain->GetNumQuadFaces() * 4, 0u, 0u);
+	pDC->DrawIndexed(pTerrain->GetNumQuadFaces() * 4, 0u, 0u);*/
 
 
 	// PARTICLES
-// 	wnd.GetGraphics().UnbindAll();
-// 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-
-	//RAIN
-	/*DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
+	wnd.GetGraphics().UnbindAll();
+	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
 	rainPosition.z += 10.0f;
-	rainPosition.y += 5.0f;
-	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
+ 	rainPosition.y += 5.0f;
+	wnd.GetGraphics().DrawParticle(rainPosition, pParticleRain->GetStreamOutVertexBuffer(), pParticleRain->GetDrawVertexBuffer(), pParticleRain->GetRandomTexSRV(),
+		pParticleRain->GetInitVB(), ParticlePick::Rain);
+	wnd.GetGraphics().UnbindAll();
+	//RAIN
+// 	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
+// 	rainPosition.z += 10.0f;
+// 	rainPosition.y += 5.0f;
+// 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
+// 		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
 
- 	wnd.GetGraphics().UnbindAll();*/
+ 	wnd.GetGraphics().UnbindAll();
 
 	//FOUNTAIN
 // 	pParticleFountain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
@@ -733,11 +742,11 @@ void App::DrawTerrain()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
 		//Skybox
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pDC->RSSetState(RenderStates::NoCullRS);
-	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
+	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
+	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);

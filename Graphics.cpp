@@ -1,6 +1,8 @@
 #include "Graphics.h"
 #include "DirectXTex/DDSTextureLoader/DDSTextureLoader11.cpp"
 
+#define ReleaseID3D(x) { if(x){ x->Release(); x = 0; } }
+
 Graphics::Graphics(HWND wnd)
 {
 	windowHandle = wnd;
@@ -78,6 +80,7 @@ Graphics::Graphics(HWND wnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	InitShaders();
+	InitializeRenderStates();
 #ifdef MY_DEBUG
 	ID3D11InfoQueue* infoQueue = nullptr;
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11InfoQueue), reinterpret_cast<void**>(&infoQueue));
@@ -221,6 +224,10 @@ void Graphics::CreateCBuffers()
 	cbHSTerrainPerFrame terrainHS;
 	ID3D11Buffer* pterrHS = CreateConstantBuffer(terrainHS, true, "terrain world view planes");
 	constBuffersMap.insert(std::make_pair(cbNames.terrainHSPlainsData, pterrHS));
+
+	cbParticleStreamOutGS particleSOGS;
+	ID3D11Buffer* pPartSOGS = CreateConstantBuffer(particleSOGS, true, "Particle stream out GS");
+	constBuffersMap.insert(std::make_pair(cbNames.particleStreamOutGS, pPartSOGS));
 
 }
 
@@ -401,7 +408,7 @@ void Graphics::VSDefaultMatricesUpdate(const DirectX::XMMATRIX& world, const Dir
 	D3D11_MAPPED_SUBRESOURCE mappedData;
 	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* pMatrices = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
-	pMatrices->cameraPositon = mCameraPosition;
+	pMatrices->cameraPosition = mCameraPosition;
 	pMatrices->matTransform = DirectX::XMMatrixTranspose(matTransform);
 	pMatrices->shadowTransform = DirectX::XMMatrixTranspose(mShadowTransform);
 	pMatrices->texTransform = DirectX::XMMatrixTranspose(texTransform);
@@ -496,7 +503,7 @@ void Graphics::UpdateDispWavesCBuffers(const DirectX::XMMATRIX& world, MaterialE
 
 	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* frameDS = reinterpret_cast<cbDefaultMatricesVS*> (mappedData.pData);
-	frameDS->cameraPositon = mCameraPosition;
+	frameDS->cameraPosition = mCameraPosition;
 	frameDS->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
 
@@ -550,11 +557,182 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 
 
 
-void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
+void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB,
+	ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle)
 {
+	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	if (GetAsyncKeyState('4') & 0x8000)
+	{
+		if (mTotalTime - lastResetTime > 1.0f)
+		{
+			mfirstRun = true;
+			lastResetTime = mTotalTime;
+		}
+	}
+
+	switch (particle)
+	{
+	case Fire:
+	{
+		pgfx_pDeviceContext->OMSetBlendState(additiveBlend, blendFactorsZero, 0xffffffff);
+		pgfx_pDeviceContext->OMSetDepthStencilState(disableDepthWrites, 0u);
+		BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
+		break;
+	}
+	case Rain:
+	{
+		BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
+		break;
+	}
+	case Fountain:
+	{
+		BindVSandIA(ShaderPicker::Particle_FountainStreamOut_VS_GS);
+		BindGS(ShaderPicker::Particle_FountainStreamOut_VS_GS);
+		break;
+	}
+	case Explosion:
+	{
+		pgfx_pDeviceContext->OMSetBlendState(additiveBlend, blendFactorsZero, 0xffffffff);
+		pgfx_pDeviceContext->OMSetDepthStencilState(disableDepthWrites, 0u);
+		BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+		BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
+		break;
+	}
+
+	default:
+		break;
+	}
+
+	UINT stride = sizeof(Particle);
+	UINT offset = 0;
+	if (mfirstRun)
+	{
+		BindToSOStage(pStreamOutVB, randomTexSRV);
+		UpdateStreamOutConstBuffer(emitPos);
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pInitVB, &stride, &offset);
+	}
+	else
+	{
+		BindToSOStage(pStreamOutVB, randomTexSRV);
+		UpdateStreamOutConstBuffer(emitPos);
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pDrawVB, &stride, &offset);
+	}
+
+	pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, &offset);
+
+
+	if (mfirstRun)
+	{
+		pgfx_pDeviceContext->Draw(1u, 0u);
+		mfirstRun = false;
+
+	}
+	else
+	{
+		pgfx_pDeviceContext->DrawAuto();
+	}
+
+	// done streaming-out--unbind the vertex buffer
+	UnbindFromSOStage();
+	std::swap(pDrawVB, pStreamOutVB);
+
+
+	pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
+
+	UpdateParticleDrawConstBuffer();
+
+	// Draw the updated particle system we just streamed-out.
+	switch (particle)
+	{
+	case Fire:
+	{
+		BindVSandIA(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+		BindGS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+		BindPS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
+// 		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
+		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"flame"));
+
+	}
+	break;
+	case Rain:
+	{
+		BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+		BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
+// 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
+		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"raindrop"));
+
+		break;
+	}
+	case Fountain:
+	{
+		BindVSandIA(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
+		BindGS(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
+		BindPS(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
+		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"raindrop"));
+		break;
+	}
+	case Explosion:
+	{
+		BindVSandIA(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
+		BindGS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
+		BindPS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
+		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"flame"));
+	}
+	break;
+	default:
+		break;
+	}
+
+
+// 	pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel);
+
+	pgfx_pDeviceContext->DrawAuto();
 
 }
 
+
+void Graphics::BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV)
+{
+	pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, 0u);
+	pgfx_pDeviceContext->GSSetShaderResources(0u, 1u, &randomTexSRV);
+}
+
+void Graphics::UnbindFromSOStage()
+{
+	ID3D11Buffer* bufferArray[1] = { 0 };
+	pgfx_pDeviceContext->SOSetTargets(1u, bufferArray, 0u);
+}
+
+void Graphics::UpdateStreamOutConstBuffer(DirectX::XMFLOAT3& emitPos)
+{
+	pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.particleStreamOutGS));
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.particleStreamOutGS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbParticleStreamOutGS* StreamOut = reinterpret_cast<cbParticleStreamOutGS*>(mappedData.pData);
+	StreamOut->emitterPositon = emitPos;
+	StreamOut->gameTime = mTotalTime;
+	StreamOut->timeStep = mDeltaTime;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.particleStreamOutGS), 0u);
+
+}
+
+void Graphics::UpdateParticleDrawConstBuffer()
+{
+	pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbDefaultMatricesVS* drawParticleGS = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
+	drawParticleGS->cameraPosition = mCameraPosition;
+	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
+
+}
 
 ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name)
 {
@@ -1849,5 +2027,387 @@ void Graphics::DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path)
 	//for usage in other shaders;
 	pBlob->Release();
 
+}
+
+
+void Graphics::InitializeRenderStates()
+{
+	//
+	//ShadowMap Bias
+	//
+	D3D11_RASTERIZER_DESC shadowMapBiasDesc;
+	ZeroMemory(&shadowMapBiasDesc, sizeof(D3D11_RASTERIZER_DESC));
+	shadowMapBiasDesc.FillMode = D3D11_FILL_SOLID;
+	shadowMapBiasDesc.CullMode = D3D11_CULL_BACK;
+	shadowMapBiasDesc.FrontCounterClockwise = false;
+	shadowMapBiasDesc.DepthClipEnable = true;
+
+	shadowMapBiasDesc.DepthBias = 100000;
+	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
+	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
+	pgfx_pDevice->CreateRasterizerState(&shadowMapBiasDesc, &ShadowMapBiasRS);
+
+	//
+	//SolidFIllRS
+	//
+	D3D11_RASTERIZER_DESC solidFillDesc;
+	ZeroMemory(&solidFillDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidFillDesc.FillMode = D3D11_FILL_SOLID;
+	solidFillDesc.CullMode = D3D11_CULL_NONE;
+	solidFillDesc.FrontCounterClockwise = false;
+	solidFillDesc.DepthClipEnable = true;
+	pgfx_pDevice->CreateRasterizerState(&solidFillDesc, &SolidFillRS);
+
+
+	//
+	// WireframeRS
+	//
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_BACK;
+	wireframeDesc.FrontCounterClockwise = false;
+	wireframeDesc.DepthClipEnable = true;
+
+	pgfx_pDevice->CreateRasterizerState(&wireframeDesc, &WireframeRS);
+
+	//
+	// NoCullRS
+	//
+	D3D11_RASTERIZER_DESC noCullDesc;
+	ZeroMemory(&noCullDesc, sizeof(D3D11_RASTERIZER_DESC));
+	noCullDesc.FillMode = D3D11_FILL_SOLID;
+	noCullDesc.CullMode = D3D11_CULL_NONE;
+	noCullDesc.FrontCounterClockwise = false;
+	noCullDesc.DepthClipEnable = true;
+
+	pgfx_pDevice->CreateRasterizerState(&noCullDesc, &NoCullRS);
+
+	//
+	// CullClockwiseRS
+	//
+
+	// Note: Define such that we still cull backfaces by making front faces CCW.
+	// If we did not cull backfaces, then we have to worry about the BackFace
+	// property in the D3D11_DEPTH_STENCIL_DESC.
+	D3D11_RASTERIZER_DESC cullClockwiseDesc;
+	ZeroMemory(&cullClockwiseDesc, sizeof(D3D11_RASTERIZER_DESC));
+	cullClockwiseDesc.FillMode = D3D11_FILL_SOLID;
+	cullClockwiseDesc.CullMode = D3D11_CULL_BACK;
+	cullClockwiseDesc.FrontCounterClockwise = true;
+	cullClockwiseDesc.DepthClipEnable = true;
+
+	pgfx_pDevice->CreateRasterizerState(&cullClockwiseDesc, &CullClockwiseRS);
+
+	////Cull counterCloskwise
+	D3D11_RASTERIZER_DESC cullCounterClockwiseDesc;
+	ZeroMemory(&cullCounterClockwiseDesc, sizeof(D3D11_RASTERIZER_DESC));
+	cullCounterClockwiseDesc.FillMode = D3D11_FILL_SOLID;
+	cullCounterClockwiseDesc.CullMode = D3D11_CULL_FRONT;
+	cullCounterClockwiseDesc.FrontCounterClockwise = true;
+	cullCounterClockwiseDesc.DepthClipEnable = true;
+
+	pgfx_pDevice->CreateRasterizerState(&cullCounterClockwiseDesc, &CullCounterClockwiseRS);
+
+
+	//
+	// AlphaToCoverageBS
+	//
+
+	D3D11_BLEND_DESC alphaToCoverageDesc = { 0 };
+	alphaToCoverageDesc.AlphaToCoverageEnable = true;
+	alphaToCoverageDesc.IndependentBlendEnable = false;
+	alphaToCoverageDesc.RenderTarget[0].BlendEnable = false;
+	alphaToCoverageDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	pgfx_pDevice->CreateBlendState(&alphaToCoverageDesc, &AlphaToCoverageBS);
+
+	//
+	// TransparentBS
+	//
+
+	D3D11_BLEND_DESC transparentDesc = { 0 };
+	transparentDesc.AlphaToCoverageEnable = false;
+	transparentDesc.IndependentBlendEnable = false;
+
+	transparentDesc.RenderTarget[0].BlendEnable = true;
+	transparentDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	transparentDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	transparentDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	transparentDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	transparentDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	transparentDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	pgfx_pDevice->CreateBlendState(&transparentDesc, &TransparentBS);
+
+	//
+	//noBlendBS
+	//
+	D3D11_BLEND_DESC noBlendBSDesc = { 0 };
+	noBlendBSDesc.AlphaToCoverageEnable = false;
+	noBlendBSDesc.IndependentBlendEnable = false;
+
+	noBlendBSDesc.RenderTarget[0].BlendEnable = false;
+	noBlendBSDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	noBlendBSDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	noBlendBSDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	noBlendBSDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	noBlendBSDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	noBlendBSDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	noBlendBSDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	pgfx_pDevice->CreateBlendState(&noBlendBSDesc, &noBlendBS);
+
+
+	//
+	//Additive
+	//
+	D3D11_BLEND_DESC additiveDesc = { 0 };
+	additiveDesc.AlphaToCoverageEnable = false;
+	additiveDesc.IndependentBlendEnable = false;
+
+	additiveDesc.RenderTarget[0].BlendEnable = true;
+	additiveDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	additiveDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	additiveDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	additiveDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+	additiveDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	additiveDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	additiveDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	pgfx_pDevice->CreateBlendState(&additiveDesc, &additiveBlend);
+
+	//colorful one
+	D3D11_BLEND_DESC test = { 0 };
+	test.AlphaToCoverageEnable = false;
+	test.IndependentBlendEnable = false;
+
+	test.RenderTarget[0].BlendEnable = true;
+	test.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_COLOR;
+	test.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	test.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	test.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	test.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	test.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	test.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	pgfx_pDevice->CreateBlendState(&test, &srsColor);
+
+	//
+	// NoRenderTargetWritesBS
+	//
+
+	D3D11_BLEND_DESC noRenderTargetWritesDesc = { 0 };
+	noRenderTargetWritesDesc.AlphaToCoverageEnable = false;
+	noRenderTargetWritesDesc.IndependentBlendEnable = false;
+
+	noRenderTargetWritesDesc.RenderTarget[0].BlendEnable = false;
+	noRenderTargetWritesDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	noRenderTargetWritesDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+	noRenderTargetWritesDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	noRenderTargetWritesDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	noRenderTargetWritesDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	noRenderTargetWritesDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	noRenderTargetWritesDesc.RenderTarget[0].RenderTargetWriteMask = 0;
+
+	pgfx_pDevice->CreateBlendState(&noRenderTargetWritesDesc, &NoRenderTargetWritesBS);
+
+	//
+	// MarkMirrorDSS
+	//
+
+	D3D11_DEPTH_STENCIL_DESC mirrorDesc;
+	mirrorDesc.DepthEnable = true;
+	mirrorDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	mirrorDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	mirrorDesc.StencilEnable = true;
+	mirrorDesc.StencilReadMask = 0xff;
+	mirrorDesc.StencilWriteMask = 0xff;
+
+	mirrorDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	mirrorDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	mirrorDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	mirrorDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	mirrorDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	pgfx_pDevice->CreateDepthStencilState(&mirrorDesc, &MarkMirrorDSS);
+
+	//
+	// DrawReflectionDSS
+	//
+
+	D3D11_DEPTH_STENCIL_DESC drawReflectionDesc;
+	drawReflectionDesc.DepthEnable = true;
+	drawReflectionDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	drawReflectionDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	drawReflectionDesc.StencilEnable = true;
+	drawReflectionDesc.StencilReadMask = 0xff;
+	drawReflectionDesc.StencilWriteMask = 0xff;
+
+	drawReflectionDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	drawReflectionDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	drawReflectionDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	pgfx_pDevice->CreateDepthStencilState(&drawReflectionDesc, &DrawReflectionDSS);
+
+	//
+	// NoDoubleBlendDSS
+	//
+
+	D3D11_DEPTH_STENCIL_DESC noDoubleBlendDesc;
+	noDoubleBlendDesc.DepthEnable = true;
+	noDoubleBlendDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	noDoubleBlendDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	noDoubleBlendDesc.StencilEnable = true;
+	noDoubleBlendDesc.StencilReadMask = 0xff;
+	noDoubleBlendDesc.StencilWriteMask = 0xff;
+
+	noDoubleBlendDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	noDoubleBlendDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	noDoubleBlendDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	noDoubleBlendDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	noDoubleBlendDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	noDoubleBlendDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	noDoubleBlendDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	noDoubleBlendDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	pgfx_pDevice->CreateDepthStencilState(&noDoubleBlendDesc, &NoDoubleBlendDSS);
+
+	//
+	//DepthComplexityCounter
+	//
+	D3D11_DEPTH_STENCIL_DESC depthComplCountDesc;
+	depthComplCountDesc.DepthEnable = true;
+	depthComplCountDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthComplCountDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	depthComplCountDesc.StencilEnable = true;
+	depthComplCountDesc.StencilReadMask = 0xff;
+	depthComplCountDesc.StencilWriteMask = 0xff;
+
+	depthComplCountDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	depthComplCountDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplCountDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplCountDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	pgfx_pDevice->CreateDepthStencilState(&depthComplCountDesc, &DepthComplexityCountDSS);
+
+	//
+	//DepthComplexityRead
+	//
+	D3D11_DEPTH_STENCIL_DESC depthComplReadDesc;
+	depthComplReadDesc.DepthEnable = true;
+	depthComplReadDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthComplReadDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	depthComplReadDesc.StencilEnable = true;
+	depthComplReadDesc.StencilReadMask = 0xff;
+	depthComplReadDesc.StencilWriteMask = 0xff;
+
+	depthComplReadDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	depthComplReadDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	depthComplReadDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	depthComplReadDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	pgfx_pDevice->CreateDepthStencilState(&depthComplReadDesc, &DepthComplexityReadDSS);
+
+	//
+	//Disable depth writes, keep depth test
+	//
+	D3D11_DEPTH_STENCIL_DESC disableDepthWritesDesc;
+	disableDepthWritesDesc.DepthEnable = true;
+	disableDepthWritesDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	disableDepthWritesDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	disableDepthWritesDesc.StencilEnable = false;
+	disableDepthWritesDesc.StencilReadMask = 0xff;
+	disableDepthWritesDesc.StencilWriteMask = 0xff;
+
+	disableDepthWritesDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	// We are not rendering backfacing polygons, so these settings do not matter.
+	disableDepthWritesDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	disableDepthWritesDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_INCR;
+	disableDepthWritesDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+
+	pgfx_pDevice->CreateDepthStencilState(&disableDepthWritesDesc, &disableDepthWrites);
+	//
+	//lessEqualDss
+	//
+	D3D11_DEPTH_STENCIL_DESC lessEqualDSSDesc;
+	lessEqualDSSDesc.DepthEnable = true;
+	lessEqualDSSDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	lessEqualDSSDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	lessEqualDSSDesc.StencilEnable = false;
+
+
+	pgfx_pDevice->CreateDepthStencilState(&lessEqualDSSDesc, &LessEqualDSS);
+
+	//
+	//EqualDSS
+	//
+	D3D11_DEPTH_STENCIL_DESC equalDSSDesc;
+	equalDSSDesc.DepthEnable = true;
+	equalDSSDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	equalDSSDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+	equalDSSDesc.StencilEnable = false;
+	pgfx_pDevice->CreateDepthStencilState(&equalDSSDesc, &EqualDSS);
+
+}
+
+void Graphics::DestroyRenderStates()
+{
+	ReleaseID3D(WireframeRS);
+	ReleaseID3D(NoCullRS);
+	ReleaseID3D(CullClockwiseRS);
+	ReleaseID3D(CullCounterClockwiseRS);
+	ReleaseID3D(SolidFillRS);
+	ReleaseID3D(ShadowMapBiasRS);
+
+	ReleaseID3D(AlphaToCoverageBS);
+	ReleaseID3D(TransparentBS);
+	ReleaseID3D(NoRenderTargetWritesBS);
+	ReleaseID3D(additiveBlend);
+	ReleaseID3D(noBlendBS);
+
+	ReleaseID3D(MarkMirrorDSS);
+	ReleaseID3D(DrawReflectionDSS);
+	ReleaseID3D(NoDoubleBlendDSS);
+	ReleaseID3D(DepthComplexityCountDSS);
+	ReleaseID3D(DepthComplexityReadDSS);
+	ReleaseID3D(LessEqualDSS);
+	ReleaseID3D(disableDepthWrites);
+	ReleaseID3D(EqualDSS);
 }
 

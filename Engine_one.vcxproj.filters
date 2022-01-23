@@ -156,9 +156,6 @@
     <ClCompile Include="MirrorRoom.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="RenderStates.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
     <ClCompile Include="DepthComplexity.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -307,9 +304,6 @@
     </ClInclude>
     <ClInclude Include="MirrorRoom.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderStates.h">
-      <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="DepthComplexity.h">
       <Filter>Header Files\Drawable</Filter>

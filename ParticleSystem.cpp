@@ -7,42 +7,42 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 // of the particle attributes do not apply to an emitter.
 	Particle p;
 	//Vertex buffer for Stream-Out
-// 	D3D11_BUFFER_DESC vbd;
-// 	vbd.Usage = D3D11_USAGE_DEFAULT;
-// 	vbd.ByteWidth = sizeof(Particle); 
-// 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-// 	vbd.CPUAccessFlags = 0u;
-// 	vbd.MiscFlags = 0u;
-// 	vbd.StructureByteStride = 0u;
-// 	D3D11_SUBRESOURCE_DATA initDataParticle;
-// 	initDataParticle.pSysMem = &p;
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_DEFAULT;
+	vbd.ByteWidth = sizeof(Particle); 
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0u;
+	vbd.MiscFlags = 0u;
+	vbd.StructureByteStride = 0u;
+	D3D11_SUBRESOURCE_DATA initDataParticle;
+	initDataParticle.pSysMem = &p;
 
-// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, &initDataParticle, &pInitVB);
+	gfx.pgfx_pDevice->CreateBuffer(&vbd, &initDataParticle, &pInitVB);
 	
 	//ping-pong buffers for stream out and drawing
-// 	vbd.ByteWidth = sizeof(Particle) * maxParticles;
-// 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
-// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pStreamOutVB);
-// 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
+	vbd.ByteWidth = sizeof(Particle) * maxParticles;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_STREAM_OUTPUT;
+	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pStreamOutVB);
+	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
 
 	randomTexSRV = CreateRandomTexture1DSRV(gfx);
 	std::vector<Particle> vertices;
 	vertices.push_back(p);
-	pStreamOutVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer SO", maxParticles);
-	pDrawVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer draw", maxParticles);
+// 	pStreamOutVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer SO", maxParticles);
+// 	pDrawVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer draw", maxParticles);
 
 
 // 	TextureSampler* pGSSOsampler = new TextureSampler(gfx, ShaderType::Geometry);
 // 	pSSGSSO = pGSSOsampler->GetSamplerState();
 
 	//this ptr used only in manual binding, so release pointer 
-	GSSOparticleFireData.emitterPositon = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-	GSSOparticleFireData.gameTime = 0.0f;
-	GSSOparticleFireData.timeStep = 0.0f;
-	GeometryShaderConstantBuffer<CB_GS_StreamOut>* pGSCBSO = new GeometryShaderConstantBuffer<CB_GS_StreamOut>(gfx, GSSOparticleFireData,
-		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pGSSOParticleFire = pGSCBSO->GetGeometryShaderConstantBuffer();
-	pGSCBSO = nullptr;
+// 	GSSOparticleFireData.emitterPositon = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+// 	GSSOparticleFireData.gameTime = 0.0f;
+// 	GSSOparticleFireData.timeStep = 0.0f;
+// 	GeometryShaderConstantBuffer<CB_GS_StreamOut>* pGSCBSO = new GeometryShaderConstantBuffer<CB_GS_StreamOut>(gfx, GSSOparticleFireData,
+// 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pGSSOParticleFire = pGSCBSO->GetGeometryShaderConstantBuffer();
+// 	pGSCBSO = nullptr;
 
 	GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>* pGSCBDraw =
 		new GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>(gfx, camPosVP,
@@ -62,17 +62,37 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 
 }
 
+ID3D11Buffer* ParticleSystem::GetDrawVertexBuffer()
+{
+	return pDrawVB;
+}
+
+ID3D11Buffer* ParticleSystem::GetStreamOutVertexBuffer()
+{
+	return pStreamOutVB;
+}
+
+ID3D11ShaderResourceView* ParticleSystem::GetRandomTexSRV()
+{
+	return randomTexSRV;
+}
+
+ID3D11Buffer* ParticleSystem::GetInitVB()
+{
+	return pInitVB;
+}
+
 void ParticleSystem::UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime)
 {
-	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSSOParticleFire);
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSSOParticleFire, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_GS_StreamOut* StreamOut = reinterpret_cast<CB_GS_StreamOut*>(mappedData.pData);
-	StreamOut->emitterPositon = emitPos;
-	StreamOut->gameTime = gameTime;
-	StreamOut->timeStep = timeStep;
-	gfx.pgfx_pDeviceContext->Unmap(pGSSOParticleFire, 0u);
+// 	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSSOParticleFire);
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSSOParticleFire, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_GS_StreamOut* StreamOut = reinterpret_cast<CB_GS_StreamOut*>(mappedData.pData);
+// 	StreamOut->emitterPositon = emitPos;
+// 	StreamOut->gameTime = gameTime;
+// 	StreamOut->timeStep = timeStep;
+// 	gfx.pgfx_pDeviceContext->Unmap(pGSSOParticleFire, 0u);
 }
 
 void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
@@ -108,8 +128,8 @@ void ParticleSystem::DrawParticle(Graphics& gfx,
 	{
 	case Fire:
 	{
-		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
-		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
+// 		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+// 		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
 // 		pShaders->BindVSandIA(ShaderPicker::Particles_FireStreamOut_VS_GS);
 // 		pShaders->BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
 		break;
@@ -128,8 +148,8 @@ void ParticleSystem::DrawParticle(Graphics& gfx,
 	}
 	case Explosion:
 	{
-		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
-		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
+// 		gfx.pgfx_pDeviceContext->OMSetBlendState(RenderStates::additiveBlend, blendFactorsZero, 0xffffffff);
+// 		gfx.pgfx_pDeviceContext->OMSetDepthStencilState(RenderStates::disableDepthWrites, 0u);
 // 
 // 		pShaders->BindVSandIA(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);
 // 		pShaders->BindGS(ShaderPicker::Particles_ExplosionStreamOut_VS_GS);

@@ -203,7 +203,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="QuadTessellation.cpp" />
-    <ClCompile Include="RenderStates.cpp" />
     <ClCompile Include="ShaderResourceView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -262,7 +261,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Picking.h" />
     <ClInclude Include="QuadTessellation.h" />
-    <ClInclude Include="RenderStates.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Sky.h" />
     <ClInclude Include="SSAO.h" />

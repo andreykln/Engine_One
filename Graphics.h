@@ -77,8 +77,17 @@ public:
 		ID3D11ShaderResourceView* pHeightMapVS);
 	//skybox is in 4th slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
-
-	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
+	//
+	//particles
+	//
+	void DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB,
+		ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle);
+private:
+	void BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV);
+	void UnbindFromSOStage();
+	void UpdateStreamOutConstBuffer(DirectX::XMFLOAT3& emitPos);
+	void UpdateParticleDrawConstBuffer();
+public:
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring(),
@@ -143,6 +152,8 @@ private:
 	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57335f);
 	float mDeltaTime;
 	float mTotalTime;
+	float lastResetTime = 0.0f;
+	bool mfirstRun = true;
 
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
@@ -353,7 +364,35 @@ private:
 	ID3D11GeometryShader* pParticleFountainGS = nullptr;
 
 
+private:
+	void InitializeRenderStates();
+	void DestroyRenderStates();
+public:
+	//Rasterizer states
+	ID3D11RasterizerState* WireframeRS;
+	ID3D11RasterizerState* NoCullRS;
+	ID3D11RasterizerState* CullClockwiseRS;
+	ID3D11RasterizerState* CullCounterClockwiseRS;
+	ID3D11RasterizerState* SolidFillRS;
+	ID3D11RasterizerState* ShadowMapBiasRS;
 
+	// Blend states
+	ID3D11BlendState* AlphaToCoverageBS;
+	ID3D11BlendState* TransparentBS;
+	ID3D11BlendState* NoRenderTargetWritesBS;
+	ID3D11BlendState* srsColor;
+	ID3D11BlendState* additiveBlend;
+	ID3D11BlendState* noBlendBS;
+
+	// Depth/stencil states
+	ID3D11DepthStencilState* MarkMirrorDSS;
+	ID3D11DepthStencilState* DrawReflectionDSS;
+	ID3D11DepthStencilState* NoDoubleBlendDSS;
+	ID3D11DepthStencilState* DepthComplexityCountDSS;
+	ID3D11DepthStencilState* DepthComplexityReadDSS;
+	ID3D11DepthStencilState* LessEqualDSS;
+	ID3D11DepthStencilState* disableDepthWrites;
+	ID3D11DepthStencilState* EqualDSS;
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 };
@@ -377,21 +416,20 @@ ID3D11Buffer* Graphics::CreateVertexBuffer(const std::vector<T>& vertices, bool 
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.CPUAccessFlags = 0u;
 	}
-	else
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	if (dynamic)
+	else if (dynamic)
 	{
-		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.Usage = D3D11_USAGE_DEFAULT;
 		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	}
 	else
 	{
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.CPUAccessFlags = 0u;
 	}
 	desc.ByteWidth = static_cast<UINT>(sizeof(T) * vertices.size()) * numMaxParticles;
 	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0; //only for structured buffer
+	desc.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA initData;
 	initData.pSysMem = vertices.data();
 	initData.SysMemPitch = 0;

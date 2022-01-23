@@ -6,9 +6,10 @@ class ParticleSystem : public Shape
 {
 public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
-	ID3D11Buffer** GetDrawVertexBuffer();
-	ID3D11Buffer** GetStreamOutVertexBuffer();
-
+	ID3D11Buffer* GetDrawVertexBuffer();
+	ID3D11Buffer* GetStreamOutVertexBuffer();
+	ID3D11ShaderResourceView* GetRandomTexSRV();
+	ID3D11Buffer* GetInitVB();
 
 
 
@@ -50,7 +51,7 @@ private:
 
 	//constant buffers
 	ID3D11Buffer* pGSSOParticleFire = nullptr;
-	CB_GS_StreamOut GSSOparticleFireData;
+// 	CB_GS_StreamOut GSSOparticleFireData;
 
 	ID3D11Buffer* pGSParticleDraw = nullptr;
 	CB_CameraPosition_ViewProj camPosVP;

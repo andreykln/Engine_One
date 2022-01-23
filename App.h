@@ -57,7 +57,6 @@ private:
 
 	Window wnd;
 	Timer timer;
-	RenderStates rStates;
 	Shape* pShapes;
 	ID3D11DeviceContext* pDC = nullptr;
 	Camera camera;

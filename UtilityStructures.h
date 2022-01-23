@@ -61,7 +61,7 @@ struct cbDefaultMatricesVS
 	DirectX::XMMATRIX shadowTransform;
 	DirectX::XMMATRIX matTransform;
 	DirectX::XMMATRIX worldViewProjTex;
-	DirectX::XMFLOAT3 cameraPositon;
+	DirectX::XMFLOAT3 cameraPosition;
 	int pad0;
 	BOOL enableDisplacementMapping = false;
 };
@@ -149,6 +149,7 @@ struct CBufferNames
 	const std::string gpuWavesInitData = "GPUWavesVSInitData";
 	const std::string terrainHSPlainsData = "terrainHullShaderPlanes";
 	const std::string terrainTexelInfo = "terrainTexelInfo";
+	const std::string particleStreamOutGS = "particleStreamOutGS";
 	
 };
 
@@ -186,6 +187,14 @@ struct Particle
 	DirectX::XMFLOAT2 size = DirectX::XMFLOAT2(0.0f, 0.0f);
 	float age = 0.0f;
 	unsigned int type = 0;
+};
+struct cbParticleStreamOutGS
+{
+	cbParticleStreamOutGS() { ZeroMemory(this, sizeof(this)); }
+	DirectX::XMFLOAT3  emitterPositon;
+	float timeStep;
+	float gameTime;
+	float padding[3] = { 0.0f, 0.0f, 0.0f };
 };
 
 ////////END MAIN
@@ -365,14 +374,14 @@ struct CB_QuadTess_HS
 	DirectX::XMFLOAT3 cameraPosition;
 };
 
-struct CB_GS_StreamOut
-{
-	CB_GS_StreamOut() { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMFLOAT3  emitterPositon;
-	float timeStep;
-	float gameTime;
-	float padding[3] = {0.0f, 0.0f, 0.0f};
-};
+// struct CB_GS_StreamOut
+// {
+// 	CB_GS_StreamOut() { ZeroMemory(this, sizeof(this)); }
+// 	DirectX::XMFLOAT3  emitterPositon;
+// 	float timeStep;
+// 	float gameTime;
+// 	float padding[3] = {0.0f, 0.0f, 0.0f};
+// };
 
 
 //
