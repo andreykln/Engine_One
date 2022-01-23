@@ -78,7 +78,7 @@ public:
 	//skybox is in 4th slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
 
-// 	void DrawParticle(Shaders* pShaders, DirectX::XMFLOAT3& emitPos, ParticlePick particle);
+	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
 	//buffers
 	template <typename T>
 	ID3D11Buffer* CreateVertexBuffer(const std::vector<T>& vertices, bool dynamic, bool streamOut, const std::wstring& name = std::wstring(),

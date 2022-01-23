@@ -165,9 +165,6 @@
     <ClCompile Include="TreeBillboard.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="GaussianBlur.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -321,9 +318,6 @@
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="GeometryShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="DrawableBase.h">

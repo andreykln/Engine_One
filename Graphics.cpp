@@ -535,7 +535,7 @@ void Graphics::SetTerrainShaderResAndUpdateCbuffers(const DirectX::XMMATRIX worl
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.terrainHSPlainsData), 0u);
 
 
-	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* pDomainShader = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
 	pDomainShader->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
 	pDomainShader->world = DirectX::XMMatrixTranspose(world);
@@ -550,10 +550,11 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 
 
 
-// void Graphics::DrawParticle(Shaders* pShaders, DirectX::XMFLOAT3& emitPos, ParticlePick particle)
-// {
-// 
-// }
+void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
+{
+
+}
+
 
 ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const std::wstring& name)
 {
