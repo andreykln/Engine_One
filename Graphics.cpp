@@ -565,7 +565,8 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 	{
 		if (mTotalTime - lastResetTime > 1.0f)
 		{
-			mfirstRun = true;
+			mfirstRunRain = true;
+			mfirstRunExplosion = true;
 			lastResetTime = mTotalTime;
 		}
 	}
@@ -607,28 +608,82 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 	UINT stride = sizeof(Particle);
 	UINT offset = 0;
-	if (mfirstRun)
+	switch (particle)
 	{
-		BindToSOStage(mStreamOutVB);
-		UpdateStreamOutConstBuffer(emitPos);
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mInitVB, &stride, &offset);
-	}
-	else
+	case Fire:
+		break;
+	case Rain:
 	{
-		BindToSOStage(mStreamOutVB);
-		UpdateStreamOutConstBuffer(emitPos);
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVB, &stride, &offset);
+		if (mfirstRunRain)
+		{
+			BindToSOStage(mStreamOutVBRain);
+			UpdateStreamOutConstBuffer(emitPos);
+			pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mInitVBRain, &stride, &offset);
+		}
+		else
+		{
+			BindToSOStage(mStreamOutVBRain);
+			UpdateStreamOutConstBuffer(emitPos);
+			pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVBRain, &stride, &offset);
+		}
+
+		pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVBRain, &offset);
+
+		break;
 	}
+	case Explosion:
+	{
+		if (mfirstRunExplosion)
+		{
+			BindToSOStage(mStreamOutVBExplosion);
+			UpdateStreamOutConstBuffer(emitPos);
+			pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mInitVBExplosion, &stride, &offset);
+		}
+		else
+		{
+			BindToSOStage(mStreamOutVBExplosion);
+			UpdateStreamOutConstBuffer(emitPos);
+			pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVBExplosion, &stride, &offset);
+		}
 
-	pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVB, &offset);
+		pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVBExplosion, &offset);
+
+		break;
+	}
+	case Fountain:
+		break;
+	default:
+		break;
+	}
+// 	if (mfirstRun)
+// 	{
+// 		BindToSOStage(mStreamOutVB);
+// 		UpdateStreamOutConstBuffer(emitPos);
+// 		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mInitVB, &stride, &offset);
+// 	}
+// 	else
+// 	{
+// 		BindToSOStage(mStreamOutVB);
+// 		UpdateStreamOutConstBuffer(emitPos);
+// 		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVB, &stride, &offset);
+// 	}
+// 
+// 	pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVB, &offset);
 
 
-	if (mfirstRun)
+	if (mfirstRunRain)
 	{
 		pgfx_pDeviceContext->Draw(1u, 0u);
-		mfirstRun = false;
+		mfirstRunRain = false;
 
 	}
+	else if (mfirstRunExplosion)
+	{
+		pgfx_pDeviceContext->Draw(1u, 0u);
+		mfirstRunExplosion = false;
+
+	}
+
 	else
 	{
 		pgfx_pDeviceContext->DrawAuto();
@@ -636,10 +691,30 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 	//done streaming-out--unbind the vertex buffer
 	UnbindFromSOStage();
-	std::swap(mDrawVB, mStreamOutVB);
+	switch (particle)
+	{
+	case Fire:
+		break;
+	case Rain:
+	{
+		std::swap(mDrawVBRain, mStreamOutVBRain);
+		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBRain, &stride, &offset);
 
-
-	pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVB, &stride, &offset);
+		break;
+	}
+	case Explosion:
+	{
+		std::swap(mDrawVBExplosion, mStreamOutVBExplosion);
+		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBExplosion, &stride, &offset);
+		break;
+	}
+	case Fountain:
+		break;
+	default:
+		break;
+	}
+// 	std::swap(mDrawVB, mStreamOutVB);
+// 	pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVB, &stride, &offset);
 
 	UpdateParticleDrawConstBuffer();
 
@@ -690,11 +765,33 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 }
 
 
-void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB)
+void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB,
+	ParticlePick particle)
 {
-	mStreamOutVB = pStreamOutVB;
-	mDrawVB = pDrawVB; 
-	mInitVB = pInitVB;
+	switch (particle)
+	{
+	case Fire:
+		break;
+	case Rain:
+	{
+		mStreamOutVBRain = pStreamOutVB;
+		mDrawVBRain = pDrawVB;
+		mInitVBRain = pInitVB;
+
+		break;
+	}
+	case Explosion:
+	{
+		mStreamOutVBExplosion = pStreamOutVB;
+		mDrawVBExplosion = pDrawVB;
+		mInitVBExplosion = pInitVB;
+		break;
+	}
+	case Fountain:
+		break;
+	default:
+		break;
+	}
 	pgfx_pDeviceContext->GSSetShaderResources(0u, 1u, &randomTexSRV);
 
 }
@@ -732,6 +829,7 @@ void Graphics::UpdateParticleDrawConstBuffer()
 	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
 	cbDefaultMatricesVS* drawParticleGS = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
 	drawParticleGS->cameraPosition = mCameraPosition;
+	drawParticleGS->world = partExplosionWorld;
 	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
 

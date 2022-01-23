@@ -81,7 +81,8 @@ public:
 	//particles
 	//
 	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
-	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB);
+	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB,
+		ParticlePick particle);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();
@@ -152,12 +153,19 @@ private:
 	float mDeltaTime;
 	float mTotalTime;
 	float lastResetTime = 0.0f;
-	bool mfirstRun = true;
+	bool mfirstRunRain = true;
+	bool mfirstRunExplosion = true;
+	DirectX::XMMATRIX partExplosionWorld = DirectX::XMMatrixIdentity();
+
 
 	//particles
-	ID3D11Buffer* mStreamOutVB = nullptr;
-	ID3D11Buffer* mDrawVB = nullptr;
-	ID3D11Buffer* mInitVB = nullptr;
+	ID3D11Buffer* mStreamOutVBRain = nullptr;
+	ID3D11Buffer* mDrawVBRain = nullptr;
+	ID3D11Buffer* mInitVBRain = nullptr;
+	ID3D11Buffer* mStreamOutVBExplosion = nullptr;
+	ID3D11Buffer* mDrawVBExplosion = nullptr;
+	ID3D11Buffer* mInitVBExplosion = nullptr;
+
 
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;

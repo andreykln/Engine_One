@@ -660,12 +660,16 @@ void App::CreateTerrain()
 
   	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 2000);
 
-	//can be set only once from any particle
 	wnd.GetGraphics().SetParticleBuffers(
 		pParticleRain->GetStreamOutVertexBuffer(),
 		pParticleRain->GetDrawVertexBuffer(),
 		pParticleRain->GetRandomTexSRV(),
-		pParticleRain->GetInitVB());
+		pParticleRain->GetInitVB(), ParticlePick::Rain);
+	wnd.GetGraphics().SetParticleBuffers(
+		pParticleExplosion->GetStreamOutVertexBuffer(),
+		pParticleExplosion->GetDrawVertexBuffer(),
+		pParticleExplosion->GetRandomTexSRV(),
+		pParticleExplosion->GetInitVB(), ParticlePick::Explosion);
 
 }
 
@@ -713,14 +717,14 @@ void App::DrawTerrain()
 	wnd.GetGraphics().DrawParticle(rainPosition, ParticlePick::Rain);
 	wnd.GetGraphics().UnbindAll();
 
-		//EXPLOSION
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
 
-	DirectX::XMFLOAT3 explosionPos = camera.GetCameraPosition();
+	//EXPLOSION
+	DirectX::XMFLOAT3 explosionPos = DirectX::XMFLOAT3(0.0f, 4.0f, -4.0f);
 	explosionPos.z += 10.0f;
 	wnd.GetGraphics().DrawParticle(explosionPos, ParticlePick::Explosion);
-	wnd.GetGraphics().UnbindAll();
 	wnd.GetGraphics().UnbindAll();
 
 	//FOUNTAIN
@@ -740,12 +744,8 @@ void App::DrawTerrain()
 
 
 
-	//reset
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
-	wnd.GetGraphics().UnbindAll();
 		//Skybox
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
@@ -763,6 +763,10 @@ void App::DrawTerrain()
 	pDC->RSSetState(0u);
 	pDC->OMSetDepthStencilState(0u, 0u);
 
+	//reset
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+	wnd.GetGraphics().UnbindAll();
 
 
 }
