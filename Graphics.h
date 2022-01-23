@@ -80,8 +80,8 @@ public:
 	//
 	//particles
 	//
-	void DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB,
-		ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle);
+	void DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle);
+	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV);
 	void UnbindFromSOStage();
@@ -114,7 +114,6 @@ public:
 #ifdef MY_DEBUG
 	ID3D11Debug* debugDevice = nullptr;
 #endif
-private:
 public:
 	void BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTargetView* pOutputRTV,
 		D3D11_VIEWPORT ssaoViewPort, bool horizontalBlur);
@@ -154,6 +153,10 @@ private:
 	float mTotalTime;
 	float lastResetTime = 0.0f;
 	bool mfirstRun = true;
+
+	//particles
+	ID3D11Buffer* mStreamOutVB = nullptr;
+	ID3D11Buffer* mDrawVB = nullptr;
 
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;

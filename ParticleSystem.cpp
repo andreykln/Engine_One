@@ -26,8 +26,8 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 	gfx.pgfx_pDevice->CreateBuffer(&vbd, 0u, &pDrawVB);
 
 	randomTexSRV = CreateRandomTexture1DSRV(gfx);
-	std::vector<Particle> vertices;
-	vertices.push_back(p);
+// 	std::vector<Particle> vertices;
+// 	vertices.push_back(p);
 // 	pStreamOutVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer SO", maxParticles);
 // 	pDrawVB = gfx.CreateVertexBuffer(vertices, false, true, L"Particle vertex buffer draw", maxParticles);
 
@@ -44,11 +44,11 @@ ParticleSystem::ParticleSystem(Graphics& gfx, UINT maxParticles)
 // 	pGSSOParticleFire = pGSCBSO->GetGeometryShaderConstantBuffer();
 // 	pGSCBSO = nullptr;
 
-	GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>* pGSCBDraw =
-		new GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>(gfx, camPosVP,
-		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pGSParticleDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
-	pGSCBDraw = nullptr;
+// 	GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>* pGSCBDraw =
+// 		new GeometryShaderConstantBuffer<CB_CameraPosition_ViewProj>(gfx, camPosVP,
+// 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pGSParticleDraw = std::move(pGSCBDraw->GetGeometryShaderConstantBuffer());
+// 	pGSCBDraw = nullptr;
 
 // 	const wchar_t* filePath = L"Textures\\flame.dds";
 // 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, filePath);
@@ -97,15 +97,15 @@ void ParticleSystem::UpdateStreamOutConstBuffer(Graphics& gfx, DirectX::XMFLOAT3
 
 void ParticleSystem::UpdateParticleDrawConstBuffer(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos)
 {
-	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSParticleDraw);
-
-
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_CameraPosition_ViewProj* drawParticleGS = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
-	drawParticleGS->cameraPosition = cameraPos;
-	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(viewProjection);
-	gfx.pgfx_pDeviceContext->Unmap(pGSParticleDraw, 0u);
+// 	gfx.pgfx_pDeviceContext->GSSetConstantBuffers(0u, 1u, &pGSParticleDraw);
+// 
+// 
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pGSParticleDraw, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_CameraPosition_ViewProj* drawParticleGS = reinterpret_cast<CB_CameraPosition_ViewProj*>(mappedData.pData);
+// 	drawParticleGS->cameraPosition = cameraPos;
+// 	drawParticleGS->viewProjection = DirectX::XMMatrixTranspose(viewProjection);
+// 	gfx.pgfx_pDeviceContext->Unmap(pGSParticleDraw, 0u);
 }
 
 void ParticleSystem::DrawParticle(Graphics& gfx,

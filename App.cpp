@@ -654,13 +654,13 @@ void App::CreateTerrain()
 	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 
 // 	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
-
 //   	pParticle = new ParticleSystem(wnd.GetGraphics(), 500);
   	pParticleRain = new ParticleSystem(wnd.GetGraphics(), 6000);
 //   	pParticleExplosion = new ParticleSystem(wnd.GetGraphics(), 2500);
 
 //  	pParticleFountain = new ParticleSystem(wnd.GetGraphics(), 2000);
 
+	wnd.GetGraphics().SetParticleBuffers(pParticleRain->GetStreamOutVertexBuffer(), pParticleRain->GetDrawVertexBuffer());
 
 }
 
@@ -703,8 +703,10 @@ void App::DrawTerrain()
 	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
 	rainPosition.z += 10.0f;
  	rainPosition.y += 5.0f;
-	wnd.GetGraphics().DrawParticle(rainPosition, pParticleRain->GetStreamOutVertexBuffer(), pParticleRain->GetDrawVertexBuffer(), pParticleRain->GetRandomTexSRV(),
-		pParticleRain->GetInitVB(), ParticlePick::Rain);
+	wnd.GetGraphics().DrawParticle(rainPosition,
+		pParticleRain->GetRandomTexSRV(),
+		pParticleRain->GetInitVB(),
+		ParticlePick::Rain);
 	wnd.GetGraphics().UnbindAll();
 	//RAIN
 // 	DirectX::XMFLOAT3 rainPosition = camera.GetCameraPosition();
@@ -742,7 +744,7 @@ void App::DrawTerrain()
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
 		//Skybox
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+	/*wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
@@ -758,7 +760,7 @@ void App::DrawTerrain()
 	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
 
 	pDC->RSSetState(0u);
-	pDC->OMSetDepthStencilState(0u, 0u);
+	pDC->OMSetDepthStencilState(0u, 0u);*/
 
 }
 

@@ -557,8 +557,7 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 
 
 
-void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB,
-	ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle)
+void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle)
 {
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -610,18 +609,18 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOut
 	UINT offset = 0;
 	if (mfirstRun)
 	{
-		BindToSOStage(pStreamOutVB, randomTexSRV);
+		BindToSOStage(mStreamOutVB, randomTexSRV);
 		UpdateStreamOutConstBuffer(emitPos);
 		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pInitVB, &stride, &offset);
 	}
 	else
 	{
-		BindToSOStage(pStreamOutVB, randomTexSRV);
+		BindToSOStage(mStreamOutVB, randomTexSRV);
 		UpdateStreamOutConstBuffer(emitPos);
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pDrawVB, &stride, &offset);
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVB, &stride, &offset);
 	}
 
-	pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, &offset);
+	pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVB, &offset);
 
 
 	if (mfirstRun)
@@ -637,10 +636,16 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOut
 
 	// done streaming-out--unbind the vertex buffer
 	UnbindFromSOStage();
-	std::swap(pDrawVB, pStreamOutVB);
+// 	ID3D11Buffer* pTempSO = nullptr;
+// 	ID3D11Buffer* pTempDraw = nullptr;
+// 	pTempSO = pStreamOutVB;
+// 	pStreamOutVB = pDrawVB;
+// 	pTempDraw = pDrawVB;
+// 	pDrawVB = pTempSO;
+	std::swap(mDrawVB, mStreamOutVB);
 
 
-	pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &pDrawVB, &stride, &offset);
+	pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVB, &stride, &offset);
 
 	UpdateParticleDrawConstBuffer();
 
@@ -694,6 +699,12 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11Buffer* pStreamOut
 
 }
 
+
+void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB)
+{
+	mStreamOutVB = pStreamOutVB;
+	mDrawVB = pDrawVB;
+}
 
 void Graphics::BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV)
 {
