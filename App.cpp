@@ -8,7 +8,6 @@ App::App()
 	: wnd("Output Window", resolution_width, resolution_height)
 {
 	rStates.InitializeAll(wnd.GetGraphics());
-	pShaders = new Shaders(wnd.GetGraphics());
 	const int smapSize = 2048;
 	pShadowMap = new ShadowMapGen(wnd.GetGraphics(), smapSize, smapSize);
 	pSSAO = new SSAO(wnd.GetGraphics(), resolution_width, resolution_height);
@@ -128,8 +127,8 @@ void App::DrawHillsWithGPUWaves()
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-	pShaders->BindVSandIA(ShaderPicker::GPUWaves_VS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::GPUWaves_VS);
+	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
 	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix,
 		timer.DeltaTime());
 	pWaveSurfaceGPU->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -139,14 +138,14 @@ void App::DrawHillsWithGPUWaves()
 	static float t_base = 0.0f;
 	if ((timer.TotalTime() - t_base) >= 0.1f)
 	{
-		pShaders->BindCS(ShaderPicker::DisturbWaves_CS);
+		wnd.GetGraphics().BindCS(ShaderPicker::DisturbWaves_CS);
 		t_base += 0.1f;
 		pWaveSurfaceGPU->Disturb(wnd.GetGraphics());
-		pShaders->UnbindCS();
+		wnd.GetGraphics().UnbindCS();
 	}
-	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
+	wnd.GetGraphics().BindCS(ShaderPicker::UpdateWaves_CS);
 	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
-	pShaders->UnbindAll();
+	wnd.GetGraphics().UnbindAll();
 }
 
 void App::CreateBilateralHillsBlur()
@@ -175,17 +174,17 @@ void App::DrawBilateralHillsBlur()
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
-	pShaders->BindCS(ShaderPicker::HorizontalBilateralBlur_CS);
+	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBilateralBlur_CS);
 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-	pShaders->UnbindCS();
-	pShaders->BindCS(ShaderPicker::VerticalBilateralBlur_CS);
+	wnd.GetGraphics().UnbindCS();
+	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBilateralBlur_CS);
 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-	pShaders->UnbindCS();
+	wnd.GetGraphics().UnbindCS();
 	//reset before drawing quad
 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::BlurTexture_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
@@ -225,17 +224,17 @@ void App::DrawGaussBlur()
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
-	pShaders->BindCS(ShaderPicker::HorizontalBlur_CS);
+	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBlur_CS);
 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-	pShaders->UnbindCS();
-	pShaders->BindCS(ShaderPicker::VerticalBlur_CS);
+	wnd.GetGraphics().UnbindCS();
+	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBlur_CS);
 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-	pShaders->UnbindCS();
+	wnd.GetGraphics().UnbindCS();
 	//reset before drawing quad
 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::BlurTexture_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
@@ -260,8 +259,8 @@ void App::DrawDepthComplexityStencil()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(RenderStates::CullCounterClockwiseRS);
 
 
-	pShaders->BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 // 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix, camera.GetCameraPosition());
 // 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -277,8 +276,8 @@ void App::DrawDepthComplexityStencil()
 
 
 
-	pShaders->BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
-	pShaders->BindPS(ShaderPicker::DepthComplexityVS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DepthComplexityVS_PS);
 
 	pDepthArr[0]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 	pDepthArr[1]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
@@ -407,8 +406,8 @@ void App::DrawShadowMapDemo()
 // 		camera.GetProjecion(), camera.GetCameraPosition(), timer.TotalTime());
 
 	//shadow map
-	pShaders->BindVSandIA(ShadowMap_VS_PS);
-	pShaders->BindPS(ShadowMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShadowMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShadowMap_VS_PS);
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(RenderStates::ShadowMapBiasRS);
@@ -420,8 +419,8 @@ void App::DrawShadowMapDemo()
 	DrawNormalMap(viewProjectionMatrix);
 
 	//SSAO
-	pShaders->BindVSandIA(ComputeSSAO_VS_PS);
-	pShaders->BindPS(ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindPS(ComputeSSAO_VS_PS);
 	stride = sizeof(vbPosNormalTex);
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
@@ -430,12 +429,12 @@ void App::DrawShadowMapDemo()
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	// blur
-	pShaders->BindVSandIA(SSAOBlur_VS_PS);
-	pShaders->BindPS(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindVSandIA(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindPS(SSAOBlur_VS_PS);
 	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
 		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
-	pShaders->UnbindVS();
-	pShaders->UnbindPS();
+	wnd.GetGraphics().UnbindVS();
+	wnd.GetGraphics().UnbindPS();
 	wnd.GetGraphics().ReleaseNormalMapResource();
 	SetDefaultRTVAndViewPort();
 
@@ -454,8 +453,8 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
 
 	//plane
-	pShaders->BindVSandIA(DefaultLight_VS_PS);
-	pShaders->BindPS(DefaultLight_VS_PS);
+	wnd.GetGraphics().BindVSandIA(DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(DefaultLight_VS_PS);
 	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, pPlate->plateScaling, ID);
@@ -503,8 +502,8 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	//DEBUG quad
-// 	pShaders->BindVSandIA(DrawDebugTexQuad_VS_PS);
-// 	pShaders->BindPS(DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindVSandIA(DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindPS(DrawDebugTexQuad_VS_PS);
 // 	stride = sizeof(vbPosNormalTex);
 // 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 // 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
@@ -522,16 +521,16 @@ void App::DrawShadowMapDemo()
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
-	pShaders->BindVSandIA(DisplacementWaves_VS_HS_DS_PS);
-	pShaders->BindPS(DisplacementWaves_VS_HS_DS_PS);
-	pShaders->BindHS(DisplacementWaves_VS_HS_DS_PS);
-	pShaders->BindDS(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindVSandIA(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindPS(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindHS(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindDS(DisplacementWaves_VS_HS_DS_PS);
 	wnd.GetGraphics().SetDispWavesShaderRes(pDispWaves->normalMap0, pDispWaves->normalMap1, pDispWaves->diffuseMap);
 	wnd.GetGraphics().UpdateDispWavesCBuffers(pDispWaves->wavesWorld, pDispWaves->wavesMaterial);
 	pDC->IASetVertexBuffers(0u, 1u, pDispWaves->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pDispWaves->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pDispWaves->GetIndexCount(), 0u, 0u);
-	pShaders->UnbindAll();
+	wnd.GetGraphics().UnbindAll();
 
 	//Skybox
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, blendFactorsZero, 0xffffffff);
@@ -540,8 +539,8 @@ void App::DrawShadowMapDemo()
 	pDC->RSSetState(RenderStates::NoCullRS);
 	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
 
-	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
-	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);
 	wnd.GetGraphics().ConstBufferVSMatricesBind();
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID);
 	stride = sizeof(DirectX::XMFLOAT3);
@@ -561,8 +560,8 @@ void App::DrawShadowMapDemo()
 void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 {
 	wnd.GetGraphics().ConstBufferNormalMapBind();
-	pShaders->BindVSandIA(NormalMap_VS_PS);
-	pShaders->BindPS(NormalMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
+	wnd.GetGraphics().BindPS(NormalMap_VS_PS);
 
 	const UINT stride = sizeof(vbPosNormalTexTangent);
 	const UINT offset = 0;
@@ -615,10 +614,10 @@ void App::DrawBezierPatchTess()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -25.0f, 0.0f), camera.GetCameraPosition());
 
-	pShaders->BindVSandIA(QuadTessellation_VS);
-	pShaders->BindHS(QuadTessellation_HS);
-	pShaders->BindDS(QuadTessellation_DS);
-	pShaders->BindPS(QuadTessellation_PS);
+	wnd.GetGraphics().BindVSandIA(QuadTessellation_VS);
+	wnd.GetGraphics().BindHS(QuadTessellation_HS);
+	wnd.GetGraphics().BindDS(QuadTessellation_DS);
+	wnd.GetGraphics().BindPS(QuadTessellation_PS);
 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
 }
 
@@ -630,8 +629,8 @@ void App::InstancingCreate()
 void App::DrawInstancingDraw()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
-	pShaders->BindVSandIA(ShaderPicker::InstancedSkull_VS);
-	pShaders->BindPS(ShaderPicker::InstancedSkull_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::InstancedSkull_VS);
+	wnd.GetGraphics().BindPS(ShaderPicker::InstancedSkull_PS);
 	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
 	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
@@ -668,11 +667,11 @@ void App::DrawTerrain()
 	stride = sizeof(vbPosTexBoundsY);
 	offset = 0;
 	// TERRAIN
-	pShaders->UnbindAll();
-	pShaders->BindVSandIA(ShaderPicker::TerrainHeightMap);
-	pShaders->BindHS(ShaderPicker::TerrainHeightMap);
-	pShaders->BindDS(ShaderPicker::TerrainHeightMap);
-	pShaders->BindPS(ShaderPicker::TerrainHeightMap);
+	wnd.GetGraphics().UnbindAll();
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::TerrainHeightMap);
+	wnd.GetGraphics().BindHS(ShaderPicker::TerrainHeightMap);
+	wnd.GetGraphics().BindDS(ShaderPicker::TerrainHeightMap);
+	wnd.GetGraphics().BindPS(ShaderPicker::TerrainHeightMap);
 	wnd.GetGraphics().SetDefaultLightData();
 
 	wnd.GetGraphics().SetTerrainShaderResAndUpdateCbuffers(pTerrain->terrainWorld, pTerrain->blendMap, pTerrain->snow,
@@ -695,7 +694,7 @@ void App::DrawTerrain()
 
 
 	// PARTICLES
-// 	pShaders->UnbindAll();
+// 	wnd.GetGraphics().UnbindAll();
 // 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	//RAIN
@@ -705,13 +704,13 @@ void App::DrawTerrain()
 	pParticleRain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 		rainPosition, timer.DeltaTime(), timer.TotalTime(), ParticlePick::Rain);
 
- 	pShaders->UnbindAll();*/
+ 	wnd.GetGraphics().UnbindAll();*/
 
 	//FOUNTAIN
 // 	pParticleFountain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 // 		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fountain);
 // 
-// 	pShaders->UnbindAll();
+// 	wnd.GetGraphics().UnbindAll();
 
 
 
@@ -719,7 +718,7 @@ void App::DrawTerrain()
 // 	pParticleExplosion->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
 // 		DirectX::XMFLOAT3(0.0f, 3.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Explosion);
 // 
-// 	pShaders->UnbindAll();
+// 	wnd.GetGraphics().UnbindAll();
 
 	//FIRE
 	//supposed to be drawn last so it will blend
@@ -732,7 +731,7 @@ void App::DrawTerrain()
 	//reset
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
-	pShaders->UnbindAll();
+	wnd.GetGraphics().UnbindAll();
 		//Skybox
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::noBlendBS, blendFactorsZero, 0xffffffff);
 
@@ -740,8 +739,8 @@ void App::DrawTerrain()
 	pDC->RSSetState(RenderStates::NoCullRS);
 	pDC->OMSetDepthStencilState(RenderStates::LessEqualDSS, 0u);
 
-	pShaders->BindVSandIA(ShaderPicker::Sky_VS_PS);
-	pShaders->BindPS(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);
 	wnd.GetGraphics().ConstBufferVSMatricesBind();
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID);
 	stride = sizeof(DirectX::XMFLOAT3);

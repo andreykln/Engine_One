@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "DrawableBase.h"
-#include "Shaders.h"
+// #include "Shaders.h"
 // #include "Camera.h"
 #include <vector>
 #include <cmath>
@@ -62,7 +62,6 @@ private:
 	ID3D11DeviceContext* pDC = nullptr;
 	Camera camera;
 	CubeMapCamera* pCMCamera;
-	Shaders* pShaders = nullptr;
 
 	ShadowMapGen* pShadowMap = nullptr;
 	DisplacementWaves* pDispWaves = nullptr;

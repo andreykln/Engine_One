@@ -77,7 +77,7 @@ Graphics::Graphics(HWND wnd)
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-
+	InitShaders();
 #ifdef MY_DEBUG
 	ID3D11InfoQueue* infoQueue = nullptr;
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11InfoQueue), reinterpret_cast<void**>(&infoQueue));
@@ -546,6 +546,8 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 {
 	pgfx_pDeviceContext->PSSetShaderResources(4u, 1u, &cubeMaps.at(skyBoxName));
 }
+
+
 
 
 // void Graphics::DrawParticle(Shaders* pShaders, DirectX::XMFLOAT3& emitPos, ParticlePick particle)
@@ -1041,8 +1043,810 @@ void Graphics::CreateAndBindSamplers()
 	pgfx_pDeviceContext->DSSetSamplers(0u, 1u, &samplers[1]);
 	//terrain height map
 	pgfx_pDeviceContext->VSSetSamplers(0u, 1u, &samplers[0]);
+	//particles GS stream out
+	pgfx_pDeviceContext->GSSetSamplers(0u, 1u, &samplers[0]);
 }
 
 
 
+
+void Graphics::InitShaders()
+{
+	VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+
+	VS_IL_Init(&pLightVS, IL.posNormalTexture, &pLightIL, IL.nPosNormalTexture, L"Shaders\\Vertex\\LightVS.cso");
+	PS_Init(&pLightPS, L"Shaders\\Pixel\\LightPS.cso");
+
+	//skull sm
+	VS_IL_Init(&pSkullSMGenVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapGenSkullVS.cso");
+	VS_IL_Init(&pSkullSMDrawVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapDrawSkullVS.cso");
+	PS_Init(&pSkullSMPS, L"Shaders\\Pixel\\ShadowMapDrawSkullPS.cso");
+	PS_Init(&pSkullSMGenPS, L"Shaders\\Pixel\\ShadowMapSkullGenPS.cso");
+
+	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
+
+	VS_IL_Init(&pDepthComplexityVS, IL.positionColorIL, &pDepthCoplexityIL, IL.nPosition_Color, L"Shaders\\Vertex\\DepthCompVS.cso");
+	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
+	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
+	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
+	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
+
+	CS_Init(&pHorizontalBilateralBlur, L"Shaders\\Compute\\HorizontalBilateralBlur.cso");
+	CS_Init(&pVerticalBilateralBlur, L"Shaders\\Compute\\VerticalBilateralBlur.cso");
+
+	CS_Init(&pDisturbWaves, L"Shaders\\Compute\\DisturbWavesCS.cso");
+	CS_Init(&pUpdateWaves, L"Shaders\\Compute\\UpdateWavesCS.cso");
+	VS_IL_Init(&pGPUWavesVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\GPUWavesVS.cso");
+
+	VS_IL_Init(&pQuadTessellationVS, IL.positonIL, &pPositonIL, IL.nPositon, L"Shaders\\Vertex\\QuadTessellationPassVS.cso");
+	PS_Init(&pQuadTessellationPS, L"Shaders\\Pixel\\QuadTessPS.cso");
+	HS_Init(&pQuadTesselationHS, L"Shaders\\Hull\\QuadTessHS.cso");
+	DS_Init(&pQuadTesselationDS, L"Shaders\\Domain\\QuadTessDS.cso");
+
+	VS_IL_Init(&pInstancedSkullVS, IL.instancedSkull, &pInstancedSkullIL, IL.nInstancedSkull, L"Shaders\\Vertex\\InstancedSkullVS.cso");
+	PS_Init(&pInstancedSkullPS, L"Shaders\\Pixel\\InstancedSkullPS.cso");
+
+	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
+	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
+
+	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
+
+	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
+
+	VS_IL_Init(&pDisplacementMappingVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
+		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
+	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
+
+	//shadow map generation
+	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
+	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
+
+	//main light shader for textured surfaced
+	PS_Init(&pDefaultInstancedPS, L"Shaders\\Pixel\\DefaultInstanced_PS.cso");
+
+	//SM generation instanced
+	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
+		IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
+	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
+
+	//SSAO
+	//compute ssao
+	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeSSAOVS.cso");
+	PS_Init(&pSSAOFullScreenQuadPS, L"Shaders\\Pixel\\ComputeSSAOPS.cso");
+	//SSAO blur
+	VS_IL_Init(&pSSAOBlurVS, IL.posNormalTexture, &pLightAndTextureIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\SSAOBlurVS.cso");
+	PS_Init(&pSSAOBlurPS, L"Shaders\\Pixel\\SSAOBlurPS.cso");
+
+
+	//debug quad
+	VS_IL_Init(&pDebugQuadVS, IL.posNormalTexture, &pPosNormalTexIL,
+		IL.nPosNormalTexture, L"Shaders\\Vertex\\DebugScreenQuadVS.cso");
+	PS_Init(&pDebugQuadPS, L"Shaders\\Pixel\\DebugScreenQuadPS.cso");
+
+
+	//Default Shaders
+	//normal map and posNormalTexcTangent layout
+	VS_IL_Init(&pNormalMapVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\NormalMapVS.cso");
+	PS_Init(&pNormalMapPS, L"Shaders\\Pixel\\NormalMapPS.cso");
+	//shadow map
+	VS_Init(&pShadowMapVS, L"Shaders\\Vertex\\ShadowMapVS.cso");
+	PS_Init(&pShadowMapPS, L"Shaders\\Pixel\\ShadowMapPS.cso");
+	//default light
+	VS_IL_Init(&pDefaultLightVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\DefaultLightVS.cso");
+	PS_Init(&pDefaultLightPS, L"Shaders\\Pixel\\DefaultLightPS.cso");
+
+	//Displacement waves
+	VS_IL_Init(&pDisplacementWavesVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL,
+		IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\TessellationWavesVS.cso");
+	PS_Init(&pDisplacementWavesPS, L"Shaders\\Pixel\\TessellationWavesPS.cso");
+	HS_Init(&pDisplacementWavesHS, L"Shaders\\Hull\\TessellationWavesHS.cso");
+	DS_Init(&pDisplacementWavesDS, L"Shaders\\Domain\\TessellationWavesDS.cso");
+
+	//Terrain
+	VS_IL_Init(&pTerrainVS, IL.terrainHeightMap, &pTerrainIL, IL.nTerrainHeightMap, L"Shaders\\Vertex\\Terrain_VS.cso");
+	HS_Init(&pTerrainHS, L"Shaders\\Hull\\Terrain_HS.cso");
+	DS_Init(&pTerrainDS, L"Shaders\\Domain\\Terrain_DS.cso");
+	PS_Init(&pTerrainPS, L"Shaders\\Pixel\\Terrain_PS.cso");
+
+	//////////////////////////////////////////////////////////////////////////
+	//Particle Stream out
+	VS_IL_Init(&pParticleStreamOutVS, IL.particleStreamOutIL, &pParticleStreamOutIL, IL.nParticleStreamOut, L"Shaders\\Vertex\\StreamOutVS.cso");
+	//Particles fire
+	GS_SO_Init(&pSOFireGS, L"Shaders\\Geometry\\FireSOGS.cso");
+	VS_IL_Init(&pParticleFireVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\FireVS.cso");
+	GS_Init(&pParticleFireGS, L"Shaders\\Geometry\\FireGS.cso");
+	PS_Init(&pParticleFirePS, L"Shaders\\Pixel\\ParticlePS.cso");
+	//particles rain
+	GS_SO_Init(&pParticleRainGSSO, L"Shaders\\Geometry\\RainSOGS.cso");
+	GS_Init(&pParticleRainGS, L"Shaders\\Geometry\\RainGS.cso");
+	VS_IL_Init(&pParticleRainVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\RainVS.cso");
+	PS_Init(&pParticleRainPS, L"Shaders\\Pixel\\RainPS.cso");
+
+	//particles explosion
+	GS_SO_Init(&pParticleExplosionSOGS, L"Shaders\\Geometry\\ExplosionSOGS.cso");
+	GS_Init(&pParticleExplosionGS, L"Shaders\\Geometry\\ExplosionGS.cso");
+	VS_IL_Init(&pParticleExplosionVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\ExplosionVS.cso");
+
+	//fountain
+	GS_SO_Init(&pParticleFountainSOGS, L"Shaders\\Geometry\\FountainSOGS.cso");
+	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\FountainGS.cso");
+	VS_IL_Init(&pParticleFountainVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\FountainVS.cso");
+	//////////////////////////////////////////////////////////////////////////
+
+
+}
+
+void Graphics::BindVSandIA(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::LightAndTexture_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Light_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pLightIL);
+		pgfx_pDeviceContext->VSSetShader(pLightVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DepthComplexityVS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pDepthCoplexityIL);
+		pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::GPUWaves_VS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->VSSetShader(pGPUWavesVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::QuadTessellation_VS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPositonIL);
+		pgfx_pDeviceContext->VSSetShader(pQuadTessellationVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::InstancedSkull_VS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pInstancedSkullIL);
+		pgfx_pDeviceContext->VSSetShader(pInstancedSkullVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Sky_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pSkyIL);
+		pgfx_pDeviceContext->VSSetShader(pSkyVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexCTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pDisplacementWavesVS, nullptr, 0u);
+		break;
+
+	}
+	case ShaderPicker::TerrainHeightMap:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pTerrainIL);
+		pgfx_pDeviceContext->VSSetShader(pTerrainVS, nullptr, 0u);
+		break;
+
+	}
+	case ShaderPicker::Particles_FireStreamOut_VS_GS:
+	case ShaderPicker::Particles_RainStreamOut_VS_GS:
+	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
+	case ShaderPicker::Particle_FountainStreamOut_VS_GS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pParticleStreamOutIL);//this one
+		pgfx_pDeviceContext->VSSetShader(pParticleStreamOutVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pParticleDrawIL);
+		pgfx_pDeviceContext->VSSetShader(pParticleFireVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pParticleDrawIL);
+		pgfx_pDeviceContext->VSSetShader(pParticleRainVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pParticleDrawIL);
+		pgfx_pDeviceContext->VSSetShader(pParticleExplosionVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pParticleDrawIL);
+		pgfx_pDeviceContext->VSSetShader(pParticleFountainVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapGenSkull_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
+		pgfx_pDeviceContext->VSSetShader(pSkullSMGenVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
+		pgfx_pDeviceContext->VSSetShader(pSkullSMDrawVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapInstancedGen_VS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
+		pgfx_pDeviceContext->VSSetShader(pShadowMapInstancedVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapInstancedDraw_VS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
+		pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ComputeSSAO_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->VSSetShader(pSSAOFullScreenQuadVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DrawDebugTexQuad_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
+		pgfx_pDeviceContext->VSSetShader(pDebugQuadVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::SSAOBlur_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->VSSetShader(pSSAOBlurVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::NormalMap_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pNormalMapVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pShadowMapVS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DefaultLight_VS_PS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pDefaultLightVS, nullptr, 0u);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void Graphics::BindPS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::LightAndTexture_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Light_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::LightAndTextureArrayPS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pLightAndTextureArrayPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DepthComplexityVS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::BlurTexture_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::QuadTessellation_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pQuadTessellationPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::InstancedSkull_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pInstancedSkullPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Sky_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pSkyPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::CubeMap_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pDisplacementWavesPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::TerrainHeightMap:
+	{
+		pgfx_pDeviceContext->PSSetShader(pTerrainPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
+	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pParticleFirePS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pSkullSMPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMapGenSkull_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DefaultInstanced_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ComputeSSAO_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pSSAOFullScreenQuadPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DrawDebugTexQuad_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pDebugQuadPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::SSAOBlur_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pSSAOBlurPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::NormalMap_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pNormalMapPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::ShadowMap_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pShadowMapPS, nullptr, 0u);
+		break;
+
+	case ShaderPicker::DefaultLight_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pDefaultLightPS, nullptr, 0u);
+		break;
+	}
+	default:
+		break;
+	}
+	}
+}
+void Graphics::BindGS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::Particles_FireStreamOut_VS_GS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pSOFireGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_FireDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleFireGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainStreamOut_VS_GS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleRainGSSO, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_RainDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleRainGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_ExplosionDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleExplosionGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particles_ExplosionStreamOut_VS_GS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleExplosionSOGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainStreamOut_VS_GS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleFountainSOGS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::Particle_FountainDraw_VS_GS_PS:
+	{
+		pgfx_pDeviceContext->GSSetShader(pParticleFountainGS, nullptr, 0u);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void Graphics::BindCS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::HorizontalBlur_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pHorizontalBlurCS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::VerticalBlur_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pVerticalBlurCS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::HorizontalBilateralBlur_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pHorizontalBilateralBlur, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::VerticalBilateralBlur_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pVerticalBilateralBlur, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::DisturbWaves_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pDisturbWaves, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::UpdateWaves_CS:
+	{
+		pgfx_pDeviceContext->CSSetShader(pUpdateWaves, nullptr, 0u);
+		break;
+	}
+	}
+}
+
+void Graphics::BindHS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::QuadTessellation_HS:
+	{
+		pgfx_pDeviceContext->HSSetShader(pQuadTesselationHS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pgfx_pDeviceContext->HSSetShader(pDisplacementMappingHS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pgfx_pDeviceContext->HSSetShader(pDisplacementWavesHS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::TerrainHeightMap:
+	{
+		pgfx_pDeviceContext->HSSetShader(pTerrainHS, 0u, 0u);
+		break;
+	}
+	}
+}
+
+void Graphics::BindDS(ShaderPicker shader)
+{
+	switch (shader)
+	{
+	case ShaderPicker::QuadTessellation_DS:
+	{
+		pgfx_pDeviceContext->DSSetShader(pQuadTesselationDS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+	{
+		pgfx_pDeviceContext->DSSetShader(pDisplacementMappingDS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
+	{
+		pgfx_pDeviceContext->DSSetShader(pDisplacementWavesDS, 0u, 0u);
+		break;
+	}
+	case ShaderPicker::TerrainHeightMap:
+	{
+		pgfx_pDeviceContext->DSSetShader(pTerrainDS, 0u, 0u);
+		break;
+	}
+	}
+}
+
+void Graphics::UnbindCS()
+{
+	pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindGS()
+{
+	pgfx_pDeviceContext->GSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindPS()
+{
+	pgfx_pDeviceContext->CSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindVS()
+{
+	pgfx_pDeviceContext->VSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindHS()
+{
+	pgfx_pDeviceContext->HSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindDS()
+{
+	pgfx_pDeviceContext->DSSetShader(0u, nullptr, 0u);
+}
+
+void Graphics::UnbindAll()
+{
+	UnbindCS();
+	UnbindDS();
+	UnbindGS();
+	UnbindHS();
+	UnbindPS();
+	UnbindVS();
+}
+
+void Graphics::VS_IL_Init(ID3D11VertexShader** pVShader,
+	const D3D11_INPUT_ELEMENT_DESC* inputLayout,
+	ID3D11InputLayout** pIL,
+	UINT nElements, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pVShader));
+#ifdef MY_DEBUG
+	if (path != std::wstring())
+	{
+		SetDebugName(*pVShader, path.c_str());
+	}
+#endif
+	InitializeInputLayout(inputLayout, pIL, nElements, pBlob, L"VertexShader_");
+
+	//for usage in other shaders;
+	pBlob->Release();
+
+}
+
+void Graphics::VS_Init(ID3D11VertexShader** pVShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateVertexShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pVShader));
+#ifdef MY_DEBUG
+	if (path != std::wstring())
+	{
+		SetDebugName(*pVShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Graphics::PS_Init(ID3D11PixelShader** pPSShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreatePixelShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pPSShader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pPSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+
+}
+
+void Graphics::InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout,
+	ID3D11InputLayout** pIL,
+	UINT nElements,
+	ID3DBlob* pBlob, const std::wstring& name)
+{
+	DX::ThrowIfFailed(pgfx_pDevice->CreateInputLayout(
+		inputLayout,
+		nElements,
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		pIL));
+#ifdef MY_DEBUG
+	if (name != std::wstring())
+	{
+		SetDebugName(pLightAndTextureIL, name.c_str());
+	}
+#endif
+}
+
+void Graphics::GS_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateGeometryShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pGSShader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pGSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Graphics::GS_SO_Init(ID3D11GeometryShader** pGSShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateGeometryShaderWithStreamOutput(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		SO.fire,
+		SO.fireSize,
+		NULL, 0, D3D11_SO_NO_RASTERIZED_STREAM, nullptr,
+		pGSShader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pGSShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Graphics::CS_Init(ID3D11ComputeShader** pCShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateComputeShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pCShader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pCShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+}
+
+void Graphics::HS_Init(ID3D11HullShader** pHShader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateHullShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pHShader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pHShader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+
+}
+
+void Graphics::DS_Init(ID3D11DomainShader** pDshader, const std::wstring& path)
+{
+#ifdef MY_DEBUG
+	CheckFileExistence(path);
+#endif // MY_DEBUG
+	DX::ThrowIfFailed(D3DReadFileToBlob(path.c_str(), &pBlob));
+	DX::ThrowIfFailed(pgfx_pDevice->CreateDomainShader(
+		pBlob->GetBufferPointer(),
+		pBlob->GetBufferSize(),
+		nullptr,
+		pDshader));
+#ifdef MY_DEBUG
+	if (debugDevice != nullptr)
+	{
+		SetDebugName(*pDshader, path.c_str());
+	}
+#endif
+	//for usage in other shaders;
+	pBlob->Release();
+
+}
 

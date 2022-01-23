@@ -12,7 +12,7 @@ public:
 
 
 
-	void DrawParticle(Graphics& gfx, Shaders* pShaders, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
+	void DrawParticle(Graphics& gfx, DirectX::XMMATRIX viewProjection, DirectX::XMFLOAT3 cameraPos,
 		DirectX::XMFLOAT3 emitPos, float timeStep, float gameTime, ParticlePick particle);
 	void Reset();
 
