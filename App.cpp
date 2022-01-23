@@ -670,6 +670,19 @@ void App::CreateTerrain()
 		pParticleExplosion->GetDrawVertexBuffer(),
 		pParticleExplosion->GetRandomTexSRV(),
 		pParticleExplosion->GetInitVB(), ParticlePick::Explosion);
+	wnd.GetGraphics().SetParticleBuffers(
+		pParticle->GetStreamOutVertexBuffer(),
+		pParticle->GetDrawVertexBuffer(),
+		pParticle->GetRandomTexSRV(),
+		pParticle->GetInitVB(), ParticlePick::Fire);
+	wnd.GetGraphics().SetParticleBuffers(
+		pParticleFountain->GetStreamOutVertexBuffer(),
+		pParticleFountain->GetDrawVertexBuffer(),
+		pParticleFountain->GetRandomTexSRV(),
+		pParticleFountain->GetInitVB(), ParticlePick::Fountain);
+
+
+
 
 }
 
@@ -717,37 +730,37 @@ void App::DrawTerrain()
 	wnd.GetGraphics().DrawParticle(rainPosition, ParticlePick::Rain);
 	wnd.GetGraphics().UnbindAll();
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
+
+	//FOUNTAIN
+	DirectX::XMFLOAT3 fountainPos = DirectX::XMFLOAT3(0.0f, 4.0f, -4.0f);
+	fountainPos.z += 10.0f;
+	wnd.GetGraphics().DrawParticle(fountainPos, ParticlePick::Fountain);
 	wnd.GetGraphics().UnbindAll();
 
 	//EXPLOSION
-	DirectX::XMFLOAT3 explosionPos = DirectX::XMFLOAT3(0.0f, 4.0f, -4.0f);
+	DirectX::XMFLOAT3 explosionPos = DirectX::XMFLOAT3(-4.0f, 4.0f, -4.0f);
 	explosionPos.z += 10.0f;
 	wnd.GetGraphics().DrawParticle(explosionPos, ParticlePick::Explosion);
 	wnd.GetGraphics().UnbindAll();
 
-	//FOUNTAIN
-// 	pParticleFountain->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-// 		DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fountain);
-// 
-// 	wnd.GetGraphics().UnbindAll();
-
-
-
-
 	//FIRE
 	//supposed to be drawn last so it will blend
-// 	pParticle->DrawParticle(wnd.GetGraphics(), pShaders, viewProjectionMatrix, camera.GetCameraPosition(),
-// 		DirectX::XMFLOAT3(50.0f, 0.0f, 1.0f), timer.DeltaTime(), timer.TotalTime(), ParticlePick::Fire);
-
-
+	DirectX::XMFLOAT3 firePos = DirectX::XMFLOAT3(0.0f, 4.0f, -4.0f);
+	firePos.z += 10.0f;
+	wnd.GetGraphics().DrawParticle(firePos, ParticlePick::Fire);
+	wnd.GetGraphics().UnbindAll();
 
 
 		//Skybox
+	//NOT NEEDED
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
-	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	/*pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
 	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
 
@@ -761,12 +774,13 @@ void App::DrawTerrain()
 	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
 
 	pDC->RSSetState(0u);
-	pDC->OMSetDepthStencilState(0u, 0u);
+	pDC->OMSetDepthStencilState(0u, 0u);*/
 
 	//reset
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
+
 
 
 }

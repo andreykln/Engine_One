@@ -152,10 +152,6 @@ private:
 	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57335f);
 	float mDeltaTime;
 	float mTotalTime;
-	float lastResetTime = 0.0f;
-	bool mfirstRunRain = true;
-	bool mfirstRunExplosion = true;
-	DirectX::XMMATRIX partExplosionWorld = DirectX::XMMatrixIdentity();
 
 
 	//particles
@@ -165,6 +161,17 @@ private:
 	ID3D11Buffer* mStreamOutVBExplosion = nullptr;
 	ID3D11Buffer* mDrawVBExplosion = nullptr;
 	ID3D11Buffer* mInitVBExplosion = nullptr;
+	ID3D11Buffer* mStreamOutVBFountain = nullptr;
+	ID3D11Buffer* mDrawVBFountain = nullptr;
+	ID3D11Buffer* mInitVBFountain = nullptr;
+	ID3D11Buffer* mStreamOutVBFire = nullptr;
+	ID3D11Buffer* mDrawVBFire = nullptr;
+	ID3D11Buffer* mInitVBFire = nullptr;
+	float lastResetTime = 0.0f;
+	bool mfirstRunRain = true;
+	bool mfirstRunExplosion = true;
+	bool mFirstRunFountain = true;
+	bool mFirstRunFire = true;
 
 
 	HWND windowHandle;
