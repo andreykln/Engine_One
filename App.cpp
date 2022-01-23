@@ -28,9 +28,9 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateHillsWithGPUWaves();
-	CreateTerrain();
+// 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -48,9 +48,9 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawHillsWithGPUWaves();
-	DrawTerrain();
+// 	DrawTerrain();
 
 
 // 	DrawBox();
@@ -680,10 +680,6 @@ void App::CreateTerrain()
 		pParticleFountain->GetDrawVertexBuffer(),
 		pParticleFountain->GetRandomTexSRV(),
 		pParticleFountain->GetInitVB(), ParticlePick::Fountain);
-
-
-
-
 }
 
 
@@ -730,10 +726,6 @@ void App::DrawTerrain()
 	wnd.GetGraphics().DrawParticle(rainPosition, ParticlePick::Rain);
 	wnd.GetGraphics().UnbindAll();
 
-
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
-
 	//FOUNTAIN
 	DirectX::XMFLOAT3 fountainPos = DirectX::XMFLOAT3(0.0f, 4.0f, -4.0f);
 	fountainPos.z += 10.0f;
@@ -755,12 +747,7 @@ void App::DrawTerrain()
 
 
 		//Skybox
-	//NOT NEEDED
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
-
-
-
-	/*pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
 	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
 
@@ -774,15 +761,12 @@ void App::DrawTerrain()
 	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
 
 	pDC->RSSetState(0u);
-	pDC->OMSetDepthStencilState(0u, 0u);*/
+	pDC->OMSetDepthStencilState(0u, 0u);
 
 	//reset
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
-
-
-
 }
 
 App::~App()

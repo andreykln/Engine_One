@@ -10,7 +10,7 @@ public:
 	UINT GetIndexCount();
 
 	//grasscube1024 desertcube1024 sunsetcube1024 snowcube1024
-	std::wstring skyBoxName = L"grasscube1024";
+	std::wstring skyBoxName = L"sunsetcube1024";
 private:
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;

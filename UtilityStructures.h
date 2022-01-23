@@ -374,15 +374,6 @@ struct CB_QuadTess_HS
 	DirectX::XMFLOAT3 cameraPosition;
 };
 
-// struct CB_GS_StreamOut
-// {
-// 	CB_GS_StreamOut() { ZeroMemory(this, sizeof(this)); }
-// 	DirectX::XMFLOAT3  emitterPositon;
-// 	float timeStep;
-// 	float gameTime;
-// 	float padding[3] = {0.0f, 0.0f, 0.0f};
-// };
-
 
 //
 // shadow map
