@@ -557,7 +557,7 @@ void Graphics::BindCubeMap(std::wstring& skyBoxName) const
 
 
 
-void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle)
+void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 {
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -609,13 +609,13 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView
 	UINT offset = 0;
 	if (mfirstRun)
 	{
-		BindToSOStage(mStreamOutVB, randomTexSRV);
+		BindToSOStage(mStreamOutVB);
 		UpdateStreamOutConstBuffer(emitPos);
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &pInitVB, &stride, &offset);
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mInitVB, &stride, &offset);
 	}
 	else
 	{
-		BindToSOStage(mStreamOutVB, randomTexSRV);
+		BindToSOStage(mStreamOutVB);
 		UpdateStreamOutConstBuffer(emitPos);
 		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &mDrawVB, &stride, &offset);
 	}
@@ -634,14 +634,8 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView
 		pgfx_pDeviceContext->DrawAuto();
 	}
 
-	// done streaming-out--unbind the vertex buffer
+	//done streaming-out--unbind the vertex buffer
 	UnbindFromSOStage();
-// 	ID3D11Buffer* pTempSO = nullptr;
-// 	ID3D11Buffer* pTempDraw = nullptr;
-// 	pTempSO = pStreamOutVB;
-// 	pStreamOutVB = pDrawVB;
-// 	pTempDraw = pDrawVB;
-// 	pDrawVB = pTempSO;
 	std::swap(mDrawVB, mStreamOutVB);
 
 
@@ -657,7 +651,6 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView
 		BindVSandIA(ShaderPicker::Particles_FireDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
 		BindPS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
-// 		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psFireDrawTexture);
 		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"flame"));
 
 	}
@@ -667,7 +660,6 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView
 		BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		BindPS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
-// 		gfx.pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &psRainDropTexture);
 		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"raindrop"));
 
 		break;
@@ -693,23 +685,23 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView
 	}
 
 
-// 	pgfx_pDeviceContext->PSSetSamplers(0u, 1u, &pSSDrawPixel);
-
 	pgfx_pDeviceContext->DrawAuto();
 
 }
 
 
-void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB)
+void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB)
 {
 	mStreamOutVB = pStreamOutVB;
-	mDrawVB = pDrawVB;
+	mDrawVB = pDrawVB; 
+	mInitVB = pInitVB;
+	pgfx_pDeviceContext->GSSetShaderResources(0u, 1u, &randomTexSRV);
+
 }
 
-void Graphics::BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV)
+void Graphics::BindToSOStage(ID3D11Buffer* pStreamOutVB)
 {
 	pgfx_pDeviceContext->SOSetTargets(1u, &pStreamOutVB, 0u);
-	pgfx_pDeviceContext->GSSetShaderResources(0u, 1u, &randomTexSRV);
 }
 
 void Graphics::UnbindFromSOStage()

@@ -80,10 +80,10 @@ public:
 	//
 	//particles
 	//
-	void DrawParticle(DirectX::XMFLOAT3& emitPos, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB, ParticlePick particle);
-	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB);
+	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
+	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB);
 private:
-	void BindToSOStage(ID3D11Buffer* pStreamOutVB, ID3D11ShaderResourceView* randomTexSRV);
+	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();
 	void UpdateStreamOutConstBuffer(DirectX::XMFLOAT3& emitPos);
 	void UpdateParticleDrawConstBuffer();
@@ -157,6 +157,7 @@ private:
 	//particles
 	ID3D11Buffer* mStreamOutVB = nullptr;
 	ID3D11Buffer* mDrawVB = nullptr;
+	ID3D11Buffer* mInitVB = nullptr;
 
 	HWND windowHandle;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
