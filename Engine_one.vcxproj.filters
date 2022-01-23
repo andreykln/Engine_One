@@ -73,6 +73,9 @@
     <Filter Include="Shaders\Default\Particles">
       <UniqueIdentifier>{e5135a00-a325-4ee7-9d74-792bbe96f856}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\GPUWaves\ComputeWaves">
+      <UniqueIdentifier>{8f5d3703-45d1-460a-be42-038519049fb7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -403,15 +406,6 @@
     <FxCompile Include="VerticalBilateralBlur.hlsl">
       <Filter>Shaders\Compute</Filter>
     </FxCompile>
-    <FxCompile Include="UpdateWavesCS.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="DisturbWavesCS.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="GPUWavesVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="QuadTessHS.hlsl">
       <Filter>Shaders\Hull</Filter>
     </FxCompile>
@@ -543,6 +537,18 @@
     </FxCompile>
     <FxCompile Include="RainSOGS.hlsl">
       <Filter>Shaders\Default\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="ComputeWavesVS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\ComputeWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="ComputeWavesPS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\ComputeWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="DisturbWavesCS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\ComputeWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="UpdateWavesCS.hlsl">
+      <Filter>Shaders\Default\GPUWaves\ComputeWaves</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

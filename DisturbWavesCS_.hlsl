@@ -9,8 +9,6 @@ cbuffer cbUpdateSettings
     int2 padding;
 };
 
-
-
 RWTexture2D<float> Output : register(u0);
 
 [numthreads(1, 1, 1)]

@@ -9,7 +9,9 @@ public:
 	ID3D11Buffer** GetVertexBuffer();
 	ID3D11Buffer* GetIndexBuffer();
 	UINT GetIndexCount();
-	cbGPUWavesVSConstData& GetAndBuildConstantBufferData();
+	cbGPUWavesVSConstData GetAndBuildConstantBufferData();
+
+
 
 
 
@@ -21,9 +23,22 @@ public:
 
 
 
+	ID3D11UnorderedAccessView* pPreviousSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pCurrentSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pNextSolutionUAV = nullptr;
 
-// 	static float t_base = 0.0f;
+	ID3D11ShaderResourceView* pPreviousSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pCurrentSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pNextSolutionSRV = nullptr;
 
+	DirectX::XMMATRIX wavesWorld = DirectX::XMMatrixIdentity();
+	MaterialEx wavesMat;
+	const std::wstring diffuseMap = L"water2";
+	//not used, but need to put something to argument
+	const std::wstring normalMap = L"bricks3_nmap";
+	const UINT numColumns = 256u;
+	const UINT numRows = 256u;
+	DirectX::XMFLOAT3 waveConstant;
 private:
 	//////////////////////////////////////////////////////////////////////////
 	ID3D11Buffer* pVertexBuffer = nullptr;
@@ -31,7 +46,6 @@ private:
 	UINT indexCount = 0;
 	cbGPUWavesVSConstData vsConsts;
 	GPUWaves wave;
-
 	//////////////////////////////////////////////////////////////////////////
 
 
@@ -42,7 +56,7 @@ private:
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;
 	CB_PS_PerFrameUpdate pscBuffer;
-	CB_CS_GPUWaves gpuWavesCbuffer;
+// 	CB_CS_GPUWaves gpuWavesCbuffer;
 
 	ID3D11Buffer* pCopyVertexConstantBuffer = nullptr;
 	ID3D11Buffer* pCopyPixelConstantBuffer = nullptr;
@@ -53,13 +67,6 @@ private:
 	ID3D11Texture2D* previousSolutionTex = nullptr;
 	ID3D11Texture2D* currentSolutionTex = nullptr;
 	ID3D11Texture2D* nextWaveSolutionTex = nullptr;
-	ID3D11UnorderedAccessView* pPreviousSolutionUAV = nullptr;
-	ID3D11UnorderedAccessView* pCurrentSolutionUAV = nullptr;
-	ID3D11UnorderedAccessView* pNextSolutionUAV = nullptr;
-
-	ID3D11ShaderResourceView* pPreviousSolutionSRV = nullptr;
-	ID3D11ShaderResourceView* pCurrentSolutionSRV = nullptr;
-	ID3D11ShaderResourceView* pNextSolutionSRV = nullptr;
 
 	float time = 0.0f;
 	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 1.0f);
@@ -68,8 +75,6 @@ private:
 	DirectX::XMMATRIX wavesSurfaceOffset = DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f);
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
-	const UINT numColumns = 256u;
-	const UINT numRows = 256u;
 
 
 };

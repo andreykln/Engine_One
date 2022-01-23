@@ -4,6 +4,9 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 {
 	geoGen.CreateGrid((float)numColumns, (float)numRows, 200, 200, mesh);
 	wave.Initialize(numRows, numColumns, 0.8f, 0.03f, 3.85f, 0.4f);
+	waveConstant.x = wave.waveConstant[0];
+	waveConstant.y = wave.waveConstant[1];
+	waveConstant.z = wave.waveConstant[2];
 
 // 	directionalLight.mat.ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 0.5f);
 // 	directionalLight.mat.diffuse = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
@@ -47,7 +50,11 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 // 	AddBind(pTopology);
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"GPU waves index buffer");
 	indexCount = mesh.indices.size();
-	GetAndBuildConstantBufferData();
+	vsConsts = GetAndBuildConstantBufferData();
+	wavesMat.diffuseAlbedo = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.7f);
+	wavesMat.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
+	wavesMat.shininess = 0.7f;
+
 // 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, mesh.indices, L"WaveSurfaceIndexBuffer");
 // 	AddIndexBuffer(pIndexBuffer);
 
@@ -61,22 +68,22 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 // 		new VertexConstantBuffer<CB_VS_GPUWaves_consts>(gfx, vsConsts, 1u, 1u);
 // 	AddBind(pVCB0);
 
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCB =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pPSCB);
+// 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSCB =
+// 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	AddBind(pPSCB);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+// 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyPixelConstantBuffer = pLightsCB->GetPixelShaderConstantBuffer();
+// 	AddBind(pLightsCB);
 
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPixelConstantBuffer = pLightsCB->GetPixelShaderConstantBuffer();
-	AddBind(pLightsCB);
+// 	std::wstring directory[1];
+// 	directory[0] = L"Textures\\water2.dds";
+// 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory), ShaderType::Pixel);
+// 	AddBind(pSRV);
 
-	std::wstring directory[1];
-	directory[0] = L"Textures\\water2.dds";
-	ShaderResourceView* pSRV = new ShaderResourceView(gfx, directory, 0u,  (UINT)std::size(directory), ShaderType::Pixel);
-	AddBind(pSRV);
-
-	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
+// 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
+// 	AddBind(pTexSampler);
 
 
 	//vertex shader linear wrap sampler
@@ -141,15 +148,15 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	currentSolutionTex->Release();
 	nextWaveSolutionTex->Release();
 
-	gpuWavesCbuffer.waveConstant0 = wave.waveConstant[0];
-	gpuWavesCbuffer.waveConstant1 = wave.waveConstant[1];
-	gpuWavesCbuffer.waveConstant2 = wave.waveConstant[2];
+// 	gpuWavesCbuffer.waveConstant0 = wave.waveConstant[0];
+// 	gpuWavesCbuffer.waveConstant1 = wave.waveConstant[1];
+// 	gpuWavesCbuffer.waveConstant2 = wave.waveConstant[2];
+// 
 
-
-	ComputeShaderConstantBuffer<CB_CS_GPUWaves>* pCSBuf = new ComputeShaderConstantBuffer<CB_CS_GPUWaves>(gfx, gpuWavesCbuffer,
-		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyCScbuffer = pCSBuf->GetComputeShaderConstantBuffer();
-	AddBind(pCSBuf);
+// 	ComputeShaderConstantBuffer<CB_CS_GPUWaves>* pCSBuf = new ComputeShaderConstantBuffer<CB_CS_GPUWaves>(gfx, gpuWavesCbuffer,
+// 		0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyCScbuffer = pCSBuf->GetComputeShaderConstantBuffer();
+// 	AddBind(pCSBuf);
 
 }
 
@@ -168,7 +175,7 @@ UINT WaveSurfaceGPU::GetIndexCount()
 	return indexCount;
 }
 
-cbGPUWavesVSConstData& WaveSurfaceGPU::GetAndBuildConstantBufferData()
+cbGPUWavesVSConstData WaveSurfaceGPU::GetAndBuildConstantBufferData()
 {
 	vsConsts.spatialStep = wave.SpatialStep();
 	vsConsts.displacementMapTexelSize[0] = 1.0f / numColumns;
@@ -217,19 +224,19 @@ void WaveSurfaceGPU::Disturb(Graphics& gfx)
 	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
 	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
 
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
-	CB_CS_GPUWaves* data = reinterpret_cast<CB_CS_GPUWaves*> (mappedData.pData);
-	data->disturbIndex[0] = i;
-	data->disturbIndex[1] = j;
-	data->disturbMagnitute = magnitute;
-	gfx.pgfx_pDeviceContext->Unmap(pCopyCScbuffer, 0u);
-
-	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pCurrentSolutionUAV, 0u);
-	gfx.pgfx_pDeviceContext->Dispatch(1, 1, 1);
-
-	ID3D11UnorderedAccessView* nullUAV = nullptr;
-	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
+// 	D3D11_MAPPED_SUBRESOURCE mappedData;
+// 	DX::ThrowIfFailed(gfx.pgfx_pDeviceContext->Map(pCopyCScbuffer, 0u, D3D11_MAP_WRITE_NO_OVERWRITE, 0u, &mappedData));
+// 	CB_CS_GPUWaves* data = reinterpret_cast<CB_CS_GPUWaves*> (mappedData.pData);
+// 	data->disturbIndex[0] = i;
+// 	data->disturbIndex[1] = j;
+// 	data->disturbMagnitute = magnitute;
+// 	gfx.pgfx_pDeviceContext->Unmap(pCopyCScbuffer, 0u);
+// 
+// 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pCurrentSolutionUAV, 0u);
+// 	gfx.pgfx_pDeviceContext->Dispatch(1, 1, 1);
+// 
+// 	ID3D11UnorderedAccessView* nullUAV = nullptr;
+// 	gfx.pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
 
 }
 

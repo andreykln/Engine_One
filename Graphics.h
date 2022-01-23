@@ -78,6 +78,17 @@ public:
 	//skybox is in 4th slot  of PS
 	void BindCubeMap(std::wstring& skyBoxName) const;
 	//
+	//Compute shader waves
+	//
+	void SetComputeWavesResources();
+	void UpdateComputeWaves(const DirectX::XMMATRIX& in_world);
+	void DisturbComputeWaves(const UINT numColumns, const UINT numRows, DirectX::XMFLOAT3 waveContants);
+	void UpdateSolutionComputeWaves(const UINT numColumns, const UINT numRows);
+	void ComputeWavesClearVS();
+	void SetWavesCSResources(ID3D11ShaderResourceView* prevSol, ID3D11ShaderResourceView* currSol, ID3D11ShaderResourceView* nextSol,
+		ID3D11UnorderedAccessView* prevSolUA, ID3D11UnorderedAccessView* currSolUA, ID3D11UnorderedAccessView* nexSolUA);
+	void SetComputeWavesSamplers();
+	//
 	//particles
 	//
 	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
@@ -152,6 +163,20 @@ private:
 	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57335f);
 	float mDeltaTime;
 	float mTotalTime;
+
+	//compute shader waves
+	float time = 0.0f;
+	DirectX::XMFLOAT2 waterTextureOffset;
+	DirectX::XMMATRIX wavesOffset;
+	const DirectX::XMMATRIX wavesScale = DirectX::XMMatrixScaling(5.0f, 5.0f, 1.0f);
+
+	ID3D11UnorderedAccessView* pPreviousSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pCurrentSolutionUAV = nullptr;
+	ID3D11UnorderedAccessView* pNextSolutionUAV = nullptr;
+
+	ID3D11ShaderResourceView* pPreviousSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pCurrentSolutionSRV = nullptr;
+	ID3D11ShaderResourceView* pNextSolutionSRV = nullptr;
 
 
 	//particles
@@ -382,6 +407,12 @@ private:
 	ID3D11GeometryShader* pParticleFountainSOGS = nullptr;
 	ID3D11GeometryShader* pParticleFountainGS = nullptr;
 
+	//compute shader waves
+	ID3D11VertexShader* pComputeWavesVS = nullptr;
+	ID3D11PixelShader* pComputeWavesPS = nullptr;
+	ID3D11ComputeShader* pComputeWavesUpdateCS = nullptr;
+	ID3D11ComputeShader* pComputeWavesDisturbCS = nullptr;
+
 
 private:
 	void InitializeRenderStates();
@@ -421,7 +452,6 @@ void Graphics::CreateRuntimeCBuffers(CBuffer& data, const std::string& name, con
 {
 	ID3D11Buffer* pBuffer = CreateConstantBuffer(data, false, description);
 	constBuffersMap.insert(std::make_pair(name, pBuffer));
-
 }
 
 template <typename T>

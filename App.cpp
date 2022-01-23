@@ -23,13 +23,16 @@ App::App()
 
 	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
+
+	
+
 	////////
 
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
-	CreateShadowMapDemo();
-// 	CreateHillsWithGPUWaves();
+// 	CreateShadowMapDemo();
+	CreateHillsWithGPUWaves();
 // 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
@@ -48,8 +51,8 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-	DrawShadowMapDemo();
-// 	DrawHillsWithGPUWaves();
+// 	DrawShadowMapDemo();
+	DrawHillsWithGPUWaves();
 // 	DrawTerrain();
 
 
@@ -118,38 +121,80 @@ void App::CalculateFrameStats()
 void App::CreateHillsWithGPUWaves()
 {
 	pWaveSurfaceGPU = new WaveSurfaceGPU(wnd.GetGraphics());
+	cbGPUWavesVSConstData computeWavesVSData = pWaveSurfaceGPU->GetAndBuildConstantBufferData();
+	wnd.GetGraphics().CreateRuntimeCBuffers(computeWavesVSData, cbNames.computeWavesVSData, "compute Waves initial VS Data");
+	wnd.GetGraphics().SetWavesCSResources(pWaveSurfaceGPU->pPreviousSolutionSRV,
+		pWaveSurfaceGPU->pCurrentSolutionSRV,
+		pWaveSurfaceGPU->pNextSolutionSRV,
+		pWaveSurfaceGPU->pPreviousSolutionUAV,
+		pWaveSurfaceGPU->pCurrentSolutionUAV,
+		pWaveSurfaceGPU->pNextSolutionUAV);
+	pSky = new Sky(wnd.GetGraphics());
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
+
 }
 
 void App::DrawHillsWithGPUWaves()
 {
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
-	viewProjectionMatrix = GetViewProjectionCamera();
+// 	viewProjectionMatrix = GetViewProjectionCamera();
+	wnd.GetGraphics().SetDefaultLightData();
+
+	wnd.GetGraphics().SetComputeWavesSamplers();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
+	wnd.GetGraphics().SetComputeWavesResources();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
 
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeWaves_VS_PS_CS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ComputeWaves_VS_PS_CS);
+	wnd.GetGraphics().UpdateComputeWaves(pWaveSurfaceGPU->wavesWorld);
+	wnd.GetGraphics().DefaultLightUpdate(pWaveSurfaceGPU->wavesMat, false, false, pWaveSurfaceGPU->diffuseMap, pWaveSurfaceGPU->normalMap);
+	stride = sizeof(vbPosNormalTex);
+	offset = 0;
 
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::GPUWaves_VS);
-	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
-	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix,
-		timer.DeltaTime());
-	pWaveSurfaceGPU->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pWaveSurfaceGPU->BindAndDrawIndexed(wnd.GetGraphics());
-	pWaveSurfaceGPU->ClearVertexShaderResource(wnd.GetGraphics());
-	// every quarter second, generate a random wave
+	pDC->IASetVertexBuffers(0u, 1u, pWaveSurfaceGPU->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pWaveSurfaceGPU->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pWaveSurfaceGPU->GetIndexCount(), 0u, 0u);
+	wnd.GetGraphics().ComputeWavesClearVS();
 	static float t_base = 0.0f;
 	if ((timer.TotalTime() - t_base) >= 0.1f)
 	{
 		wnd.GetGraphics().BindCS(ShaderPicker::DisturbWaves_CS);
 		t_base += 0.1f;
-		pWaveSurfaceGPU->Disturb(wnd.GetGraphics());
+		wnd.GetGraphics().DisturbComputeWaves(pWaveSurfaceGPU->numColumns, pWaveSurfaceGPU->numRows, pWaveSurfaceGPU->waveConstant);
 		wnd.GetGraphics().UnbindCS();
 	}
 	wnd.GetGraphics().BindCS(ShaderPicker::UpdateWaves_CS);
-	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
+	wnd.GetGraphics().UpdateSolutionComputeWaves(pWaveSurfaceGPU->numColumns, pWaveSurfaceGPU->numRows);
 	wnd.GetGraphics().UnbindAll();
+
+
+
+
+
+// 	viewProjectionMatrix = GetViewProjectionCamera();
+// 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
+// 	pShaders->BindVSandIA(ShaderPicker::GPUWaves_VS);
+// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
+// 	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix,
+// 		timer.DeltaTime());
+// 	pWaveSurfaceGPU->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
+// 	pWaveSurfaceGPU->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pWaveSurfaceGPU->ClearVertexShaderResource(wnd.GetGraphics());
+// 	// every quarter second, generate a random wave
+// 	static float t_base = 0.0f;
+// 	if ((timer.TotalTime() - t_base) >= 0.1f)
+// 	{
+// 		pShaders->BindCS(ShaderPicker::DisturbWaves_CS);
+// 		t_base += 0.1f;
+// 		pWaveSurfaceGPU->Disturb(wnd.GetGraphics());
+// 		pShaders->UnbindCS();
+// 	}
+// 	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
+// 	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
+// 	pShaders->UnbindAll();
 }
 
 void App::CreateBilateralHillsBlur()

@@ -146,10 +146,11 @@ struct CBufferNames
 	const std::string defaultLightPerFrame = "defaultLightPerFrame";
 	const std::string defaultLightData = "defaultLightData";
 	const std::string tessWavesMatrices = "tessWavesMatrices";
-	const std::string gpuWavesInitData = "GPUWavesVSInitData";
 	const std::string terrainHSPlainsData = "terrainHullShaderPlanes";
 	const std::string terrainTexelInfo = "terrainTexelInfo";
 	const std::string particleStreamOutGS = "particleStreamOutGS";
+	const std::string computeWavesVSData = "computeWavesVSInitData";
+	const std::string computeWavesCSPerFrame = "computWavesCSPerFrame";
 	
 };
 
@@ -196,6 +197,19 @@ struct cbParticleStreamOutGS
 	float gameTime;
 	float padding[3] = { 0.0f, 0.0f, 0.0f };
 };
+
+struct cbWavesUpdateCS
+{
+	cbWavesUpdateCS() { ZeroMemory(this, sizeof(this)); }
+	float waveConstant0;
+	float waveConstant1;
+	float waveConstant2;
+	float disturbMagnitute;
+
+	int disturbIndex[2];
+	int padding[2];
+};
+
 
 ////////END MAIN
 
@@ -319,17 +333,17 @@ struct CB_PS_PerFrameUpdate
 
 };
 
-struct CB_CS_GPUWaves
-{
-	CB_CS_GPUWaves() { ZeroMemory(this, sizeof(this)); }
-	float waveConstant0;
-	float waveConstant1;
-	float waveConstant2;
-	float disturbMagnitute;
-
-	int disturbIndex[2];
-	int padding[2];
-};
+// struct CB_CS_GPUWaves
+// {
+// 	CB_CS_GPUWaves() { ZeroMemory(this, sizeof(this)); }
+// 	float waveConstant0;
+// 	float waveConstant1;
+// 	float waveConstant2;
+// 	float disturbMagnitute;
+// 
+// 	int disturbIndex[2];
+// 	int padding[2];
+// };
 
 
 
@@ -508,6 +522,7 @@ enum ShaderPicker
 	NormalMap_VS_PS, //new architecture
 	ShadowMap_VS_PS, //new architecture
 	DefaultLight_VS_PS,
+	ComputeWaves_VS_PS_CS,
 };
 
 enum ParticlePick

@@ -229,6 +229,10 @@ void Graphics::CreateCBuffers()
 	ID3D11Buffer* pPartSOGS = CreateConstantBuffer(particleSOGS, true, "Particle stream out GS");
 	constBuffersMap.insert(std::make_pair(cbNames.particleStreamOutGS, pPartSOGS));
 
+	cbWavesUpdateCS computeWavesPerFrame;
+	ID3D11Buffer* pCWavesPF = CreateConstantBuffer(computeWavesPerFrame, true, "Compute waves per frame constants");
+	constBuffersMap.insert(std::make_pair(cbNames.computeWavesCSPerFrame, pCWavesPF));
+
 }
 
 
@@ -880,6 +884,117 @@ void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDra
 		break;
 	}
 	pgfx_pDeviceContext->GSSetShaderResources(0u, 1u, &randomTexSRV);
+
+}
+
+void Graphics::SetComputeWavesResources()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.computeWavesVSData));
+
+
+	pgfx_pDeviceContext->CSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.computeWavesCSPerFrame));
+}
+
+void Graphics::UpdateComputeWaves(const DirectX::XMMATRIX& in_world)
+{
+	waterTextureOffset.y += 0.05f * mDeltaTime;
+	waterTextureOffset.x += 0.1f * mDeltaTime;
+	wavesOffset = DirectX::XMMatrixTranslation(0.0f, waterTextureOffset.x, waterTextureOffset.y);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.defaultVS), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbDefaultMatricesVS* object = reinterpret_cast<cbDefaultMatricesVS*>(mappedData.pData);
+	object->world = in_world;
+	object->worldInvTranspose = MathHelper::InverseTranspose(in_world);
+	object->texTransform = DirectX::XMMatrixTranspose(wavesOffset + wavesScale);
+	object->viewProjection = DirectX::XMMatrixTranspose(mViewProjection);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultVS), 0u);
+}
+
+void Graphics::DisturbComputeWaves(const UINT numColumns, const UINT numRows, DirectX::XMFLOAT3 waveContants)
+{
+	unsigned long i = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numColumns - 10);
+	unsigned long j = 5 + MathHelper::RandomIntWithingRange(0, INT_MAX) % (numRows - 10);
+	float magnitute = MathHelper::RandomFloatWithinRange(1.0f, 2.0f);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.computeWavesCSPerFrame), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbWavesUpdateCS* data = reinterpret_cast<cbWavesUpdateCS*> (mappedData.pData);
+	data->disturbIndex[0] = i;
+	data->disturbIndex[1] = j;
+	data->disturbMagnitute = magnitute;
+	data->waveConstant0 = waveContants.x;
+	data->waveConstant1 = waveContants.y;
+	data->waveConstant2 = waveContants.z;
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.computeWavesCSPerFrame), 0u);
+
+	pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pCurrentSolutionUAV, 0u);
+	pgfx_pDeviceContext->Dispatch(1, 1, 1);
+
+	ID3D11UnorderedAccessView* nullUAV = nullptr;
+	pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
+}
+
+void Graphics::UpdateSolutionComputeWaves(const UINT numColumns, const UINT numRows)
+{
+	time += mDeltaTime;
+	if (time >= mDeltaTime)
+	{
+		pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &pPreviousSolutionSRV);
+		pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &pCurrentSolutionSRV);
+		pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &pNextSolutionUAV, 0u);
+
+		UINT numGroupsX = numColumns / 16;
+		UINT numGroupsY = numRows / 16;
+		pgfx_pDeviceContext->Dispatch(numGroupsX, numGroupsY, 1);
+
+		ID3D11UnorderedAccessView* nullUAV = nullptr;
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		pgfx_pDeviceContext->CSSetShaderResources(0u, 1u, &nullSRV);
+		pgfx_pDeviceContext->CSSetShaderResources(1u, 1u, &nullSRV);
+		pgfx_pDeviceContext->CSSetUnorderedAccessViews(0u, 1u, &nullUAV, 0u);
+
+		ID3D11ShaderResourceView* srvTemp = pPreviousSolutionSRV;
+		pPreviousSolutionSRV = pCurrentSolutionSRV;
+		pCurrentSolutionSRV = pNextSolutionSRV;
+		pNextSolutionSRV = srvTemp;
+
+		ID3D11UnorderedAccessView* uavTemp = pPreviousSolutionUAV;
+		pPreviousSolutionUAV = pCurrentSolutionUAV;
+		pCurrentSolutionUAV = pNextSolutionUAV;
+		pNextSolutionUAV = uavTemp;
+
+		time = 0.0f;
+	}
+	pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &pCurrentSolutionSRV);
+
+}
+
+void Graphics::ComputeWavesClearVS()
+{
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	pgfx_pDeviceContext->VSSetShaderResources(0u, 1u, &nullSRV);
+}
+
+void Graphics::SetWavesCSResources(ID3D11ShaderResourceView* prevSol, ID3D11ShaderResourceView* currSol,
+	ID3D11ShaderResourceView* nextSol, ID3D11UnorderedAccessView* prevSolUA,
+	ID3D11UnorderedAccessView* currSolUA, ID3D11UnorderedAccessView* nexSolUA)
+{
+	pPreviousSolutionUAV = prevSolUA;
+	pCurrentSolutionUAV = currSolUA;
+	pNextSolutionUAV = nexSolUA;
+
+	pPreviousSolutionSRV = prevSol;
+	pCurrentSolutionSRV = currSol;
+	pNextSolutionSRV = nextSol;
+}
+
+void Graphics::SetComputeWavesSamplers()
+{
+	pgfx_pDeviceContext->VSSetSamplers(4u, 1u, &samplers[4]);
+
+
 
 }
 
@@ -1544,7 +1659,11 @@ void Graphics::InitShaders()
 	GS_Init(&pParticleFountainGS, L"Shaders\\Geometry\\FountainGS.cso");
 	VS_IL_Init(&pParticleFountainVS, IL.particleDrawIL, &pParticleDrawIL, IL.nParticleDraw, L"Shaders\\Vertex\\FountainVS.cso");
 	//////////////////////////////////////////////////////////////////////////
-
+	//compute shader waves 
+	VS_IL_Init(&pComputeWavesVS, IL.posNormalTexture, &pPosNormalTexIL, IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeWavesVS.cso");
+	PS_Init(&pComputeWavesPS, L"Shaders\\Pixel\\ComputeWavesPS.cso");
+	CS_Init(&pComputeWavesDisturbCS, L"Shaders\\Compute\\DisturbWavesCS.cso");
+	CS_Init(&pComputeWavesUpdateCS, L"Shaders\\Compute\\UpdateWavesCS.cso");
 
 }
 
@@ -1707,6 +1826,12 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->VSSetShader(pDefaultLightVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::ComputeWaves_VS_PS_CS:
+	{
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
+		pgfx_pDeviceContext->VSSetShader(pComputeWavesVS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -1833,6 +1958,11 @@ void Graphics::BindPS(ShaderPicker shader)
 		pgfx_pDeviceContext->PSSetShader(pDefaultLightPS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::ComputeWaves_VS_PS_CS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pComputeWavesPS, nullptr, 0u);
+		break;
+	}
 	default:
 		break;
 	}
@@ -1913,12 +2043,12 @@ void Graphics::BindCS(ShaderPicker shader)
 	}
 	case ShaderPicker::DisturbWaves_CS:
 	{
-		pgfx_pDeviceContext->CSSetShader(pDisturbWaves, nullptr, 0u);
+		pgfx_pDeviceContext->CSSetShader(pComputeWavesDisturbCS, nullptr, 0u);
 		break;
 	}
 	case ShaderPicker::UpdateWaves_CS:
 	{
-		pgfx_pDeviceContext->CSSetShader(pUpdateWaves, nullptr, 0u);
+		pgfx_pDeviceContext->CSSetShader(pComputeWavesUpdateCS, nullptr, 0u);
 		break;
 	}
 	}
