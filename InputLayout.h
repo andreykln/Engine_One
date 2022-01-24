@@ -82,8 +82,13 @@ struct InputLayout
 		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-
-	static const UINT nLightElements = 2;
+	static const UINT nPositon = 1;
+	const D3D11_INPUT_ELEMENT_DESC positonIL[nPositon] =
+	{
+		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u }
+	};
+	/*static const UINT nLightElements = 2;
 	const D3D11_INPUT_ELEMENT_DESC light[nLightElements] =
 	{
 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
@@ -110,12 +115,7 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u },
 	};
 
-	static const UINT nPositon = 1;
-	const D3D11_INPUT_ELEMENT_DESC positonIL[nPositon] =
-	{
-		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-		D3D11_INPUT_PER_VERTEX_DATA, 0u }
-	};
+
 
 	static const UINT nTreeBillboardElements = 2;
 	const D3D11_INPUT_ELEMENT_DESC treeBillboardIL[nTreeBillboardElements] =
@@ -165,7 +165,7 @@ struct InputLayout
 		{"World", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48u,
 		D3D11_INPUT_PER_INSTANCE_DATA, 1},
 	};
-
+	*/
 
 
 

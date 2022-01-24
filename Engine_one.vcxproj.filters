@@ -16,12 +16,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{2dec86e4-62b7-40f8-ad95-50bbda1684de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Bindable">
-      <UniqueIdentifier>{e8f71723-d98c-4fbe-b3ce-b96d3f8aa7d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Bindable">
-      <UniqueIdentifier>{e8a00c09-7f25-4bda-857a-e6fd3c709d78}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Drawable">
       <UniqueIdentifier>{235e1c2b-a253-4bb4-86ff-c6bcf7b989e3}</UniqueIdentifier>
     </Filter>

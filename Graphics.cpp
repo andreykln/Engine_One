@@ -1508,7 +1508,7 @@ void Graphics::CreateAndBindSamplers()
 
 void Graphics::InitShaders()
 {
-	VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,
+	/*VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
 	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
 
@@ -1567,7 +1567,10 @@ void Graphics::InitShaders()
 	//SM generation instanced
 	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
 		IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
-	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
+	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");*/
+
+	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
+	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
 
 	//SSAO
 	//compute ssao
