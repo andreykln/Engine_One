@@ -29,8 +29,8 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
-// 	CreateShadowMapDemo();
-	CreateHillsWithGPUWaves();
+	CreateShadowMapDemo();
+// 	CreateHillsWithGPUWaves();
 // 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
@@ -49,8 +49,8 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
-	DrawHillsWithGPUWaves();
+	DrawShadowMapDemo();
+// 	DrawHillsWithGPUWaves();
 // 	DrawTerrain();
 
 

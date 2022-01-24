@@ -25,26 +25,8 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{224df3b4-d2b8-4d8e-953c-2a840e0968e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders\Vertex">
-      <UniqueIdentifier>{61415604-2aa1-4998-a32d-3603b80f0107}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Pixel">
-      <UniqueIdentifier>{7932eff0-5b25-408a-a064-6652521fbaa1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Drawable">
       <UniqueIdentifier>{6ef0dec1-c9a7-4f9b-8081-6b3fe6b54796}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Geometry">
-      <UniqueIdentifier>{c9e3aaad-33e7-44b3-9ee2-6887df964f5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Compute">
-      <UniqueIdentifier>{89f80250-35cd-487a-aba3-fbda678e86da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Hull">
-      <UniqueIdentifier>{70d35c08-977c-454b-9f0a-c78471293ee0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Domain">
-      <UniqueIdentifier>{d30ae4e1-7129-4195-b210-0d73ba3a07e7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders\Default">
       <UniqueIdentifier>{a49ab7b8-80fe-41fa-9696-7ea3e18615b2}</UniqueIdentifier>
@@ -298,54 +280,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="DepthCompVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
-    <FxCompile Include="DepthCompPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="TreeBillboardGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="Circle_CylinderGS.hlsl">
-      <Filter>Shaders\Geometry</Filter>
-    </FxCompile>
-    <FxCompile Include="HorizontalGaussianBlurCS.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="VerticalGaussianBlurCS.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="BlurTexturePS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="HorizontalBilateralBlur.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="VerticalBilateralBlur.hlsl">
-      <Filter>Shaders\Compute</Filter>
-    </FxCompile>
-    <FxCompile Include="QuadTessHS.hlsl">
-      <Filter>Shaders\Hull</Filter>
-    </FxCompile>
-    <FxCompile Include="QuadTessDS.hlsl">
-      <Filter>Shaders\Domain</Filter>
-    </FxCompile>
-    <FxCompile Include="QuadTessPS.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="SphereCubeMap.hlsl">
-      <Filter>Shaders\Pixel</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementMappingHS.hlsl">
-      <Filter>Shaders\Hull</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementMappingDS.hlsl">
-      <Filter>Shaders\Domain</Filter>
-    </FxCompile>
-    <FxCompile Include="DisplacementMappingVS.hlsl">
-      <Filter>Shaders\Vertex</Filter>
-    </FxCompile>
     <FxCompile Include="ComputeSSAOVS.hlsl">
       <Filter>Shaders\Default\SSAO</Filter>
     </FxCompile>
@@ -473,9 +407,6 @@
   <ItemGroup>
     <None Include="LightHelper.hlsli">
       <Filter>Shaders</Filter>
-    </None>
-    <None Include="BilateralHelper.hlsli">
-      <Filter>Shaders\Compute</Filter>
     </None>
   </ItemGroup>
 </Project>
