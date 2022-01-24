@@ -40,8 +40,8 @@ Picking::Picking(Graphics& gfx)
 	}
 	file.close();
 	verticesCopy = verticesFromTXT;
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
-	AddBind(pVertexBuffer);
+// 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, verticesFromTXT, L"TXT");
+// 	AddBind(pVertexBuffer);
 
 
 
@@ -65,26 +65,26 @@ Picking::Picking(Graphics& gfx)
 
 
 	indicesCopy = indices;
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
-
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
-
-	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBMatricesCar = pVCBPerObject->GetVertexConstantBuffer(); 
-	AddBind(pVCBPerObject);
-
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pCarM =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, carPSBuffer, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyCarMaterial = pCarM->GetPixelShaderConstantBuffer();
-	AddBind(pCarM);
-
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsPerFrame = pLightsCB->GetPixelShaderConstantBuffer();
-	AddBind(pLightsCB);
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
+// 
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pTopology);
+// 
+// 	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+// 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 	pCopyVCBMatricesCar = pVCBPerObject->GetVertexConstantBuffer(); 
+// 	AddBind(pVCBPerObject);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pCarM =
+// 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, carPSBuffer, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyCarMaterial = pCarM->GetPixelShaderConstantBuffer();
+// 	AddBind(pCarM);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+// 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyPCBLightsPerFrame = pLightsCB->GetPixelShaderConstantBuffer();
+// 	AddBind(pLightsCB);
 
 }
 

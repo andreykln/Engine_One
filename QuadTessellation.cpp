@@ -29,22 +29,22 @@ QuadTessellation::QuadTessellation(Graphics& gfx)
 		DirectX::XMFLOAT3(+5.0f,  0.0f, -15.0f),
 		DirectX::XMFLOAT3(+25.0f, 10.0f, -15.0f)
 	};
-	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"QuadTessellation.");
-	AddBind(pVB);
-
-	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST);
-	AddBind(topology);
-
-
-	HullShaderConstantBuffer<CB_QuadTess_HS>* pHSCB = 
-		new HullShaderConstantBuffer(gfx, cbHullShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyCBHS = pHSCB->GetHullShaderConstantBuffer();
-	AddBind(pHSCB);
-
-	DomainShaderConstantBuffer<CB_QuadTess_DS_WVP>* pDSCH =
-		new DomainShaderConstantBuffer(gfx, cbDSworldViewProj, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyCBDS = pDSCH->GetDomainShaderConstantBuffer();
-	AddBind(pDSCH);
+// 	VertexBuffer* pVB = new VertexBuffer(gfx, vertices, L"QuadTessellation.");
+// 	AddBind(pVB);
+// 
+// 	Topology* topology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST);
+// 	AddBind(topology);
+// 
+// 
+// 	HullShaderConstantBuffer<CB_QuadTess_HS>* pHSCB = 
+// 		new HullShaderConstantBuffer(gfx, cbHullShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyCBHS = pHSCB->GetHullShaderConstantBuffer();
+// 	AddBind(pHSCB);
+// 
+// 	DomainShaderConstantBuffer<CB_QuadTess_DS_WVP>* pDSCH =
+// 		new DomainShaderConstantBuffer(gfx, cbDSworldViewProj, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyCBDS = pDSCH->GetDomainShaderConstantBuffer();
+// 	AddBind(pDSCH);
 
 }
 

@@ -32,8 +32,8 @@ App::App()
 // 	CreateBox();
 
 // 	CreateShadowMapDemo();
-	CreateHillsWithGPUWaves();
-// 	CreateTerrain();
+// 	CreateHillsWithGPUWaves();
+	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -52,8 +52,8 @@ void App::DoFrame()
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
 // 	DrawShadowMapDemo();
-	DrawHillsWithGPUWaves();
-// 	DrawTerrain();
+// 	DrawHillsWithGPUWaves();
+	DrawTerrain();
 
 
 // 	DrawBox();
@@ -236,7 +236,7 @@ void App::DrawBilateralHillsBlur()
 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//clear resource so it can be used for RTV in a new frame
 	ID3D11ShaderResourceView* nullSRV = nullptr;
@@ -286,7 +286,7 @@ void App::DrawGaussBlur()
 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
 
 	//clear resource so it can be used for RTV in a new frame
 	ID3D11ShaderResourceView* nullSRV = nullptr;
@@ -313,7 +313,7 @@ void App::DrawDepthComplexityStencil()
 
 // 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix, camera.GetCameraPosition());
 // 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pHills->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
 
 // disable transparency for overdraw counting
 // 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
@@ -321,7 +321,7 @@ void App::DrawDepthComplexityStencil()
 // 
 // 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
 // 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pBox->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 
@@ -334,15 +334,15 @@ void App::DrawDepthComplexityStencil()
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 3);
 	pDepthArr[0]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.5f, 0.0f, 0.0f });
-	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 2);
 	pDepthArr[1]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 1.0f, 0.54f, 0.117f });
-	pDepthArr[1]->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pDepthArr[1]->BindAndDrawIndexed(wnd.GetGraphics());
 
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 1);
 	pDepthArr[2]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.0f, 0.5f, 0.0f });
-	pDepthArr[2]->BindAndDrawIndexed(wnd.GetGraphics());
+// 	pDepthArr[2]->BindAndDrawIndexed(wnd.GetGraphics());
 
 
 }
@@ -667,7 +667,7 @@ void App::DrawBezierPatchTess()
 	wnd.GetGraphics().BindHS(QuadTessellation_HS);
 	wnd.GetGraphics().BindDS(QuadTessellation_DS);
 	wnd.GetGraphics().BindPS(QuadTessellation_PS);
-	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
+// 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
 }
 
 void App::InstancingCreate()
@@ -682,7 +682,7 @@ void App::DrawInstancingDraw()
 	wnd.GetGraphics().BindPS(ShaderPicker::InstancedSkull_PS);
 	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
 	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
+// 	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
 }
 
 

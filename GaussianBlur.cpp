@@ -4,19 +4,19 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 {
 	geoGen.CreateBlurQuad(mesh);
 	
-	VertexBuffer* pVB = new VertexBuffer(gfx, mesh.vertices, L"BlurQuadVertices");
-	AddBind(pVB);
-
-	IndexBuffer* pIB = new IndexBuffer(gfx, mesh.indices, L"BlurIndicex");
-	AddIndexBuffer(pIB);
-
-	Topology* pT = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pT);
-
-	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBBlur = pVCBPerObject->GetVertexConstantBuffer();
-	AddBind(pVCBPerObject);
+// 	VertexBuffer* pVB = new VertexBuffer(gfx, mesh.vertices, L"BlurQuadVertices");
+// 	AddBind(pVB);
+// 
+// 	IndexBuffer* pIB = new IndexBuffer(gfx, mesh.indices, L"BlurIndicex");
+// 	AddIndexBuffer(pIB);
+// 
+// 	Topology* pT = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pT);
+// 
+// 	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+// 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 	pCopyVCBBlur = pVCBPerObject->GetVertexConstantBuffer();
+// 	AddBind(pVCBPerObject);
 
 
 
@@ -41,8 +41,8 @@ GaussianBlur::GaussianBlur(Graphics& gfx)
 	gfx.pgfx_pDevice->CreateShaderResourceView(pTextureToBlur, 0u, &pSRV);
 	pTextureToBlur->Release();
 	
-	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
+// 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
+// 	AddBind(pTexSampler);
 
 
 	D3D11_TEXTURE2D_DESC blurredTexDesc;

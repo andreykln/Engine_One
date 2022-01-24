@@ -14,13 +14,13 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 	}
 
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, treePositions, L"TreeSpritePositions");
-	AddBind(pVertexBuffer);
-
-	GeometryShaderConstantBuffer<CBBillboardGeometry>* pGSconstBuffer =
-		new GeometryShaderConstantBuffer<CBBillboardGeometry>(gfx, CBGeometryShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyGSConstBuffer = pGSconstBuffer->GetGeometryShaderConstantBuffer();
-	AddBind(pGSconstBuffer);
+// 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, treePositions, L"TreeSpritePositions");
+// 	AddBind(pVertexBuffer);
+// 
+// 	GeometryShaderConstantBuffer<CBBillboardGeometry>* pGSconstBuffer =
+// 		new GeometryShaderConstantBuffer<CBBillboardGeometry>(gfx, CBGeometryShader, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyGSConstBuffer = pGSconstBuffer->GetGeometryShaderConstantBuffer();
+// 	AddBind(pGSconstBuffer);
 
 	directionalLight.dirLight[0].ambient = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	directionalLight.dirLight[0].diffuse = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -50,20 +50,20 @@ TreeBillboard::TreeBillboard(Graphics& gfx)
 // 	ShaderResourceView* pSRV = new ShaderResourceView(gfx, treesTex, (UINT)std::size(treesTex), 1, true);
 // 	AddBind(pSRV);
 
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSconstBuffer =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pPSconstBuffer);
-
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pPSPerFrame =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPSConstBuffer = pPSPerFrame->GetPixelShaderConstantBuffer();
-	AddBind(pPSPerFrame);
-
-	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
-	AddBind(pTexSampler);
-
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-	AddBind(pTopology);
+// 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pPSconstBuffer =
+// 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	AddBind(pPSconstBuffer);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pPSPerFrame =
+// 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyPSConstBuffer = pPSPerFrame->GetPixelShaderConstantBuffer();
+// 	AddBind(pPSPerFrame);
+// 
+// 	TextureSampler* pTexSampler = new TextureSampler(gfx, ShaderType::Pixel);
+// 	AddBind(pTexSampler);
+// 
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+// 	AddBind(pTopology);
 }
 
 

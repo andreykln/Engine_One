@@ -68,30 +68,30 @@ InstancedSkull::InstancedSkull(Graphics& gfx)
 	BuildInstancedBuffer(instanced);
 
 
-	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, verticesFromTXT, instanced, L"IstancedVB");
-	pCopyInstancedBuffer = pVertexBuffer->Get_p_DynamicInstancedVertexBuffer();
-	AddBind(pVertexBuffer);
+// 	VertexBufferInstancedDynamic* pVertexBuffer = new VertexBufferInstancedDynamic(gfx, verticesFromTXT, instanced, L"IstancedVB");
+// 	pCopyInstancedBuffer = pVertexBuffer->Get_p_DynamicInstancedVertexBuffer();
+// 	AddBind(pVertexBuffer);
+// 
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
+// 
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pTopology);
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"TXTIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
-
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
-
-	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
-	AddBind(pVCBPerObject);
-
-	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
-		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	AddBind(pLightsPS);
-
-	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
-		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
-	AddBind(pLightsCB);
-
+// 	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+// 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 	pCopyVCBMatricesSkull = pVCBPerObject->GetVertexConstantBuffer(); //for updating every frame
+// 	AddBind(pVCBPerObject);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>* pLightsPS =
+// 		new PixelShaderConstantBuffer<CB_PS_DirectionalL_Fog>(gfx, directionalLight, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	AddBind(pLightsPS);
+// 
+// 	PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>* pLightsCB =
+// 		new PixelShaderConstantBuffer<CB_PS_PerFrameUpdate>(gfx, pscBuffer, 1u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyPCBLightsSkull = pLightsCB->GetPixelShaderConstantBuffer();
+// 	AddBind(pLightsCB);
+// 
 
 }
 

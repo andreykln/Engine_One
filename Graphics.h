@@ -30,11 +30,6 @@ public:
 	~Graphics();
 	void EndFrame();
 	void ClearBuffer(float red, float green, float blue) noexcept;
-	void DrawIndexed(UINT count) const noexcept;
-	void DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation);
-	void Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept;
-	void DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept;
-	void DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation);
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
 	void SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,

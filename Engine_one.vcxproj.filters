@@ -248,9 +248,6 @@
     <ClInclude Include="IndexBuffer.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="InputLayout.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="Topology.h">
       <Filter>Header Files\Bindable</Filter>
     </ClInclude>
@@ -304,9 +301,6 @@
     </ClInclude>
     <ClInclude Include="UtilityStructures.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="MirrorRoom.h">
-      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="DepthComplexity.h">
       <Filter>Header Files\Drawable</Filter>
@@ -376,6 +370,9 @@
     </ClInclude>
     <ClInclude Include="SSAO.h">
       <Filter>Header Files\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

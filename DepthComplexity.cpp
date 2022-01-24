@@ -20,8 +20,8 @@ DepthComplexity::DepthComplexity(Graphics& gfx)
  	vertices[3].pos = DirectX::XMFLOAT3(-30.0f, 30.0f, -5.0f);
 
 
-	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"DepthPlane");
-	AddBind(pVertexBuffer);
+// 	VertexBuffer* pVertexBuffer = new VertexBuffer(gfx, vertices, L"DepthPlane");
+// 	AddBind(pVertexBuffer);
 
 	std::vector<UINT> indices(6);
 	indices[0] = 0;
@@ -31,20 +31,20 @@ DepthComplexity::DepthComplexity(Graphics& gfx)
 	indices[4] = 2;
 	indices[5] = 3;
 
-	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"DepthIndexBuffer");
-	AddIndexBuffer(pIndexBuffer);
-	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(pTopology);
-
-	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
-		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
-	pCopyVCBMatricesDepth = pVCBPerObject->GetVertexConstantBuffer();
-	AddBind(pVCBPerObject);
-
-	PixelShaderConstantBuffer<CBPSDepth>* pPSCBDepth =
-		new PixelShaderConstantBuffer<CBPSDepth>(gfx, depthColor, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
-	pCopyPSCBDepthColor = pPSCBDepth->GetPixelShaderConstantBuffer();
-	AddBind(pPSCBDepth);
+// 	IndexBuffer* pIndexBuffer = new IndexBuffer(gfx, indices, L"DepthIndexBuffer");
+// 	AddIndexBuffer(pIndexBuffer);
+// 	Topology* pTopology = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+// 	AddBind(pTopology);
+// 
+// 	VertexConstantBuffer<CB_VS_Transform>* pVCBPerObject =
+// 		new VertexConstantBuffer<CB_VS_Transform>(gfx, transformMatrices, 0u, 1u);
+// 	pCopyVCBMatricesDepth = pVCBPerObject->GetVertexConstantBuffer();
+// 	AddBind(pVCBPerObject);
+// 
+// 	PixelShaderConstantBuffer<CBPSDepth>* pPSCBDepth =
+// 		new PixelShaderConstantBuffer<CBPSDepth>(gfx, depthColor, 0u, 1u, D3D11_CPU_ACCESS_WRITE, D3D11_USAGE_DYNAMIC);
+// 	pCopyPSCBDepthColor = pPSCBDepth->GetPixelShaderConstantBuffer();
+// 	AddBind(pPSCBDepth);
 }
 
 void DepthComplexity::UpdateVSMatrices(Graphics& gfx, const DirectX::XMMATRIX& in_world, const DirectX::XMMATRIX& in_ViewProj)

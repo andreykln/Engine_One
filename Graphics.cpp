@@ -128,31 +128,6 @@ void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 }
 
 
-void Graphics::DrawIndexed(UINT count) const noexcept
-{
-	pgfx_pDeviceContext->DrawIndexed(count, 0u, 0u);
-}
-
-void Graphics::DrawIndexed(UINT count, UINT startIndexLocation, UINT startVertexLocation)
-{
-	pgfx_pDeviceContext->DrawIndexed(count, startIndexLocation, startVertexLocation);
-}
-
-void Graphics::Draw(UINT VertexCount, UINT StartVertexLocation) const noexcept
-{
-	pgfx_pDeviceContext->Draw(VertexCount, StartVertexLocation);
-}
-
-void Graphics::DrawIndexedTwo(UINT count, UINT StartIndexLocation, INT BaseVertexLocation) const noexcept
-{
-	pgfx_pDeviceContext->DrawIndexed(count, StartIndexLocation, BaseVertexLocation);
-}
-
-
-void Graphics::DrawInstancedIndexed(UINT count, UINT instanceCount, UINT startIndexLocation, int baseVertexLocation, UINT startInstanceLocation)
-{
-	pgfx_pDeviceContext->DrawIndexedInstanced(count, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
-}
 
 HWND Graphics::GetWindowHandle() const noexcept
 {
