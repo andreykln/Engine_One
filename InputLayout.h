@@ -82,8 +82,8 @@ struct InputLayout
 // 		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 // 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 // 	};
-	static const UINT nPositon = 1;
-	const D3D11_INPUT_ELEMENT_DESC positonIL[nPositon] =
+	static const UINT nPosition = 1;
+	const D3D11_INPUT_ELEMENT_DESC positonIL[nPosition] =
 	{
 		{ "Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u }

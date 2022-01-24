@@ -291,7 +291,7 @@ private:
 // 	ID3D11PixelShader* pInstancedSkullPS = nullptr;
 // 	ID3D11InputLayout* pInstancedSkullIL = nullptr;
 
-	ID3D11InputLayout* pPositonIL = nullptr;
+	ID3D11InputLayout* pPositionIL = nullptr;
 
 	//sky
 	ID3D11VertexShader* pSkyVS = nullptr;

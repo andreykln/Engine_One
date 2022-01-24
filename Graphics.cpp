@@ -1569,7 +1569,7 @@ void Graphics::InitShaders()
 // 		IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
 // 	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
 
-	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
+	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPosition, L"Shaders\\Vertex\\SkyVS.cso");
 	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
 
 	//SSAO
