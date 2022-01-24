@@ -1508,77 +1508,77 @@ void Graphics::CreateAndBindSamplers()
 
 void Graphics::InitShaders()
 {
-	/*VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,
-		IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
-	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+// 	VS_IL_Init(&pLightAndTextureVS, IL.posNormalTexture, &pLightAndTextureIL,/
+// 		IL.nPosNormalTexture, L"Shaders\\Vertex\\LightAndTextureVS.cso");
+// 	PS_Init(&pLightAndTexturePS, L"Shaders\\Pixel\\LightAndTexturePS.cso");
+// 
+// 	VS_IL_Init(&pLightVS, IL.posNormalTexture, &pLightIL, IL.nPosNormalTexture, L"Shaders\\Vertex\\LightVS.cso");
+// 	PS_Init(&pLightPS, L"Shaders\\Pixel\\LightPS.cso");
+// 
+// 	//skull sm
+// 	VS_IL_Init(&pSkullSMGenVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapGenSkullVS.cso");
+// 	VS_IL_Init(&pSkullSMDrawVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapDrawSkullVS.cso");
+// 	PS_Init(&pSkullSMPS, L"Shaders\\Pixel\\ShadowMapDrawSkullPS.cso");
+// 	PS_Init(&pSkullSMGenPS, L"Shaders\\Pixel\\ShadowMapSkullGenPS.cso");
+// 
+// 	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
+// 
+// 	VS_IL_Init(&pDepthComplexityVS, IL.positionColorIL, &pDepthCoplexityIL, IL.nPosition_Color, L"Shaders\\Vertex\\DepthCompVS.cso");
+// 	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
+// 	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
+// 	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
+// 	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
+// 
+// 	CS_Init(&pHorizontalBilateralBlur, L"Shaders\\Compute\\HorizontalBilateralBlur.cso");
+// 	CS_Init(&pVerticalBilateralBlur, L"Shaders\\Compute\\VerticalBilateralBlur.cso");
+// 
+// 	CS_Init(&pDisturbWaves, L"Shaders\\Compute\\DisturbWavesCS.cso");
+// 	CS_Init(&pUpdateWaves, L"Shaders\\Compute\\UpdateWavesCS.cso");
+// 	VS_IL_Init(&pGPUWavesVS, IL.posNormalTexture, &pLightAndTextureIL,
+// 		IL.nPosNormalTexture, L"Shaders\\Vertex\\GPUWavesVS.cso");
+// 
+// 	VS_IL_Init(&pQuadTessellationVS, IL.positonIL, &pPositonIL, IL.nPositon, L"Shaders\\Vertex\\QuadTessellationPassVS.cso");
+// 	PS_Init(&pQuadTessellationPS, L"Shaders\\Pixel\\QuadTessPS.cso");
+// 	HS_Init(&pQuadTesselationHS, L"Shaders\\Hull\\QuadTessHS.cso");
+// 	DS_Init(&pQuadTesselationDS, L"Shaders\\Domain\\QuadTessDS.cso");
+// 
+// 	VS_IL_Init(&pInstancedSkullVS, IL.instancedSkull, &pInstancedSkullIL, IL.nInstancedSkull, L"Shaders\\Vertex\\InstancedSkullVS.cso");
+// 	PS_Init(&pInstancedSkullPS, L"Shaders\\Pixel\\InstancedSkullPS.cso");
+// 
+// 	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
+// 	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
+// 
+// 	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
+// 
+// 	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
+// 
+// 	VS_IL_Init(&pDisplacementMappingVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
+// 		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
+// 	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
+// 	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
+// 
+// 	//shadow map generation
+// 	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
+// 	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
+// 
+// 	//main light shader for textured surfaced
+// 	PS_Init(&pDefaultInstancedPS, L"Shaders\\Pixel\\DefaultInstanced_PS.cso");
 
-	VS_IL_Init(&pLightVS, IL.posNormalTexture, &pLightIL, IL.nPosNormalTexture, L"Shaders\\Vertex\\LightVS.cso");
-	PS_Init(&pLightPS, L"Shaders\\Pixel\\LightPS.cso");
-
-	//skull sm
-	VS_IL_Init(&pSkullSMGenVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapGenSkullVS.cso");
-	VS_IL_Init(&pSkullSMDrawVS, IL.skull, &pSkullSMIL, IL.nSkullElements, L"Shaders\\Vertex\\ShadowMapDrawSkullVS.cso");
-	PS_Init(&pSkullSMPS, L"Shaders\\Pixel\\ShadowMapDrawSkullPS.cso");
-	PS_Init(&pSkullSMGenPS, L"Shaders\\Pixel\\ShadowMapSkullGenPS.cso");
-
-	PS_Init(&pLightAndTextureArrayPS, L"Shaders\\Pixel\\LightAndTextureArrayPS.cso");
-
-	VS_IL_Init(&pDepthComplexityVS, IL.positionColorIL, &pDepthCoplexityIL, IL.nPosition_Color, L"Shaders\\Vertex\\DepthCompVS.cso");
-	PS_Init(&pDepthComplexityPS, L"Shaders\\Pixel\\DepthCompPS.cso");
-	CS_Init(&pHorizontalBlurCS, L"Shaders\\Compute\\HorizontalGaussianBlurCS.cso");
-	CS_Init(&pVerticalBlurCS, L"Shaders\\Compute\\VerticalGaussianBlurCS.cso");
-	PS_Init(&pBlurTexturePS, L"Shaders\\Pixel\\BlurTexturePS.cso");
-
-	CS_Init(&pHorizontalBilateralBlur, L"Shaders\\Compute\\HorizontalBilateralBlur.cso");
-	CS_Init(&pVerticalBilateralBlur, L"Shaders\\Compute\\VerticalBilateralBlur.cso");
-
-	CS_Init(&pDisturbWaves, L"Shaders\\Compute\\DisturbWavesCS.cso");
-	CS_Init(&pUpdateWaves, L"Shaders\\Compute\\UpdateWavesCS.cso");
-	VS_IL_Init(&pGPUWavesVS, IL.posNormalTexture, &pLightAndTextureIL,
-		IL.nPosNormalTexture, L"Shaders\\Vertex\\GPUWavesVS.cso");
-
-	VS_IL_Init(&pQuadTessellationVS, IL.positonIL, &pPositonIL, IL.nPositon, L"Shaders\\Vertex\\QuadTessellationPassVS.cso");
-	PS_Init(&pQuadTessellationPS, L"Shaders\\Pixel\\QuadTessPS.cso");
-	HS_Init(&pQuadTesselationHS, L"Shaders\\Hull\\QuadTessHS.cso");
-	DS_Init(&pQuadTesselationDS, L"Shaders\\Domain\\QuadTessDS.cso");
-
-	VS_IL_Init(&pInstancedSkullVS, IL.instancedSkull, &pInstancedSkullIL, IL.nInstancedSkull, L"Shaders\\Vertex\\InstancedSkullVS.cso");
-	PS_Init(&pInstancedSkullPS, L"Shaders\\Pixel\\InstancedSkullPS.cso");
-
-	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
-	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
-
-	PS_Init(&pCubeMapsPS, L"Shaders\\Pixel\\SphereCubeMap.cso");
-
-	PS_Init(&pNormalMappingPS, L"Shaders\\Pixel\\MainLightPS.cso");
-
-	VS_IL_Init(&pDisplacementMappingVS, IL.posNormalTexCoordTangent, &pPosNormalTexCTangentIL,
-		IL.nPosNormalTexCoordTangent, L"Shaders\\Vertex\\DisplacementMappingVS.cso");
-	HS_Init(&pDisplacementMappingHS, L"Shaders\\Hull\\DisplacementMappingHS.cso");
-	DS_Init(&pDisplacementMappingDS, L"Shaders\\Domain\\DisplacementMappingDS.cso");
-
-	//shadow map generation
-	VS_Init(&pShadowMapGenVS, L"Shaders\\Vertex\\ShadowMapGenVS.cso");
-	PS_Init(&pShadowMapGenPS, L"Shaders\\Pixel\\ShadowMapGenPS.cso");
-
-	//main light shader for textured surfaced
-	PS_Init(&pDefaultInstancedPS, L"Shaders\\Pixel\\DefaultInstanced_PS.cso");
-
-	//SM generation instanced
-	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
-		IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
-	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");*/
+// 	//SM generation instanced
+// 	VS_IL_Init(&pShadowMapInstancedVS, IL.smInstancedGen, &pShadowMapInstancedIL,
+// 		IL.nInstancedSMGen, L"Shaders\\Vertex\\ShadowMapGenInstancedVS.cso");
+// 	VS_Init(&pShadowMapDrawInstancedVS, L"Shaders\\Vertex\\ShadowMapDrawInstancedVS.cso");
 
 	VS_IL_Init(&pSkyVS, IL.positonIL, &pSkyIL, IL.nPositon, L"Shaders\\Vertex\\SkyVS.cso");
 	PS_Init(&pSkyPS, L"Shaders\\Pixel\\SkyPS.cso");
 
 	//SSAO
 	//compute ssao
-	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pLightAndTextureIL,
+	VS_IL_Init(&pSSAOFullScreenQuadVS, IL.posNormalTexture, &pPosNormalTexIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\ComputeSSAOVS.cso");
 	PS_Init(&pSSAOFullScreenQuadPS, L"Shaders\\Pixel\\ComputeSSAOPS.cso");
 	//SSAO blur
-	VS_IL_Init(&pSSAOBlurVS, IL.posNormalTexture, &pLightAndTextureIL,
+	VS_IL_Init(&pSSAOBlurVS, IL.posNormalTexture, &pPosNormalTexIL,
 		IL.nPosNormalTexture, L"Shaders\\Vertex\\SSAOBlurVS.cso");
 	PS_Init(&pSSAOBlurPS, L"Shaders\\Pixel\\SSAOBlurPS.cso");
 
@@ -1649,54 +1649,54 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::LightAndTexture_VS_PS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
-		pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::Light_VS_PS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pLightIL);
-		pgfx_pDeviceContext->VSSetShader(pLightVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::DepthComplexityVS_PS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pDepthCoplexityIL);
-		pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::GPUWaves_VS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
-		pgfx_pDeviceContext->VSSetShader(pGPUWavesVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::QuadTessellation_VS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pPositonIL);
-		pgfx_pDeviceContext->VSSetShader(pQuadTessellationVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::InstancedSkull_VS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pInstancedSkullIL);
-		pgfx_pDeviceContext->VSSetShader(pInstancedSkullVS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::LightAndTexture_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+// 		pgfx_pDeviceContext->VSSetShader(pLightAndTextureVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::Light_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pLightIL);
+// 		pgfx_pDeviceContext->VSSetShader(pLightVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::DepthComplexityVS_PS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pDepthCoplexityIL);
+// 		pgfx_pDeviceContext->VSSetShader(pDepthComplexityVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::GPUWaves_VS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+// 		pgfx_pDeviceContext->VSSetShader(pGPUWavesVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::QuadTessellation_VS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pPositonIL);
+// 		pgfx_pDeviceContext->VSSetShader(pQuadTessellationVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::InstancedSkull_VS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pInstancedSkullIL);
+// 		pgfx_pDeviceContext->VSSetShader(pInstancedSkullVS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::Sky_VS_PS:
 	{
 		pgfx_pDeviceContext->IASetInputLayout(pSkyIL);
 		pgfx_pDeviceContext->VSSetShader(pSkyVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::DisplacementMapping_VS_DS_HS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexCTangentIL);
-		pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexCTangentIL);
+// 		pgfx_pDeviceContext->VSSetShader(pDisplacementMappingVS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
 		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
@@ -1744,18 +1744,18 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->VSSetShader(pParticleFountainVS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::ShadowMapGenSkull_VS_PS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
-		pgfx_pDeviceContext->VSSetShader(pSkullSMGenVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
-		pgfx_pDeviceContext->VSSetShader(pSkullSMDrawVS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::ShadowMapGenSkull_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
+// 		pgfx_pDeviceContext->VSSetShader(pSkullSMGenVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pSkullSMIL);
+// 		pgfx_pDeviceContext->VSSetShader(pSkullSMDrawVS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::ShadowMapInstancedGen_VS:
 	{
 		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
@@ -1770,7 +1770,7 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::ComputeSSAO_VS_PS:
 	{
-		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
 		pgfx_pDeviceContext->VSSetShader(pSSAOFullScreenQuadVS, nullptr, 0u);
 		break;
 	}
@@ -1782,7 +1782,7 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 	}
 	case ShaderPicker::SSAOBlur_VS_PS:
 	{
-		pgfx_pDeviceContext->IASetInputLayout(pLightAndTextureIL);
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
 		pgfx_pDeviceContext->VSSetShader(pSSAOBlurVS, nullptr, 0u);
 		break;
 	}
@@ -1819,56 +1819,56 @@ void Graphics::BindPS(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::LightAndTexture_VS_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::Light_VS_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::LightAndTextureArrayPS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pLightAndTextureArrayPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::DepthComplexityVS_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::BlurTexture_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::QuadTessellation_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pQuadTessellationPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::InstancedSkull_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pInstancedSkullPS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::LightAndTexture_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pLightAndTexturePS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::Light_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pLightPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::LightAndTextureArrayPS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pLightAndTextureArrayPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::DepthComplexityVS_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pDepthComplexityPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::BlurTexture_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pBlurTexturePS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::QuadTessellation_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pQuadTessellationPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::InstancedSkull_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pInstancedSkullPS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::Sky_VS_PS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pSkyPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::CubeMap_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::DisplacementMapping_VS_DS_HS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::CubeMap_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pCubeMapsPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pNormalMappingPS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pDisplacementWavesPS, nullptr, 0u);
@@ -1891,16 +1891,16 @@ void Graphics::BindPS(ShaderPicker shader)
 		pgfx_pDeviceContext->PSSetShader(pParticleRainPS, nullptr, 0u);
 		break;
 	}
-	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pSkullSMPS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::ShadowMapGenSkull_VS_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::ShadowMapDrawSkull_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pSkullSMPS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::ShadowMapGenSkull_VS_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DefaultInstanced_PS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
@@ -1999,26 +1999,26 @@ void Graphics::BindCS(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::HorizontalBlur_CS:
-	{
-		pgfx_pDeviceContext->CSSetShader(pHorizontalBlurCS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::VerticalBlur_CS:
-	{
-		pgfx_pDeviceContext->CSSetShader(pVerticalBlurCS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::HorizontalBilateralBlur_CS:
-	{
-		pgfx_pDeviceContext->CSSetShader(pHorizontalBilateralBlur, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::VerticalBilateralBlur_CS:
-	{
-		pgfx_pDeviceContext->CSSetShader(pVerticalBilateralBlur, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::HorizontalBlur_CS:
+// 	{
+// 		pgfx_pDeviceContext->CSSetShader(pHorizontalBlurCS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::VerticalBlur_CS:
+// 	{
+// 		pgfx_pDeviceContext->CSSetShader(pVerticalBlurCS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::HorizontalBilateralBlur_CS:
+// 	{
+// 		pgfx_pDeviceContext->CSSetShader(pHorizontalBilateralBlur, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::VerticalBilateralBlur_CS:
+// 	{
+// 		pgfx_pDeviceContext->CSSetShader(pVerticalBilateralBlur, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DisturbWaves_CS:
 	{
 		pgfx_pDeviceContext->CSSetShader(pComputeWavesDisturbCS, nullptr, 0u);
@@ -2036,16 +2036,16 @@ void Graphics::BindHS(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::QuadTessellation_HS:
-	{
-		pgfx_pDeviceContext->HSSetShader(pQuadTesselationHS, 0u, 0u);
-		break;
-	}
-	case ShaderPicker::DisplacementMapping_VS_DS_HS:
-	{
-		pgfx_pDeviceContext->HSSetShader(pDisplacementMappingHS, 0u, 0u);
-		break;
-	}
+// 	case ShaderPicker::QuadTessellation_HS:
+// 	{
+// 		pgfx_pDeviceContext->HSSetShader(pQuadTesselationHS, 0u, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+// 	{
+// 		pgfx_pDeviceContext->HSSetShader(pDisplacementMappingHS, 0u, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
 		pgfx_pDeviceContext->HSSetShader(pDisplacementWavesHS, 0u, 0u);
@@ -2063,16 +2063,16 @@ void Graphics::BindDS(ShaderPicker shader)
 {
 	switch (shader)
 	{
-	case ShaderPicker::QuadTessellation_DS:
-	{
-		pgfx_pDeviceContext->DSSetShader(pQuadTesselationDS, 0u, 0u);
-		break;
-	}
-	case ShaderPicker::DisplacementMapping_VS_DS_HS:
-	{
-		pgfx_pDeviceContext->DSSetShader(pDisplacementMappingDS, 0u, 0u);
-		break;
-	}
+// 	case ShaderPicker::QuadTessellation_DS:
+// 	{
+// 		pgfx_pDeviceContext->DSSetShader(pQuadTesselationDS, 0u, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::DisplacementMapping_VS_DS_HS:
+// 	{
+// 		pgfx_pDeviceContext->DSSetShader(pDisplacementMappingDS, 0u, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::DisplacementWaves_VS_HS_DS_PS:
 	{
 		pgfx_pDeviceContext->DSSetShader(pDisplacementWavesDS, 0u, 0u);
@@ -2210,7 +2210,7 @@ void Graphics::InitializeInputLayout(const D3D11_INPUT_ELEMENT_DESC* inputLayout
 #ifdef MY_DEBUG
 	if (name != std::wstring())
 	{
-		SetDebugName(pLightAndTextureIL, name.c_str());
+		SetDebugName(*pIL, name.c_str());
 	}
 #endif
 }

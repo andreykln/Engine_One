@@ -29,9 +29,9 @@ App::App()
 // 	CreateBilateralHillsBlur();
 // 	CreateBox();
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateHillsWithGPUWaves();
-	CreateTerrain();
+// 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -49,9 +49,9 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawHillsWithGPUWaves();
-	DrawTerrain();
+// 	DrawTerrain();
 
 
 // 	DrawBox();
@@ -549,19 +549,19 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	//DEBUG quad
-// 	wnd.GetGraphics().BindVSandIA(DrawDebugTexQuad_VS_PS);
-// 	wnd.GetGraphics().BindPS(DrawDebugTexQuad_VS_PS);
-// 	stride = sizeof(vbPosNormalTex);
-// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
-	ID3D11ShaderResourceView* pNullSRV = nullptr;
-	//release for the SSAO pass
-	pDC->PSSetShaderResources(5u, 1u, &pNullSRV);
+	wnd.GetGraphics().BindVSandIA(DrawDebugTexQuad_VS_PS);
+	wnd.GetGraphics().BindPS(DrawDebugTexQuad_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	//////////////////////////////////////////////////////////////////////////
+	//release for the SSAO pass
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	pDC->PSSetShaderResources(5u, 1u, &pNullSRV);
 
 	//Displacement waves
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
