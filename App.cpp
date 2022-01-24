@@ -30,8 +30,8 @@ App::App()
 // 	CreateBox();
 
 // 	CreateShadowMapDemo();
-// 	CreateHillsWithGPUWaves();
-	CreateTerrain();
+	CreateHillsWithGPUWaves();
+// 	CreateTerrain();
 
 // 	CreateDepthComplexityStencil();
 // 	CreateGaussBlur();
@@ -50,8 +50,8 @@ void App::DoFrame()
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
 // 	DrawShadowMapDemo();
-// 	DrawHillsWithGPUWaves();
-	DrawTerrain();
+	DrawHillsWithGPUWaves();
+// 	DrawTerrain();
 
 
 // 	DrawBox();
