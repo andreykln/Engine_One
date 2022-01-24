@@ -1,7 +1,8 @@
 #pragma once
-#include "Bindable.h"
+// #include "Bindable.h"
+#include "Graphics.h"
 #include "GeometryGenerator.h"
-#include "BindableBase.h"
+// #include "BindableBase.h"
 #include "MathHelper.h"
 #include <fstream>
 #include <memory>

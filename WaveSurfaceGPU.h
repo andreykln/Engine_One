@@ -51,7 +51,6 @@ private:
 
 
 // 	std::vector<Vertex_IA> vertices;
-	VertexBufferDynamic* pDynamicVB = nullptr;
 	ID3D11Buffer* pCopyDynamicVB = nullptr;
 	CB_VS_Transform transformMatrices;
 	CB_PS_DirectionalL_Fog directionalLight;

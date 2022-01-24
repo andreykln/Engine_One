@@ -102,18 +102,6 @@
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bindable.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="Topology.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="Shape.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -132,14 +120,8 @@
     <ClCompile Include="Box.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBufferDynamic.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
     <ClCompile Include="GeoSphere.cpp">
       <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexConstantBuffer.cpp">
-      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>Source Files\Utility</Filter>
@@ -149,12 +131,6 @@
     </ClCompile>
     <ClCompile Include="Skull.cpp">
       <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResourceView.cpp">
-      <Filter>Source Files\Bindable</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSampler.cpp">
-      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="MirrorRoom.cpp">
       <Filter>Source Files\Drawable</Filter>
@@ -176,9 +152,6 @@
     </ClCompile>
     <ClCompile Include="QuadTessellation.cpp">
       <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBufferInstancedDynamic.cpp">
-      <Filter>Source Files\Bindable</Filter>
     </ClCompile>
     <ClCompile Include="InstancedSkull.cpp">
       <Filter>Source Files\Drawable</Filter>
@@ -236,21 +209,6 @@
     <ClInclude Include="Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bindable.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="BindableBase.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="Topology.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="Shape.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
@@ -266,17 +224,8 @@
     <ClInclude Include="Box.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBufferDynamic.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="GeoSphere.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="LightHelper.h">
       <Filter>Header Files\Utility</Filter>
@@ -293,12 +242,6 @@
     <ClInclude Include="Skull.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderResourceView.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureSampler.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="UtilityStructures.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -307,9 +250,6 @@
     </ClInclude>
     <ClInclude Include="TreeBillboard.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="DrawableBase.h">
       <Filter>Header Files\Drawable</Filter>
@@ -326,20 +266,8 @@
     <ClInclude Include="WaveSurfaceGPU.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="ComputeShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="QuadTessellation.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="HullShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="DomainShaderConstantBuffer.h">
-      <Filter>Header Files\Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBufferInstancedDynamic.h">
-      <Filter>Header Files\Bindable</Filter>
     </ClInclude>
     <ClInclude Include="InstancedSkull.h">
       <Filter>Header Files\Drawable</Filter>
