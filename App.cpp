@@ -24,8 +24,8 @@ App::App()
 
 
 // 	CreateShadowMapDemo();
-// 	CreateComputeShaderWaves();
-	CreateTerrain();
+	CreateComputeShaderWaves();
+// 	CreateTerrain();
 
 
 
@@ -41,8 +41,8 @@ void App::DoFrame()
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
 // 	DrawShadowMapDemo();
-// 	DrawComputeShaderWaves();
-	DrawTerrain();
+	DrawComputeShaderWaves();
+// 	DrawTerrain();
 
 
 

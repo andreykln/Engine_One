@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 #include "directxpackedvector.h"
-class Shader;
+// class Shader;
 class SSAO : public Shape
 {
 public:
