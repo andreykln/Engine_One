@@ -221,10 +221,7 @@ private:
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.5f, 0.5f, 0.0f, 1.0f };
 
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
 	void InitShaders();
-
 public:
 	void BindVSandIA(ShaderPicker shader);
 	void BindPS(ShaderPicker shader);
@@ -257,82 +254,15 @@ private:
 	ID3DBlob* pBlob = nullptr;
 	Stream_Out SO;
 
-// 	ID3D11VertexShader* pLightAndTextureVS = nullptr;
-// 	ID3D11InputLayout* pLightAndTextureIL = nullptr;
-// 	ID3D11PixelShader* pLightAndTexturePS = nullptr;
-// 	ID3D11PixelShader* pLightAndTextureArrayPS = nullptr;
-
-// 	ID3D11VertexShader* pDepthComplexityVS = nullptr;
-// 	ID3D11InputLayout* pDepthCoplexityIL = nullptr;
-// 	ID3D11PixelShader* pDepthComplexityPS = nullptr;
-
-// 	ID3D11VertexShader* pLightVS = nullptr;
-// 	ID3D11InputLayout* pLightIL = nullptr;
-// 	ID3D11PixelShader* pLightPS = nullptr;
-
-// 	ID3D11ComputeShader* pHorizontalBlurCS = nullptr;
-// 	ID3D11ComputeShader* pVerticalBlurCS = nullptr;
-// 	ID3D11PixelShader* pBlurTexturePS = nullptr;
-// 
-// 	ID3D11ComputeShader* pHorizontalBilateralBlur = nullptr;
-// 	ID3D11ComputeShader* pVerticalBilateralBlur = nullptr;
-// 
-// 	ID3D11ComputeShader* pDisturbWaves = nullptr;
-// 	ID3D11ComputeShader* pUpdateWaves = nullptr;
-// 	ID3D11VertexShader* pGPUWavesVS = nullptr;
-
-// 	ID3D11VertexShader* pQuadTessellationVS = nullptr;
-// 	ID3D11PixelShader* pQuadTessellationPS = nullptr;
-// 	ID3D11HullShader* pQuadTesselationHS = nullptr;
-// 	ID3D11DomainShader* pQuadTesselationDS = nullptr;
-
-	//instanced skull
-// 	ID3D11VertexShader* pInstancedSkullVS = nullptr;
-// 	ID3D11PixelShader* pInstancedSkullPS = nullptr;
-// 	ID3D11InputLayout* pInstancedSkullIL = nullptr;
-
 	ID3D11InputLayout* pPositionIL = nullptr;
 
 	//sky
 	ID3D11VertexShader* pSkyVS = nullptr;
 	ID3D11InputLayout* pSkyIL = nullptr;
 	ID3D11PixelShader* pSkyPS = nullptr;
-
-// 	ID3D11PixelShader* pCubeMapsPS = nullptr;
-
-	//normalMapping
-// 	ID3D11VertexShader* pNormalMappingVS = nullptr;
-// 	ID3D11PixelShader* pNormalMappingPS = nullptr;
-// 	ID3D11InputLayout* pPosNormalTexCTangentIL = nullptr;
-// 
-// 	//displacement mapping. 
-// 	ID3D11VertexShader* pDisplacementMappingVS = nullptr;
-// 	ID3D11DomainShader* pDisplacementMappingDS = nullptr;
-// 	ID3D11HullShader* pDisplacementMappingHS = nullptr;
-
-	//displacement waves
-
-
-
-
 	//shadow map generation
 	ID3D11VertexShader* pShadowMapGenVS = nullptr;
 	ID3D11PixelShader* pShadowMapGenPS = nullptr;
-
-	//shadow map gen instanced
-// 	ID3D11VertexShader* pShadowMapInstancedVS = nullptr;
-// 	ID3D11InputLayout* pShadowMapInstancedIL = nullptr;
-// 	ID3D11VertexShader* pShadowMapDrawInstancedVS = nullptr;
-
-// 	//shadowMap skull
-// 	ID3D11VertexShader* pSkullSMGenVS = nullptr;
-// 	ID3D11VertexShader* pSkullSMDrawVS = nullptr;
-// 	ID3D11PixelShader* pSkullSMPS = nullptr;
-// 	ID3D11PixelShader* pSkullSMGenPS = nullptr;
-// 	ID3D11InputLayout* pSkullSMIL = nullptr;
-
-	//main light shader with shadow map
-// 	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
 
 	//compute SSAO
 	ID3D11VertexShader* pSSAOFullScreenQuadVS = nullptr;
@@ -345,10 +275,6 @@ private:
 	ID3D11VertexShader* pDebugQuadVS = nullptr;
 	ID3D11PixelShader* pDebugQuadPS = nullptr;
 
-
-
-	//NEW ARCHITECTURE
-	//Default shaders
 	ID3D11InputLayout* pPosNormalTexcTangentIL = nullptr;
 	//Normal Map
 	ID3D11VertexShader* pNormalMapVS = nullptr;
@@ -407,7 +333,6 @@ private:
 	ID3D11PixelShader* pComputeWavesPS = nullptr;
 	ID3D11ComputeShader* pComputeWavesUpdateCS = nullptr;
 	ID3D11ComputeShader* pComputeWavesDisturbCS = nullptr;
-
 
 private:
 	void InitializeRenderStates();
