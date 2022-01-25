@@ -43,7 +43,6 @@ private:
 	Shape* pShapes;
 	ID3D11DeviceContext* pDC = nullptr;
 	Camera camera;
-	CubeMapCamera* pCMCamera;
 
 	ShadowMapGen* pShadowMap = nullptr;
 	DisplacementWaves* pDispWaves = nullptr;

@@ -108,34 +108,13 @@
     <ClCompile Include="Skull.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="DepthComplexity.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="TreeBillboard.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="GaussianBlur.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="GPUWaves.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="WaveSurfaceGPU.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="QuadTessellation.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="InstancedSkull.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="Picking.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="Sky.cpp">
-      <Filter>Source Files\Drawable</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicCubeMap.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="CubeMapCamera.cpp">
@@ -218,20 +197,11 @@
     <ClInclude Include="UtilityStructures.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="DepthComplexity.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="TreeBillboard.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="DrawableBase.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GaussianBlur.h">
-      <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="GPUWaves.h">
       <Filter>Header Files\Utility</Filter>
@@ -239,19 +209,10 @@
     <ClInclude Include="WaveSurfaceGPU.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="QuadTessellation.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="InstancedSkull.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="Picking.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="Sky.h">
-      <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicCubeMap.h">
       <Filter>Header Files\Drawable</Filter>
     </ClInclude>
     <ClInclude Include="CubeMapCamera.h">

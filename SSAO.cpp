@@ -134,6 +134,7 @@ void SSAO::BuildFrustumFarCorners(float fovy, float farZ)
 
 void SSAO::BuildOffsetVectors()
 {
+	using namespace DirectX;
 // Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube
 // and the 6 center points along each cube face.  We always alternate the points on 
 // opposites sides of the cubes.  This way we still get the vectors spread out even
@@ -223,6 +224,8 @@ cbComputeSSAO& SSAO::GetConstBufferSSAODataPerFrame()
 
 void SSAO::BuildRandomVectorTexture(Graphics& gfx)
 {
+	using namespace DirectX;
+
 	D3D11_TEXTURE2D_DESC texDesc;
 	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	texDesc.Width = 256;

@@ -1,5 +1,5 @@
 #pragma once
-#include "DrawableBase.h"
+#include "Shape.h"
 #include "directxpackedvector.h"
 class Shader;
 class SSAO : public Shape
