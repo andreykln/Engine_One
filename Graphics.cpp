@@ -1015,7 +1015,7 @@ ID3D11Buffer* Graphics::CreateIndexBuffer(const std::vector<UINT> indices, const
 {
 	D3D11_BUFFER_DESC desc;
 	desc.Usage = D3D11_USAGE_IMMUTABLE;
-	desc.ByteWidth = (sizeof(UINT) * indices.size());
+	desc.ByteWidth = (sizeof(UINT) * static_cast<UINT>(indices.size()));
 	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	desc.CPUAccessFlags = 0u;
 	desc.MiscFlags = 0u;

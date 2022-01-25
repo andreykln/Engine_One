@@ -73,7 +73,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 
 	pVertexBuffer = gfx.CreateVertexBuffer(verticesFromTXT, false, false, L"SkullVertices");
 
-	indexCount = indices.size();
+	indexCount = static_cast<UINT>(indices.size());
 	pIndexBuffer = gfx.CreateIndexBuffer(indices, L"Skull index buffer");
 }
 

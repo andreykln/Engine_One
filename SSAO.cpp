@@ -200,7 +200,7 @@ void SSAO::BuildFullScreenQuadBuffers(Graphics& gfx)
 		0, 2, 3
 	};
 	pQuadIndexBuffer = gfx.CreateIndexBuffer(indices, L"SSAO quad");
-	quadIndexCount = indices.size();
+	quadIndexCount = static_cast<UINT>(indices.size());
 }
 
 

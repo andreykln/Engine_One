@@ -18,7 +18,7 @@ DisplacementWaves::DisplacementWaves(Graphics& gfx)
 	}
 
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Tessellation waves VB");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Tessellation waves IB");
 }
 

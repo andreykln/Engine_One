@@ -108,9 +108,6 @@
     <ClCompile Include="Sky.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="CubeMapCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DisplacementWaves.cpp">
       <Filter>Source Files\Drawable</Filter>
     </ClCompile>
@@ -199,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="Sky.h">
       <Filter>Header Files\Drawable</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMapCamera.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DisplacementWaves.h">
       <Filter>Header Files\Drawable</Filter>

@@ -33,7 +33,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	}
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Cylinder vertices");
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Cylinder index buffer");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 
 	cylinderMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	cylinderMaterial.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);

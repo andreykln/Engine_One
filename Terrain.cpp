@@ -125,7 +125,7 @@ Terrain::Terrain(Graphics& gfx)
 	}
 
 	pIndexBuffer = gfx.CreateIndexBuffer(indices, L"Terrain indices");
-	indexCount = indices.size();
+	indexCount = static_cast<UINT>(indices.size());
 
 	terrainMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	terrainMaterial.fresnelR0 = DirectX::XMFLOAT3(0.3f, 0.3f, 0.3f);
@@ -161,8 +161,8 @@ float Terrain::GetHeight(float camX, float camZ, float camY)
 	float d = (camZ - 0.5f * GetWidth()) / -terrainInitInfo.cellSpacing;
 
 	//get the row and column we are in
-	int row = (float)std::floorf(d);
-	int col = (float)std::floorf(c);
+	int row = (int)std::floorf(d);
+	int col = (int)std::floorf(c);
 
 	// Grab the heights of the cell we are in.
 	// A*--*B
@@ -187,7 +187,7 @@ float Terrain::GetHeight(float camX, float camZ, float camY)
 	{
 		float uy = C - D;
 		float vy = B - D;
-		return D + (1.0f - s) * uy + (1.0 - t) * vy;
+		return D + (1.0f - s) * uy + (1.0f - t) * vy;
 	}
 }
 

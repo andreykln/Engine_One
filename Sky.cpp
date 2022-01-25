@@ -13,7 +13,7 @@ Sky::Sky(Graphics& gfx)
 
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"SkyBox vertices");
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"SkybBox indices");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 }
 
 ID3D11Buffer** Sky::GetVertexBuffer()

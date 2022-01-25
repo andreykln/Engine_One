@@ -24,7 +24,7 @@ VertexOut main(Particle vin)
     
     float t = vin.age;
 
-    float accelW = vin.initialVelocityW;
+    float accelW = vin.initialVelocityW.x;
     //constant acceleration equation
     vout.posW = 0.5f * t * t * accelW + t * vin.initialVelocityW + vin.initialPosW;
     vout.sizeW = vin.size;
@@ -37,6 +37,10 @@ VertexOut main(Particle vin)
       float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / 1.0f);
       vout.color = float4(1.0f, 1.0f, 1.0, opacity);
     }
-    return vout;
+    else
+    {
+        vout.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+        return vout;
     
-}
+    }

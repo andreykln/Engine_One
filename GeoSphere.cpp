@@ -38,7 +38,7 @@ GeoSphere::GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions)
 
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Spheres Vertex buffer");
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Spheres Index Buffer");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 
 
 	sphereMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);

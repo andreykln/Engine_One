@@ -50,8 +50,8 @@ private:
 	std::vector<float> heightMap;
 	std::vector<DirectX::XMFLOAT2> patchBoundsY;
 	const int cellsPerPatch = 64;
-	int numPatchVertRows = 0;
-	int numPatchVertCols = 0;
+	UINT numPatchVertRows = 0;
+	UINT numPatchVertCols = 0;
 // 	int numPatchVertices = 0;
-	int numPatchQuadFaces = 0;
+	UINT numPatchQuadFaces = 0;
 };

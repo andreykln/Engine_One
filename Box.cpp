@@ -23,7 +23,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"Cube vertex buffer");
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Cube index Buffer");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 	
 
 	boxMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

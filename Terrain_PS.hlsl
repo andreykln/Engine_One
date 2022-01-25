@@ -98,7 +98,7 @@ float4 main(DS_OUTPUT pin) : SV_TARGET
 
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
     //float shadowFactor = CalcShadowFactor(smpShadowMap, SRVshadowMap, pin.shadowPosH);
-    float shadowFactor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float shadowFactor = 1.0f;
     
 
     DirectionalLightEx dr = dirLight;

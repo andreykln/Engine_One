@@ -19,7 +19,7 @@ WaveSurfaceGPU::WaveSurfaceGPU(Graphics& gfx)
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"GPU waves vertex buffer");
 
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"GPU waves index buffer");
-	indexCount = mesh.indices.size();
+	indexCount = static_cast<UINT>(mesh.indices.size());
 	vsConsts = GetAndBuildConstantBufferData();
 	wavesMat.diffuseAlbedo = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 0.7f);
 	wavesMat.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);

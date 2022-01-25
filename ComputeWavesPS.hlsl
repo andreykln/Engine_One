@@ -51,7 +51,7 @@ float4 main(PSstruct pin) : SV_TARGET
     // Vector from point being lit to eye. 
     float3 toEyeW = normalize(camPositon - pin.PosW);
 
-    float3 bumpedNormalW = normalMapSample;
+    float3 bumpedNormalW = normalMapSample.xyz;
     
 	// Dynamically look up the texture in the array.
     diffuseAlbedo *= SRVTexture.Sample(smpAnisotropicWrap, pin.Tex);

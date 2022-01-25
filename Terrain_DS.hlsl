@@ -73,7 +73,7 @@ DS_OUTPUT main(
     //displacement mapping
     Output.posW.y = heightMap.SampleLevel(smpLinearWrap, Output.tex, 0).r;
     
-    Output.posW = mul(float4(Output.posW, 1.0f), world);
+    Output.posW = mul(float4(Output.posW, 1.0f), world).xyz;
     Output.posH = mul(float4(Output.posW, 1.0f), viewProjection);
     
     
