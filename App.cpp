@@ -27,8 +27,8 @@ App::App()
 	////////
 
 
-	CreateShadowMapDemo();
-// 	CreateHillsWithGPUWaves();
+// 	CreateShadowMapDemo();
+	CreateComputeShaderWaves();
 // 	CreateTerrain();
 
 
@@ -44,8 +44,8 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-	DrawShadowMapDemo();
-// 	DrawHillsWithGPUWaves();
+// 	DrawShadowMapDemo();
+	DrawComputeShaderWaves();
 // 	DrawTerrain();
 
 
@@ -105,7 +105,7 @@ void App::CalculateFrameStats()
 
 
 
-void App::CreateHillsWithGPUWaves()
+void App::CreateComputeShaderWaves()
 {
 	pWaveSurfaceGPU = new WaveSurfaceGPU(wnd.GetGraphics());
 	cbGPUWavesVSConstData computeWavesVSData = pWaveSurfaceGPU->GetAndBuildConstantBufferData();
@@ -121,7 +121,7 @@ void App::CreateHillsWithGPUWaves()
 
 }
 
-void App::DrawHillsWithGPUWaves()
+void App::DrawComputeShaderWaves()
 {
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
 // 	viewProjectionMatrix = GetViewProjectionCamera();

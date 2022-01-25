@@ -18,8 +18,8 @@ public:
 	void DebugTextToTitle();
 private:
 	void CalculateFrameStats();
-	void CreateHillsWithGPUWaves();
-	void DrawHillsWithGPUWaves();
+	void CreateComputeShaderWaves();
+	void DrawComputeShaderWaves();
 	//shadow map
 	void DrawSceneToShadowMap();
 	void CreateShadowMapDemo();
