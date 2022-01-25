@@ -26,17 +26,12 @@ App::App()
 
 	////////
 
-// 	CreateBilateralHillsBlur();
-// 	CreateBox();
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateHillsWithGPUWaves();
-	CreateTerrain();
+// 	CreateTerrain();
 
-// 	CreateDepthComplexityStencil();
-// 	CreateGaussBlur();
-// 	CreateBezierPatchTess();
-// 	InstancingCreate();
+
 
 }
 
@@ -49,17 +44,11 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawHillsWithGPUWaves();
-	DrawTerrain();
+// 	DrawTerrain();
 
 
-// 	DrawBox();
-// 	DrawDepthComplexityStencil();
-// 	DrawGaussBlur();
-// 	DrawBilateralHillsBlur();
-// 	DrawBezierPatchTess();
-// 	DrawInstancingDraw();
 
 	CalculateFrameStats();
 
@@ -166,166 +155,6 @@ void App::DrawHillsWithGPUWaves()
 	wnd.GetGraphics().UpdateSolutionComputeWaves(pWaveSurfaceGPU->numColumns, pWaveSurfaceGPU->numRows);
 	wnd.GetGraphics().UnbindAll();
 
-
-}
-
-void App::CreateBilateralHillsBlur()
-{
-	CreateHillsWithGPUWaves();
-	pGaussianBlur = new GaussianBlur(wnd.GetGraphics());
-
-}
-
-void App::DrawBilateralHillsBlur()
-{
-	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	viewProjectionMatrix = GetViewProjectionCamera();
-	//offscreen render target
-	ID3D11RenderTargetView* renderTargets[1] = { pGaussianBlur->GetRTV() };
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(pGaussianBlur->GetRTV(), color);
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	wnd.GetGraphics().SetViewport();
-	DrawHillsWithGPUWaves();
-	//set default render target
-	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-
-// 	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBilateralBlur_CS);
-// 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-// 	wnd.GetGraphics().UnbindCS();
-// 	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBilateralBlur_CS);
-// 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-// 	wnd.GetGraphics().UnbindCS();
-// 	//reset before drawing quad
-// 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-// // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
-	//quad
-	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-// 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
-
-	//clear resource so it can be used for RTV in a new frame
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &nullSRV);
-
-}
-
-void App::CreateGaussBlur()
-{
-// 	CreateHillsWithWavesAllLight();
-	CreateHillsWithGPUWaves();
-
-	pGaussianBlur = new GaussianBlur(wnd.GetGraphics());
-}
-
-void App::DrawGaussBlur()
-{
-	const float color[] = { 0.69f, 0.77f, 0.87f, 1.0f };
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	viewProjectionMatrix = GetViewProjectionCamera();
-	//offscreen render target
-	ID3D11RenderTargetView* renderTargets[1] = { pGaussianBlur->GetRTV() };
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearRenderTargetView(pGaussianBlur->GetRTV(), color);
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	wnd.GetGraphics().SetViewport();
-// 	DrawHillsWithWavesAllLight();
-	DrawHillsWithGPUWaves();
-
-	//set default render target
-	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-
-// 	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBlur_CS);
-// 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-// 	wnd.GetGraphics().UnbindCS();
-// 	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBlur_CS);
-// 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-// 	wnd.GetGraphics().UnbindCS();
-// 	//reset before drawing quad
-// 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-// // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
-// 	//quad
-	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
-// 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
-
-	//clear resource so it can be used for RTV in a new frame
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-	wnd.GetGraphics().pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &nullSRV);
-}
-
-void App::CreateBox()
-{
-	pBox = new Box(wnd.GetGraphics(), 3.0f, 3.0f, 3.0f);
-}
-
-
-void App::DrawDepthComplexityStencil()
-{
-	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityCountDSS, 0);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().CullCounterClockwiseRS);
-
-
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
-
-// 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix, camera.GetCameraPosition());
-// 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-// 	pHills->BindAndDrawIndexed(wnd.GetGraphics());
-
-// disable transparency for overdraw counting
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().TransparentBS, blendFactorsZero, 0xffffffff);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().NoCullRS);
-// 
-// 	pBox->UpdateVSMatrices(wnd.GetGraphics(), pBox->GetBoxForHillsOffset(), viewProjectionMatrix);
-// 	pBox->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-// 	pBox->BindAndDrawIndexed(wnd.GetGraphics());
-
-
-
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::DepthComplexityVS_PS);
-
-	pDepthArr[0]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
-	pDepthArr[1]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
-	pDepthArr[2]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 3);
-	pDepthArr[0]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.5f, 0.0f, 0.0f });
-// 	pDepthArr[0]->BindAndDrawIndexed(wnd.GetGraphics());
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 2);
-	pDepthArr[1]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 1.0f, 0.54f, 0.117f });
-// 	pDepthArr[1]->BindAndDrawIndexed(wnd.GetGraphics());
-
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(wnd.GetGraphics().DepthComplexityReadDSS, 1);
-	pDepthArr[2]->UpdateDepthComplexityColor(wnd.GetGraphics(), DirectX::XMFLOAT3{ 0.0f, 0.5f, 0.0f });
-// 	pDepthArr[2]->BindAndDrawIndexed(wnd.GetGraphics());
-
-
-}
-
-void App::CreateDepthComplexityStencil()
-{
-	pDepthArr[0] = new DepthComplexity(wnd.GetGraphics());
-	pDepthArr[1] = new DepthComplexity(wnd.GetGraphics());
-	pDepthArr[2] = new DepthComplexity(wnd.GetGraphics());
-	pHills = new Hills(wnd.GetGraphics(), 160.0f, 160.0f, 50u, 50u);
-// 	pBox = new Box(wnd.GetGraphics(), 5.0f, 5.0f, 5.0f, DemoSwitch::HillsDemo);
 
 }
 
@@ -437,7 +266,7 @@ void App::DrawShadowMapDemo()
 
 	//create normal-depth map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	DrawNormalMap(viewProjectionMatrix);
+	DrawNormalMap();
 
 	//SSAO
 	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
@@ -523,15 +352,15 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	//DEBUG quad
-	wnd.GetGraphics().BindVSandIA(DrawDebugTexQuad_VS_PS);
-	wnd.GetGraphics().BindPS(DrawDebugTexQuad_VS_PS);
-	stride = sizeof(vbPosNormalTex);
-	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+// 	wnd.GetGraphics().BindVSandIA(DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindPS(DrawDebugTexQuad_VS_PS);
+// 	stride = sizeof(vbPosNormalTex);
+// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	//////////////////////////////////////////////////////////////////////////
 	//release for the SSAO pass
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
@@ -578,7 +407,7 @@ void App::DrawShadowMapDemo()
 	
 }
 
-void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
+void App::DrawNormalMap()
 {
 	wnd.GetGraphics().ConstBufferNormalMapBind();
 	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
@@ -622,41 +451,6 @@ void App::DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix)
 		pDC->DrawIndexed(mSphereIndCount, 0u, 0u);
 	}
 }
-
-void App::CreateBezierPatchTess()
-{
-	pQuadTess = new QuadTessellation(wnd.GetGraphics());
-}
-
-void App::DrawBezierPatchTess()
-{
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
-
-	viewProjectionMatrix = GetViewProjectionCamera();
-	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -25.0f, 0.0f), camera.GetCameraPosition());
-
-// 	wnd.GetGraphics().BindVSandIA(QuadTessellation_VS);
-// 	wnd.GetGraphics().BindHS(QuadTessellation_HS);
-// 	wnd.GetGraphics().BindDS(QuadTessellation_DS);
-// 	wnd.GetGraphics().BindPS(QuadTessellation_PS);
-// 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
-}
-
-void App::InstancingCreate()
-{
-	pInstancedSkulls = new InstancedSkull(wnd.GetGraphics());
-}
-
-void App::DrawInstancingDraw()
-{
-	viewProjectionMatrix = GetViewProjectionCamera();
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::InstancedSkull_VS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::InstancedSkull_PS);
-	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
-	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-// 	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);
-}
-
 
 
 

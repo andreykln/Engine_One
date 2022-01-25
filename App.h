@@ -2,8 +2,6 @@
 #include "Window.h"
 #include "Timer.h"
 #include "DrawableBase.h"
-// #include "Shaders.h"
-// #include "Camera.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -22,30 +20,15 @@ private:
 	void CalculateFrameStats();
 	void CreateHillsWithGPUWaves();
 	void DrawHillsWithGPUWaves();
-	void CreateBilateralHillsBlur();
-	void DrawBilateralHillsBlur();
-	void CreateGaussBlur();
-	void DrawGaussBlur();
-	void CreateBox();
-	void CreateDepthComplexityStencil();
-	void DrawDepthComplexityStencil();
-
 	//shadow map
 	void DrawSceneToShadowMap();
 	void CreateShadowMapDemo();
 	void DrawShadowMapDemo();
-
 	//SSAO
-	void DrawNormalMap(DirectX::XMMATRIX viewProjectionMatrix);
-
-	void CreateBezierPatchTess();
-	void DrawBezierPatchTess();
-	void InstancingCreate();
-	void DrawInstancingDraw();
+	void DrawNormalMap();
 	void CreateTerrain();
 	void DrawTerrain();
 	DirectX::XMMATRIX GetViewProjectionCamera();
-
 	void SetDefaultRTVAndViewPort();
 
 private:
@@ -71,13 +54,8 @@ private:
 	ParticleSystem* pParticleExplosion = nullptr;
 	ParticleSystem* pParticleFountain = nullptr;
 	Terrain* pTerrain = nullptr;
-	InstancedSkull* pInstancedSkulls = nullptr;
 	WaveSurfaceGPU* pWaveSurfaceGPU = nullptr;
-	GaussianBlur* pGaussianBlur = nullptr;
-	DepthComplexity* pDepthArr[3];
 	Box* pDisplacementMappingBox = nullptr;
-	//NEW ARCH
-	//for empty pass to constant buffers
 	const DirectX::XMMATRIX ID = DirectX::XMMatrixIdentity();
 	Cylinder* pCylinder = nullptr;
 	Hills* pPlate = nullptr;
@@ -85,28 +63,12 @@ private:
 	GeoSphere* pGeoSphere = nullptr;
 	UINT stride = 0u;
 	UINT offset = 0u;
-		////////////
-	Cylinder* pInstancedCylinder = nullptr;
-	GeoSphere* pInstancedGeoSphere = nullptr;
-  	Hills* pHills = nullptr;
  	Skull* pSkull = nullptr;
-	QuadTessellation* pQuadTess = nullptr;
 	Sky* pSky = nullptr;
   	ShapesDemo shapes;
 
-	UINT stencilRef = 0;
-
-	const float screenAspect = float(resolution_width) / float(resolution_height);
-	float zoom = DirectX::XM_PI * 0.25f;
 	float colors[4]{ 0.0392f, 0.0392f, 0.17254f, 1.0f};
-	const float camera_move_step = 0.05f;
-	const float axis_x = -10.0f;
-	const float axis_y = 10.0f;
-	const float axis_z = 5.0f;
 
-	float millisecCounter = 0.0f;
-	float millisecElapsed = 0.0f;
-	const double sixtythOfASecond = 1000.0 / 60.0;
 
 };
 
