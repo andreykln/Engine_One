@@ -1756,18 +1756,18 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 // 		pgfx_pDeviceContext->VSSetShader(pSkullSMDrawVS, nullptr, 0u);
 // 		break;
 // 	}
-	case ShaderPicker::ShadowMapInstancedGen_VS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
-		pgfx_pDeviceContext->VSSetShader(pShadowMapInstancedVS, nullptr, 0u);
-		break;
-	}
-	case ShaderPicker::ShadowMapInstancedDraw_VS:
-	{
-		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
-		pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::ShadowMapInstancedGen_VS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
+// 		pgfx_pDeviceContext->VSSetShader(pShadowMapInstancedVS, nullptr, 0u);
+// 		break;
+// 	}
+// 	case ShaderPicker::ShadowMapInstancedDraw_VS:
+// 	{
+// 		pgfx_pDeviceContext->IASetInputLayout(pShadowMapInstancedIL);
+// 		pgfx_pDeviceContext->VSSetShader(pShadowMapDrawInstancedVS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::ComputeSSAO_VS_PS:
 	{
 		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
@@ -1901,11 +1901,11 @@ void Graphics::BindPS(ShaderPicker shader)
 // 		pgfx_pDeviceContext->PSSetShader(pSkullSMGenPS, nullptr, 0u);
 // 		break;
 // 	}
-	case ShaderPicker::DefaultInstanced_PS:
-	{
-		pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
-		break;
-	}
+// 	case ShaderPicker::DefaultInstanced_PS:
+// 	{
+// 		pgfx_pDeviceContext->PSSetShader(pDefaultInstancedPS, nullptr, 0u);
+// 		break;
+// 	}
 	case ShaderPicker::ComputeSSAO_VS_PS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pSSAOFullScreenQuadPS, nullptr, 0u);

@@ -167,32 +167,6 @@ void App::DrawHillsWithGPUWaves()
 	wnd.GetGraphics().UnbindAll();
 
 
-
-
-
-// 	viewProjectionMatrix = GetViewProjectionCamera();
-// 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-// 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(RenderStates::TransparentBS, blendFactorsZero, 0xffffffff);
-// 	pShaders->BindVSandIA(ShaderPicker::GPUWaves_VS);
-// 	pShaders->BindPS(ShaderPicker::LightAndTexture_VS_PS);
-// 	pWaveSurfaceGPU->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, -5.0f, 0.0f), viewProjectionMatrix,
-// 		timer.DeltaTime());
-// 	pWaveSurfaceGPU->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
-// 	pWaveSurfaceGPU->BindAndDrawIndexed(wnd.GetGraphics());
-// 	pWaveSurfaceGPU->ClearVertexShaderResource(wnd.GetGraphics());
-// 	// every quarter second, generate a random wave
-// 	static float t_base = 0.0f;
-// 	if ((timer.TotalTime() - t_base) >= 0.1f)
-// 	{
-// 		pShaders->BindCS(ShaderPicker::DisturbWaves_CS);
-// 		t_base += 0.1f;
-// 		pWaveSurfaceGPU->Disturb(wnd.GetGraphics());
-// 		pShaders->UnbindCS();
-// 	}
-// 	pShaders->BindCS(ShaderPicker::UpdateWaves_CS);
-// 	pWaveSurfaceGPU->UpdateSolution(wnd.GetGraphics(), timer.DeltaTime());
-// 	pShaders->UnbindAll();
 }
 
 void App::CreateBilateralHillsBlur()
@@ -221,17 +195,17 @@ void App::DrawBilateralHillsBlur()
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
-	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBilateralBlur_CS);
-	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-	wnd.GetGraphics().UnbindCS();
-	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBilateralBlur_CS);
-	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-	wnd.GetGraphics().UnbindCS();
-	//reset before drawing quad
-	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-// 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
+// 	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBilateralBlur_CS);
+// 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
+// 	wnd.GetGraphics().UnbindCS();
+// 	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBilateralBlur_CS);
+// 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
+// 	wnd.GetGraphics().UnbindCS();
+// 	//reset before drawing quad
+// 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+// // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 // 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
@@ -271,18 +245,18 @@ void App::DrawGaussBlur()
 	renderTargets[0] = wnd.GetGraphics().pgfx_RenderTargetView.Get();
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
 
-	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBlur_CS);
-	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
-	wnd.GetGraphics().UnbindCS();
-	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBlur_CS);
-	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
-	wnd.GetGraphics().UnbindCS();
-	//reset before drawing quad
-	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-// 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
-	//quad
+// 	wnd.GetGraphics().BindCS(ShaderPicker::HorizontalBlur_CS);
+// 	pGaussianBlur->PerformHorizontalBlur(wnd.GetGraphics());
+// 	wnd.GetGraphics().UnbindCS();
+// 	wnd.GetGraphics().BindCS(ShaderPicker::VerticalBlur_CS);
+// 	pGaussianBlur->PerformVerticalBlur(wnd.GetGraphics());
+// 	wnd.GetGraphics().UnbindCS();
+// 	//reset before drawing quad
+// 	//wnd.GetGraphics().pgfx_pDeviceContext->OMSetRenderTargets(1u, renderTargets, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+// // 	wnd.GetGraphics().ClearBuffer(0.69f, 0.77f, 0.87f);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::BlurTexture_PS);
+// 	//quad
 	pGaussianBlur->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixIdentity(), viewProjectionMatrix);
 // 	pGaussianBlur->BindAndDrawIndexed(wnd.GetGraphics());
 
@@ -306,8 +280,8 @@ void App::DrawDepthComplexityStencil()
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().CullCounterClockwiseRS);
 
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::LightAndTexture_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::LightAndTexture_VS_PS);
 
 // 	pHills->UpdateVSMatrices(wnd.GetGraphics(), pHills->GetHillsOffset(), viewProjectionMatrix, camera.GetCameraPosition());
 // 	pHills->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
@@ -323,8 +297,8 @@ void App::DrawDepthComplexityStencil()
 
 
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::DepthComplexityVS_PS);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DepthComplexityVS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::DepthComplexityVS_PS);
 
 	pDepthArr[0]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
 	pDepthArr[1]->UpdateVSMatrices(wnd.GetGraphics(), DirectX::XMMatrixTranslation(0.0f, 0.0f, 3.0f), viewProjectionMatrix);
@@ -661,10 +635,10 @@ void App::DrawBezierPatchTess()
 	viewProjectionMatrix = GetViewProjectionCamera();
 	pQuadTess->UpdateTessellationShaderBuffers(wnd.GetGraphics(), viewProjectionMatrix, DirectX::XMMatrixTranslation(0.0f, -25.0f, 0.0f), camera.GetCameraPosition());
 
-	wnd.GetGraphics().BindVSandIA(QuadTessellation_VS);
-	wnd.GetGraphics().BindHS(QuadTessellation_HS);
-	wnd.GetGraphics().BindDS(QuadTessellation_DS);
-	wnd.GetGraphics().BindPS(QuadTessellation_PS);
+// 	wnd.GetGraphics().BindVSandIA(QuadTessellation_VS);
+// 	wnd.GetGraphics().BindHS(QuadTessellation_HS);
+// 	wnd.GetGraphics().BindDS(QuadTessellation_DS);
+// 	wnd.GetGraphics().BindPS(QuadTessellation_PS);
 // 	pQuadTess->BindAndDraw(wnd.GetGraphics(), 16u, 0u);
 }
 
@@ -676,8 +650,8 @@ void App::InstancingCreate()
 void App::DrawInstancingDraw()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::InstancedSkull_VS);
-	wnd.GetGraphics().BindPS(ShaderPicker::InstancedSkull_PS);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::InstancedSkull_VS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::InstancedSkull_PS);
 	pInstancedSkulls->UpdateVSMatrices(wnd.GetGraphics(), viewProjectionMatrix, camera.GetViewMatrix(), camera.GetProjecion());
 	pInstancedSkulls->UpdatePSConstBuffers(wnd.GetGraphics(), camera.GetCameraPosition());
 // 	pInstancedSkulls->BindAndDrawInstancedIndexed(wnd.GetGraphics(), pInstancedSkulls->GetAmountOfVisible(), 0u, 0u, 0u);

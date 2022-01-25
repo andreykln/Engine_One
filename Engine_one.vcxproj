@@ -197,7 +197,6 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClCompile>
     <ClCompile Include="InstancedSkull.cpp" />
     <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="MirrorRoom.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="QuadTessellation.cpp" />

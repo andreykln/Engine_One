@@ -320,9 +320,9 @@ private:
 	ID3D11PixelShader* pShadowMapGenPS = nullptr;
 
 	//shadow map gen instanced
-	ID3D11VertexShader* pShadowMapInstancedVS = nullptr;
-	ID3D11InputLayout* pShadowMapInstancedIL = nullptr;
-	ID3D11VertexShader* pShadowMapDrawInstancedVS = nullptr;
+// 	ID3D11VertexShader* pShadowMapInstancedVS = nullptr;
+// 	ID3D11InputLayout* pShadowMapInstancedIL = nullptr;
+// 	ID3D11VertexShader* pShadowMapDrawInstancedVS = nullptr;
 
 // 	//shadowMap skull
 // 	ID3D11VertexShader* pSkullSMGenVS = nullptr;
@@ -332,7 +332,7 @@ private:
 // 	ID3D11InputLayout* pSkullSMIL = nullptr;
 
 	//main light shader with shadow map
-	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
+// 	ID3D11PixelShader* pDefaultInstancedPS = nullptr;
 
 	//compute SSAO
 	ID3D11VertexShader* pSSAOFullScreenQuadVS = nullptr;
