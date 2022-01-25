@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class DisplacementWaves : public Shape
+class DisplacementWaves
 {
 public:
 	DisplacementWaves(Graphics& gfx);

@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class Terrain : public Shape
+class Terrain
 {
 public:
 	struct InitInfo

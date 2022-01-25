@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class GeoSphere : public Shape
+class GeoSphere
 {
 public:
 	GeoSphere(Graphics& gfx, float radius, UINT numSubdivisions);

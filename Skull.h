@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class Skull : public Shape
+class Skull
 {
 public:
 	Skull(Graphics& gfx, const std::wstring& path);

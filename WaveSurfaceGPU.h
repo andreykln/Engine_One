@@ -1,8 +1,7 @@
 #pragma once
-#include "Shape.h"
 #include "GPUWaves.h"
 
-class WaveSurfaceGPU : public Shape
+class WaveSurfaceGPU
 {
 public:
 	WaveSurfaceGPU(Graphics& gfx);

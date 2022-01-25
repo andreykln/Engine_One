@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class Cylinder : public Shape
+class Cylinder
 {
 public:
 	Cylinder(Graphics& gfx, float bottom_radius, float top_radius, float height, UINT slice_count, UINT stack_count);

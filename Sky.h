@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class Sky : public Shape
+class Sky
 {
 public:
 	Sky(Graphics& gfx);

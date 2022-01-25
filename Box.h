@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class Box : public Shape
+class Box
 {
 public:
 	Box(Graphics& gfx, float width, float height, float depth);

@@ -2,7 +2,7 @@
 #include "Shape.h"
 #include "LightHelper.h"
 #include "MathHelper.h"
-class Hills : public Shape
+class Hills
 {
 public:
 	Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n);

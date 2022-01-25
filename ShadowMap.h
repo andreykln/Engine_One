@@ -1,7 +1,7 @@
 #pragma once
 #include "Shape.h"
 
-class ShadowMapGen : public Shape 
+class ShadowMapGen
 {
 public:
 	struct BoundingSphereShadow

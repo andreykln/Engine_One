@@ -8,11 +8,5 @@
 #include <typeinfo>
 #include <cassert>
 #include "UtilityStructures.h"
-class Shape
-{
-public:
-	Shape()	{}
-	Shape(const Shape&) = delete;
-	virtual ~Shape() = default;
-};
+#include "directxpackedvector.h"
 

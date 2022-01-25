@@ -1,8 +1,7 @@
 #pragma once
-
 #include "Shape.h"
 
-class ParticleSystem : public Shape
+class ParticleSystem
 {
 public:
 	ParticleSystem(Graphics& gfx, UINT maxParticles);
