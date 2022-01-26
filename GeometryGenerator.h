@@ -1,8 +1,9 @@
 #pragma once
-#include <DirectXMath.h>
-#include <vector>
-#include <algorithm>
-#include "d3d11.h"
+#include "Shape.h"
+// #include <DirectXMath.h>
+// #include <vector>
+// #include <algorithm>
+// #include "d3d11.h"
 
 class GeometryGenerator
 {

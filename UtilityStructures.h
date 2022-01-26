@@ -198,6 +198,28 @@ struct cbWavesUpdateCS
 	int padding[2];
 };
 
+struct Subset
+{
+	UINT ID = -1;
+	UINT VertexStart = 0;
+	UINT VertexCount = 0;
+	UINT FaceStart = 0;
+	UINT FaceCount = 0;
+};
+
+struct M3dMaterial
+{
+	std::string name;
+	DirectX::XMFLOAT4 diffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 fresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float shininess = 0.2f;
+	bool alphaClip = false;
+
+	std::string materialTypeName;
+	std::wstring diffuseMapName;
+	std::wstring normalMapName;
+};
+
 
 enum DemoSwitch
 {

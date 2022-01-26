@@ -179,6 +179,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DisplacementWaves.cpp" />
+    <ClCompile Include="DrawMd3.cpp" />
     <ClCompile Include="Entry.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GeoSphere.cpp">
@@ -192,6 +193,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="M3dLoader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skull.cpp">
@@ -220,7 +222,9 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DisplacementWaves.h" />
     <ClInclude Include="DrawableBase.h" />
+    <ClInclude Include="DrawMd3.h" />
     <ClInclude Include="GPUWaves.h" />
+    <ClInclude Include="M3dLoader.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Sky.h" />
