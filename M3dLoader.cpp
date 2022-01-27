@@ -1,5 +1,11 @@
 #include "M3dLoader.h"
 
+M3dLoader::M3dLoader(const std::string& filename)
+{
+	bool loaded = LoadM3d(filename, rawData.vertices, rawData.indices, rawData.subsets, rawData.mats);
+
+}
+
 bool M3dLoader::LoadM3d(const std::string& filename,
 	std::vector<vbPosNormalTexTangent>& vertices,
 	std::vector<UINT>& indices,
@@ -28,25 +34,27 @@ bool M3dLoader::LoadM3d(const std::string& filename,
 		ReadSubsetTable(fin, numMaterials, subsets);
 		ReadVertices(fin, numVertices, vertices);
 		ReadTriangles(fin, numTriangles, indices);
+		return true;
 	}
+	return false;
 
 }
 
 std::wstring M3dLoader::utf8toUtf16(const std::string& str)
 {
-	{
-		if (str.empty())
-			return std::wstring();
+	
+	if (str.empty())
+		return std::wstring();
 
-		size_t charsNeeded = ::MultiByteToWideChar(CP_UTF8, 0,
-			str.data(), (int)str.size(), NULL, 0);
+	size_t charsNeeded = ::MultiByteToWideChar(CP_UTF8, 0,
+		str.data(), (int)str.size(), NULL, 0);
 
-		std::vector<wchar_t> buffer(charsNeeded);
-		int charsConverted = ::MultiByteToWideChar(CP_UTF8, 0,
-			str.data(), (int)str.size(), &buffer[0], buffer.size());
+	std::vector<wchar_t> buffer(charsNeeded);
+	int charsConverted = ::MultiByteToWideChar(CP_UTF8, 0,
+		str.data(), (int)str.size(), &buffer[0], buffer.size());
 
-		return std::wstring(&buffer[0], charsConverted);
-	}
+	return std::wstring(&buffer[0], charsConverted);
+	
 }
 
 void M3dLoader::ReadMaterials(std::ifstream& fin, UINT numMaterials, std::vector<M3dMaterial>& mats)
@@ -100,8 +108,9 @@ void M3dLoader::ReadVertices(std::ifstream& fin, UINT numVertices, std::vector<v
 	fin >> ignore;
 	for (UINT i = 0; i < numVertices; i++)
 	{
+		float dummy;
 		fin >> ignore >> vertices[i].pos.x >> vertices[i].pos.y >> vertices[i].pos.z;
-		fin >> ignore >> vertices[i].tangent.x >> vertices[i].tangent.y >> vertices[i].tangent.z;
+		fin >> ignore >> vertices[i].tangent.x >> vertices[i].tangent.y >> vertices[i].tangent.z >> dummy; //tangen.w?
 		fin >> ignore >> vertices[i].normal.x >> vertices[i].normal.y >> vertices[i].normal.z;
 		fin >> ignore >> vertices[i].tex.x >> vertices[i].tex.y;
 	}

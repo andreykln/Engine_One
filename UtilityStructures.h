@@ -1,6 +1,5 @@
 #pragma once
 #include "LightHelper.h"
-#include "directxmath.h"
 
 struct vbPosNormalTex
 {
@@ -220,6 +219,13 @@ struct M3dMaterial
 	std::wstring normalMapName;
 };
 
+struct M3dRawData
+{
+	std::vector<vbPosNormalTexTangent> vertices;
+	std::vector<UINT> indices;
+	std::vector<Subset> subsets;
+	std::vector<M3dMaterial> mats;
+};
 
 enum DemoSwitch
 {

@@ -23,10 +23,14 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 	CreateTerrain();
 
+
+	m3dLoad = new M3dLoader("models\\base.m3d");
+	M3dRawData d = m3dLoad->rawData;
+	delete m3dLoad;
 
 
 }

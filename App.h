@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "DrawableBase.h"
+#include "M3dLoader.h"
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -42,7 +43,7 @@ private:
 	Timer timer;
 	ID3D11DeviceContext* pDC = nullptr;
 	Camera camera;
-
+	M3dLoader* m3dLoad = nullptr;
 	ShadowMapGen* pShadowMap = nullptr;
 	DisplacementWaves* pDispWaves = nullptr;
 	SSAO* pSSAO = nullptr;
