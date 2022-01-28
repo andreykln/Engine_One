@@ -11,7 +11,7 @@ Diffuse: 0.9 0.9 0.9
 Fresnel0: 0.05 0.05 0.05
 Shininess: 0.5
 AlphaClip: 0
-MaterialTypeName: Stone
+MaterialTypeName: Stone01
 DiffuseMap: templeBase01_diffuse
 NormalMap: templeBase01_normal
 
@@ -20,7 +20,7 @@ Diffuse: 0.9 0.9 0.9
 Fresnel0: 0.05 0.05 0.05
 Shininess: 0.5
 AlphaClip: 0
-MaterialTypeName: Stone
+MaterialTypeName: Stone02
 DiffuseMap: templeBase02_diffuse
 NormalMap: templeBase02_normal
 
@@ -29,7 +29,7 @@ Diffuse: 0.9 0.9 0.9
 Fresnel0: 0.05 0.05 0.05
 Shininess: 0.5
 AlphaClip: 0
-MaterialTypeName: Stone
+MaterialTypeName: Stone03
 DiffuseMap: templeBase03_diffuse
 NormalMap: templeBase03_normal
 

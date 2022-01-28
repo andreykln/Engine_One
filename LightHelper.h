@@ -70,6 +70,14 @@ struct MaterialEx
 	float shininess;
 };
 
+struct MaterialM3d
+{
+	MaterialEx mat;
+	std::string name;
+	std::wstring diffuseMapName;
+	std::wstring normalMapName;
+};
+
 struct DirectionalLightEx
 {
 	DirectionalLightEx() 

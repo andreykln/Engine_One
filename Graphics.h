@@ -25,6 +25,16 @@ extern const short resolution_height;
 
 class Graphics
 {
+	struct M3dModel
+	{
+		ID3D11Buffer* pVertexBuffer = nullptr;
+		ID3D11Buffer* pIndexBuffer = nullptr;
+		std::vector<MaterialM3d> mats;
+		std::vector<Subset> subsets;
+// 		std::string materialTypeName;
+// 		std::wstring diffuseMapName;
+// 		std::wstring normalMapName;
+	};
 public:
 	Graphics(HWND wnd);
 	~Graphics();
@@ -43,13 +53,17 @@ public:
 	void AddSRVToMap(const std::wstring& name, ID3D11ShaderResourceView* pSRV, bool diffuse, bool normal);
 	void CreateAndBindSamplers();
 	//techniques
+	// Create normal map
 	void ConstBufferNormalMapBind();
 	void NormalMap(const DirectX::XMMATRIX world);
 	void ReleaseNormalMapResource();
+	//SSAO
 	void ComputeSSAO(ID3D11RenderTargetView* pAmbientRTV0, D3D11_VIEWPORT& ssaoViewport,
 		ID3D11ShaderResourceView* randomVecSRV,	ID3D11ShaderResourceView* pNormalMapSRV);
 	void BlurSSAOMap(int blurCount, ID3D11RenderTargetView* pAmbientMapRTV0, ID3D11RenderTargetView* pAmbientMapRTV1,
 		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
+	void ReleaseSSAOShaderResource();
+
 	void DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
 		const std::wstring& diffuseMap, const std::wstring& normalMap);
 	void TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO);
@@ -89,6 +103,9 @@ public:
 	void DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle);
 	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB,
 		ParticlePick particle);
+
+	void CreateM3dModel(M3dRawData& data);
+	void DrawM3dStaticModel(std::string name, DirectX::XMMATRIX& world);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();
@@ -146,6 +163,8 @@ private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView**> diffuseMapArray;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
+	std::unordered_map<std::string, M3dModel> m3dModelsMap;
+	M3dModelNames m3dNames;
 	std::vector<ID3D11SamplerState*> samplers;
 
 	//common per frame updates

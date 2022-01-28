@@ -862,6 +862,63 @@ void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDra
 
 }
 
+void Graphics::CreateM3dModel(M3dRawData& data)
+{
+	M3dModel model;
+	model.pVertexBuffer = CreateVertexBuffer(data.vertices, false, false, L"Temple Base vertices");
+	model.pIndexBuffer = CreateIndexBuffer(data.indices, L"temple base indices");
+	MaterialM3d m;
+	for (auto& a : data.mats)
+	{
+		m.mat.diffuseAlbedo = a.diffuseAlbedo;
+		m.mat.fresnelR0 = a.fresnelR0;
+		m.mat.shininess = a.shininess;
+		m.name = a.materialTypeName;
+		m.diffuseMapName = a.diffuseMapName;
+		m.normalMapName = a.normalMapName;
+		model.mats.push_back(m);
+	}
+	model.subsets.resize(data.subsets.size());
+	model.subsets = data.subsets;
+	m3dModelsMap.insert(std::make_pair(m3dNames.templeBase, model));
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].diffuseMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
+	}
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].normalMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
+	}
+
+}
+
+void Graphics::DrawM3dStaticModel(std::string name, DirectX::XMMATRIX& world)
+{
+	UINT stride = sizeof(vbPosNormalTexTangent);
+	UINT offset = 0;
+	M3dModel model = m3dModelsMap.at(name);
+	for (size_t i = 0; i < model.subsets.size(); i++)
+	{
+		MaterialEx mat;
+		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
+		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
+		mat.shininess = model.mats[i].mat.shininess;
+		DefaultLightUpdate(mat, false, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+		VSDefaultMatricesUpdate(world, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
+		pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, 0);
+	}
+}
+
 void Graphics::SetComputeWavesResources()
 {
 	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
@@ -1146,6 +1203,12 @@ void Graphics::BlurSSAOMap(ID3D11ShaderResourceView* pInputSRV, ID3D11RenderTarg
 	renderTargets[0] = pNULLRTV;
 	pgfx_pDeviceContext->OMSetRenderTargets(1, &renderTargets[0], 0);
 
+}
+
+void Graphics::ReleaseSSAOShaderResource()
+{
+	ID3D11ShaderResourceView* pNullSRV = nullptr;
+	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNullSRV);
 }
 
 void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,

@@ -1,7 +1,6 @@
 #pragma once
 #include <fstream>
 #include <vector>
-// #include <d3d11.h>
 //for WinBase.h in Utility
 #include <windows.h>
 #include "UtilityStructures.h"

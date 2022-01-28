@@ -227,6 +227,10 @@ struct M3dRawData
 	std::vector<M3dMaterial> mats;
 };
 
+struct M3dModelNames
+{
+	const std::string templeBase = "templeBase";
+};
 enum DemoSwitch
 {
 	DefaultBox,

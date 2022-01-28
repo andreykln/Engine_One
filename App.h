@@ -29,12 +29,20 @@ private:
 	void DrawNormalMap();
 	void CreateTerrain();
 	void DrawTerrain();
+	//Temple scene, m3d test
+	void CreateTempleScene();
+	void DrawTempleScene();
+
+	void CreateAndBindSkybox();
+	void DrawSkyBox();
+
 	DirectX::XMMATRIX GetViewProjectionCamera();
 	void SetDefaultRTVAndViewPort();
 
 private:
 	DirectX::XMMATRIX viewProjectionMatrix;
 	CBufferNames cbNames;
+	M3dModelNames m3dNames;
 
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

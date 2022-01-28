@@ -23,16 +23,13 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 
-	CreateShadowMapDemo();
+// 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
-	CreateTerrain();
+// 	CreateTerrain();
+	CreateTempleScene();
 
 
-	m3dLoad = new M3dLoader("models\\base.m3d");
-	M3dRawData d = m3dLoad->rawData;
-	delete m3dLoad;
-
-
+	CreateAndBindSkybox();
 }
 
 void App::DoFrame()
@@ -46,8 +43,8 @@ void App::DoFrame()
 
 // 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
-	DrawTerrain();
-
+// 	DrawTerrain();
+	DrawTempleScene();
 
 
 	CalculateFrameStats();
@@ -123,10 +120,13 @@ void App::CreateComputeShaderWaves()
 
 void App::DrawComputeShaderWaves()
 {
+
+
+
 // 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().WireframeRS);
 // 	viewProjectionMatrix = GetViewProjectionCamera();
 	wnd.GetGraphics().SetDefaultLightData();
-
+	//////////////////////////////////////////////////////////////////////////
 	wnd.GetGraphics().SetComputeWavesSamplers();
 	wnd.GetGraphics().pgfx_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	wnd.GetGraphics().SetComputeWavesResources();
@@ -236,14 +236,12 @@ void App::DrawSceneToShadowMap()
 
 void App::CreateShadowMapDemo()
 {
-	pSky = new Sky(wnd.GetGraphics());
 	pBox = new Box(wnd.GetGraphics(), 1.0f, 1.0f, 2.0f);
  	pSkull = new Skull(wnd.GetGraphics(), L"models\\skull.txt");
 	pPlate = new Hills(wnd.GetGraphics(), 25.0f, 25.0f, 45, 45);
 	pCylinder = new Cylinder(wnd.GetGraphics(), 0.5f, 0.3f, 3.0f, 20, 20);
 	pGeoSphere = new GeoSphere(wnd.GetGraphics(), 0.5f, 2u);
 	pDispWaves = new DisplacementWaves(wnd.GetGraphics());
-	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
 }
 
 void App::DrawShadowMapDemo()
@@ -382,27 +380,9 @@ void App::DrawShadowMapDemo()
 	pDC->DrawIndexed(pDispWaves->GetIndexCount(), 0u, 0u);
 	wnd.GetGraphics().UnbindAll();
 
-	//Skybox
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
 
-	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
-	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
-
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);
-	wnd.GetGraphics().ConstBufferVSMatricesBind();
-	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID);
-	stride = sizeof(DirectX::XMFLOAT3);
-	pDC->IASetVertexBuffers(0u, 1u, pSky->GetVertexBuffer(), &stride, &offset);
-	pDC->IASetIndexBuffer(pSky->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
-
-	pDC->RSSetState(0u);
-	pDC->OMSetDepthStencilState(0u, 0u);
-	//release shadow map SRV to generate a new one
-	ID3D11ShaderResourceView* pNULLSRV = nullptr;
-	pDC->PSSetShaderResources(2u, 1u, &pNULLSRV);
+	DrawSkyBox();
+	wnd.GetGraphics().ReleaseSSAOShaderResource();
 
 	
 }
@@ -578,6 +558,128 @@ void App::DrawTerrain()
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(0u, blendFactorsZero, 0xffffffff);
 	wnd.GetGraphics().pgfx_pDeviceContext->OMSetDepthStencilState(0u, 0u);
 	wnd.GetGraphics().UnbindAll();
+}
+
+void App::CreateTempleScene()
+{
+	m3dLoad = new M3dLoader("models\\base.m3d");
+	M3dRawData d = m3dLoad->rawData;
+	delete m3dLoad;
+	m3dLoad = nullptr;
+	wnd.GetGraphics().CreateM3dModel(d);
+
+
+
+	pSky = new Sky(wnd.GetGraphics());
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
+
+}
+
+void App::DrawTempleScene()
+{
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX::XMMATRIX w = DirectX::XMMatrixIdentity();
+
+	////	//shadow map
+	wnd.GetGraphics().BindVSandIA(ShadowMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShadowMap_VS_PS);
+
+	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
+
+	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
+	wnd.GetGraphics().ConstBufferShadowMapBind();
+	wnd.GetGraphics().ShadowMap(w, VP);
+
+
+	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
+	pShadowMap->UpdateScene(timer.DeltaTime());
+	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+	pDC->RSSetState(0u);
+
+	//create normal-depth map
+	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().ConstBufferNormalMapBind();
+	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
+	wnd.GetGraphics().BindPS(NormalMap_VS_PS);
+
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+
+	//SSAO
+	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindPS(ComputeSSAO_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().ComputeSSAO(pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(),
+		pSSAO->GetRandomVectorSRV(), pSSAO->GetNormalMapSRV());
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+
+	// blur
+	wnd.GetGraphics().BindVSandIA(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindPS(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
+		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
+	wnd.GetGraphics().UnbindVS();
+	wnd.GetGraphics().UnbindPS();
+	wnd.GetGraphics().ReleaseNormalMapResource();
+	SetDefaultRTVAndViewPort();
+
+
+	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+	wnd.GetGraphics().SetDefaultLightData();
+	wnd.GetGraphics().UpdateLightDirection(pShadowMap->GetNewLightDirection());
+	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
+
+
+	//////////////////////////////////////////////////////////////////////////
+	wnd.GetGraphics().SetDefaultLightData();
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+
+	wnd.GetGraphics().BindVSandIA(DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(DefaultLight_VS_PS);
+
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+
+
+
+	DrawSkyBox();
+	ID3D11ShaderResourceView* nullsrv = nullptr;
+	pDC->PSSetShaderResources(2u, 1u, &nullsrv);
+	wnd.GetGraphics().ReleaseSSAOShaderResource();
+}
+
+void App::CreateAndBindSkybox()
+{
+	pSky = new Sky(wnd.GetGraphics());
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
+}
+
+void App::DrawSkyBox()
+{
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDC->RSSetState(wnd.GetGraphics().NoCullRS);
+	pDC->OMSetDepthStencilState(wnd.GetGraphics().LessEqualDSS, 0u);
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::Sky_VS_PS);
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, ID, ID);
+	stride = sizeof(DirectX::XMFLOAT3);
+	pDC->IASetVertexBuffers(0u, 1u, pSky->GetVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSky->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	pDC->DrawIndexed(pSky->GetIndexCount(), 0u, 0u);
+
+	pDC->RSSetState(0u);
+	pDC->OMSetDepthStencilState(0u, 0u);
+
 }
 
 App::~App()
