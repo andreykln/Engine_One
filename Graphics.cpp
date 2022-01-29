@@ -141,7 +141,7 @@ void Graphics::SetViewport()
 
 
 void Graphics::SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-	const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt, float totalTime)
+	const DirectX::XMMATRIX& Projection, const DirectX::XMMATRIX& lightViewProjection , const DirectX::XMFLOAT3 camPos, float dt, float totalTime)
 {
 	mView = View;
 	mViewProjection = ViewProjection;
@@ -149,6 +149,7 @@ void Graphics::SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection,
 	mCameraPosition = camPos;
 	mDeltaTime = dt;
 	mTotalTime = totalTime;
+	mLightViewProjection = lightViewProjection;
 }
 
 void Graphics::SetShadowTransform(const DirectX::XMMATRIX& shadowTransform)
@@ -900,21 +901,29 @@ void Graphics::CreateM3dModel(M3dRawData& data)
 
 }
 
-void Graphics::DrawM3dStaticModel(std::string name, DirectX::XMMATRIX& world)
+void Graphics::DrawM3dStaticModel(std::string name, std::vector<DirectX::XMMATRIX> world)
 {
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+
 	UINT stride = sizeof(vbPosNormalTexTangent);
 	UINT offset = 0;
 	M3dModel model = m3dModelsMap.at(name);
+	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
+	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	for (size_t i = 0; i < model.subsets.size(); i++)
 	{
 		MaterialEx mat;
 		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
 		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
 		mat.shininess = model.mats[i].mat.shininess;
-		DefaultLightUpdate(mat, false, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
-		VSDefaultMatricesUpdate(world, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-		pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
-		pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		DefaultLightUpdate(mat, false, usessao, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+		VSDefaultMatricesUpdate(world[i], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		NormalMap(world[i]);
+		ShadowMap(world[i], mLightViewProjection);
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, 0);
 	}
 }

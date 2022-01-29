@@ -43,7 +43,7 @@ public:
 	HWND GetWindowHandle() const noexcept;
 	void SetViewport();
 	void SetCommonShaderConstants(const DirectX::XMMATRIX& ViewProjection, const DirectX::XMMATRIX& View,
-		const DirectX::XMMATRIX& Projection, const DirectX::XMFLOAT3 camPos, float dt, float totalTime);
+		const DirectX::XMMATRIX& Projection, const DirectX::XMMATRIX& lightViewProjection ,const DirectX::XMFLOAT3 camPos, float dt, float totalTime);
 	void SetShadowTransform(const DirectX::XMMATRIX& shadowTransform);
 	void UpdateLightDirection(const DirectX::XMFLOAT3& newLightDirection);
 	void CreateCBuffers();
@@ -105,7 +105,7 @@ public:
 		ParticlePick particle);
 
 	void CreateM3dModel(M3dRawData& data);
-	void DrawM3dStaticModel(std::string name, DirectX::XMMATRIX& world);
+	void DrawM3dStaticModel(std::string name, std::vector<DirectX::XMMATRIX> world);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();
@@ -172,8 +172,10 @@ private:
 	DirectX::XMMATRIX mView;
 	DirectX::XMMATRIX mProjection;
 	DirectX::XMMATRIX mShadowTransform;
+	DirectX::XMMATRIX mLightViewProjection;
 	DirectX::XMFLOAT3 mCameraPosition;
 	DirectX::XMFLOAT3 mNewLightDirection;
+	
 	const DirectX::XMFLOAT3 mDefaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57335f);
 	float mDeltaTime;
 	float mTotalTime;

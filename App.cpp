@@ -39,7 +39,7 @@ void App::DoFrame()
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
-		camera.GetProjecion(), camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
+		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
 // 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
@@ -578,6 +578,12 @@ void App::CreateTempleScene()
 void App::DrawTempleScene()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	std::vector<DirectX::XMMATRIX> templebaseWorld(3);
+	templebaseWorld[0] = DirectX::XMMatrixIdentity();
+	templebaseWorld[1] = DirectX::XMMatrixIdentity();
+	templebaseWorld[2] = DirectX::XMMatrixIdentity();
+
+
 	DirectX::XMMATRIX w = DirectX::XMMatrixIdentity();
 
 	////	//shadow map
@@ -586,24 +592,26 @@ void App::DrawTempleScene()
 
 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
-	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
+// 	DirectX::XMMATRIX VP = pShadowMap->GetLighViewProjection();
 	wnd.GetGraphics().ConstBufferShadowMapBind();
-	wnd.GetGraphics().ShadowMap(w, VP);
+// 	wnd.GetGraphics().ShadowMap(w, VP);
 
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
 	pDC->RSSetState(0u);
 
 	//create normal-depth map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().ConstBufferNormalMapBind();
+
 	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
 	wnd.GetGraphics().BindPS(NormalMap_VS_PS);
 
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+// 	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
 
 	//SSAO
 	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
@@ -644,7 +652,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindVSandIA(DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(DefaultLight_VS_PS);
 
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, w);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
 
 
 

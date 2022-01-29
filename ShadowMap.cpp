@@ -112,7 +112,7 @@ DirectX::XMMATRIX ShadowMapGen::GetLightView()
 	return lightView;
 }
 
-DirectX::XMMATRIX ShadowMapGen::GetLighViewProjection()
+DirectX::XMMATRIX ShadowMapGen::GetLighViewProjection() const
 {
 	return lightViewProjection;
 }

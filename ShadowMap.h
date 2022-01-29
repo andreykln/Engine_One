@@ -20,7 +20,7 @@ public:
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
 	DirectX::XMMATRIX GetLightView();
-	DirectX::XMMATRIX GetLighViewProjection();
+	DirectX::XMMATRIX GetLighViewProjection() const;
 	DirectX::XMFLOAT3& GetNewLightDirection();
 private:
 	float transl = 0.0f;
