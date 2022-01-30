@@ -9,7 +9,7 @@
 Name: pillar01
 Diffuse: 0.8 0.8 0.8
 Fresnel0: 0.05 0.05 0.05
-Shininess: 0.2
+Shininess: 0.1
 AlphaClip: 0
 MaterialTypeName: Pillar01
 DiffuseMap: pillar01_diffuse

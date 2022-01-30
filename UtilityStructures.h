@@ -248,6 +248,7 @@ struct M3dModelNames
 	const std::string rock = "rock";
 	const std::string stairs = "stairs";
 	const std::string tree = "tree";
+	const std::string box = "box";
 
 
 };
@@ -280,7 +281,10 @@ struct TempleDemoWorlds
 		offset = DirectX::XMMatrixTranslation(0.0f, -2.5f, -12.0f);
 		rotation = DirectX::XMMatrixRotationY(0.5f * DirectX::XM_PI);
 		stairs.push_back(rotation * offset);
-		tree.push_back(DirectX::XMMatrixIdentity());
+		offset = DirectX::XMMatrixTranslation(0.0f, 1.3f, 0.0f);
+		tree.push_back(offset);
+		offset = DirectX::XMMatrixTranslation(0.0f, 4.0f, 6.0f);
+		box.push_back(offset);
 	}
 	std::vector<DirectX::XMMATRIX> templebase;
 	std::vector<DirectX::XMMATRIX> pillar1;
@@ -290,6 +294,7 @@ struct TempleDemoWorlds
 	std::vector<DirectX::XMMATRIX> rock;
 	std::vector<DirectX::XMMATRIX> stairs;
 	std::vector<DirectX::XMMATRIX> tree;
+	std::vector<DirectX::XMMATRIX> box;
 
 };
 
