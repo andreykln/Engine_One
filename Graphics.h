@@ -104,7 +104,7 @@ public:
 	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB,
 		ParticlePick particle);
 
-	void CreateM3dModel(M3dRawData& data);
+	void CreateM3dModel(M3dRawData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);

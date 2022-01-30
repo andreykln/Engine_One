@@ -221,6 +221,17 @@ struct M3dMaterial
 
 struct M3dRawData
 {
+	void Clear()
+	{
+		vertices.clear();
+		vertices.resize(0);
+		indices.clear();
+		indices.resize(0);
+		subsets.clear();
+		subsets.resize(0);
+		mats.clear();
+		mats.resize(0);
+	}
 	std::vector<vbPosNormalTexTangent> vertices;
 	std::vector<UINT> indices;
 	std::vector<Subset> subsets;
@@ -230,6 +241,49 @@ struct M3dRawData
 struct M3dModelNames
 {
 	const std::string templeBase = "templeBase";
+	const std::string pillar1 = "Pillar1";
+	const std::string pillar2 = "Pillar2";
+	const std::string pillar3 = "Pillar3";
+	const std::string pillar4 = "Pillar4";
+	const std::string rock = "rock";
+
+
+};
+
+struct TempleDemoWorlds
+{
+	TempleDemoWorlds()
+	{
+		templebase.push_back(DirectX::XMMatrixIdentity());
+		templebase.push_back(DirectX::XMMatrixIdentity());
+		templebase.push_back(DirectX::XMMatrixIdentity());
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(-5.0f, 1.5f, 5.0f);
+		pillar1.push_back(scale * offset);
+		offset = DirectX::XMMatrixTranslation(5.0f, 1.5f, 5.0f);
+		pillar2.push_back(scale * offset);
+		offset = DirectX::XMMatrixTranslation(5.0f, 1.5f, -5.0f);
+		pillar3.push_back(scale * offset);
+		scale = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		offset = DirectX::XMMatrixTranslation(-5.0f, 1.0f, -5.0f);
+		pillar4.push_back(scale * offset);
+		scale = DirectX::XMMatrixScaling(0.8f, 0.8f, 0.8f);
+		offset = DirectX::XMMatrixTranslation(-1.0f, 1.4f, -7.0f);
+		rock.push_back(scale * offset);
+		offset = DirectX::XMMatrixTranslation(5.0f, 1.2f, -2.0f);
+		rock.push_back(scale * offset);
+		offset = DirectX::XMMatrixTranslation(-4.0f, 1.3f, 3.0f);
+		rock.push_back(scale * offset);
+
+
+	}
+	std::vector<DirectX::XMMATRIX> templebase;
+	std::vector<DirectX::XMMATRIX> pillar1;
+	std::vector<DirectX::XMMATRIX> pillar2;
+	std::vector<DirectX::XMMATRIX> pillar3;
+	std::vector<DirectX::XMMATRIX> pillar4;
+	std::vector<DirectX::XMMATRIX> rock;
+
 };
 
 enum class Technique

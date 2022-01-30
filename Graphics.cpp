@@ -863,7 +863,7 @@ void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDra
 
 }
 
-void Graphics::CreateM3dModel(M3dRawData& data)
+void Graphics::CreateM3dModel(M3dRawData& data, const std::string& name)
 {
 	M3dModel model;
 	model.pVertexBuffer = CreateVertexBuffer(data.vertices, false, false, L"Temple Base vertices");
@@ -881,7 +881,7 @@ void Graphics::CreateM3dModel(M3dRawData& data)
 	}
 	model.subsets.resize(data.subsets.size());
 	model.subsets = data.subsets;
-	m3dModelsMap.insert(std::make_pair(m3dNames.templeBase, model));
+	m3dModelsMap.insert(std::make_pair(name, model));
 	for (size_t i = 0; i < data.mats.size(); i++)
 	{
 		ID3D11ShaderResourceView* pTemp = nullptr;

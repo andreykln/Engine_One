@@ -562,11 +562,12 @@ void App::DrawTerrain()
 
 void App::CreateTempleScene()
 {
-	m3dLoad = new M3dLoader("models\\base.m3d");
-	M3dRawData d = m3dLoad->rawData;
-	delete m3dLoad;
-	m3dLoad = nullptr;
-	wnd.GetGraphics().CreateM3dModel(d);
+	LoadModelToMemory("models\\base.m3d", m3dNames.templeBase);
+	LoadModelToMemory("models\\pillar1.m3d", m3dNames.pillar1);
+	LoadModelToMemory("models\\pillar2.m3d", m3dNames.pillar2);
+	LoadModelToMemory("models\\pillar3.m3d", m3dNames.pillar3);
+	LoadModelToMemory("models\\pillar4.m3d", m3dNames.pillar4);
+	LoadModelToMemory("models\\rock.m3d", m3dNames.rock);
 
 
 
@@ -578,15 +579,9 @@ void App::CreateTempleScene()
 void App::DrawTempleScene()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	std::vector<DirectX::XMMATRIX> templebaseWorld(3);
-	templebaseWorld[0] = DirectX::XMMatrixIdentity();
-	templebaseWorld[1] = DirectX::XMMatrixIdentity();
-	templebaseWorld[2] = DirectX::XMMatrixIdentity();
 
-
-	DirectX::XMMATRIX w = DirectX::XMMatrixIdentity();
-
-	////	//shadow map
+	////	
+	//shadow map
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 
@@ -600,7 +595,14 @@ void App::DrawTempleScene()
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::ShadowMap, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::ShadowMap, templeWorlds.templebase);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::ShadowMap, templeWorlds.pillar1);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::ShadowMap, templeWorlds.pillar2);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar3, Technique::ShadowMap, templeWorlds.pillar3);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::ShadowMap, templeWorlds.pillar4);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::ShadowMap, templeWorlds.rock);
+
+
 	pDC->RSSetState(0u);
 
 	//create normal-depth map
@@ -611,7 +613,14 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
 // 	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::NormalMap, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::NormalMap, templeWorlds.templebase);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::NormalMap, templeWorlds.pillar1);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::NormalMap, templeWorlds.pillar2);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar3, Technique::NormalMap, templeWorlds.pillar3);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::NormalMap, templeWorlds.pillar4);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::NormalMap, templeWorlds.rock);
+
+
 
 	//SSAO
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
@@ -652,7 +661,13 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::DefaultLight, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::DefaultLight, templeWorlds.templebase);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::DefaultLight, templeWorlds.pillar1);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::DefaultLight, templeWorlds.pillar2);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar3, Technique::DefaultLight, templeWorlds.pillar3);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::DefaultLight, templeWorlds.pillar4);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
+
 
 
 
@@ -688,6 +703,16 @@ void App::DrawSkyBox()
 	pDC->RSSetState(0u);
 	pDC->OMSetDepthStencilState(0u, 0u);
 
+}
+
+void App::LoadModelToMemory(const std::string& filepath, const std::string& modelName)
+{
+	m3dLoad = new M3dLoader(filepath);
+	M3dRawData d = m3dLoad->rawData;
+	wnd.GetGraphics().CreateM3dModel(d, modelName);
+	delete m3dLoad;
+	d.Clear();
+	m3dLoad = nullptr;
 }
 
 App::~App()
