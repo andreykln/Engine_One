@@ -13,3 +13,4 @@
 #include "ParticleSystem.h"
 #include "ShadowMap.h"
 #include "SSAO.h"
+#include "Animation.h"

@@ -42,6 +42,12 @@ private:
 	void SetDefaultRTVAndViewPort();
 
 private:
+	//////////////////////////////////////////////////////////////////////////
+	float mAnimTimePos = 0.0f;
+	DirectX::XMMATRIX skullNewWorld;
+	BoneAnimation skullAnimation;
+
+	//////////////////////////////////////////////////////////////////////////
 	DirectX::XMMATRIX viewProjectionMatrix;
 	CBufferNames cbNames;
 	M3dModelNames m3dNames;

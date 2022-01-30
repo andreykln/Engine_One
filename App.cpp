@@ -23,28 +23,78 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-	CreateTempleScene();
+// 	CreateTempleScene();
 
 
 	CreateAndBindSkybox();
+	//////////////////////////////////////////////////////////////////////////
+	using namespace DirectX;
+	XMVECTOR q0 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PI / 6.0f);
+	XMVECTOR q1 = XMQuaternionRotationAxis(XMVectorSet(1.0f, 1.0f, 2.0f, 0.0f), XM_PI / 4.0f);
+	XMVECTOR q2 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -XM_PI / 6.0f);
+	XMVECTOR q3 = XMQuaternionRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XMConvertToRadians(70.0f));
+
+	skullAnimation.keyframes.resize(5);
+
+	skullAnimation.keyframes[0].timePos = 0.0f;
+	skullAnimation.keyframes[0].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[0].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[0].rotationQuat, q0);
+
+	skullAnimation.keyframes[1].timePos = 2.0f;
+	skullAnimation.keyframes[1].translation = XMFLOAT3(0.0f, 2.0f, 10.0f);
+	skullAnimation.keyframes[1].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XMStoreFloat4(&skullAnimation.keyframes[1].rotationQuat, q1);
+
+	skullAnimation.keyframes[2].timePos = 4.0f;
+	skullAnimation.keyframes[2].translation = XMFLOAT3(7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[2].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[2].rotationQuat, q2);
+
+	skullAnimation.keyframes[3].timePos = 6.0f;
+	skullAnimation.keyframes[3].translation = XMFLOAT3(0.0f, 1.0f, -10.0f);
+	skullAnimation.keyframes[3].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XMStoreFloat4(&skullAnimation.keyframes[3].rotationQuat, q3);
+
+	skullAnimation.keyframes[4].timePos = 8.0f;
+	skullAnimation.keyframes[4].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[4].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[4].rotationQuat, q0);
+
+	//////////////////////////////////////////////////////////////////////////
+
 }
 
 void App::DoFrame()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
+	//////////////////////////////////////////////////////////////////////////
+	using namespace DirectX;
+	mAnimTimePos += timer.DeltaTime();
+	if (mAnimTimePos >= skullAnimation.GetEndTime())
+	{
+		mAnimTimePos = 0.0f;
+	}
+
+// 	skullNewWorld = pSkull->skullWorld ;
+// 	skullNewWorld *= DirectX::XMMatrixRotationY(-timer.TotalTime());
+	DirectX::XMFLOAT4X4 temp;
+	skullAnimation.Interpolate(mAnimTimePos, temp);
+	skullNewWorld = XMLoadFloat4x4(&temp);
+	//////////////////////////////////////////////////////////////////////////
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-	DrawTempleScene();
+// 	DrawTempleScene();
 
 
 	CalculateFrameStats();
@@ -197,7 +247,7 @@ void App::DrawSceneToShadowMap()
 	stride = sizeof(vbPosNormalTexTangent);
 	offset = 0; 
 	//skull
-	wnd.GetGraphics().ShadowMap(pSkull->skullWorld, VP);
+	wnd.GetGraphics().ShadowMap(skullNewWorld, VP);
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
@@ -332,7 +382,7 @@ void App::DrawShadowMapDemo()
 	//skull
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-	wnd.GetGraphics().VSDefaultMatricesUpdate(pSkull->skullWorld, ID, ID);
+	wnd.GetGraphics().VSDefaultMatricesUpdate(skullNewWorld, ID, ID);
 	wnd.GetGraphics().DefaultLightUpdate(pSkull->skullMaterial, true, usessao,
 		pSkull->diffuseMap, pSkull->normalMap);
 	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
@@ -396,7 +446,7 @@ void App::DrawNormalMap()
 	const UINT stride = sizeof(vbPosNormalTexTangent);
 	const UINT offset = 0;
 	//skull
-	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
+	wnd.GetGraphics().NormalMap(skullNewWorld);
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
