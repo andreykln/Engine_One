@@ -254,8 +254,8 @@ void App::DrawShadowMapDemo()
 // 		camera.GetProjecion(), camera.GetCameraPosition(), timer.TotalTime());
 
 	//shadow map
-	wnd.GetGraphics().BindVSandIA(ShadowMap_VS_PS);
-	wnd.GetGraphics().BindPS(ShadowMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
@@ -267,8 +267,8 @@ void App::DrawShadowMapDemo()
 	DrawNormalMap();
 
 	//SSAO
-	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
-	wnd.GetGraphics().BindPS(ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ComputeSSAO_VS_PS);
 	stride = sizeof(vbPosNormalTex);
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
@@ -277,8 +277,8 @@ void App::DrawShadowMapDemo()
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	// blur
-	wnd.GetGraphics().BindVSandIA(SSAOBlur_VS_PS);
-	wnd.GetGraphics().BindPS(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::SSAOBlur_VS_PS);
 	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
 		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
 	wnd.GetGraphics().UnbindVS();
@@ -301,8 +301,8 @@ void App::DrawShadowMapDemo()
 	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
 
 	//plane
-	wnd.GetGraphics().BindVSandIA(DefaultLight_VS_PS);
-	wnd.GetGraphics().BindPS(DefaultLight_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 	pDC->IASetVertexBuffers(0u, 1u, pPlate->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, pPlate->plateScaling, ID);
@@ -369,10 +369,10 @@ void App::DrawShadowMapDemo()
 
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
-	wnd.GetGraphics().BindVSandIA(DisplacementWaves_VS_HS_DS_PS);
-	wnd.GetGraphics().BindPS(DisplacementWaves_VS_HS_DS_PS);
-	wnd.GetGraphics().BindHS(DisplacementWaves_VS_HS_DS_PS);
-	wnd.GetGraphics().BindDS(DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindHS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
+	wnd.GetGraphics().BindDS(ShaderPicker::DisplacementWaves_VS_HS_DS_PS);
 	wnd.GetGraphics().SetDispWavesShaderRes(pDispWaves->normalMap0, pDispWaves->normalMap1, pDispWaves->diffuseMap);
 	wnd.GetGraphics().UpdateDispWavesCBuffers(pDispWaves->wavesWorld, pDispWaves->wavesMaterial);
 	pDC->IASetVertexBuffers(0u, 1u, pDispWaves->GetVertexBuffer(), &stride, &offset);
@@ -390,8 +390,8 @@ void App::DrawShadowMapDemo()
 void App::DrawNormalMap()
 {
 	wnd.GetGraphics().ConstBufferNormalMapBind();
-	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
-	wnd.GetGraphics().BindPS(NormalMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
 	const UINT stride = sizeof(vbPosNormalTexTangent);
 	const UINT offset = 0;
@@ -587,8 +587,8 @@ void App::DrawTempleScene()
 	DirectX::XMMATRIX w = DirectX::XMMatrixIdentity();
 
 	////	//shadow map
-	wnd.GetGraphics().BindVSandIA(ShadowMap_VS_PS);
-	wnd.GetGraphics().BindPS(ShadowMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 
 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
@@ -600,22 +600,22 @@ void App::DrawTempleScene()
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::ShadowMap, templebaseWorld);
 	pDC->RSSetState(0u);
 
 	//create normal-depth map
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().ConstBufferNormalMapBind();
 
-	wnd.GetGraphics().BindVSandIA(NormalMap_VS_PS);
-	wnd.GetGraphics().BindPS(NormalMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
 // 	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::NormalMap, templebaseWorld);
 
 	//SSAO
-	wnd.GetGraphics().BindVSandIA(ComputeSSAO_VS_PS);
-	wnd.GetGraphics().BindPS(ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ComputeSSAO_VS_PS);
 	stride = sizeof(vbPosNormalTex);
 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
@@ -624,8 +624,8 @@ void App::DrawTempleScene()
 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	// blur
-	wnd.GetGraphics().BindVSandIA(SSAOBlur_VS_PS);
-	wnd.GetGraphics().BindPS(SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::SSAOBlur_VS_PS);
 	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
 		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
 	wnd.GetGraphics().UnbindVS();
@@ -649,10 +649,10 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().SetDefaultLightData();
 	wnd.GetGraphics().ConstBufferVSMatricesBind();
 
-	wnd.GetGraphics().BindVSandIA(DefaultLight_VS_PS);
-	wnd.GetGraphics().BindPS(DefaultLight_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, templebaseWorld);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::DefaultLight, templebaseWorld);
 
 
 

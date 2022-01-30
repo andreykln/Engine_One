@@ -231,14 +231,17 @@ struct M3dModelNames
 {
 	const std::string templeBase = "templeBase";
 };
-enum DemoSwitch
+
+enum class Technique
 {
-	DefaultBox,
-	ShadowMap
+	NormalMap,
+	DefaultLight,
+	ShadowMap,
+
 };
 
 
-enum ShaderPicker
+enum class ShaderPicker
 {
 	UpdateWaves_CS,
 	DisturbWaves_CS,
@@ -262,7 +265,7 @@ enum ShaderPicker
 	ComputeWaves_VS_PS_CS,
 };
 
-enum ParticlePick
+enum class ParticlePick
 {
 	Fire,
 	Rain,

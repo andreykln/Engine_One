@@ -553,7 +553,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		pgfx_pDeviceContext->OMSetBlendState(additiveBlend, blendFactorsZero, 0xffffffff);
 		pgfx_pDeviceContext->OMSetDepthStencilState(disableDepthWrites, 0u);
@@ -561,19 +561,19 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 		BindGS(ShaderPicker::Particles_FireStreamOut_VS_GS);
 		break;
 	}
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		BindVSandIA(ShaderPicker::Particles_RainStreamOut_VS_GS);
 		BindGS(ShaderPicker::Particles_RainStreamOut_VS_GS);
 		break;
 	}
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		BindVSandIA(ShaderPicker::Particle_FountainStreamOut_VS_GS);
 		BindGS(ShaderPicker::Particle_FountainStreamOut_VS_GS);
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		pgfx_pDeviceContext->OMSetBlendState(additiveBlend, blendFactorsZero, 0xffffffff);
 		pgfx_pDeviceContext->OMSetDepthStencilState(disableDepthWrites, 0u);
@@ -590,7 +590,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 	UINT offset = 0;
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		if (mFirstRunFire)
 		{
@@ -607,7 +607,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 	pgfx_pDeviceContext->SOSetTargets(1u, &mStreamOutVBFire, &offset);
 	break;
 	}
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		if (mfirstRunRain)
 		{
@@ -626,7 +626,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		if (mfirstRunExplosion)
 		{
@@ -645,7 +645,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 		break;
 	}
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		if (mFirstRunFountain)
 		{
@@ -683,7 +683,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		if (mFirstRunFire)
 		{
@@ -696,7 +696,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 		}
 		break;
 	}
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		if (mfirstRunRain)
 		{
@@ -709,7 +709,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 		}
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		if (mfirstRunExplosion)
 		{
@@ -722,7 +722,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 		}
 	}
 		break;
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		if (mFirstRunFountain)
 		{
@@ -743,25 +743,25 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 	UnbindFromSOStage();
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		std::swap(mDrawVBFire, mStreamOutVBFire);
 		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBFire, &stride, &offset);
 		break;
 	}
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		std::swap(mDrawVBRain, mStreamOutVBRain);
 		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBRain, &stride, &offset);
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		std::swap(mDrawVBExplosion, mStreamOutVBExplosion);
 		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBExplosion, &stride, &offset);
 		break;
 	}
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		std::swap(mDrawVBFountain, mStreamOutVBFountain);
 		pgfx_pDeviceContext->IASetVertexBuffers(0, 1, &mDrawVBFountain, &stride, &offset);
@@ -778,7 +778,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 	// Draw the updated particle system we just streamed-out.
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		BindVSandIA(ShaderPicker::Particles_FireDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particles_FireDraw_VS_GS_PS);
@@ -787,7 +787,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 	}
 	break;
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		BindVSandIA(ShaderPicker::Particles_RainDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particles_RainDraw_VS_GS_PS);
@@ -796,7 +796,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 
 		break;
 	}
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		BindVSandIA(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particle_FountainDraw_VS_GS_PS);
@@ -804,7 +804,7 @@ void Graphics::DrawParticle(DirectX::XMFLOAT3& emitPos, ParticlePick particle)
 		pgfx_pDeviceContext->PSSetShaderResources(0u, 1u, &diffuseMaps.at(L"raindrop"));
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		BindVSandIA(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
 		BindGS(ShaderPicker::Particle_ExplosionDraw_VS_GS_PS);
@@ -827,14 +827,14 @@ void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDra
 {
 	switch (particle)
 	{
-	case Fire:
+	case ParticlePick::Fire:
 	{
 		mStreamOutVBFire = pStreamOutVB;
 		mDrawVBFire = pDrawVB;
 		mInitVBFire = pInitVB;
 		break;
 	}
-	case Rain:
+	case ParticlePick::Rain:
 	{
 		mStreamOutVBRain = pStreamOutVB;
 		mDrawVBRain = pDrawVB;
@@ -842,14 +842,14 @@ void Graphics::SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDra
 
 		break;
 	}
-	case Explosion:
+	case ParticlePick::Explosion:
 	{
 		mStreamOutVBExplosion = pStreamOutVB;
 		mDrawVBExplosion = pDrawVB;
 		mInitVBExplosion = pInitVB;
 		break;
 	}
-	case Fountain:
+	case ParticlePick::Fountain:
 	{
 		mStreamOutVBFountain = pStreamOutVB;
 		mDrawVBFountain = pDrawVB;
@@ -901,7 +901,7 @@ void Graphics::CreateM3dModel(M3dRawData& data)
 
 }
 
-void Graphics::DrawM3dStaticModel(std::string name, std::vector<DirectX::XMMATRIX> world)
+void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
 {
 	bool usessao = true;
 	if (GetAsyncKeyState('5') & 0x8000)
@@ -920,10 +920,27 @@ void Graphics::DrawM3dStaticModel(std::string name, std::vector<DirectX::XMMATRI
 		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
 		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
 		mat.shininess = model.mats[i].mat.shininess;
-		DefaultLightUpdate(mat, false, usessao, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+		switch (tech)
+		{
+		case Technique::NormalMap:
+		{
+			NormalMap(world[i]);
+			break;
+		}
+		case Technique::DefaultLight:
+		{
+			DefaultLightUpdate(mat, false, usessao, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+			break;
+		}
+		case Technique::ShadowMap:
+		{
+			ShadowMap(world[i], mLightViewProjection);
+			break;
+		}
+		default:
+			break;
+		}
 		VSDefaultMatricesUpdate(world[i], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-		NormalMap(world[i]);
-		ShadowMap(world[i], mLightViewProjection);
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, 0);
 	}
 }

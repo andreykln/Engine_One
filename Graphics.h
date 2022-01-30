@@ -105,7 +105,7 @@ public:
 		ParticlePick particle);
 
 	void CreateM3dModel(M3dRawData& data);
-	void DrawM3dStaticModel(std::string name, std::vector<DirectX::XMMATRIX> world);
+	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();

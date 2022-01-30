@@ -51,7 +51,7 @@ std::wstring M3dLoader::utf8toUtf16(const std::string& str)
 
 	std::vector<wchar_t> buffer(charsNeeded);
 	int charsConverted = ::MultiByteToWideChar(CP_UTF8, 0,
-		str.data(), (int)str.size(), &buffer[0], buffer.size());
+		str.data(), (int)str.size(), &buffer[0], (int)buffer.size());
 
 	return std::wstring(&buffer[0], charsConverted);
 	

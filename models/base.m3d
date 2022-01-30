@@ -27,7 +27,7 @@ NormalMap: templeBase02_normal
 Name: temple03
 Diffuse: 0.9 0.9 0.9
 Fresnel0: 0.05 0.05 0.05
-Shininess: 0.5
+Shininess: 0.1
 AlphaClip: 0
 MaterialTypeName: Stone03
 DiffuseMap: templeBase03_diffuse
