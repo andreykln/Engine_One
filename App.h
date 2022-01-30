@@ -41,6 +41,10 @@ private:
 	DirectX::XMMATRIX GetViewProjectionCamera();
 	void SetDefaultRTVAndViewPort();
 
+	//animation
+	void SetAnimationKeyframes();
+	void UpdateAnimation();
+
 private:
 	//////////////////////////////////////////////////////////////////////////
 	float mAnimTimePos = 0.0f;

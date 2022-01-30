@@ -18,6 +18,7 @@ App::App()
 	wnd.GetGraphics().CreateCBuffers();
 	wnd.GetGraphics().CreateSRVs();
 	wnd.GetGraphics().CreateAndBindSamplers();
+	SetAnimationKeyframes();
 
 	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
@@ -30,61 +31,13 @@ App::App()
 
 
 	CreateAndBindSkybox();
-	//////////////////////////////////////////////////////////////////////////
-	using namespace DirectX;
-	XMVECTOR q0 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PI / 6.0f);
-	XMVECTOR q1 = XMQuaternionRotationAxis(XMVectorSet(1.0f, 1.0f, 2.0f, 0.0f), XM_PI / 4.0f);
-	XMVECTOR q2 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -XM_PI / 6.0f);
-	XMVECTOR q3 = XMQuaternionRotationAxis(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), XMConvertToRadians(70.0f));
-
-	skullAnimation.keyframes.resize(5);
-
-	skullAnimation.keyframes[0].timePos = 0.0f;
-	skullAnimation.keyframes[0].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
-	skullAnimation.keyframes[0].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
-	XMStoreFloat4(&skullAnimation.keyframes[0].rotationQuat, q0);
-
-	skullAnimation.keyframes[1].timePos = 2.0f;
-	skullAnimation.keyframes[1].translation = XMFLOAT3(0.0f, 2.0f, 10.0f);
-	skullAnimation.keyframes[1].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	XMStoreFloat4(&skullAnimation.keyframes[1].rotationQuat, q1);
-
-	skullAnimation.keyframes[2].timePos = 4.0f;
-	skullAnimation.keyframes[2].translation = XMFLOAT3(7.0f, 0.0f, 0.0f);
-	skullAnimation.keyframes[2].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
-	XMStoreFloat4(&skullAnimation.keyframes[2].rotationQuat, q2);
-
-	skullAnimation.keyframes[3].timePos = 6.0f;
-	skullAnimation.keyframes[3].translation = XMFLOAT3(0.0f, 1.0f, -10.0f);
-	skullAnimation.keyframes[3].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	XMStoreFloat4(&skullAnimation.keyframes[3].rotationQuat, q3);
-
-	skullAnimation.keyframes[4].timePos = 8.0f;
-	skullAnimation.keyframes[4].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
-	skullAnimation.keyframes[4].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
-	XMStoreFloat4(&skullAnimation.keyframes[4].rotationQuat, q0);
-
-	//////////////////////////////////////////////////////////////////////////
 
 }
 
 void App::DoFrame()
 {
 	viewProjectionMatrix = GetViewProjectionCamera();
-	//////////////////////////////////////////////////////////////////////////
-	using namespace DirectX;
-	mAnimTimePos += timer.DeltaTime();
-	if (mAnimTimePos >= skullAnimation.GetEndTime())
-	{
-		mAnimTimePos = 0.0f;
-	}
-
-// 	skullNewWorld = pSkull->skullWorld ;
-// 	skullNewWorld *= DirectX::XMMatrixRotationY(-timer.TotalTime());
-	DirectX::XMFLOAT4X4 temp;
-	skullAnimation.Interpolate(mAnimTimePos, temp);
-	skullNewWorld = XMLoadFloat4x4(&temp);
-	//////////////////////////////////////////////////////////////////////////
+	UpdateAnimation();
 
 // 	const float c = abs((sin(timer.TotalTime())));
 	timer.Tick();
@@ -235,6 +188,56 @@ void App::SetDefaultRTVAndViewPort()
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
 		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	wnd.GetGraphics().SetViewport();
+}
+
+void App::SetAnimationKeyframes()
+{
+	using namespace DirectX;
+	XMVECTOR q0 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PI / 2.0f);
+	XMVECTOR q1 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XM_PI);
+	XMVECTOR q2 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), -XM_PI / 2.0f);
+	XMVECTOR q3 = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), 0);
+
+	skullAnimation.keyframes.resize(5);
+
+	skullAnimation.keyframes[0].timePos = 0.0f;
+	skullAnimation.keyframes[0].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[0].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[0].rotationQuat, q0);
+
+	skullAnimation.keyframes[1].timePos = 2.0f;
+	skullAnimation.keyframes[1].translation = XMFLOAT3(0.0f, 2.0f, 10.0f);
+	skullAnimation.keyframes[1].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XMStoreFloat4(&skullAnimation.keyframes[1].rotationQuat, q1);
+
+	skullAnimation.keyframes[2].timePos = 4.0f;
+	skullAnimation.keyframes[2].translation = XMFLOAT3(7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[2].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[2].rotationQuat, q2);
+
+	skullAnimation.keyframes[3].timePos = 6.0f;
+	skullAnimation.keyframes[3].translation = XMFLOAT3(0.0f, 1.0f, -10.0f);
+	skullAnimation.keyframes[3].scale = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	XMStoreFloat4(&skullAnimation.keyframes[3].rotationQuat, q3);
+
+	skullAnimation.keyframes[4].timePos = 8.0f;
+	skullAnimation.keyframes[4].translation = XMFLOAT3(-7.0f, 0.0f, 0.0f);
+	skullAnimation.keyframes[4].scale = XMFLOAT3(0.25f, 0.25f, 0.25f);
+	XMStoreFloat4(&skullAnimation.keyframes[4].rotationQuat, q0);
+
+}
+
+void App::UpdateAnimation()
+{
+	DirectX::XMFLOAT4X4 temp;
+	using namespace DirectX;
+	mAnimTimePos += timer.DeltaTime();
+	if (mAnimTimePos >= skullAnimation.GetEndTime())
+	{
+		mAnimTimePos = 0.0f;
+	}
+	skullAnimation.Interpolate(mAnimTimePos, temp);
+	skullNewWorld = XMLoadFloat4x4(&temp);
 }
 
 void App::DrawSceneToShadowMap()
