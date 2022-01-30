@@ -61,6 +61,7 @@ float4 main(VertexOut pin) : SV_TARGET
     
 	// Dynamically look up the texture in the array.
     diffuseAlbedo *= SRVTexture.Sample(smpAnisotropicWrap, pin.Tex);
+    clip(diffuseAlbedo.a - 0.1f);
     float shininess = (mat.shininess) * normalMapSample.a;
 
     if (disableTexSampling)

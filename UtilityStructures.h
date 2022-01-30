@@ -246,6 +246,8 @@ struct M3dModelNames
 	const std::string pillar3 = "Pillar3";
 	const std::string pillar4 = "Pillar4";
 	const std::string rock = "rock";
+	const std::string stairs = "stairs";
+	const std::string tree = "tree";
 
 
 };
@@ -259,6 +261,7 @@ struct TempleDemoWorlds
 		templebase.push_back(DirectX::XMMatrixIdentity());
 		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.8f, 0.8f, 0.8f);
 		DirectX::XMMATRIX offset = DirectX::XMMatrixTranslation(-5.0f, 1.5f, 5.0f);
+		DirectX::XMMATRIX rotation;
 		pillar1.push_back(scale * offset);
 		offset = DirectX::XMMatrixTranslation(5.0f, 1.5f, 5.0f);
 		pillar2.push_back(scale * offset);
@@ -274,8 +277,10 @@ struct TempleDemoWorlds
 		rock.push_back(scale * offset);
 		offset = DirectX::XMMatrixTranslation(-4.0f, 1.3f, 3.0f);
 		rock.push_back(scale * offset);
-
-
+		offset = DirectX::XMMatrixTranslation(0.0f, -2.5f, -12.0f);
+		rotation = DirectX::XMMatrixRotationY(0.5f * DirectX::XM_PI);
+		stairs.push_back(rotation * offset);
+		tree.push_back(DirectX::XMMatrixIdentity());
 	}
 	std::vector<DirectX::XMMATRIX> templebase;
 	std::vector<DirectX::XMMATRIX> pillar1;
@@ -283,6 +288,8 @@ struct TempleDemoWorlds
 	std::vector<DirectX::XMMATRIX> pillar3;
 	std::vector<DirectX::XMMATRIX> pillar4;
 	std::vector<DirectX::XMMATRIX> rock;
+	std::vector<DirectX::XMMATRIX> stairs;
+	std::vector<DirectX::XMMATRIX> tree;
 
 };
 
