@@ -901,6 +901,47 @@ void Graphics::CreateM3dModel(M3dRawData& data, const std::string& name)
 
 }
 
+void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
+{
+	M3dSkinnedModel model;
+	model.pVertexBuffer = CreateVertexBuffer(data.vertices, false, false, L"Temple Base vertices");
+	model.pIndexBuffer = CreateIndexBuffer(data.indices, L"temple base indices");
+	MaterialM3d m;
+	for (auto& a : data.mats)
+	{
+		m.mat.diffuseAlbedo = a.diffuseAlbedo;
+		m.mat.fresnelR0 = a.fresnelR0;
+		m.mat.shininess = a.shininess;
+		m.name = a.materialTypeName;
+		m.diffuseMapName = a.diffuseMapName;
+		m.normalMapName = a.normalMapName;
+		model.mats.push_back(m);
+	}
+	model.subsets.resize(data.subsets.size());
+	model.subsets = data.subsets;
+	m3dSkinnedModelMap.insert(std::make_pair(name, model));
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].diffuseMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
+	}
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].normalMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
+	}
+	model.mBoneHierarchy.resize(data.skinnedInfo.mBoneHierarchy.size());
+	model.mBoneHierarchy = data.skinnedInfo.mBoneHierarchy;
+	model.mBoneOffsets.resize(data.skinnedInfo.mBoneOffsets.size());
+	model.mBoneOffsets = data.skinnedInfo.mBoneOffsets;
+}
+
 void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
 {
 	bool usessao = true;

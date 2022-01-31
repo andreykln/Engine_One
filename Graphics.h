@@ -9,6 +9,7 @@
 #include "UtilityStructures.h"
 #include "MathHelper.h"
 #include "InputLayout.h"
+#include "M3dLoader.h"
 // #include "Shaders.h"
 //////////////////////////////////////////////////////////////////////////
 #include "DirectXTex/DirectXTex/DirectXTexP.h"
@@ -17,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include <d3dcompiler.h>
 #include <filesystem>
-#include <unordered_map>
+// #include <unordered_map>
 #define MY_DEBUG
 extern const short resolution_width;
 extern const short resolution_height;
@@ -31,9 +32,15 @@ class Graphics
 		ID3D11Buffer* pIndexBuffer = nullptr;
 		std::vector<MaterialM3d> mats;
 		std::vector<Subset> subsets;
-// 		std::string materialTypeName;
-// 		std::wstring diffuseMapName;
-// 		std::wstring normalMapName;
+	};
+	struct M3dSkinnedModel
+	{
+		ID3D11Buffer* pVertexBuffer = nullptr;
+		ID3D11Buffer* pIndexBuffer = nullptr;
+		std::vector<MaterialM3d> mats;
+		std::vector<Subset> subsets;
+		std::vector<int> mBoneHierarchy;
+		std::vector<DirectX::XMFLOAT4X4> mBoneOffsets;
 	};
 public:
 	Graphics(HWND wnd);
@@ -105,6 +112,7 @@ public:
 		ParticlePick particle);
 
 	void CreateM3dModel(M3dRawData& data, const std::string& name);
+	void CreateM3dModel(M3dRawSkinnedData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
@@ -164,6 +172,7 @@ private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::unordered_map<std::string, M3dModel> m3dModelsMap;
+	std::unordered_map<std::string, M3dSkinnedModel> m3dSkinnedModelMap;
 	M3dModelNames m3dNames;
 	std::vector<ID3D11SamplerState*> samplers;
 

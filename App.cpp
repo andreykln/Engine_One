@@ -24,10 +24,10 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 
-	CreateShadowMapDemo();
+// 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-// 	CreateTempleScene();
+	CreateTempleScene();
 
 
 	CreateAndBindSkybox();
@@ -44,10 +44,10 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-	DrawShadowMapDemo();
+// 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-// 	DrawTempleScene();
+	DrawTempleScene();
 
 
 	CalculateFrameStats();
@@ -625,6 +625,13 @@ void App::CreateTempleScene()
 	LoadModelToMemory("models\\tree.m3d", m3dNames.tree);
 	LoadModelToMemory("models\\box.m3d", m3dNames.box);
 
+	m3dLoad = new M3dLoader("models\\soldier.m3d", true);
+	M3dRawSkinnedData d = m3dLoad->rawSkinnedData;
+	wnd.GetGraphics().CreateM3dModel(d, m3dNames.soldier);
+	delete m3dLoad;
+	m3dLoad = nullptr;
+
+
 
 
 
@@ -778,7 +785,7 @@ void App::DrawSkyBox()
 
 void App::LoadModelToMemory(const std::string& filepath, const std::string& modelName)
 {
-	m3dLoad = new M3dLoader(filepath);
+	m3dLoad = new M3dLoader(filepath, false);
 	M3dRawData d = m3dLoad->rawData;
 	wnd.GetGraphics().CreateM3dModel(d, modelName);
 	delete m3dLoad;

@@ -23,6 +23,16 @@ struct vbPosNormalTexTangent
 	DirectX::XMFLOAT3 tangent;
 };
 
+struct vbSkinnedVertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 tex;
+	DirectX::XMFLOAT3 tangent;
+	DirectX::XMFLOAT3 BoneWeights;
+	BYTE BoneIndices[4];
+};
+
 struct cbShadowMap
 {
 	cbShadowMap() { ZeroMemory(this, sizeof(this)); }
@@ -219,24 +229,45 @@ struct M3dMaterial
 	std::wstring normalMapName;
 };
 
-struct M3dRawData
-{
-	void Clear()
-	{
-		vertices.clear();
-		vertices.resize(0);
-		indices.clear();
-		indices.resize(0);
-		subsets.clear();
-		subsets.resize(0);
-		mats.clear();
-		mats.resize(0);
-	}
-	std::vector<vbPosNormalTexTangent> vertices;
-	std::vector<UINT> indices;
-	std::vector<Subset> subsets;
-	std::vector<M3dMaterial> mats;
-};
+// struct M3dRawData
+// {
+// 	void Clear()
+// 	{
+// 		vertices.clear();
+// 		vertices.resize(0);
+// 		indices.clear();
+// 		indices.resize(0);
+// 		subsets.clear();
+// 		subsets.resize(0);
+// 		mats.clear();
+// 		mats.resize(0);
+// 	}
+// 	std::vector<vbPosNormalTexTangent> vertices;
+// 	std::vector<UINT> indices;
+// 	std::vector<Subset> subsets;
+// 	std::vector<M3dMaterial> mats;
+// };
+// 
+// struct M3dRawSkinnedData
+// {
+// 	void Clear()
+// 	{
+// 		vertices.clear();
+// 		vertices.resize(0);
+// 		indices.clear();
+// 		indices.resize(0);
+// 		subsets.clear();
+// 		subsets.resize(0);
+// 		mats.clear();
+// 		mats.resize(0);
+// 	}
+// 	std::vector<vbSkinnedVertex> vertices;
+// 	std::vector<UINT> indices;
+// 	std::vector<Subset> subsets;
+// 	std::vector<M3dMaterial> mats;
+// 	SkinnedData skinnedInfo;
+// 
+// };
 
 struct M3dModelNames
 {
@@ -249,6 +280,7 @@ struct M3dModelNames
 	const std::string stairs = "stairs";
 	const std::string tree = "tree";
 	const std::string box = "box";
+	const std::string soldier = "soldier";
 
 
 };
