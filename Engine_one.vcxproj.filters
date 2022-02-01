@@ -52,6 +52,9 @@
     <Filter Include="Shaders\Default\GPUWaves\ComputeWaves">
       <UniqueIdentifier>{8f5d3703-45d1-460a-be42-038519049fb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Skinned">
+      <UniqueIdentifier>{5a2eada0-f636-4d93-86d9-a452e2eef940}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -354,6 +357,12 @@
     </FxCompile>
     <FxCompile Include="UpdateWavesCS.hlsl">
       <Filter>Shaders\Default\GPUWaves\ComputeWaves</Filter>
+    </FxCompile>
+    <FxCompile Include="NormalMapSkinnedVS.hlsl">
+      <Filter>Shaders\Skinned</Filter>
+    </FxCompile>
+    <FxCompile Include="ShadowMapSkinnedVS.hlsl">
+      <Filter>Shaders\Skinned</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

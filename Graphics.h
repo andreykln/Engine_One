@@ -364,6 +364,10 @@ private:
 	ID3D11ComputeShader* pComputeWavesUpdateCS = nullptr;
 	ID3D11ComputeShader* pComputeWavesDisturbCS = nullptr;
 
+	//Skinned
+	ID3D11InputLayout* pSkinnedIL = nullptr;
+	ID3D11VertexShader* pSkinnedNormalMapVS = nullptr;
+
 private:
 	void InitializeRenderStates();
 	void DestroyRenderStates();

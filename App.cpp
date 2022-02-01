@@ -412,6 +412,8 @@ void App::DrawShadowMapDemo()
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
 // 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
 // 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 	//////////////////////////////////////////////////////////////////////////
 	//release for the SSAO pass
 	ID3D11ShaderResourceView* pNullSRV = nullptr;
@@ -741,6 +743,23 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
+
+
+	//////////////////////////////////////////////////////////////////////////
+//DEBUG quad
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
+	//////////////////////////////////////////////////////////////////////////
+
 
 	//transparent space between leaves
 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().NoCullRS);

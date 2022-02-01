@@ -1715,6 +1715,11 @@ void Graphics::InitShaders()
 	CS_Init(&pComputeWavesDisturbCS, L"Shaders\\Compute\\DisturbWavesCS.cso");
 	CS_Init(&pComputeWavesUpdateCS, L"Shaders\\Compute\\UpdateWavesCS.cso");
 
+	//skinned 
+	VS_IL_Init(&pSkinnedNormalMapVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
+		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\NormalMapSkinnedVS.cso");
+
+
 }
 
 void Graphics::BindVSandIA(ShaderPicker shader)
@@ -1816,6 +1821,10 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->VSSetShader(pComputeWavesVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::SkinnedModelNormalMap_VS:
+		pgfx_pDeviceContext->IASetInputLayout(pSkinnedIL);
+		pgfx_pDeviceContext->VSSetShader(pSkinnedNormalMapVS, nullptr, 0u);
+		break;
 	default:
 		break;
 	}

@@ -27,7 +27,22 @@ struct InputLayout
 		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
 	};
-
+	static const UINT nPosNormalTexcTangentSkinned = 6;
+	const D3D11_INPUT_ELEMENT_DESC posNormalTexcTangentSkinned[nPosNormalTexcTangentSkinned] =
+	{
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"TexCoord", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"BoneWeights", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"BoneIndices", 0u, DXGI_FORMAT_R8G8B8A8_UINT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
+		D3D11_INPUT_PER_VERTEX_DATA, 0u},
+	};
 
 	static const UINT nTerrainHeightMap = 3;
 	const D3D11_INPUT_ELEMENT_DESC terrainHeightMap[nTerrainHeightMap] =
@@ -70,18 +85,7 @@ struct InputLayout
 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
 
-// 	static const UINT nPosNormalTexCoordTangent = 4;
-// 	const D3D11_INPUT_ELEMENT_DESC posNormalTexCoordTangent[nPosNormalTexCoordTangent] =
-// 	{
-// 		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, 0u,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-// 		{"Normal", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-// 		{"TexCoordinate", 0u, DXGI_FORMAT_R32G32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u},
-// 		{"Tangent", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT,
-// 		D3D11_INPUT_PER_VERTEX_DATA, 0u}
-// 	};
+
 	static const UINT nPosition = 1;
 	const D3D11_INPUT_ELEMENT_DESC positonIL[nPosition] =
 	{
