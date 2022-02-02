@@ -209,6 +209,9 @@ void Graphics::CreateCBuffers()
 	ID3D11Buffer* pCWavesPF = CreateConstantBuffer(computeWavesPerFrame, true, "Compute waves per frame constants");
 	constBuffersMap.insert(std::make_pair(cbNames.computeWavesCSPerFrame, pCWavesPF));
 
+	cbSkinnedMesh skinnedMeshBones;
+	ID3D11Buffer* pSkinnedMehsBones = CreateConstantBuffer(skinnedMeshBones, true, "Skinned mesh bone transforms");
+	constBuffersMap.insert(std::make_pair(cbNames.skinnedMeshBoneTransforms, pSkinnedMehsBones));
 }
 
 
@@ -919,7 +922,6 @@ void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
 	}
 	model.subsets.resize(data.subsets.size());
 	model.subsets = data.subsets;
-	m3dSkinnedModelMap.insert(std::make_pair(name, model));
 	for (size_t i = 0; i < data.mats.size(); i++)
 	{
 		ID3D11ShaderResourceView* pTemp = nullptr;
@@ -940,6 +942,10 @@ void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
 	model.mBoneHierarchy = data.skinnedInfo.mBoneHierarchy;
 	model.mBoneOffsets.resize(data.skinnedInfo.mBoneOffsets.size());
 	model.mBoneOffsets = data.skinnedInfo.mBoneOffsets;
+	model.skinnedData = data.skinnedInfo;
+	SkinnedModelInstance* pInstance = new SkinnedModelInstance(model);
+	m3dSkinnedModelMap.insert(std::make_pair(m3dNames.soldier, pInstance));
+	
 }
 
 void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
@@ -989,12 +995,87 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 	}
 }
 
+void Graphics::DrawM3dSkinnedModel(Technique tech)
+{
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+
+	UINT stride = sizeof(vbSkinnedVertex);
+	UINT offset = 0;
+	SkinnedModelInstance model = m3dSkinnedModelMap.at(m3dNames.soldier)->pModel;
+	model.World = m3dSkinnedModelMap.at(m3dNames.soldier)->World;
+	model.TimePos = m3dSkinnedModelMap.at(m3dNames.soldier)->TimePos;
+// 	model.FinalTransforms = m3dSkinnedModelMap.at(m3dNames.soldier)->FinalTransforms;
+	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pModel.pVertexBuffer, &stride, &offset);
+	pgfx_pDeviceContext->IASetIndexBuffer(model.pModel.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&model.World);
+
+	for (size_t i = 0; i < model.pModel.subsets.size(); i++)
+	{
+		MaterialEx mat;
+		mat.diffuseAlbedo = model.pModel.mats[i].mat.diffuseAlbedo;
+		mat.fresnelR0 = model.pModel.mats[i].mat.fresnelR0;
+		mat.shininess = model.pModel.mats[i].mat.shininess;
+		switch (tech)
+		{
+		case Technique::NormalMap:
+		{
+			NormalMap(world);
+			break;
+		}
+		case Technique::DefaultLight:
+		{
+			DefaultLightUpdate(mat, false, usessao, model.pModel.mats[i].diffuseMapName, model.pModel.mats[i].normalMapName);
+			break;
+		}
+		case Technique::ShadowMap:
+		{
+			ShadowMap(world, mLightViewProjection);
+			break;
+		}
+		default:
+			break;
+		}
+		VSDefaultMatricesUpdate(world, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		pgfx_pDeviceContext->DrawIndexed(model.pModel.subsets[i].FaceCount * 3, model.pModel.subsets[i].FaceStart * 3, 0);
+	}
+
+}
+
+void Graphics::InitSkinnedModel()
+{
+	m3dSkinnedModelMap.at(m3dNames.soldier)->TimePos = 0.0f;
+	m3dSkinnedModelMap.at(m3dNames.soldier)->ClipName = "Take1";
+	m3dSkinnedModelMap.at(m3dNames.soldier)->FinalTransforms.resize(m3dSkinnedModelMap.at(m3dNames.soldier)->pModel.skinnedData.BoneCount());
+
+	// Reflect to change coordinate system from the RHS the data was exported out as.
+	DirectX::XMMATRIX modelScale = XMMatrixScaling(0.05f, 0.05f, -0.05f);
+	DirectX::XMMATRIX modelRot = XMMatrixRotationY(DirectX::XM_PI);
+	DirectX::XMMATRIX modelOffset = XMMatrixTranslation(-2.0f, 1.5f, -4.0f);
+	DirectX::XMStoreFloat4x4(&m3dSkinnedModelMap.at(m3dNames.soldier)->World, modelScale * modelRot * modelOffset);
+}
+
+void Graphics::UpdateSkinnedModel()
+{
+	m3dSkinnedModelMap.at(m3dNames.soldier)->Update(mDeltaTime);
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.skinnedMeshBoneTransforms));
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+	DX::ThrowIfFailed(pgfx_pDeviceContext->Map(constBuffersMap.at(cbNames.skinnedMeshBoneTransforms), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedData));
+	cbSkinnedMesh* object = reinterpret_cast<cbSkinnedMesh*>(mappedData.pData);
+	std::copy(m3dSkinnedModelMap.at(m3dNames.soldier)->FinalTransforms.begin(),
+		m3dSkinnedModelMap.at(m3dNames.soldier)->FinalTransforms.end(),
+		object->boneTransforms);
+	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.skinnedMeshBoneTransforms), 0u);
+
+}
+
 void Graphics::SetComputeWavesResources()
 {
 	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
 	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.computeWavesVSData));
-
-
 	pgfx_pDeviceContext->CSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.computeWavesCSPerFrame));
 }
 

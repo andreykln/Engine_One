@@ -41,6 +41,27 @@ class Graphics
 		std::vector<Subset> subsets;
 		std::vector<int> mBoneHierarchy;
 		std::vector<DirectX::XMFLOAT4X4> mBoneOffsets;
+		SkinnedData skinnedData;
+	};
+	struct SkinnedModelInstance
+	{
+		SkinnedModelInstance(M3dSkinnedModel& m)
+		: pModel(m), TimePos(0) {};
+		M3dSkinnedModel pModel;
+		float TimePos;
+		std::string ClipName;
+		DirectX::XMFLOAT4X4 World;
+		std::vector<DirectX::XMFLOAT4X4> FinalTransforms;
+
+		void Update(float dt)
+		{
+			TimePos += dt;
+			pModel.skinnedData.GetFinalTransforms(ClipName, TimePos, FinalTransforms);
+
+			// Loop animation
+			if (TimePos > pModel.skinnedData.GetClipEndTime(ClipName))
+				TimePos = 0.0f;
+		}
 	};
 public:
 	Graphics(HWND wnd);
@@ -111,9 +132,13 @@ public:
 	void SetParticleBuffers(ID3D11Buffer* pStreamOutVB, ID3D11Buffer* pDrawVB, ID3D11ShaderResourceView* randomTexSRV, ID3D11Buffer* pInitVB,
 		ParticlePick particle);
 
+	//m3d model
 	void CreateM3dModel(M3dRawData& data, const std::string& name);
 	void CreateM3dModel(M3dRawSkinnedData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
+	void DrawM3dSkinnedModel(Technique tech);
+	void InitSkinnedModel();
+	void UpdateSkinnedModel();
 private:
 	void BindToSOStage(ID3D11Buffer* pStreamOutVB);
 	void UnbindFromSOStage();
@@ -172,7 +197,7 @@ private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::unordered_map<std::string, M3dModel> m3dModelsMap;
-	std::unordered_map<std::string, M3dSkinnedModel> m3dSkinnedModelMap;
+	std::unordered_map<std::string, SkinnedModelInstance*> m3dSkinnedModelMap;
 	M3dModelNames m3dNames;
 	std::vector<ID3D11SamplerState*> samplers;
 

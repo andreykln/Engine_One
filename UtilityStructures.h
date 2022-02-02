@@ -148,6 +148,7 @@ struct CBufferNames
 	const std::string particleStreamOutGS = "particleStreamOutGS";
 	const std::string computeWavesVSData = "computeWavesVSInitData";
 	const std::string computeWavesCSPerFrame = "computWavesCSPerFrame";
+	const std::string skinnedMeshBoneTransforms = "skinnedMeshBonesTransforms";
 	
 };
 
@@ -227,6 +228,11 @@ struct M3dMaterial
 	std::string materialTypeName;
 	std::wstring diffuseMapName;
 	std::wstring normalMapName;
+};
+
+struct cbSkinnedMesh
+{
+	DirectX::XMFLOAT4X4 boneTransforms[96];
 };
 
 // struct M3dRawData

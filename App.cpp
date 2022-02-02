@@ -632,6 +632,7 @@ void App::CreateTempleScene()
 	wnd.GetGraphics().CreateM3dModel(d, m3dNames.soldier);
 	delete m3dLoad;
 	m3dLoad = nullptr;
+	wnd.GetGraphics().InitSkinnedModel();
 
 
 
@@ -645,6 +646,7 @@ void App::CreateTempleScene()
 void App::DrawTempleScene()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 
 	////	
 	//shadow map
@@ -672,7 +674,6 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
 
 
-
 	pDC->RSSetState(0u);
 
 	//create normal-depth map
@@ -692,6 +693,13 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::NormalMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::NormalMap, templeWorlds.tree);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
+
+
+	wnd.GetGraphics().UpdateSkinnedModel();
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelNormalMap_VS);
+
+	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
 
 
 
