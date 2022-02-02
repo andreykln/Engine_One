@@ -997,6 +997,8 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 
 void Graphics::DrawM3dSkinnedModel(Technique tech)
 {
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.skinnedMeshBoneTransforms));
+
 	bool usessao = true;
 	if (GetAsyncKeyState('5') & 0x8000)
 		usessao = false;
@@ -1799,7 +1801,10 @@ void Graphics::InitShaders()
 	//skinned 
 	VS_IL_Init(&pSkinnedNormalMapVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
 		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\NormalMapSkinnedVS.cso");
-
+	VS_IL_Init(&pSkinnedShadowMapVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
+		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\ShadowMapSkinnedVS.cso");
+	VS_IL_Init(&pSkinnedDefaultLightVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
+		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\DefaultLightSkinnedVS.cso");
 
 }
 
@@ -1906,6 +1911,15 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->IASetInputLayout(pSkinnedIL);
 		pgfx_pDeviceContext->VSSetShader(pSkinnedNormalMapVS, nullptr, 0u);
 		break;
+	case ShaderPicker::SkinnedModelShadowMap_VS:
+		pgfx_pDeviceContext->IASetInputLayout(pSkinnedIL);
+		pgfx_pDeviceContext->VSSetShader(pSkinnedShadowMapVS, nullptr, 0u);
+		break;
+	case ShaderPicker::SkinnedModelDefaultLight_VS:
+		pgfx_pDeviceContext->IASetInputLayout(pSkinnedIL);
+		pgfx_pDeviceContext->VSSetShader(pSkinnedDefaultLightVS, nullptr, 0u);
+		break;
+
 	default:
 		break;
 	}

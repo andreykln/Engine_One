@@ -364,6 +364,9 @@
     <FxCompile Include="ShadowMapSkinnedVS.hlsl">
       <Filter>Shaders\Skinned</Filter>
     </FxCompile>
+    <FxCompile Include="DefaultLightSkinnedVS.hlsl">
+      <Filter>Shaders\Skinned</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightHelper.hlsli">

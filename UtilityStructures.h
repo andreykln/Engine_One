@@ -368,6 +368,8 @@ enum class ShaderPicker
 	DefaultLight_VS_PS,
 	ComputeWaves_VS_PS_CS,
 	SkinnedModelNormalMap_VS,
+	SkinnedModelShadowMap_VS,
+	SkinnedModelDefaultLight_VS,
 };
 
 enum class ParticlePick

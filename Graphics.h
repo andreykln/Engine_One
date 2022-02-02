@@ -392,6 +392,8 @@ private:
 	//Skinned
 	ID3D11InputLayout* pSkinnedIL = nullptr;
 	ID3D11VertexShader* pSkinnedNormalMapVS = nullptr;
+	ID3D11VertexShader* pSkinnedShadowMapVS = nullptr;
+	ID3D11VertexShader* pSkinnedDefaultLightVS = nullptr;
 
 private:
 	void InitializeRenderStates();
