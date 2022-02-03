@@ -138,7 +138,7 @@ void App::DrawComputeShaderWaves()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeWaves_VS_PS_CS);
 	wnd.GetGraphics().BindPS(ShaderPicker::ComputeWaves_VS_PS_CS);
 	wnd.GetGraphics().UpdateComputeWaves(pWaveSurfaceGPU->wavesWorld);
-	wnd.GetGraphics().DefaultLightUpdate(pWaveSurfaceGPU->wavesMat, false, false, pWaveSurfaceGPU->diffuseMap, pWaveSurfaceGPU->normalMap);
+	wnd.GetGraphics().DefaultLightUpdate(pWaveSurfaceGPU->wavesMat, false, false, true, pWaveSurfaceGPU->diffuseMap, pWaveSurfaceGPU->normalMap);
 	stride = sizeof(vbPosNormalTex);
 	offset = 0;
 
@@ -360,14 +360,14 @@ void App::DrawShadowMapDemo()
 	pDC->IASetIndexBuffer(pPlate->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().VSDefaultMatricesUpdate(ID, pPlate->plateScaling, ID);
 	wnd.GetGraphics().DefaultLightUpdate(pPlate->plateMaterial, false, 
-		usessao, pPlate->diffuseMap, pPlate->normalMap);
+		usessao, true, pPlate->diffuseMap, pPlate->normalMap);
 	pDC->DrawIndexed(pPlate->GetIndexCount(), 0u, 0u);
 
 	//columns
 	pDC->IASetVertexBuffers(0u, 1u, pCylinder->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pCylinder->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().DefaultLightUpdate(pCylinder->cylinderMaterial, false,
-		usessao, pCylinder->diffuseMap, pCylinder->normalMap);
+		usessao, true, pCylinder->diffuseMap, pCylinder->normalMap);
 	for (int i = 0; i < 10; i++)
 	{
 		wnd.GetGraphics().VSDefaultMatricesUpdate(pCylinder->m_CylWorld[i], ID, ID);
@@ -378,7 +378,7 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pBox->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pBox->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().VSDefaultMatricesUpdate(shapes.Get_m_BoxWorld(),ID, ID);
-	wnd.GetGraphics().DefaultLightUpdate(pBox->boxMaterial, false,  usessao,
+	wnd.GetGraphics().DefaultLightUpdate(pBox->boxMaterial, false, usessao, true,
 		pBox->diffuseMap, pBox->normalMap);
 	pDC->DrawIndexed(pBox->GetIndexCount(), 0u, 0u);
 
@@ -386,7 +386,7 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pSkull->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pSkull->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	wnd.GetGraphics().VSDefaultMatricesUpdate(skullNewWorld, ID, ID);
-	wnd.GetGraphics().DefaultLightUpdate(pSkull->skullMaterial, true, usessao,
+	wnd.GetGraphics().DefaultLightUpdate(pSkull->skullMaterial, true, usessao, true,
 		pSkull->diffuseMap, pSkull->normalMap);
 	pDC->DrawIndexed(pSkull->GetIndexCount(), 0u, 0u);
 
@@ -394,7 +394,7 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pGeoSphere->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pGeoSphere->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	//set any material, it's not being used for spheres
-	wnd.GetGraphics().DefaultLightUpdate(pGeoSphere->sphereMaterial, true, usessao, pGeoSphere->diffuseMap, pGeoSphere->normalMap);
+	wnd.GetGraphics().DefaultLightUpdate(pGeoSphere->sphereMaterial, true, usessao, true, pGeoSphere->diffuseMap, pGeoSphere->normalMap);
 	for (int i = 0; i < 10; i++)
 	{
 		wnd.GetGraphics().VSDefaultMatricesUpdate(pGeoSphere->m_SphereWorld[i], ID, ID);
@@ -683,10 +683,15 @@ void App::DrawTempleScene()
 	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
 	wnd.GetGraphics().ConstBufferNormalMapBind();
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
+
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelNormalMap_VS);
 	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
-// 	wnd.GetGraphics().NormalMap(pSkull->skullWorld);
+	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
+
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::NormalMap, templeWorlds.templebase);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::NormalMap, templeWorlds.pillar1);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::NormalMap, templeWorlds.pillar2);
@@ -695,11 +700,9 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::NormalMap, templeWorlds.rock);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::NormalMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::NormalMap, templeWorlds.tree);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
 
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelNormalMap_VS);
-	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
 
 
 
@@ -750,22 +753,22 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::DefaultLight, templeWorlds.pillar4);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::DefaultLight);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
-// 	stride = sizeof(vbPosNormalTex);
-// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 	//////////////////////////////////////////////////////////////////////////

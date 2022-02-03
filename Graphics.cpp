@@ -978,7 +978,7 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 			}
 			case Technique::DefaultLight:
 			{
-				DefaultLightUpdate(mat, false, usessao, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+				DefaultLightUpdate(mat, false, usessao, true,model.mats[i].diffuseMapName, model.mats[i].normalMapName);
 				break;
 			}
 			case Technique::ShadowMap:
@@ -1030,7 +1030,7 @@ void Graphics::DrawM3dSkinnedModel(Technique tech)
 		}
 		case Technique::DefaultLight:
 		{
-			DefaultLightUpdate(mat, false, usessao, model.pModel.mats[i].diffuseMapName, model.pModel.mats[i].normalMapName);
+			DefaultLightUpdate(mat, false, usessao, false, model.pModel.mats[i].diffuseMapName, model.pModel.mats[i].normalMapName);
 			break;
 		}
 		case Technique::ShadowMap:
@@ -1364,7 +1364,7 @@ void Graphics::ReleaseSSAOShaderResource()
 	pgfx_pDeviceContext->PSSetShaderResources(5u, 1u, &pNullSRV);
 }
 
-void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
+void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO, BOOL alphaCLip,
 	const std::wstring& diffuseMap, const std::wstring& normalMap)
 {
 
@@ -1377,6 +1377,7 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL 
 	pBuffer->disableTexSampling = disableTexSamling;
 	pBuffer->lightDirection = mNewLightDirection;
 	pBuffer->mat = mat;
+	pBuffer->alphaClip = alphaCLip;
 	pBuffer->useSSAO = useSSAO;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
 

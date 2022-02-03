@@ -25,6 +25,7 @@ cbuffer cbDefaultLightPSPerFrame : register(b1)
     bool disableTexSampling;
     float3 lightDirection;
     bool useSSAO;
+    bool alphaClip;
 };
 
 Texture2D SRVTexture : register(t0);
@@ -61,7 +62,10 @@ float4 main(VertexOut pin) : SV_TARGET
     
 	// Dynamically look up the texture in the array.
     diffuseAlbedo *= SRVTexture.Sample(smpAnisotropicWrap, pin.Tex);
-    clip(diffuseAlbedo.a - 0.1f);
+    if(alphaClip)
+    {
+        clip(diffuseAlbedo.a - 0.1f);
+    }
     float shininess = (mat.shininess) * normalMapSample.a;
 
     if (disableTexSampling)

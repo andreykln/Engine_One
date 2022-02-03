@@ -106,6 +106,10 @@ struct cbDefaultLightPSPerFrame
 	BOOL disableTexSampling;
 	DirectX::XMFLOAT3 lightDirection;
 	BOOL useSSAO;
+	BOOL alphaClip;
+	int pad0;
+	int pad1;
+	int pad2;
 };
 
 

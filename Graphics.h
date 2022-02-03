@@ -92,7 +92,7 @@ public:
 		ID3D11ShaderResourceView* pAmbientMapSRV0, ID3D11ShaderResourceView* pAmbientMapSRV1, D3D11_VIEWPORT ssaoViewPort);
 	void ReleaseSSAOShaderResource();
 
-	void DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO,
+	void DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO, BOOL alphaCLip,
 		const std::wstring& diffuseMap, const std::wstring& normalMap);
 	void TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO);
 	void SetDefaultLightData();
