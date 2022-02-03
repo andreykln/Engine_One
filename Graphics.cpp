@@ -1010,7 +1010,6 @@ void Graphics::DrawM3dSkinnedModel(Technique tech)
 	SkinnedModelInstance model = m3dSkinnedModelMap.at(m3dNames.soldier)->pModel;
 	model.World = m3dSkinnedModelMap.at(m3dNames.soldier)->World;
 	model.TimePos = m3dSkinnedModelMap.at(m3dNames.soldier)->TimePos;
-// 	model.FinalTransforms = m3dSkinnedModelMap.at(m3dNames.soldier)->FinalTransforms;
 	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pModel.pVertexBuffer, &stride, &offset);
 	pgfx_pDeviceContext->IASetIndexBuffer(model.pModel.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&model.World);

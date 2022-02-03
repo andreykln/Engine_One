@@ -81,7 +81,7 @@ VertexOut main(VertexIn vin)
 
     // Generate projective tex-coords to project shadow map onto scene.
     vout.shadowPosH = mul(posW, shadowTransform);
-    vout.SSAOPosH = mul(float4(vin.posL, 1.0f), worldViewProjTex);
+    vout.SSAOPosH = mul(float4(posL, 1.0f), worldViewProjTex);
     
     return vout;
 }
