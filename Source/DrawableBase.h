@@ -1,0 +1,16 @@
+#pragma once
+#include "Hills.h"
+#include "Box.h"
+#include "ShapesDemo.h"
+#include "GeoSphere.h"
+#include "Cylinder.h"
+#include "Skull.h"
+#include "GPUWaves.h"
+#include "WaveSurfaceGPU.h"
+#include "Sky.h"
+#include "DisplacementWaves.h"
+#include "Terrain.h"
+#include "ParticleSystem.h"
+#include "ShadowMap.h"
+#include "SSAO.h"
+/*#include "Animation.h"*/
