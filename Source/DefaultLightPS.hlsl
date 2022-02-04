@@ -91,8 +91,7 @@ float4 main(VertexOut pin) : SV_TARGET
 
     DirectionalLightEx dr = dirLight;
     dr.direction = lightDirection;
-    
-    
+
     float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
  
     float4 litColor = float4(1.0f, 1.0f, 1.0f, 1.0f);

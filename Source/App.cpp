@@ -24,10 +24,10 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 
-	CreateShadowMapDemo();
+// 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-// 	CreateTempleScene();
+	CreateTempleScene();
 
 
 	CreateAndBindSkybox();
@@ -44,10 +44,10 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-	DrawShadowMapDemo();
+// 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-// 	DrawTempleScene();
+	DrawTempleScene();
 
 
 	CalculateFrameStats();
@@ -760,15 +760,15 @@ void App::DrawTempleScene()
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
-	stride = sizeof(vbPosNormalTex);
-	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	stride = sizeof(vbPosNormalTex);
+// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 	//////////////////////////////////////////////////////////////////////////
