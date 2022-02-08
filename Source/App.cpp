@@ -23,7 +23,10 @@ App::App()
 	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
-
+	M3dRawData rawData;
+	m3dLoad->LoadAssimp("models\\Survival_BackPack_2.fbx", rawData.vertices, rawData.indices, rawData.subsets, rawData.mats,
+		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
+	wnd.GetGraphics().CreateM3dModel(rawData, m3dNames.backPack);
 // 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
@@ -627,7 +630,7 @@ void App::CreateTempleScene()
 	LoadModelToMemory("models\\tree.m3d", m3dNames.tree);
 	LoadModelToMemory("models\\box.m3d", m3dNames.box);
 
-	m3dLoad = new M3dLoader("models\\soldier.m3d", true);
+	m3dLoad = new M3dLoader("models\\soldier.m3d", true, false);
 	M3dRawSkinnedData d = m3dLoad->rawSkinnedData;
 	wnd.GetGraphics().CreateM3dModel(d, m3dNames.soldier);
 	delete m3dLoad;
@@ -673,8 +676,8 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::ShadowMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::ShadowMap, templeWorlds.tree);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
-	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
+// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
 
 
 	pDC->RSSetState(0u);
@@ -688,7 +691,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelNormalMap_VS);
 	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
-	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
+// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
 
@@ -755,8 +758,15 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
 // 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
-	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::DefaultLight);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
+// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::DefaultLight);
+
+	//////////////////////////////////////////////////////////////////////////
+	DirectX::XMMATRIX w = DirectX::XMMatrixTranslation(5.0f, 5.0f, 0.0f);
+
+	std::vector<DirectX::XMMATRIX> wV;
+	wV.push_back(w);
+	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.backPack, Technique::DefaultLight, wV);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
@@ -817,7 +827,7 @@ void App::DrawSkyBox()
 
 void App::LoadModelToMemory(const std::string& filepath, const std::string& modelName)
 {
-	m3dLoad = new M3dLoader(filepath, false);
+	m3dLoad = new M3dLoader(filepath, false, false);
 	M3dRawData d = m3dLoad->rawData;
 	wnd.GetGraphics().CreateM3dModel(d, modelName);
 	delete m3dLoad;

@@ -1,17 +1,125 @@
 #include "M3dLoader.h"
 
-M3dLoader::M3dLoader(const std::string& filename, bool skinned)
+M3dLoader::M3dLoader(const std::string& filename, bool skinned, bool assimp)
 {
 	if (skinned)
 	{
 		bool loaded = LoadM3d(filename, rawSkinnedData.vertices, rawSkinnedData.indices, rawSkinnedData.subsets,
 			rawSkinnedData.mats, rawSkinnedData.skinnedInfo);
 	}
+	else if(assimp)
+	{
+// 		LoadAssimp(filename, rawData.vertices, rawData.indices, rawData.subsets, rawData.mats);
+	}
 	else
 	{
 		bool loaded = LoadM3d(filename, rawData.vertices, rawData.indices, rawData.subsets, rawData.mats);
 	}
+}
 
+void M3dLoader::LoadAssimp(const std::string& filename,
+	std::vector<vbPosNormalTexTangent>& vertices,
+	std::vector<UINT>& indices,
+	std::vector<Subset>& subsets,
+	std::vector<M3dMaterial>& mats,
+	const std::wstring& diffuseMapName,
+	const std::wstring normalMapName)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filename,
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_CalcTangentSpace |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_Triangulate |
+		aiProcess_FixInfacingNormals |
+		aiProcess_FindInvalidData | 
+		aiProcess_GenSmoothNormals |
+		aiProcess_GenUVCoords);
+
+	M3dMaterial mat;
+	mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	mat.fresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+	mat.shininess = 0.2f;
+	mat.alphaClip = false;
+	mat.diffuseMapName = diffuseMapName;
+	mat.normalMapName = normalMapName;
+
+	importer.ApplyPostProcessing(aiProcess_CalcTangentSpace);
+	std::string err = importer.GetErrorString();
+	M3dRawData* pRawModel = new M3dRawData;
+	UINT numMesh = 0;
+	UINT fStart = 0;
+	UINT baseVertLoc = 0;
+	if (scene->HasMeshes())
+	{
+		
+		numMesh = scene->mNumMeshes;
+		aiMatrix4x4 x = scene->mRootNode->mChildren[2]->mTransformation;
+		for (UINT i = 0; i < numMesh; i++)
+		{
+			aiMesh* t  = scene->mMeshes[i];
+			const UINT nVert = t->mNumVertices;
+// 			sbs.ID = i;
+// 			sbs.FaceCount = t->mNumFaces;
+// 			sbs.FaceStart = fStart;
+// 			fStart += sbs.FaceCount;
+// 			pRawModel->subsets.push_back(sbs);
+// 			pRawModel->mats.push_back(mat);
+			for (UINT j = 0; j < nVert; j++)
+			{
+				vbPosNormalTexTangent v;
+				v.pos.x = t->mVertices[j].x;
+				v.pos.y = t->mVertices[j].y;
+				v.pos.z = t->mVertices[j].z;
+				v.normal.x = t->mNormals[j].x;
+				v.normal.y = t->mNormals[j].y;
+				v.normal.z = t->mNormals[j].z;
+				v.tangent.x = t->mTangents[j].x;
+				v.tangent.y = t->mTangents[j].y;
+				v.tangent.z = t->mTangents[j].z;
+				v.tex.x = t->mTextureCoords[0][j].x;
+				v.tex.y = t->mTextureCoords[0][j].y;
+				pRawModel->vertices.push_back(v);
+			}
+			for (UINT k = 0; k < t->mNumFaces; k++)
+			{
+				const aiFace& face = t->mFaces[k];
+				pRawModel->indices.push_back(face.mIndices[0]);
+				pRawModel->indices.push_back(face.mIndices[1]);
+				pRawModel->indices.push_back(face.mIndices[2]);
+
+			}
+			Subset sbs;
+			sbs.ID = i;
+			sbs.FaceCount = t->mNumFaces;
+			sbs.FaceStart = fStart;
+			sbs.VertexCount = nVert;
+			sbs.VertexStart = baseVertLoc;
+			baseVertLoc += sbs.VertexCount;
+			fStart += sbs.FaceCount;
+			pRawModel->subsets.push_back(sbs);
+			pRawModel->mats.push_back(mat);
+
+		}
+
+
+
+	}
+
+
+	indices.resize(pRawModel->indices.size());
+	indices = pRawModel->indices;
+	mats.resize(pRawModel->mats.size());
+	mats = pRawModel->mats;
+	subsets.resize(pRawModel->subsets.size());
+	subsets = pRawModel->subsets;
+	vertices.resize(pRawModel->vertices.size());
+	vertices = pRawModel->vertices;
+	
+
+
+	delete pRawModel;
+	pRawModel = nullptr;
 }
 
 bool M3dLoader::LoadM3d(const std::string& filename,

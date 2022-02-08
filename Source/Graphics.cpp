@@ -978,7 +978,7 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 			}
 			case Technique::DefaultLight:
 			{
-				DefaultLightUpdate(mat, false, usessao, true,model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+				DefaultLightUpdate(mat, false, usessao, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
 				break;
 			}
 			case Technique::ShadowMap:
@@ -990,7 +990,7 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 				break;
 			}
 			VSDefaultMatricesUpdate(world[w], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-			pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, 0);
+			pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
 		}
 	}
 }

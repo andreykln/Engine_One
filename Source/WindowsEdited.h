@@ -40,7 +40,7 @@
 #define NOIMAGE
 #define NOTAPE
 
-#define NOMINMAX
+//#define NOMINMAX
 
 //#define STRICT
 

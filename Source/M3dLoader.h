@@ -2,6 +2,10 @@
 #include <fstream>
 #include <vector>
 //for WinBase.h in Utility
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags 
+
 #include <windows.h>
 #include "UtilityStructures.h"
 
@@ -49,9 +53,16 @@ struct M3dRawSkinnedData
 class M3dLoader
 {
 public:
-	M3dLoader(const std::string& filename, bool skinned);
+	M3dLoader(const std::string& filename, bool skinned, bool assimp);
 	M3dRawData rawData;
 	M3dRawSkinnedData rawSkinnedData;
+	void LoadAssimp(const std::string& filename,
+		std::vector<vbPosNormalTexTangent>& vertices,
+		std::vector<UINT>& indices,
+		std::vector<Subset>& subsets,
+		std::vector<M3dMaterial>& mats,
+		const std::wstring& diffuseMapName,
+		const std::wstring normalMapName);
 
 	bool LoadM3d(const std::string& filename,
 		std::vector<vbPosNormalTexTangent>& vertices,
