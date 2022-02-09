@@ -50,6 +50,15 @@ struct M3dRawSkinnedData
 	SkinnedData skinnedInfo;
 
 };
+
+struct AssimpRawData
+{
+	std::vector<vbPosNormalTexTangent> vertices;
+	std::vector<UINT> indices;
+	std::vector<Subset> subsets;
+	std::vector<M3dMaterial> mats;
+	std::vector<DirectX::XMFLOAT4X4> worlds;
+};
 class M3dLoader
 {
 public:

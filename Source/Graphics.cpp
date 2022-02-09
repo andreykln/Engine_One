@@ -948,6 +948,50 @@ void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
 	
 }
 
+void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
+{
+	AssimpModel model;
+	model.pVertexBuffer = CreateVertexBuffer(data.vertices, false, false, L"Temple Base vertices");
+	model.pIndexBuffer = CreateIndexBuffer(data.indices, L"temple base indices");
+	MaterialM3d m;
+	for (auto& a : data.mats)
+	{
+		m.mat.diffuseAlbedo = a.diffuseAlbedo;
+		m.mat.fresnelR0 = a.fresnelR0;
+		m.mat.shininess = a.shininess;
+		m.name = a.materialTypeName;
+		m.diffuseMapName = a.diffuseMapName;
+		m.normalMapName = a.normalMapName;
+		model.mats.push_back(m);
+	}
+	model.subsets.resize(data.subsets.size());
+	model.subsets = data.subsets;
+	model.worlds.resize(data.worlds.size());
+	for (int i = 0; i < data.worlds.size(); i++)
+	{
+		model.worlds[i] = DirectX::XMLoadFloat4x4(&data.worlds[i]);
+		const DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f);
+		model.worlds[i] = model.worlds[i]  * scale;
+	}
+	assimpModelMap.insert(std::make_pair(name, model));
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].diffuseMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
+	}
+	for (size_t i = 0; i < data.mats.size(); i++)
+	{
+		ID3D11ShaderResourceView* pTemp = nullptr;
+		std::wstring path = L"Textures\\";
+		path += data.mats[i].normalMapName + L".dds";
+		pTemp = CreateSRV(path, false);
+		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
+	}
+}
+
 void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
 {
 	bool usessao = true;
@@ -995,7 +1039,7 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 	}
 }
 
-void Graphics::DrawAssimpModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
+void Graphics::DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATRIX& world)
 {
 	bool usessao = true;
 	if (GetAsyncKeyState('5') & 0x8000)
@@ -1005,11 +1049,13 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, std::vector<Dir
 
 	UINT stride = sizeof(vbPosNormalTexTangent);
 	UINT offset = 0;
-	M3dModel model = m3dModelsMap.at(name);
+	AssimpModel model = assimpModelMap.at(name);
 	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
 	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	for (size_t i = 0; i < model.subsets.size(); i++)
 	{
+		DirectX::XMMATRIX w = model.worlds[i] * world;
+
 		MaterialEx mat;
 		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
 		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
@@ -1018,7 +1064,7 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, std::vector<Dir
 		{
 		case Technique::NormalMap:
 		{
-			NormalMap(world[i]);
+			NormalMap(w);
 			break;
 		}
 		case Technique::DefaultLight:
@@ -1028,13 +1074,13 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, std::vector<Dir
 		}
 		case Technique::ShadowMap:
 		{
-			ShadowMap(world[i], mLightViewProjection);
+			ShadowMap(w, mLightViewProjection);
 			break;
 		}
 		default:
 			break;
 		}
-		VSDefaultMatricesUpdate(world[i], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
 	}
 

@@ -252,8 +252,12 @@ struct M3dModelNames
 	const std::string tree = "tree";
 	const std::string box = "box";
 	const std::string soldier = "soldier";
-	const std::string backPack = "backPack";
+};
 
+struct AssimpModelNames
+{
+	const std::string backPack = "Backpack";
+	const std::string akuma = "akuma";
 };
 
 struct TempleDemoWorlds

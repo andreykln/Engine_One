@@ -43,6 +43,14 @@ class Graphics
 		std::vector<DirectX::XMFLOAT4X4> mBoneOffsets;
 		SkinnedData skinnedData;
 	};
+	struct AssimpModel
+	{
+		ID3D11Buffer* pVertexBuffer = nullptr;
+		ID3D11Buffer* pIndexBuffer = nullptr;
+		std::vector<MaterialM3d> mats;
+		std::vector<Subset> subsets;
+		std::vector<DirectX::XMMATRIX> worlds;
+	};
 	struct SkinnedModelInstance
 	{
 		SkinnedModelInstance(M3dSkinnedModel& m)
@@ -134,9 +142,10 @@ public:
 
 	//m3d model
 	void CreateM3dModel(M3dRawData& data, const std::string& name);
+	void CreateAssimpModel(AssimpRawData& data, const std::string& name);
 	void CreateM3dModel(M3dRawSkinnedData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
-	void DrawAssimpModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
+	void DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATRIX& world);
 	void DrawM3dSkinnedModel(Technique tech);
 	void InitSkinnedModel();
 	void UpdateSkinnedModel();
@@ -198,6 +207,7 @@ private:
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> normalMaps;
 	std::unordered_map<std::wstring, ID3D11ShaderResourceView*> cubeMaps;
 	std::unordered_map<std::string, M3dModel> m3dModelsMap;
+	std::unordered_map<std::string, AssimpModel> assimpModelMap;
 	std::unordered_map<std::string, SkinnedModelInstance*> m3dSkinnedModelMap;
 	M3dModelNames m3dNames;
 	std::vector<ID3D11SamplerState*> samplers;

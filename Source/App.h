@@ -50,12 +50,12 @@ private:
 	float mAnimTimePos = 0.0f;
 	DirectX::XMMATRIX skullNewWorld;
 	BoneAnimation skullAnimation;
-	std::vector<DirectX::XMFLOAT4X4> worlds;
 
 	//////////////////////////////////////////////////////////////////////////
 	DirectX::XMMATRIX viewProjectionMatrix;
 	CBufferNames cbNames;
 	M3dModelNames m3dNames;
+	AssimpModelNames assimpNames;
 	TempleDemoWorlds templeWorlds;
 	const float blendFactorsZero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const float blendFactorsOne[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
