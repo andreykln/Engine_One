@@ -56,14 +56,11 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 		//get transforms
 		const UINT numOfChildren = scene->mRootNode->mNumChildren;
 		aiMatrix4x4* childrenTransforms = new aiMatrix4x4[numOfChildren];
-		for (int h = 0; h < numOfChildren; h++)
-		{
-			childrenTransforms[h] = scene->mRootNode->mChildren[h]->mTransformation;
-		}
 		worlds.resize(numOfChildren);
+
 		for (int h = 0; h < numOfChildren; h++)
 		{
-			worlds[h] = ConvertAiMatrixToD3DMatrix(childrenTransforms[h]);
+			worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
 		}
 
 
@@ -412,9 +409,9 @@ void M3dLoader::ReadBoneKeyframes(std::ifstream& fin, UINT numBones, BoneAnimati
 DirectX::XMFLOAT4X4 M3dLoader::ConvertAiMatrixToD3DMatrix(aiMatrix4x4& m)
 {
 	DirectX::XMFLOAT4X4 M = {
-		m.a1, m.a2, m.a3, m.a4,
-		m.b1, m.b2, m.b3, m.b4,
-		m.c1, m.c2, m.c3, m.c4,
-		m.d1, m.d2, m.d3, m.d4 };
+		m.a1, m.b1, m.c1, m.d1,
+		m.a2, m.b2, m.c2, m.d2,
+		m.a3, m.b3, m.c3, m.d3,
+		m.a4, m.b4, m.c4, m.d4 };
 	return M;
 }

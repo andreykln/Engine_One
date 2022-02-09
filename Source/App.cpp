@@ -770,9 +770,9 @@ void App::DrawTempleScene()
 		DirectX::XMMATRIX transl = DirectX::XMMatrixTranslation(5.0f, 5.0f, 0.0f);
 
 		DirectX::XMMATRIX t = DirectX::XMLoadFloat4x4(&worlds[i]);
-		t =  DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * t;
+		t = t * DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * transl;
 
-		wV.push_back(DirectX::XMMatrixTranspose(t));
+		wV.push_back((t));
 
 	}
 
