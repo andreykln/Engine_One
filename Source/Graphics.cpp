@@ -990,9 +990,54 @@ void Graphics::DrawM3dStaticModel(std::string name, Technique tech, std::vector<
 				break;
 			}
 			VSDefaultMatricesUpdate(world[w], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-			pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
+			pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, 0);
 		}
 	}
+}
+
+void Graphics::DrawAssimpModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world)
+{
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+
+	UINT stride = sizeof(vbPosNormalTexTangent);
+	UINT offset = 0;
+	M3dModel model = m3dModelsMap.at(name);
+	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
+	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	for (size_t i = 0; i < model.subsets.size(); i++)
+	{
+		MaterialEx mat;
+		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
+		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
+		mat.shininess = model.mats[i].mat.shininess;
+		switch (tech)
+		{
+		case Technique::NormalMap:
+		{
+			NormalMap(world[i]);
+			break;
+		}
+		case Technique::DefaultLight:
+		{
+			DefaultLightUpdate(mat, false, usessao, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+			break;
+		}
+		case Technique::ShadowMap:
+		{
+			ShadowMap(world[i], mLightViewProjection);
+			break;
+		}
+		default:
+			break;
+		}
+		VSDefaultMatricesUpdate(world[i], DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
+	}
+
 }
 
 void Graphics::DrawM3dSkinnedModel(Technique tech)

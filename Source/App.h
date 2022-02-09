@@ -50,6 +50,7 @@ private:
 	float mAnimTimePos = 0.0f;
 	DirectX::XMMATRIX skullNewWorld;
 	BoneAnimation skullAnimation;
+	std::vector<DirectX::XMFLOAT4X4> worlds;
 
 	//////////////////////////////////////////////////////////////////////////
 	DirectX::XMMATRIX viewProjectionMatrix;

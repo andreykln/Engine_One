@@ -61,6 +61,7 @@ public:
 		std::vector<UINT>& indices,
 		std::vector<Subset>& subsets,
 		std::vector<M3dMaterial>& mats,
+		std::vector<DirectX::XMFLOAT4X4>& worlds,
 		const std::wstring& diffuseMapName,
 		const std::wstring normalMapName);
 
@@ -90,6 +91,6 @@ public:
 	void ReadAnimationClips(std::ifstream& fin, UINT numBones, UINT numAnimationClips,
 		std::unordered_map<std::string, AnimationClip>& animations);
 	void ReadBoneKeyframes(std::ifstream& fin, UINT numBones, BoneAnimation& boneAnimation);
-
+	DirectX::XMFLOAT4X4 ConvertAiMatrixToD3DMatrix(aiMatrix4x4& m);
 
 };

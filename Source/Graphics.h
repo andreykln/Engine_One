@@ -136,6 +136,7 @@ public:
 	void CreateM3dModel(M3dRawData& data, const std::string& name);
 	void CreateM3dModel(M3dRawSkinnedData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
+	void DrawAssimpModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
 	void DrawM3dSkinnedModel(Technique tech);
 	void InitSkinnedModel();
 	void UpdateSkinnedModel();

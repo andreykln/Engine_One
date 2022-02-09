@@ -22,6 +22,7 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 	std::vector<UINT>& indices,
 	std::vector<Subset>& subsets,
 	std::vector<M3dMaterial>& mats,
+	std::vector<DirectX::XMFLOAT4X4>& worlds,
 	const std::wstring& diffuseMapName,
 	const std::wstring normalMapName)
 {
@@ -52,22 +53,30 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 	UINT baseVertLoc = 0;
 	if (scene->HasMeshes())
 	{
-		
+		//get transforms
+		const UINT numOfChildren = scene->mRootNode->mNumChildren;
+		aiMatrix4x4* childrenTransforms = new aiMatrix4x4[numOfChildren];
+		for (int h = 0; h < numOfChildren; h++)
+		{
+			childrenTransforms[h] = scene->mRootNode->mChildren[h]->mTransformation;
+		}
+		worlds.resize(numOfChildren);
+		for (int h = 0; h < numOfChildren; h++)
+		{
+			worlds[h] = ConvertAiMatrixToD3DMatrix(childrenTransforms[h]);
+		}
+
+
 		numMesh = scene->mNumMeshes;
-		aiMatrix4x4 x = scene->mRootNode->mChildren[2]->mTransformation;
 		for (UINT i = 0; i < numMesh; i++)
 		{
 			aiMesh* t  = scene->mMeshes[i];
 			const UINT nVert = t->mNumVertices;
-// 			sbs.ID = i;
-// 			sbs.FaceCount = t->mNumFaces;
-// 			sbs.FaceStart = fStart;
-// 			fStart += sbs.FaceCount;
-// 			pRawModel->subsets.push_back(sbs);
-// 			pRawModel->mats.push_back(mat);
+
 			for (UINT j = 0; j < nVert; j++)
 			{
 				vbPosNormalTexTangent v;
+				aiVector3D tVec;
 				v.pos.x = t->mVertices[j].x;
 				v.pos.y = t->mVertices[j].y;
 				v.pos.z = t->mVertices[j].z;
@@ -103,7 +112,7 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 		}
 
 
-
+		delete[] childrenTransforms;
 	}
 
 
@@ -398,4 +407,14 @@ void M3dLoader::ReadBoneKeyframes(std::ifstream& fin, UINT numBones, BoneAnimati
 		boneAnimation.keyframes[i].rotationQuat = q;
 	}
 	fin >> ignore;
+}
+
+DirectX::XMFLOAT4X4 M3dLoader::ConvertAiMatrixToD3DMatrix(aiMatrix4x4& m)
+{
+	DirectX::XMFLOAT4X4 M = {
+		m.a1, m.a2, m.a3, m.a4,
+		m.b1, m.b2, m.b3, m.b4,
+		m.c1, m.c2, m.c3, m.c4,
+		m.d1, m.d2, m.d3, m.d4 };
+	return M;
 }

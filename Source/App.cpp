@@ -24,7 +24,7 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 	M3dRawData rawData;
-	m3dLoad->LoadAssimp("models\\Survival_BackPack_2.fbx", rawData.vertices, rawData.indices, rawData.subsets, rawData.mats,
+	m3dLoad->LoadAssimp("models\\Survival_BackPack_2.fbx", rawData.vertices, rawData.indices, rawData.subsets, rawData.mats, worlds,
 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
 	wnd.GetGraphics().CreateM3dModel(rawData, m3dNames.backPack);
 // 	CreateShadowMapDemo();
@@ -749,13 +749,13 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::DefaultLight, templeWorlds.templebase);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::DefaultLight, templeWorlds.pillar1);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::DefaultLight, templeWorlds.pillar2);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar3, Technique::DefaultLight, templeWorlds.pillar3);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::DefaultLight, templeWorlds.pillar4);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.templeBase, Technique::DefaultLight, templeWorlds.templebase);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar1, Technique::DefaultLight, templeWorlds.pillar1);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar2, Technique::DefaultLight, templeWorlds.pillar2);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar3, Technique::DefaultLight, templeWorlds.pillar3);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::DefaultLight, templeWorlds.pillar4);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
 // 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
 
 // 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
@@ -765,8 +765,18 @@ void App::DrawTempleScene()
 	DirectX::XMMATRIX w = DirectX::XMMatrixTranslation(5.0f, 5.0f, 0.0f);
 
 	std::vector<DirectX::XMMATRIX> wV;
-	wV.push_back(w);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.backPack, Technique::DefaultLight, wV);
+	for (int i = 0; i < worlds.size(); i++)
+	{
+		DirectX::XMMATRIX transl = DirectX::XMMatrixTranslation(5.0f, 5.0f, 0.0f);
+
+		DirectX::XMMATRIX t = DirectX::XMLoadFloat4x4(&worlds[i]);
+		t =  DirectX::XMMatrixScaling(0.01, 0.01, 0.01) * t;
+
+		wV.push_back(DirectX::XMMatrixTranspose(t));
+
+	}
+
+	wnd.GetGraphics().DrawAssimpModel(m3dNames.backPack, Technique::DefaultLight, wV);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
@@ -785,9 +795,9 @@ void App::DrawTempleScene()
 
 
 	//transparent space between leaves
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().NoCullRS);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::DefaultLight, templeWorlds.tree);
-	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(wnd.GetGraphics().NoCullRS);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::DefaultLight, templeWorlds.tree);
+// 	wnd.GetGraphics().pgfx_pDeviceContext->RSSetState(0u);
 
 
 
