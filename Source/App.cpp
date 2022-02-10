@@ -650,6 +650,7 @@ void App::CreateTempleScene()
 void App::DrawTempleScene()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX::XMMATRIX backPackTranslation = DirectX::XMMatrixTranslation(-5.0f, 5.0f, 0.0f);
 
 
 	////	
@@ -679,7 +680,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
 // 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
 // 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
-
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::ShadowMap, backPackTranslation);
 
 	pDC->RSSetState(0u);
 
@@ -705,6 +706,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::NormalMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::NormalMap, templeWorlds.tree);
 // 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::NormalMap, backPackTranslation);
 
 
 
@@ -764,10 +766,9 @@ void App::DrawTempleScene()
 
 	//////////////////////////////////////////////////////////////////////////
 
-	DirectX::XMMATRIX translation = DirectX::XMMatrixTranslation(5.0f, 5.0f, 0.0f);
 
 
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::DefaultLight, translation);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::DefaultLight, backPackTranslation);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
