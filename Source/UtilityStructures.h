@@ -258,6 +258,8 @@ struct AssimpModelNames
 {
 	const std::string backPack = "Backpack";
 	const std::string akuma = "akuma";
+	const std::string dragon = "StanfordDragon";
+	const std::string castle = "SponzaCastle";
 };
 
 struct TempleDemoWorlds

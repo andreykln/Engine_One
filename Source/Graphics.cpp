@@ -970,8 +970,7 @@ void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
 	for (int i = 0; i < data.worlds.size(); i++)
 	{
 		model.worlds[i] = DirectX::XMLoadFloat4x4(&data.worlds[i]);
-		const DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f);
-		model.worlds[i] = model.worlds[i]  * scale;
+		model.worlds[i] = model.worlds[i]  * data.scale;
 	}
 	assimpModelMap.insert(std::make_pair(name, model));
 	for (size_t i = 0; i < data.mats.size(); i++)
@@ -1069,7 +1068,7 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATR
 		}
 		case Technique::DefaultLight:
 		{
-			DefaultLightUpdate(mat, false, usessao, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+			DefaultLightUpdate(mat, true, usessao, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
 			break;
 		}
 		case Technique::ShadowMap:

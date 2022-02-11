@@ -58,6 +58,7 @@ struct AssimpRawData
 	std::vector<Subset> subsets;
 	std::vector<M3dMaterial> mats;
 	std::vector<DirectX::XMFLOAT4X4> worlds;
+	DirectX::XMMATRIX scale;
 };
 class M3dLoader
 {
@@ -66,13 +67,10 @@ public:
 	M3dRawData rawData;
 	M3dRawSkinnedData rawSkinnedData;
 	void LoadAssimp(const std::string& filename,
-		std::vector<vbPosNormalTexTangent>& vertices,
-		std::vector<UINT>& indices,
-		std::vector<Subset>& subsets,
-		std::vector<M3dMaterial>& mats,
-		std::vector<DirectX::XMFLOAT4X4>& worlds,
-		const std::wstring& diffuseMapName,
-		const std::wstring normalMapName);
+					AssimpRawData& rawData,
+					const DirectX::XMMATRIX& scale,
+					const std::wstring& diffuseMapName,
+					const std::wstring normalMapName);
 
 	bool LoadM3d(const std::string& filename,
 		std::vector<vbPosNormalTexTangent>& vertices,

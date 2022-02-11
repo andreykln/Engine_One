@@ -24,14 +24,17 @@ App::App()
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
 	AssimpRawData assimprawData;
-	m3dLoad->LoadAssimp("models\\Survival_BackPack_2.fbx", assimprawData.vertices, assimprawData.indices,
-		assimprawData.subsets, assimprawData.mats, assimprawData.worlds,
-		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
-	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.backPack);
+	const DirectX::XMMATRIX dragonScale = DirectX::XMMatrixScaling(15.0f, 15.0f, 15.0f);
+	const DirectX::XMMATRIX backBackScale = DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+// 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
+// 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
+// 	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
 // 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-	CreateTempleScene();
+// 	CreateTempleScene();
+	CreateSponzaCastle();
 
 
 	CreateAndBindSkybox();
@@ -51,8 +54,8 @@ void App::DoFrame()
 // 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-	DrawTempleScene();
-
+// 	DrawTempleScene();
+	DrawSponzaCastle();
 
 	CalculateFrameStats();
 
@@ -651,6 +654,7 @@ void App::DrawTempleScene()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX::XMMATRIX backPackTranslation = DirectX::XMMatrixTranslation(-5.0f, 5.0f, 0.0f);
+	DirectX::XMMATRIX dragonTranslation = DirectX::XMMatrixTranslation(-5.0f, 1.0f, 0.0f);
 
 
 	////	
@@ -680,7 +684,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
 // 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
 // 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::ShadowMap, backPackTranslation);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::ShadowMap, dragonTranslation);
 
 	pDC->RSSetState(0u);
 
@@ -706,7 +710,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::NormalMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::NormalMap, templeWorlds.tree);
 // 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::NormalMap, backPackTranslation);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::NormalMap, dragonTranslation);
 
 
 
@@ -768,7 +772,7 @@ void App::DrawTempleScene()
 
 
 
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.backPack, Technique::DefaultLight, backPackTranslation);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::DefaultLight, dragonTranslation);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
@@ -797,6 +801,125 @@ void App::DrawTempleScene()
 	ID3D11ShaderResourceView* nullsrv = nullptr;
 	pDC->PSSetShaderResources(2u, 1u, &nullsrv);
 	wnd.GetGraphics().ReleaseSSAOShaderResource();
+}
+
+void App::CreateSponzaCastle()
+{
+	AssimpRawData assimprawData;
+	const DirectX::XMMATRIX castleScale = DirectX::XMMatrixScaling(0.6f, 0.6f, 0.6f);
+
+	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
+		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
+	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
+
+
+	pSky = new Sky(wnd.GetGraphics());
+	wnd.GetGraphics().BindCubeMap(pSky->skyBoxName);
+
+}
+
+void App::DrawSponzaCastle()
+{
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX::XMMATRIX castleTranslation = DirectX::XMMatrixTranslation(-5.0f, 5.0f, 0.0f);
+
+
+	//shadow map
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
+
+	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
+
+	wnd.GetGraphics().ConstBufferShadowMapBind();
+
+
+	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
+	pShadowMap->UpdateScene(timer.DeltaTime());
+	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::ShadowMap, castleTranslation);
+
+	pDC->RSSetState(0u);
+
+	//create normal-depth map
+	pSSAO->SetNormalDepthRenderTarget(wnd.GetGraphics(), wnd.GetGraphics().pgfx_DepthStencilView.Get());
+	wnd.GetGraphics().ConstBufferNormalMapBind();
+
+
+
+	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
+
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::NormalMap, castleTranslation);
+
+
+
+
+
+
+	//SSAO
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::ComputeSSAO_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::ComputeSSAO_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+	wnd.GetGraphics().ComputeSSAO(pSSAO->GetAmbientMapRTV0(), pSSAO->GetSSAOViewport(),
+		pSSAO->GetRandomVectorSRV(), pSSAO->GetNormalMapSRV());
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+
+	// blur
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SSAOBlur_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::SSAOBlur_VS_PS);
+	wnd.GetGraphics().BlurSSAOMap(4, pSSAO->GetAmbientMapRTV0(), pSSAO->GetAmbientMapRTV1(), pSSAO->GetAmbientMapSRV0(),
+		pSSAO->GetAmbientMapSRV1(), pSSAO->GetSSAOViewport());
+	wnd.GetGraphics().UnbindVS();
+	wnd.GetGraphics().UnbindPS();
+	wnd.GetGraphics().ReleaseNormalMapResource();
+	SetDefaultRTVAndViewPort();
+
+
+	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+	wnd.GetGraphics().SetDefaultLightData();
+	wnd.GetGraphics().UpdateLightDirection(pShadowMap->GetNewLightDirection());
+	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
+
+
+	//////////////////////////////////////////////////////////////////////////
+	wnd.GetGraphics().SetDefaultLightData();
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
+
+	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::DefaultLight, castleTranslation);
+
+	//////////////////////////////////////////////////////////////////////////
+//DEBUG quad
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	stride = sizeof(vbPosNormalTex);
+// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
+// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
+	//////////////////////////////////////////////////////////////////////////
+
+
+
+
+	DrawSkyBox();
+	ID3D11ShaderResourceView* nullsrv = nullptr;
+	pDC->PSSetShaderResources(2u, 1u, &nullsrv);
+	wnd.GetGraphics().ReleaseSSAOShaderResource();
+
 }
 
 void App::CreateAndBindSkybox()

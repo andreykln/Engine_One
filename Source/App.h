@@ -33,6 +33,10 @@ private:
 	void CreateTempleScene();
 	void DrawTempleScene();
 
+	//Sponza castle
+	void CreateSponzaCastle();
+	void DrawSponzaCastle();
+
 	void CreateAndBindSkybox();
 	void DrawSkyBox();
 

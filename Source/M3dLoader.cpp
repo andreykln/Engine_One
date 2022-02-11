@@ -18,11 +18,8 @@ M3dLoader::M3dLoader(const std::string& filename, bool skinned, bool assimp)
 }
 
 void M3dLoader::LoadAssimp(const std::string& filename,
-	std::vector<vbPosNormalTexTangent>& vertices,
-	std::vector<UINT>& indices,
-	std::vector<Subset>& subsets,
-	std::vector<M3dMaterial>& mats,
-	std::vector<DirectX::XMFLOAT4X4>& worlds,
+	AssimpRawData& rawData,
+	const DirectX::XMMATRIX& scale,
 	const std::wstring& diffuseMapName,
 	const std::wstring normalMapName)
 {
@@ -56,11 +53,17 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 		//get transforms
 		const UINT numOfChildren = scene->mRootNode->mNumChildren;
 		aiMatrix4x4* childrenTransforms = new aiMatrix4x4[numOfChildren];
-		worlds.resize(numOfChildren);
-
+		rawData.worlds.resize(numOfChildren);
+		if (numOfChildren == 0)
+		{
+			DirectX::XMFLOAT4X4 t; 
+			DirectX::XMStoreFloat4x4(&t, DirectX::XMMatrixIdentity());
+			rawData.worlds.push_back(t);
+		}
 		for (int h = 0; h < numOfChildren; h++)
 		{
-			worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
+			
+			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
 		}
 
 
@@ -80,11 +83,17 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 				v.normal.x = t->mNormals[j].x;
 				v.normal.y = t->mNormals[j].y;
 				v.normal.z = t->mNormals[j].z;
-				v.tangent.x = t->mTangents[j].x;
-				v.tangent.y = t->mTangents[j].y;
-				v.tangent.z = t->mTangents[j].z;
-				v.tex.x = t->mTextureCoords[0][j].x;
-				v.tex.y = t->mTextureCoords[0][j].y;
+				if (t->mTangents)
+				{
+					v.tangent.x = t->mTangents[j].x;
+					v.tangent.y = t->mTangents[j].y;
+					v.tangent.z = t->mTangents[j].z;
+				}
+				if (t->mTextureCoords[0])
+				{
+					v.tex.x = t->mTextureCoords[0][j].x;
+					v.tex.y = t->mTextureCoords[0][j].y;
+				}
 				pRawModel->vertices.push_back(v);
 			}
 			for (UINT k = 0; k < t->mNumFaces; k++)
@@ -112,16 +121,25 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 		delete[] childrenTransforms;
 	}
 
-
-	indices.resize(pRawModel->indices.size());
-	indices = pRawModel->indices;
-	mats.resize(pRawModel->mats.size());
-	mats = pRawModel->mats;
-	subsets.resize(pRawModel->subsets.size());
-	subsets = pRawModel->subsets;
-	vertices.resize(pRawModel->vertices.size());
-	vertices = pRawModel->vertices;
-	
+	if (rawData.worlds.size() < numMesh)
+	{
+		DirectX::XMMATRIX t = DirectX::XMMatrixIdentity();
+		DirectX::XMFLOAT4X4 t0;
+		DirectX::XMStoreFloat4x4(&t0, t);
+		for (size_t i = rawData.worlds.size(); i < numMesh; i++)
+		{
+			rawData.worlds.push_back(t0);
+		}
+	}
+	rawData.indices.resize(pRawModel->indices.size());
+	rawData.indices = pRawModel->indices;
+	rawData.mats.resize(pRawModel->mats.size());
+	rawData.mats = pRawModel->mats;
+	rawData.subsets.resize(pRawModel->subsets.size());
+	rawData.subsets = pRawModel->subsets;
+	rawData.vertices.resize(pRawModel->vertices.size());
+	rawData.vertices = pRawModel->vertices;
+	rawData.scale = scale;
 
 
 	delete pRawModel;
