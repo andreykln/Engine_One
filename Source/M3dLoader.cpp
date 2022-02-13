@@ -65,7 +65,7 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 			
 			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
 		}
-
+	
 
 		numMesh = scene->mNumMeshes;
 		for (UINT i = 0; i < numMesh; i++)
@@ -115,6 +115,165 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 			pRawModel->subsets.push_back(sbs);
 			pRawModel->mats.push_back(mat);
 
+		}
+
+
+		delete[] childrenTransforms;
+	}
+
+	if (rawData.worlds.size() < numMesh)
+	{
+		DirectX::XMMATRIX t = DirectX::XMMatrixIdentity();
+		DirectX::XMFLOAT4X4 t0;
+		DirectX::XMStoreFloat4x4(&t0, t);
+		for (size_t i = rawData.worlds.size(); i < numMesh; i++)
+		{
+			rawData.worlds.push_back(t0);
+		}
+	}
+	rawData.indices.resize(pRawModel->indices.size());
+	rawData.indices = pRawModel->indices;
+	rawData.mats.resize(pRawModel->mats.size());
+	rawData.mats = pRawModel->mats;
+	rawData.subsets.resize(pRawModel->subsets.size());
+	rawData.subsets = pRawModel->subsets;
+	rawData.vertices.resize(pRawModel->vertices.size());
+	rawData.vertices = pRawModel->vertices;
+	rawData.scale = scale;
+
+
+	delete pRawModel;
+	pRawModel = nullptr;
+}
+
+void M3dLoader::LoadSponza(const std::string& filename,
+							const std::string& matFileName,
+							AssimpRawData& rawData,
+							const DirectX::XMMATRIX& scale)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filename,
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_CalcTangentSpace |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_Triangulate |
+		aiProcess_FixInfacingNormals |
+		aiProcess_FindInvalidData |
+		aiProcess_GenSmoothNormals |
+		aiProcess_GenUVCoords);
+
+
+	importer.ApplyPostProcessing(aiProcess_CalcTangentSpace);
+	std::string err = importer.GetErrorString();
+	M3dRawData* pRawModel = new M3dRawData;
+	UINT numMesh = 0;
+	UINT fStart = 0;
+	UINT baseVertLoc = 0;
+	if (scene->HasMeshes())
+	{
+		//get transforms
+		const UINT numOfChildren = scene->mRootNode->mNumChildren;
+		aiMatrix4x4* childrenTransforms = new aiMatrix4x4[numOfChildren];
+		rawData.worlds.resize(numOfChildren);
+		if (numOfChildren == 0)
+		{
+			DirectX::XMFLOAT4X4 t;
+			DirectX::XMStoreFloat4x4(&t, DirectX::XMMatrixIdentity());
+			rawData.worlds.push_back(t);
+		}
+		for (int h = 0; h < numOfChildren; h++)
+		{
+
+			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
+		}
+		std::vector<std::string> matNames;
+
+		for (int i = 0; i < scene->mNumMaterials; i++)
+		{
+			matNames.emplace_back(scene->mMaterials[i]->GetName().C_Str());
+		}
+		//edit some names manually so they have sensible names
+		matNames[0] = "fabric_red";
+		matNames[2] = "vase_plant";
+		matNames[4] = "background";
+		matNames[5] = "fabric_red";
+		matNames[14] = "UNKNOWN0";
+		matNames[25] = "lion";
+		matNames[16] = "fabric_green";
+		matNames[17] = "fabric_blue";
+		matNames[18] = "fabric_red";
+		matNames[19] = "curtain_blue";
+		matNames[20] = "curtain_red";
+		matNames[21] = "curtain_green";
+
+
+		std::ifstream fin(matFileName);
+// 		M3dMaterial mat;
+// 		mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+// 		mat.fresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+// 		mat.shininess = 0.2f;
+// 		mat.alphaClip = false;
+// 		mat.diffuseMapName = diffuseMapName;
+// 		mat.normalMapName = normalMapName;
+		for (int i = 0; i < scene->mNumMaterials; i++)
+		{
+			M3dMaterial mat;
+			mat = ReadSponzaMat(matFileName, fin);
+
+
+			pRawModel->mats.push_back(mat);
+
+		}
+
+
+
+
+		numMesh = scene->mNumMeshes;
+		for (UINT i = 0; i < numMesh; i++)
+		{
+			aiMesh* t = scene->mMeshes[i];
+			const UINT nVert = t->mNumVertices;
+
+			for (UINT j = 0; j < nVert; j++)
+			{
+				vbPosNormalTexTangent v;
+				aiVector3D tVec;
+				v.pos.x = t->mVertices[j].x;
+				v.pos.y = t->mVertices[j].y;
+				v.pos.z = t->mVertices[j].z;
+				v.normal.x = t->mNormals[j].x;
+				v.normal.y = t->mNormals[j].y;
+				v.normal.z = t->mNormals[j].z;
+				if (t->mTangents)
+				{
+					v.tangent.x = t->mTangents[j].x;
+					v.tangent.y = t->mTangents[j].y;
+					v.tangent.z = t->mTangents[j].z;
+				}
+				if (t->mTextureCoords[0])
+				{
+					v.tex.x = t->mTextureCoords[0][j].x;
+					v.tex.y = t->mTextureCoords[0][j].y;
+				}
+				pRawModel->vertices.push_back(v);
+			}
+			for (UINT k = 0; k < t->mNumFaces; k++)
+			{
+				const aiFace& face = t->mFaces[k];
+				pRawModel->indices.push_back(face.mIndices[0]);
+				pRawModel->indices.push_back(face.mIndices[1]);
+				pRawModel->indices.push_back(face.mIndices[2]);
+
+			}
+			Subset sbs;
+			sbs.ID = i;
+			sbs.FaceCount = t->mNumFaces;
+			sbs.FaceStart = fStart;
+			sbs.VertexCount = nVert;
+			sbs.VertexStart = baseVertLoc;
+			baseVertLoc += sbs.VertexCount;
+			fStart += sbs.FaceCount;
+			pRawModel->subsets.push_back(sbs);
 		}
 
 
@@ -223,6 +382,24 @@ bool M3dLoader::LoadM3d(const std::string& filename,
 		return true;
 	}
 	return false;
+}
+
+M3dMaterial M3dLoader::ReadSponzaMat(const std::string& filename, std::ifstream& fstream)
+{
+	M3dMaterial m;
+	std::string ignore;
+	std::string tempname;
+	fstream >> ignore;
+	fstream >> m.name;
+	fstream >> ignore >> m.diffuseAlbedo.x >> m.diffuseAlbedo.y >> m.diffuseAlbedo.z;
+	fstream >> ignore >> m.fresnelR0.x >> m.fresnelR0.y >> m.fresnelR0.z;
+	fstream >> ignore >> m.shininess;
+	fstream >> ignore >> tempname;
+	m.diffuseMapName = utf8toUtf16(tempname);
+	tempname.clear();
+	fstream >> ignore >> tempname;
+	m.normalMapName = utf8toUtf16(tempname);
+	return m;
 }
 
 std::wstring M3dLoader::utf8toUtf16(const std::string& str)

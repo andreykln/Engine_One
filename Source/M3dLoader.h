@@ -71,7 +71,10 @@ public:
 					const DirectX::XMMATRIX& scale,
 					const std::wstring& diffuseMapName,
 					const std::wstring normalMapName);
-
+	void LoadSponza(const std::string& filename,
+		const std::string& matFileName,
+		AssimpRawData& rawData,
+		const DirectX::XMMATRIX& scale);
 	bool LoadM3d(const std::string& filename,
 		std::vector<vbPosNormalTexTangent>& vertices,
 		std::vector<UINT>& indices,
@@ -83,7 +86,8 @@ public:
 		std::vector<Subset>& subsets,
 		std::vector<M3dMaterial>& mats,
 		SkinnedData& skinInfo);
-
+	//make a special function, since I'm not planning to make universal model loader
+	M3dMaterial ReadSponzaMat(const std::string& filename, std::ifstream& fstream);
 	//DirectXTex requires names to be in wchar.
 	std::wstring utf8toUtf16(const std::string& str);
 	

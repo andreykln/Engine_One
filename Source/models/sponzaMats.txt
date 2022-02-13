@@ -1,0 +1,181 @@
+material: leaf
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: thorn_diffuse
+NormalMap: thorn_normal
+
+material: vase_plant
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: vase_plant_diffuse
+NormalMap: vase_plant_normal
+
+material: vase_round
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: vase_round_diffuse
+NormalMap: vase_round_normal
+
+material: background
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: background_diff
+NormalMap: background_normal
+
+material: fabric_red
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: fabric_red_diffuse
+NormalMap: fabric_red_normal
+
+material: bricks
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: bricks_a_diff
+NormalMap: bricks_a_normal
+
+material: arch
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: arch_diff
+NormalMap: arch_normal
+
+material: ceiling
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: ceiling_a_diff
+NormalMap: ceiling_normal
+
+material: column_a
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: column_a_diffuse
+NormalMap: column_a_normal
+
+material: floor
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: floor_diffuse
+NormalMap: floor_normal
+
+material: column_c
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: column_c_diffuse
+NormalMap: column_c_normal
+
+material: details
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: details_diffuse
+NormalMap: details_normal
+
+material: column_b
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: column_b_diffuse
+NormalMap: column_b_normal
+
+material: UNKNOWN0
+Diffuse: 0.9880 0.9880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: rock01_diffuse
+NormalMap: rock01_normal
+
+material: flagpole
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: flagpole_diffuse
+NormalMap: flagpole_normal
+
+material: fabric_green
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: fabric_green_diffuse
+NormalMap: fabric_green_normal
+
+material: fabric_blue
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: fabric_blue_diffuse
+NormalMap: fabric_blue_normal
+
+material: fabric_red
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: fabric_red_diffuse
+NormalMap: fabric_red_normal
+
+material: curtain_blue
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: curtain_blue_diffuse
+NormalMap: curtain_blue_normal
+
+material: curtain_red
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: curtain_red_diffuse
+NormalMap: curtain_red_normal
+
+material: curtain_green
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: curtain_green_diffuse
+NormalMap: curtain_green_normal
+
+material: chain
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: chain_diff
+NormalMap: chain_normal
+
+material: vase_hanging
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: vase_hanging_diffuse
+NormalMap: vase_hanging_normal
+
+material: vase
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: vase_diffuse
+NormalMap: vase_normal
+
+material: lion
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: lion_diff
+NormalMap: lion_normal
+
+material: roof
+Diffuse: 0.5880 0.5880 0.5880
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: roof_diffuse
+NormalMap: roof_normal

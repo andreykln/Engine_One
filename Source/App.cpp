@@ -806,10 +806,11 @@ void App::DrawTempleScene()
 void App::CreateSponzaCastle()
 {
 	AssimpRawData assimprawData;
-	const DirectX::XMMATRIX castleScale = DirectX::XMMatrixScaling(0.6f, 0.6f, 0.6f);
+	const DirectX::XMMATRIX castleScale = DirectX::XMMatrixScaling(0.025f, 0.025f, 0.025f);
 
-	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
-		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
+// 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
+// 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
+	m3dLoad->LoadSponza("models\\sponza.obj", "models\\sponzaMats.txt", assimprawData, castleScale);
 	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
 
 
