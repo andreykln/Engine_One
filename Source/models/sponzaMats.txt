@@ -19,12 +19,12 @@ Shininess: 0.01
 DiffuseMap: sponza\vase_round_diffuse
 NormalMap: sponza\vase_round_normal
 
-material: background
+material: vase3
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\roof_diffuse
-NormalMap: sponza\roof_normal
+DiffuseMap: sponza\vase_diffuse
+NormalMap: sponza\vase_normal
 
 material: relief
 Diffuse: 0.5880 0.5880 0.5880 1.0
@@ -145,12 +145,12 @@ Shininess: 0.01
 DiffuseMap: sponza\curtain_green_diffuse
 NormalMap: sponza\curtain_green_normal
 
-material: chain
+material: curtain_blue
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\chain_diff
-NormalMap: sponza\chain_normal
+DiffuseMap: sponza\curtain_blue_diffuse
+NormalMap: sponza\curtain_blue_normal
 
 material: vase_hanging
 Diffuse: 0.5880 0.5880 0.5880 1.0
