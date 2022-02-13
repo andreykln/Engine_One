@@ -193,6 +193,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 			matNames.emplace_back(scene->mMaterials[i]->GetName().C_Str());
 		}
 		//edit some names manually so they have sensible names
+		//TODO delete?
 		matNames[0] = "fabric_red";
 		matNames[2] = "vase_plant";
 		matNames[4] = "background";
@@ -208,32 +209,20 @@ void M3dLoader::LoadSponza(const std::string& filename,
 
 
 		std::ifstream fin(matFileName);
-// 		M3dMaterial mat;
-// 		mat.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-// 		mat.fresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
-// 		mat.shininess = 0.2f;
-// 		mat.alphaClip = false;
-// 		mat.diffuseMapName = diffuseMapName;
-// 		mat.normalMapName = normalMapName;
 		for (int i = 0; i < scene->mNumMaterials; i++)
 		{
 			M3dMaterial mat;
 			mat = ReadSponzaMat(matFileName, fin);
-
-
 			pRawModel->mats.push_back(mat);
-
 		}
+		//not sure what is the last material is, but it don't have any texture for it anyway
 
-
-
-
+// 		pRawModel->mats.pop_back();
 		numMesh = scene->mNumMeshes;
 		for (UINT i = 0; i < numMesh; i++)
 		{
 			aiMesh* t = scene->mMeshes[i];
 			const UINT nVert = t->mNumVertices;
-
 			for (UINT j = 0; j < nVert; j++)
 			{
 				vbPosNormalTexTangent v;
@@ -266,7 +255,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 
 			}
 			Subset sbs;
-			sbs.ID = i;
+			sbs.ID = scene->mMeshes[i]->mMaterialIndex;
 			sbs.FaceCount = t->mNumFaces;
 			sbs.FaceStart = fStart;
 			sbs.VertexCount = nVert;
@@ -391,7 +380,7 @@ M3dMaterial M3dLoader::ReadSponzaMat(const std::string& filename, std::ifstream&
 	std::string tempname;
 	fstream >> ignore;
 	fstream >> m.name;
-	fstream >> ignore >> m.diffuseAlbedo.x >> m.diffuseAlbedo.y >> m.diffuseAlbedo.z;
+	fstream >> ignore >> m.diffuseAlbedo.x >> m.diffuseAlbedo.y >> m.diffuseAlbedo.z >> m.diffuseAlbedo.w;
 	fstream >> ignore >> m.fresnelR0.x >> m.fresnelR0.y >> m.fresnelR0.z;
 	fstream >> ignore >> m.shininess;
 	fstream >> ignore >> tempname;

@@ -837,7 +837,7 @@ void App::DrawSponzaCastle()
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::ShadowMap, castleTranslation);
+	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::ShadowMap, castleTranslation);
 
 	pDC->RSSetState(0u);
 
@@ -850,7 +850,7 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
 
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::NormalMap, castleTranslation);
+	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::NormalMap, castleTranslation);
 
 
 
@@ -896,7 +896,7 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
 
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.castle, Technique::DefaultLight, castleTranslation);
+	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::DefaultLight, castleTranslation);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad

@@ -1054,7 +1054,6 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATR
 	for (size_t i = 0; i < model.subsets.size(); i++)
 	{
 		DirectX::XMMATRIX w = model.worlds[i] * world;
-
 		MaterialEx mat;
 		mat.diffuseAlbedo = model.mats[i].mat.diffuseAlbedo;
 		mat.fresnelR0 = model.mats[i].mat.fresnelR0;
@@ -1069,6 +1068,55 @@ void Graphics::DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATR
 		case Technique::DefaultLight:
 		{
 			DefaultLightUpdate(mat, true, usessao, true, model.mats[i].diffuseMapName, model.mats[i].normalMapName);
+			break;
+		}
+		case Technique::ShadowMap:
+		{
+			ShadowMap(w, mLightViewProjection);
+			break;
+		}
+		default:
+			break;
+		}
+		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
+	}
+
+}
+
+void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATRIX& world)
+{
+	bool usessao = true;
+	if (GetAsyncKeyState('5') & 0x8000)
+		usessao = false;
+	else
+		usessao = true;
+
+	UINT stride = sizeof(vbPosNormalTexTangent);
+	UINT offset = 0;
+	AssimpModel model = assimpModelMap.at(name);
+	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
+	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	for (size_t i = 0; i < model.subsets.size(); i++)
+	{
+		DirectX::XMMATRIX w = model.worlds[i] * world;
+		switch (tech)
+		{
+		case Technique::NormalMap:
+		{
+			NormalMap(w);
+			break;
+		}
+		case Technique::DefaultLight:
+		{
+			MaterialEx mat;
+			const UINT matID = model.subsets[i].ID;
+			mat.diffuseAlbedo = model.mats[matID].mat.diffuseAlbedo;
+			mat.fresnelR0 = model.mats[matID].mat.fresnelR0;
+			mat.shininess = model.mats[matID].mat.shininess;
+			const std::wstring diffMap = model.mats[matID].diffuseMapName;
+			const std::wstring normalMap = model.mats[matID].normalMapName;
+			DefaultLightUpdate(mat, false, usessao, true, diffMap, normalMap);
 			break;
 		}
 		case Technique::ShadowMap:

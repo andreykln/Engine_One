@@ -146,6 +146,9 @@ public:
 	void CreateM3dModel(M3dRawSkinnedData& data, const std::string& name);
 	void DrawM3dStaticModel(std::string name, Technique tech, std::vector<DirectX::XMMATRIX> world);
 	void DrawAssimpModel(std::string name, Technique tech, DirectX::XMMATRIX& world);
+	//different function because it has more meshes that textures
+	void DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATRIX& world);
+
 	void DrawM3dSkinnedModel(Technique tech);
 	void InitSkinnedModel();
 	void UpdateSkinnedModel();
