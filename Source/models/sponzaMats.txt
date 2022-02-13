@@ -23,22 +23,22 @@ material: background
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\background_diff
-NormalMap: sponza\background_normal
+DiffuseMap: sponza\roof_diffuse
+NormalMap: sponza\roof_normal
 
-material: fabric_red
+material: relief
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\fabric_red_diffuse
-NormalMap: sponza\fabric_red_normal
+DiffuseMap: sponza\relief_diff
+NormalMap: sponza\relief_normal
 
-material: bricks
+material: tapestry
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\bricks_a_diff
-NormalMap: sponza\bricks_a_normal
+DiffuseMap: sponza\fabric_blue_diffuse
+NormalMap: sponza\fabric_blue_normal
 
 material: arch
 Diffuse: 0.5880 0.5880 0.5880 1.0
@@ -75,12 +75,12 @@ Shininess: 0.01
 DiffuseMap: sponza\column_c_diffuse
 NormalMap: sponza\column_c_normal
 
-material: details
+material: column_f
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\details_diffuse
-NormalMap: sponza\details_normal
+DiffuseMap: sponza\column_c_diffuse
+NormalMap: sponza\column_c_normal
 
 material: column_b
 Diffuse: 0.5880 0.5880 0.5880 1.0
@@ -93,8 +93,8 @@ material: UNKNOWN0
 Diffuse: 0.9880 0.9880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\rock01_diffuse
-NormalMap: sponza\rock01_normal
+DiffuseMap: sponza\roof_diffuse
+NormalMap: sponza\roof_normal
 
 material: flagpole
 Diffuse: 0.5880 0.5880 0.5880 1.0
@@ -159,7 +159,14 @@ Shininess: 0.01
 DiffuseMap: sponza\vase_hanging_diffuse
 NormalMap: sponza\vase_hanging_normal
 
-material: vase
+material: vase0
+Diffuse: 0.5880 0.5880 0.5880 1.0
+Fresnel0: 0.0000 0.0000 0.0000
+Shininess: 0.01
+DiffuseMap: sponza\vase_diffuse
+NormalMap: sponza\vase_normal
+
+material: vase1
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
@@ -179,10 +186,3 @@ Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
 DiffuseMap: sponza\roof_diffuse
 NormalMap: sponza\roof_normal
-
-material: UNKNOWN1
-Diffuse: 0.5880 0.5880 0.5880 1.0
-Fresnel0: 0.0000 0.0000 0.0000
-Shininess: 0.01
-DiffuseMap: sponza\head_diff
-NormalMap: sponza\head_norm
