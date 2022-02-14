@@ -86,8 +86,8 @@ material: column_b
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\column_b_diffuse
-NormalMap: sponza\column_b_normal
+DiffuseMap: sponza\details_diffuse
+NormalMap: sponza\details_normal
 
 material: UNKNOWN0
 Diffuse: 0.9880 0.9880 0.5880 1.0
@@ -152,12 +152,12 @@ Shininess: 0.01
 DiffuseMap: sponza\curtain_blue_diffuse
 NormalMap: sponza\curtain_blue_normal
 
-material: vase_hanging
+material: chain
 Diffuse: 0.5880 0.5880 0.5880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.01
-DiffuseMap: sponza\vase_hanging_diffuse
-NormalMap: sponza\vase_hanging_normal
+DiffuseMap: sponza\chain_diff
+NormalMap: sponza\chain_normal
 
 material: vase0
 Diffuse: 0.5880 0.5880 0.5880 1.0

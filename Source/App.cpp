@@ -822,7 +822,7 @@ void App::CreateSponzaCastle()
 void App::DrawSponzaCastle()
 {
 	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectX::XMMATRIX castleTranslation = DirectX::XMMatrixTranslation(-5.0f, 5.0f, 0.0f);
+	DirectX::XMMATRIX castleTranslation = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 
 	//shadow map

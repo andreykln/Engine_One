@@ -1091,7 +1091,7 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		usessao = false;
 	else
 		usessao = true;
-
+	bool RSStateChanged = false;
 	UINT stride = sizeof(vbPosNormalTexTangent);
 	UINT offset = 0;
 	AssimpModel model = assimpModelMap.at(name);
@@ -1099,6 +1099,7 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	for (size_t i = 0; i < model.subsets.size(); i++)
 	{
+		const UINT matID = model.subsets[i].ID;
 		DirectX::XMMATRIX w = model.worlds[i] * world;
 		switch (tech)
 		{
@@ -1110,7 +1111,6 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		case Technique::DefaultLight:
 		{
 			MaterialEx mat;
-			const UINT matID = model.subsets[i].ID;
 			mat.diffuseAlbedo = model.mats[matID].mat.diffuseAlbedo;
 			mat.fresnelR0 = model.mats[matID].mat.fresnelR0;
 			mat.shininess = model.mats[matID].mat.shininess;
@@ -1127,8 +1127,18 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		default:
 			break;
 		}
+		if (matID == 22 || matID == 8)
+		{
+			pgfx_pDeviceContext->RSSetState(CullClockwiseRS);
+			RSStateChanged = true;
+		}
 		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
+		if (RSStateChanged)
+		{
+			pgfx_pDeviceContext->RSSetState(0u);
+			RSStateChanged = false;
+		}
 	}
 
 }
