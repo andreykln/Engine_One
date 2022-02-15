@@ -1129,8 +1129,8 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		}
 		if (matID == 22 || matID == 8)
 		{
-			pgfx_pDeviceContext->RSSetState(CullClockwiseRS);
-			RSStateChanged = true;
+// 			pgfx_pDeviceContext->RSSetState(CullClockwiseRS);
+// 			RSStateChanged = true;
 		}
 		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);

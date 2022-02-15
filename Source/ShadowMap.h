@@ -16,6 +16,7 @@ public:
 	void SetShadowSampler(Graphics& gfx);
 	void BindDSVandSetNullRenderTarget(Graphics& gfx);
 	void UpdateScene(float dt);
+	void UpdateSceneSponza(float dt);
 	void BuildShadowTransform(DirectX::XMFLOAT3& oldLightDir);
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
@@ -35,7 +36,6 @@ private:
 
 	D3D11_VIEWPORT mViewport;
 
-	//DirectX::XMFLOAT3 oldLightDir ;
 	DirectX::XMFLOAT3 newLightDirection = defaultLightDirection;
 	DirectX::XMMATRIX lightView;
 	DirectX::XMMATRIX lightProj;

@@ -632,7 +632,7 @@ void App::CreateTempleScene()
 	LoadModelToMemory("models\\rock.m3d", m3dNames.rock);
 	LoadModelToMemory("models\\stairs.m3d", m3dNames.stairs);
 	LoadModelToMemory("models\\tree.m3d", m3dNames.tree);
-	LoadModelToMemory("models\\box.m3d", m3dNames.box);
+// 	LoadModelToMemory("models\\box.m3d", m3dNames.box);
 
 	m3dLoad = new M3dLoader("models\\soldier.m3d", true, false);
 	M3dRawSkinnedData d = m3dLoad->rawSkinnedData;
@@ -681,10 +681,9 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::ShadowMap, templeWorlds.rock);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::ShadowMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::ShadowMap, templeWorlds.tree);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
-// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::ShadowMap, dragonTranslation);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::ShadowMap, templeWorlds.box);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelShadowMap_VS);
+	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::ShadowMap);
 
 	pDC->RSSetState(0u);
 
@@ -697,7 +696,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelNormalMap_VS);
 	wnd.GetGraphics().BindPS(ShaderPicker::NormalMap_VS_PS);
 
-// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
+	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::NormalMap);
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::NormalMap_VS_PS);
 
@@ -710,7 +709,7 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::NormalMap, templeWorlds.stairs);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.tree, Technique::NormalMap, templeWorlds.tree);
 // 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::NormalMap, templeWorlds.box);
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::NormalMap, dragonTranslation);
+// 	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::NormalMap, dragonTranslation);
 
 
 
@@ -763,16 +762,16 @@ void App::DrawTempleScene()
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.pillar4, Technique::DefaultLight, templeWorlds.pillar4);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.rock, Technique::DefaultLight, templeWorlds.rock);
 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.stairs, Technique::DefaultLight, templeWorlds.stairs);
-	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
+// 	wnd.GetGraphics().DrawM3dStaticModel(m3dNames.box, Technique::DefaultLight, templeWorlds.box);
 
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
-// 	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::DefaultLight);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::SkinnedModelDefaultLight_VS);
+	wnd.GetGraphics().DrawM3dSkinnedModel(Technique::DefaultLight);
 
 	//////////////////////////////////////////////////////////////////////////
 
 
 
-	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::DefaultLight, dragonTranslation);
+// 	wnd.GetGraphics().DrawAssimpModel(assimpNames.dragon, Technique::DefaultLight, dragonTranslation);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
@@ -835,7 +834,7 @@ void App::DrawSponzaCastle()
 
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-	pShadowMap->UpdateScene(timer.DeltaTime());
+	pShadowMap->UpdateSceneSponza(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
 	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::ShadowMap, castleTranslation);
 
