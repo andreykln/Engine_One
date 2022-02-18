@@ -105,6 +105,8 @@ public:
 	void TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO);
 	void SetDefaultLightData();
 
+	void SetPointLightData();
+
 	void ConstBufferShadowMapBind();
 	void ShadowMap(const DirectX::XMMATRIX world, const DirectX::XMMATRIX& lightViewProj);
 
@@ -357,6 +359,10 @@ private:
 	//default Light
 	ID3D11VertexShader* pDefaultLightVS = nullptr;
 	ID3D11PixelShader* pDefaultLightPS = nullptr;
+
+	//Point lights
+	ID3D11VertexShader* pPointLightsVS = nullptr;
+	ID3D11PixelShader* pPointLightsPS = nullptr;
 
 	//Displacement waves
 	ID3D11VertexShader* pDisplacementWavesVS = nullptr;

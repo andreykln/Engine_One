@@ -878,24 +878,17 @@ void App::DrawSponzaCastle()
 
 
 	pDC->PSSetShaderResources(2u, 1u, pShadowMap->DepthMapSRV());
-	bool usessao = true;
-	if (GetAsyncKeyState('5') & 0x8000)
-		usessao = false;
-	else
-		usessao = true;
-	wnd.GetGraphics().SetDefaultLightData();
 	wnd.GetGraphics().UpdateLightDirection(pShadowMap->GetNewLightDirection());
 	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
 
 
 	//////////////////////////////////////////////////////////////////////////
-	wnd.GetGraphics().SetDefaultLightData();
-	wnd.GetGraphics().ConstBufferVSMatricesBind();
+	wnd.GetGraphics().SetPointLightData();
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::PointLight_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::PointLight_VS_PS);
 
-	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::DefaultLight, castleTranslation);
+	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::PointLight, castleTranslation);
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
@@ -908,10 +901,11 @@ void App::DrawSponzaCastle()
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
 // 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
 // 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+
+	//////////////////////////////////////////////////////////////////////////
+	wnd.GetGraphics().SetDefaultLightData();
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DefaultLight_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::DefaultLight_VS_PS);
-	//////////////////////////////////////////////////////////////////////////
-
 
 
 

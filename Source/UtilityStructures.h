@@ -98,6 +98,17 @@ struct cbDefaultLightPSdata
 	int pad3;
 
 };
+struct cbMultiplePointLight
+{
+	//using XMFLOAT4 for simplifying data alignment
+	DirectX::XMFLOAT4 lightPosition[2];
+	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	float fogstart = 50.0f;
+	float fogRange = 200.0f;
+	int numOfLights = 2;
+	int pad1;
+};
 
 struct cbDefaultLightPSPerFrame
 {
@@ -111,6 +122,7 @@ struct cbDefaultLightPSPerFrame
 	int pad1;
 	int pad2;
 };
+
 
 
 struct cbGPUWavesVSConstData
@@ -153,7 +165,7 @@ struct CBufferNames
 	const std::string computeWavesVSData = "computeWavesVSInitData";
 	const std::string computeWavesCSPerFrame = "computWavesCSPerFrame";
 	const std::string skinnedMeshBoneTransforms = "skinnedMeshBonesTransforms";
-	
+	const std::string multiplePointLights = "multiplePointLights";
 };
 
 struct vbPosTexBoundsY
@@ -312,6 +324,7 @@ enum class Technique
 	NormalMap,
 	DefaultLight,
 	ShadowMap,
+	PointLight,
 
 };
 
@@ -341,6 +354,7 @@ enum class ShaderPicker
 	SkinnedModelNormalMap_VS,
 	SkinnedModelShadowMap_VS,
 	SkinnedModelDefaultLight_VS,
+	PointLight_VS_PS,
 };
 
 enum class ParticlePick

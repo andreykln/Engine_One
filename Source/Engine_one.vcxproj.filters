@@ -55,6 +55,9 @@
     <Filter Include="Shaders\Skinned">
       <UniqueIdentifier>{5a2eada0-f636-4d93-86d9-a452e2eef940}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\PointLight">
+      <UniqueIdentifier>{4bc0701e-5491-482c-8b56-004d42a6a0dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -366,6 +369,12 @@
     </FxCompile>
     <FxCompile Include="DefaultLightSkinnedVS.hlsl">
       <Filter>Shaders\Skinned</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightVS.hlsl">
+      <Filter>Shaders\Default\PointLight</Filter>
+    </FxCompile>
+    <FxCompile Include="PointLightPS.hlsl">
+      <Filter>Shaders\Default\PointLight</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

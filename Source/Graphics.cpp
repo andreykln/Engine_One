@@ -212,6 +212,16 @@ void Graphics::CreateCBuffers()
 	cbSkinnedMesh skinnedMeshBones;
 	ID3D11Buffer* pSkinnedMehsBones = CreateConstantBuffer(skinnedMeshBones, true, "Skinned mesh bone transforms");
 	constBuffersMap.insert(std::make_pair(cbNames.skinnedMeshBoneTransforms, pSkinnedMehsBones));
+
+	cbMultiplePointLight pointLights;
+	pointLights.lightPosition[0] = DirectX::XMFLOAT4(0.0f, 5.0f, 5.0f, 0.0f);
+	pointLights.lightPosition[1] = DirectX::XMFLOAT4(0.0f, 5.0f, -5.0f, 0.0f);
+	pointLights.numOfLights = 2;
+	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	ID3D11Buffer* pPointLights = CreateConstantBuffer(pointLights, false, "Multiple point lights");
+	constBuffersMap.insert(std::make_pair(cbNames.multiplePointLights, pPointLights));
+
+
 }
 
 
@@ -1109,6 +1119,7 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 			break;
 		}
 		case Technique::DefaultLight:
+		case Technique::PointLight:
 		{
 			MaterialEx mat;
 			mat.diffuseAlbedo = model.mats[matID].mat.diffuseAlbedo;
@@ -1514,7 +1525,6 @@ void Graphics::ReleaseSSAOShaderResource()
 void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO, BOOL alphaCLip,
 	const std::wstring& diffuseMap, const std::wstring& normalMap)
 {
-
 	BindDiffuseMap(diffuseMap);
 	BindNormalMap(normalMap);
 	D3D11_MAPPED_SUBRESOURCE mappedData;
@@ -1527,7 +1537,6 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL 
 	pBuffer->alphaClip = alphaCLip;
 	pBuffer->useSSAO = useSSAO;
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
-
 }
 
 void Graphics::TerrainLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL useSSAO)
@@ -1550,6 +1559,15 @@ void Graphics::SetDefaultLightData()
 	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultLightData));
 	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.defaultLightPerFrame));
 
+}
+
+void Graphics::SetPointLightData()
+{
+	pgfx_pDeviceContext->VSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultVS));
+	pgfx_pDeviceContext->VSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.multiplePointLights));
+
+	pgfx_pDeviceContext->PSSetConstantBuffers(0u, 1u, &constBuffersMap.at(cbNames.defaultLightPerFrame));
+	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.multiplePointLights));
 }
 
 ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)
@@ -1903,6 +1921,11 @@ void Graphics::InitShaders()
 	VS_IL_Init(&pDefaultLightVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\DefaultLightVS.cso");
 	PS_Init(&pDefaultLightPS, L"Shaders\\Pixel\\DefaultLightPS.cso");
 
+	//PointLights
+	VS_IL_Init(&pPointLightsVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL, IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\PointLightVS.cso");
+	PS_Init(&pPointLightsPS, L"Shaders\\Pixel\\PointLightPS.cso");
+
+
 	//Displacement waves
 	VS_IL_Init(&pDisplacementWavesVS, IL.posNormalTexcTangent, &pPosNormalTexcTangentIL,
 		IL.nPosNormalTexcTangent, L"Shaders\\Vertex\\TessellationWavesVS.cso");
@@ -2049,6 +2072,10 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->VSSetShader(pDefaultLightVS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::PointLight_VS_PS:
+		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexcTangentIL);
+		pgfx_pDeviceContext->VSSetShader(pPointLightsVS, nullptr, 0u);
+		break;
 	case ShaderPicker::ComputeWaves_VS_PS_CS:
 	{
 		pgfx_pDeviceContext->IASetInputLayout(pPosNormalTexIL);
@@ -2134,6 +2161,9 @@ void Graphics::BindPS(ShaderPicker shader)
 		pgfx_pDeviceContext->PSSetShader(pDefaultLightPS, nullptr, 0u);
 		break;
 	}
+	case ShaderPicker::PointLight_VS_PS:
+		pgfx_pDeviceContext->PSSetShader(pPointLightsPS, nullptr, 0u);
+		break;
 	case ShaderPicker::ComputeWaves_VS_PS_CS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pComputeWavesPS, nullptr, 0u);
