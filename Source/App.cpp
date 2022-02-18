@@ -828,7 +828,8 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 
-	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
+	DirectX::XMFLOAT3 shadowDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	pShadowMap->BuildShadowTransform(shadowDirection);
 
 	wnd.GetGraphics().ConstBufferShadowMapBind();
 

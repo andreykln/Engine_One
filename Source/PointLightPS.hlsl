@@ -20,12 +20,14 @@ cbuffer cbDefaultLightPSPerFrame : register(b0)
     float3 lightDirection;
     bool useSSAO;
     bool alphaClip;
+    float randomPart;
 };
 cbuffer cbMultiplePointLight : register(b1)
 {
     float4 lightPos[2];
     float4 fogColor;
     float4 ambientLight;
+    float3 lightStrength;
     float fogstart;
     float fogRange;
     int numOfLights;
@@ -102,8 +104,8 @@ float4 main(VertexOut pin) : SV_TARGET
     {
         dr.direction = pin.PosW - lightPos[i].xyz;
         float distance = length(dr.direction);
-        dr.strength = float3(0.9f, 0.8f, 0.7f);
-        attenuation = 2.0f / (1.0f + distance * distance);
+        dr.strength = lightStrength;
+        attenuation = (2.5f / (1.0f + distance * distance)) * randomPart;
         float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
         litColor += (ambient + result) * attenuation;
     }

@@ -104,9 +104,11 @@ struct cbMultiplePointLight
 	DirectX::XMFLOAT4 lightPosition[2];
 	DirectX::XMFLOAT4 fogColor = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	DirectX::XMFLOAT4 ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	DirectX::XMFLOAT3 lightStrength;
 	float fogstart = 50.0f;
 	float fogRange = 200.0f;
 	int numOfLights = 2;
+	int pad0;
 	int pad1;
 };
 
@@ -118,7 +120,7 @@ struct cbDefaultLightPSPerFrame
 	DirectX::XMFLOAT3 lightDirection;
 	BOOL useSSAO;
 	BOOL alphaClip;
-	int pad0;
+	float randomPart;
 	int pad1;
 	int pad2;
 };

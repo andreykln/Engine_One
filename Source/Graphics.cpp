@@ -216,6 +216,7 @@ void Graphics::CreateCBuffers()
 	cbMultiplePointLight pointLights;
 	pointLights.lightPosition[0] = DirectX::XMFLOAT4(0.0f, 5.0f, 5.0f, 0.0f);
 	pointLights.lightPosition[1] = DirectX::XMFLOAT4(0.0f, 5.0f, -5.0f, 0.0f);
+	pointLights.lightStrength = DirectX::XMFLOAT3(0.9f, 0.501f, 0.0f);
 	pointLights.numOfLights = 2;
 	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
 	ID3D11Buffer* pPointLights = CreateConstantBuffer(pointLights, false, "Multiple point lights");
@@ -1536,6 +1537,9 @@ void Graphics::DefaultLightUpdate(MaterialEx& mat, BOOL disableTexSamling, BOOL 
 	pBuffer->mat = mat;
 	pBuffer->alphaClip = alphaCLip;
 	pBuffer->useSSAO = useSSAO;
+
+	pBuffer->randomPart = MathHelper::RandomFloatWithinRange(0.95f, 1.0f);
+
 	pgfx_pDeviceContext->Unmap(constBuffersMap.at(cbNames.defaultLightPerFrame), 0u);
 }
 
