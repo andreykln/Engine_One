@@ -24,6 +24,7 @@ cbuffer cbDefaultLightPSPerFrame : register(b0)
 };
 cbuffer cbMultiplePointLight : register(b1)
 {
+    DirectionalLightEx mainLight;
     float4 lightPos[2];
     float4 fogColor;
     float4 ambientLight;
@@ -92,13 +93,15 @@ float4 main(VertexOut pin) : SV_TARGET
     float4 ambient = ambientLight * diffuseAlbedo * ambientAccess;
 
     MaterialEx mat = { diffuseAlbedo, fresnelR0, shininess };
-    //float shadowFactor = CalcShadowFactor(smpShadowMap, SRVshadowMap, pin.shadowPosH);
-    float shadowFactor = 1.0f;
+    float shadowFactor = CalcShadowFactor(smpShadowMap, SRVshadowMap, pin.shadowPosH);
+    //float shadowFactor = 1.0f;
 
     
     float attenuation = 0.0f;
     DirectionalLightEx dr;
     float4 litColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 result = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    //point lights
     [unroll]
     for (int i = 0; i < numOfLights; i++)
     {
@@ -106,10 +109,14 @@ float4 main(VertexOut pin) : SV_TARGET
         float distance = length(dr.direction);
         dr.strength = lightStrength;
         attenuation = (2.5f / (1.0f + distance * distance)) * randomPart;
-        float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
+        result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
         litColor += (ambient + result) * attenuation;
     }
-
+    //add main light
+    dr.direction = lightDirection;
+    dr.strength = mainLight.strength;
+    result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
+    litColor += result;
 	// Add in specular reflections.
    
     float3 r = reflect(-toEyeW, bumpedNormalW);

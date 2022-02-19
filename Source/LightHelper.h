@@ -86,9 +86,9 @@ struct DirectionalLightEx
 		: strength(defaultLightStrength), direction(defaultLightDirection){}
 
 	DirectX::XMFLOAT3 strength; //strength means color of light.
-	int pad0;
+	int pad0 = 0;
 	DirectX::XMFLOAT3 direction;
-	int pad1;
+	int pad1 = 0;
 };
 
 

@@ -219,6 +219,7 @@ void Graphics::CreateCBuffers()
 	pointLights.lightStrength = DirectX::XMFLOAT3(0.9f, 0.501f, 0.0f);
 	pointLights.numOfLights = 2;
 	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
+	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.7f, 0.7f, 0.7f);
 	ID3D11Buffer* pPointLights = CreateConstantBuffer(pointLights, false, "Multiple point lights");
 	constBuffersMap.insert(std::make_pair(cbNames.multiplePointLights, pPointLights));
 
@@ -1141,8 +1142,8 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		}
 		if (matID == 22 || matID == 8)
 		{
-// 			pgfx_pDeviceContext->RSSetState(CullClockwiseRS);
-// 			RSStateChanged = true;
+			pgfx_pDeviceContext->RSSetState(CullClockwiseRS);
+			RSStateChanged = true;
 		}
 		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
 		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);

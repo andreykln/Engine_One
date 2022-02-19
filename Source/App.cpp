@@ -829,13 +829,15 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 
 	DirectX::XMFLOAT3 shadowDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
-	pShadowMap->BuildShadowTransform(shadowDirection);
+	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
+
+// 	pShadowMap->BuildShadowTransform(shadowDirection);
 
 	wnd.GetGraphics().ConstBufferShadowMapBind();
 
 
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
-	pShadowMap->UpdateSceneSponza(timer.DeltaTime());
+	pShadowMap->UpdateScene(timer.DeltaTime());
 	pDC->RSSetState(wnd.GetGraphics().ShadowMapBiasRS);
 	wnd.GetGraphics().DrawSponzaModel(assimpNames.castle, Technique::ShadowMap, castleTranslation);
 
