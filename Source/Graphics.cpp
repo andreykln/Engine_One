@@ -219,8 +219,8 @@ void Graphics::CreateCBuffers()
 	pointLights.lightStrength = DirectX::XMFLOAT3(0.9f, 0.501f, 0.0f);
 	pointLights.numOfLights = 2;
 	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
-	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.4f, 0.4f, 0.4f);
-	pointLights.mainLightPos = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.25f, 0.25f, 0.25f);
+// 	pointLights.mainLightPos = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	ID3D11Buffer* pPointLights = CreateConstantBuffer(pointLights, false, "Multiple point lights");
 	constBuffersMap.insert(std::make_pair(cbNames.multiplePointLights, pPointLights));
 
@@ -1135,6 +1135,8 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 		}
 		case Technique::ShadowMap:
 		{
+			pgfx_pDeviceContext->RSSetState(ShadowMapBiasRS);
+			RSStateChanged = true;
 			ShadowMap(w, mLightViewProjection);
 			break;
 		}
@@ -2531,9 +2533,13 @@ void Graphics::InitializeRenderStates()
 	shadowMapBiasDesc.FrontCounterClockwise = false;
 	shadowMapBiasDesc.DepthClipEnable = true;
 
+// 	shadowMapBiasDesc.DepthBias = 100000;
+// 	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
+// 	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
 	shadowMapBiasDesc.DepthBias = 100000;
 	shadowMapBiasDesc.DepthBiasClamp = 0.0f;
 	shadowMapBiasDesc.SlopeScaledDepthBias = 1.0f;
+
 	pgfx_pDevice->CreateRasterizerState(&shadowMapBiasDesc, &ShadowMapBiasRS);
 
 	//
@@ -2579,24 +2585,24 @@ void Graphics::InitializeRenderStates()
 	// Note: Define such that we still cull backfaces by making front faces CCW.
 	// If we did not cull backfaces, then we have to worry about the BackFace
 	// property in the D3D11_DEPTH_STENCIL_DESC.
-	D3D11_RASTERIZER_DESC cullClockwiseDesc;
-	ZeroMemory(&cullClockwiseDesc, sizeof(D3D11_RASTERIZER_DESC));
-	cullClockwiseDesc.FillMode = D3D11_FILL_SOLID;
-	cullClockwiseDesc.CullMode = D3D11_CULL_BACK;
-	cullClockwiseDesc.FrontCounterClockwise = true;
-	cullClockwiseDesc.DepthClipEnable = true;
+	D3D11_RASTERIZER_DESC cullBackFacesDesc;
+	ZeroMemory(&cullBackFacesDesc, sizeof(D3D11_RASTERIZER_DESC));
+	cullBackFacesDesc.FillMode = D3D11_FILL_SOLID;
+	cullBackFacesDesc.CullMode = D3D11_CULL_BACK;
+	cullBackFacesDesc.FrontCounterClockwise = true;
+	cullBackFacesDesc.DepthClipEnable = true;
 
-	pgfx_pDevice->CreateRasterizerState(&cullClockwiseDesc, &CullClockwiseRS);
+	pgfx_pDevice->CreateRasterizerState(&cullBackFacesDesc, &CullBackFacesRS);
 
 	////Cull counterCloskwise
-	D3D11_RASTERIZER_DESC cullCounterClockwiseDesc;
-	ZeroMemory(&cullCounterClockwiseDesc, sizeof(D3D11_RASTERIZER_DESC));
-	cullCounterClockwiseDesc.FillMode = D3D11_FILL_SOLID;
-	cullCounterClockwiseDesc.CullMode = D3D11_CULL_FRONT;
-	cullCounterClockwiseDesc.FrontCounterClockwise = true;
-	cullCounterClockwiseDesc.DepthClipEnable = true;
+	D3D11_RASTERIZER_DESC cullFrontFacesDesc;
+	ZeroMemory(&cullFrontFacesDesc, sizeof(D3D11_RASTERIZER_DESC));
+	cullFrontFacesDesc.FillMode = D3D11_FILL_SOLID;
+	cullFrontFacesDesc.CullMode = D3D11_CULL_FRONT;
+	cullFrontFacesDesc.FrontCounterClockwise = true;
+	cullFrontFacesDesc.DepthClipEnable = true;
 
-	pgfx_pDevice->CreateRasterizerState(&cullCounterClockwiseDesc, &CullCounterClockwiseRS);
+	pgfx_pDevice->CreateRasterizerState(&cullFrontFacesDesc, &CullFrontFaces);
 
 
 	//
@@ -2879,8 +2885,8 @@ void Graphics::DestroyRenderStates()
 {
 	ReleaseID3D(WireframeRS);
 	ReleaseID3D(NoCullRS);
-	ReleaseID3D(CullClockwiseRS);
-	ReleaseID3D(CullCounterClockwiseRS);
+	ReleaseID3D(CullBackFacesRS);
+	ReleaseID3D(CullFrontFaces);
 	ReleaseID3D(SolidFillRS);
 	ReleaseID3D(ShadowMapBiasRS);
 

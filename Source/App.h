@@ -16,7 +16,7 @@ public:
 	~App();
 	void DoFrame();
 	int Go();
-	void DebugTextToTitle();
+	void DebugTextToTitle(std::string& text);
 private:
 	void CalculateFrameStats();
 	void CreateComputeShaderWaves();
@@ -90,9 +90,10 @@ private:
  	Skull* pSkull = nullptr;
 	Sky* pSky = nullptr;
   	ShapesDemo shapes;
-
+	//for buffer clearing
 	float colors[4]{ 0.0392f, 0.0392f, 0.17254f, 1.0f};
-
-
+	//shadow map test
+	float n = -13.0f;
+	float f = 24.5f;
 };
 

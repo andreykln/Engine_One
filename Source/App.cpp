@@ -23,9 +23,7 @@ App::App()
 	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
-	AssimpRawData assimprawData;
-	const DirectX::XMMATRIX dragonScale = DirectX::XMMatrixScaling(15.0f, 15.0f, 15.0f);
-	const DirectX::XMMATRIX backBackScale = DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f);
+// 	AssimpRawData assimprawData;
 
 // 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
 // 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
@@ -81,10 +79,10 @@ int App::Go()
 }
 
 
-void App::DebugTextToTitle()
+void App::DebugTextToTitle(std::string& text)
 {
 	std::ostringstream oss;
-	oss << "X: " << wnd.mouse.GetPosX();
+	oss << text << wnd.mouse.GetPosX();
 	wnd.SetTitle(oss.str().c_str());
 }
 
@@ -828,10 +826,37 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 
-	DirectX::XMFLOAT3 shadowDirection = DirectX::XMFLOAT3(0.5f, -0.5f, 0.7f);
+	DirectX::XMFLOAT3 shadowDirection = DirectX::XMFLOAT3(0.0f, -1.0f, 1.0f);
 // 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
-	pShadowMap->BuildShadowTransform(shadowDirection);
+	DirectX::XMFLOAT4 LP = DirectX::XMFLOAT4(1.0f, 23.0f, 0.0f, 1.0f);
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		n += 0.5f;
+	}
+	if (GetAsyncKeyState('2') & 0x8000)
+	{
+		n -= 0.5f;
+	}
+	if (GetAsyncKeyState('6') & 0x8000)
+	{
+		f += 0.5f;
+	}
+	if (GetAsyncKeyState('7') & 0x8000)
+	{
+		f -= 0.5f;
+	}
+	if (GetAsyncKeyState('0') & 0x8000)
+	{
+		n = -30.0f;
+		f = 30.0f;
+	}
+
+
+	pShadowMap->BuildSponzaShadowTransform(shadowDirection, LP, n, f);
+	std::string text;
+	text = "n: " + std::to_string(n) + " f: " + std::to_string(f);
+	DebugTextToTitle(text);
 
 	wnd.GetGraphics().ConstBufferShadowMapBind();
 
@@ -895,15 +920,16 @@ void App::DrawSponzaCastle()
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
-// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
-// 	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
-// 	stride = sizeof(vbPosNormalTex);
-// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+	stride = sizeof(vbPosNormalTex);
+	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
 // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-// 	pDC->PSSetShaderResources(5u, 1u, &pNMSRV);
-// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+	ID3D11ShaderResourceView** pNMSRV = pShadowMap->DepthMapSRV();
+	pDC->PSSetShaderResources(5u, 1u, *&pNMSRV);
+	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	//////////////////////////////////////////////////////////////////////////
 	wnd.GetGraphics().SetDefaultLightData();

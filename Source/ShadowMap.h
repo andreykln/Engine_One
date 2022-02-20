@@ -18,6 +18,7 @@ public:
 	void UpdateScene(float dt);
 	void UpdateSceneSponza(float dt);
 	void BuildShadowTransform(DirectX::XMFLOAT3& oldLightDir);
+	void BuildSponzaShadowTransform(DirectX::XMFLOAT3& oldLightDir, DirectX::XMFLOAT4& lightPosition, float n, float f);
 	DirectX::XMMATRIX GetShadowTransform();
 	DirectX::XMMATRIX GetLightProjection();
 	DirectX::XMMATRIX GetLightView();

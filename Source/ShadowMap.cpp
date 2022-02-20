@@ -45,9 +45,8 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 
 	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 	//original size for temple demo
-//	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
+	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
 
-	sceneBounds.radius = sqrt(25.0f * 25.0f + 25.0f * 25.0f);
 
 
 
@@ -106,7 +105,7 @@ void ShadowMapGen::UpdateSceneSponza(float dt)
 	DirectX::XMVECTOR V0 = DirectX::XMLoadFloat3(&newLightDirection);
 	DirectX::XMVECTOR V1 = DirectX::XMLoadFloat3(&defaultLightDirectionReflected);
 
-	DirectX::XMVECTOR NV = DirectX::XMVectorLerp(V0, V1, sin(0.2 * dt));
+	DirectX::XMVECTOR NV = DirectX::XMVectorLerp(V0, V1, sinf(0.2 * dt));
 	DirectX::XMStoreFloat3(&newLightDirection, NV);
 }
 
@@ -156,6 +155,56 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3& oldLightDir)
 	float r = sphereCenterLS.x + sceneBounds.radius;
 	float t = sphereCenterLS.y + sceneBounds.radius;
 	float f = sphereCenterLS.z + sceneBounds.radius;
+	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+	//transform NDC space
+	XMMATRIX T
+	(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	XMMATRIX S = V * P * T;
+
+	lightViewProjection = V * P;
+	shadowTransform = S;
+	lightProj = P;
+	lightView = V;
+}
+
+void ShadowMapGen::BuildSponzaShadowTransform(DirectX::XMFLOAT3& oldLightDir, DirectX::XMFLOAT4& lightPosition, float n, float f)
+{
+	using namespace DirectX;
+	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f);
+	//sqrt(20.0f * 20.0f + 20.0f * 20.0f) estimation of the full size of the scene
+	//roughly equals to 28
+	sceneBounds.radius = 35.0f;
+	XMVECTOR lightDir = DirectX::XMLoadFloat3(&oldLightDir);
+	XMVECTOR lightPos = XMLoadFloat4(&lightPosition);
+	XMVECTOR targetPos = XMLoadFloat3(&sceneBounds.center);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX V = XMMatrixLookAtLH(lightPos, targetPos, up);
+
+	//transform bounding sphere to light space
+	XMFLOAT3 sphereCenterLS;
+	XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, V));
+
+	//orhto frustum in light space enclosed scene
+// 	float l = sphereCenterLS.x - sceneBounds.radius;
+// 	float n = -17.0f;
+// 	float b = -21.0f;
+// 	float r = sphereCenterLS.x + sceneBounds.radius;
+// 	float t = 11.0f;
+// 	float f = 30.0f;
+
+	float l = sphereCenterLS.x - sceneBounds.radius;
+	float b = sphereCenterLS.y - sceneBounds.radius;
+// 	float n = sphereCenterLS.z - sceneBounds.radius;
+	float r = sphereCenterLS.x + sceneBounds.radius;
+	float t = sphereCenterLS.y + sceneBounds.radius;
+// 	float f = sphereCenterLS.z + sceneBounds.radius;
+
 	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
 
 	//transform NDC space

@@ -64,7 +64,8 @@ VertexOut main(VertexIn vin)
 
     // Generate projective tex-coords to project shadow map onto scene.
     vout.shadowPosH = mul(posW, shadowTransform);
-    vout.SSAOPosH = mul(float4(vin.posL, 1.0f), worldViewProjTex);
+    float3 adjustedShadowPos = vin.posL + vin.normalL * 0.2f;
+    vout.SSAOPosH = mul(float4(adjustedShadowPos, 1.0f), worldViewProjTex);
     [unroll]
     for (int i = 0; i < numOfLights; i++)
     {

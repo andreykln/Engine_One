@@ -422,8 +422,8 @@ public:
 	//Rasterizer states
 	ID3D11RasterizerState* WireframeRS;
 	ID3D11RasterizerState* NoCullRS;
-	ID3D11RasterizerState* CullClockwiseRS;
-	ID3D11RasterizerState* CullCounterClockwiseRS;
+	ID3D11RasterizerState* CullBackFacesRS;
+	ID3D11RasterizerState* CullFrontFaces;
 	ID3D11RasterizerState* SolidFillRS;
 	ID3D11RasterizerState* ShadowMapBiasRS;
 

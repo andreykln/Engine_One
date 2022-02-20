@@ -224,6 +224,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 			aiMesh* t = scene->mMeshes[i];
 			const UINT nVert = t->mNumVertices;
 			float fix = 1.0f;
+			//reverse normals for the ceiling
 			if (i == 8 || i == 19)
 			{
 				fix = -1.0f;
@@ -239,9 +240,9 @@ void M3dLoader::LoadSponza(const std::string& filename,
 				v.pos.x = t->mVertices[j].x;
 				v.pos.y = t->mVertices[j].y;
 				v.pos.z = t->mVertices[j].z;
-				v.normal.x = t->mNormals[j].x;
+				v.normal.x = t->mNormals[j].x * fix;
 				v.normal.y = t->mNormals[j].y * fix;
-				v.normal.z = t->mNormals[j].z;
+				v.normal.z = t->mNormals[j].z * fix;
 				if (t->mTangents)
 				{
 					v.tangent.x = t->mTangents[j].x;
