@@ -188,24 +188,24 @@ void M3dLoader::LoadSponza(const std::string& filename,
 		}
 		std::vector<std::string> matNames;
 
-		for (int i = 0; i < scene->mNumMaterials; i++)
-		{
-			matNames.emplace_back(scene->mMaterials[i]->GetName().C_Str());
-		}
+// 		for (int i = 0; i < scene->mNumMaterials; i++)
+// 		{
+// 			matNames.emplace_back(scene->mMaterials[i]->GetName().C_Str());
+// 		}
 		//edit some names manually so they have sensible names
 		//TODO delete?
-		matNames[0] = "fabric_red";
-		matNames[2] = "vase_plant";
-		matNames[4] = "background";
-		matNames[5] = "fabric_red";
-		matNames[14] = "UNKNOWN0";
-		matNames[25] = "lion";
-		matNames[16] = "fabric_green";
-		matNames[17] = "fabric_blue";
-		matNames[18] = "fabric_red";
-		matNames[19] = "curtain_blue";
-		matNames[20] = "curtain_red";
-		matNames[21] = "curtain_green";
+// 		matNames[0] = "fabric_red";
+// 		matNames[2] = "vase_plant";
+// 		matNames[4] = "background";
+// 		matNames[5] = "fabric_red";
+// 		matNames[14] = "UNKNOWN0";
+// 		matNames[25] = "lion";
+// 		matNames[16] = "fabric_green";
+// 		matNames[17] = "fabric_blue";
+// 		matNames[18] = "fabric_red";
+// 		matNames[19] = "curtain_blue";
+// 		matNames[20] = "curtain_red";
+// 		matNames[21] = "curtain_green";
 
 
 		std::ifstream fin(matFileName);
@@ -215,14 +215,23 @@ void M3dLoader::LoadSponza(const std::string& filename,
 			mat = ReadSponzaMat(matFileName, fin);
 			pRawModel->mats.push_back(mat);
 		}
-		//not sure what is the last material is, but it don't have any texture for it anyway
 
-// 		pRawModel->mats.pop_back();
 		numMesh = scene->mNumMeshes;
+		//remove outer walls
+		numMesh -= 4;
 		for (UINT i = 0; i < numMesh; i++)
 		{
 			aiMesh* t = scene->mMeshes[i];
 			const UINT nVert = t->mNumVertices;
+			float fix = 1.0f;
+			if (i == 8 || i == 19)
+			{
+				fix = -1.0f;
+			}
+			else
+			{
+				fix = 1.0f;
+			}
 			for (UINT j = 0; j < nVert; j++)
 			{
 				vbPosNormalTexTangent v;
@@ -231,7 +240,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 				v.pos.y = t->mVertices[j].y;
 				v.pos.z = t->mVertices[j].z;
 				v.normal.x = t->mNormals[j].x;
-				v.normal.y = t->mNormals[j].y;
+				v.normal.y = t->mNormals[j].y * fix;
 				v.normal.z = t->mNormals[j].z;
 				if (t->mTangents)
 				{

@@ -44,7 +44,10 @@ ShadowMapGen::ShadowMapGen(Graphics& gfx, UINT width, UINT height)
 	depthMap->Release();
 
 	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
+	//original size for temple demo
+//	sceneBounds.radius = sqrt(12.5f * 12.5f + 12.5f * 12.5f);
+
+	sceneBounds.radius = sqrt(25.0f * 25.0f + 25.0f * 25.0f);
 
 
 
