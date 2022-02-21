@@ -172,7 +172,7 @@ void ShadowMapGen::BuildShadowTransform(DirectX::XMFLOAT3& oldLightDir)
 	lightView = V;
 }
 
-void ShadowMapGen::BuildSponzaShadowTransform(DirectX::XMFLOAT3& oldLightDir, DirectX::XMFLOAT4& lightPosition, float n, float f)
+void ShadowMapGen::BuildSponzaShadowTransform(DirectX::XMFLOAT3& oldLightDir, DirectX::XMFLOAT4& lightPosition)
 {
 	using namespace DirectX;
 	sceneBounds.center = DirectX::XMFLOAT3(0.0f, 0.0f, -5.0f);
@@ -200,10 +200,10 @@ void ShadowMapGen::BuildSponzaShadowTransform(DirectX::XMFLOAT3& oldLightDir, Di
 
 	float l = sphereCenterLS.x - sceneBounds.radius;
 	float b = sphereCenterLS.y - sceneBounds.radius;
-// 	float n = sphereCenterLS.z - sceneBounds.radius;
+	float n = sphereCenterLS.z - sceneBounds.radius;
 	float r = sphereCenterLS.x + sceneBounds.radius;
 	float t = sphereCenterLS.y + sceneBounds.radius;
-// 	float f = sphereCenterLS.z + sceneBounds.radius;
+	float f = sphereCenterLS.z + sceneBounds.radius;
 
 	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
 

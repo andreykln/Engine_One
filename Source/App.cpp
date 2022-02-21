@@ -830,33 +830,8 @@ void App::DrawSponzaCastle()
 // 	pShadowMap->BuildShadowTransform(pShadowMap->GetNewLightDirection());
 
 	DirectX::XMFLOAT4 LP = DirectX::XMFLOAT4(1.0f, 23.0f, 0.0f, 1.0f);
-	if (GetAsyncKeyState('1') & 0x8000)
-	{
-		n += 0.5f;
-	}
-	if (GetAsyncKeyState('2') & 0x8000)
-	{
-		n -= 0.5f;
-	}
-	if (GetAsyncKeyState('6') & 0x8000)
-	{
-		f += 0.5f;
-	}
-	if (GetAsyncKeyState('7') & 0x8000)
-	{
-		f -= 0.5f;
-	}
-	if (GetAsyncKeyState('0') & 0x8000)
-	{
-		n = -30.0f;
-		f = 30.0f;
-	}
 
-
-	pShadowMap->BuildSponzaShadowTransform(shadowDirection, LP, n, f);
-	std::string text;
-	text = "n: " + std::to_string(n) + " f: " + std::to_string(f);
-	DebugTextToTitle(text);
+	pShadowMap->BuildSponzaShadowTransform(shadowDirection, LP);
 
 	wnd.GetGraphics().ConstBufferShadowMapBind();
 
@@ -920,16 +895,16 @@ void App::DrawSponzaCastle()
 
 	//////////////////////////////////////////////////////////////////////////
 //DEBUG quad
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
-	stride = sizeof(vbPosNormalTex);
-	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
-	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
-// 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
-	ID3D11ShaderResourceView** pNMSRV = pShadowMap->DepthMapSRV();
-	pDC->PSSetShaderResources(5u, 1u, *&pNMSRV);
-	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
+// 	wnd.GetGraphics().BindVSandIA(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	wnd.GetGraphics().BindPS(ShaderPicker::DrawDebugTexQuad_VS_PS);
+// 	stride = sizeof(vbPosNormalTex);
+// 	pDC->IASetVertexBuffers(0u, 1u, pSSAO->GetQuadVertexBuffer(), &stride, &offset);
+// 	pDC->IASetIndexBuffer(pSSAO->GetQuadIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetNormalMapSRV();
+// // 	ID3D11ShaderResourceView* pNMSRV = pSSAO->GetAmbientMapSRV0();
+// 	ID3D11ShaderResourceView** pNMSRV = pShadowMap->DepthMapSRV();
+// 	pDC->PSSetShaderResources(5u, 1u, *&pNMSRV);
+// 	pDC->DrawIndexed(pSSAO->GetQuadIndexCount(), 0u, 0u);
 
 	//////////////////////////////////////////////////////////////////////////
 	wnd.GetGraphics().SetDefaultLightData();

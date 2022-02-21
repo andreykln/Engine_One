@@ -6,15 +6,15 @@ DiffuseMap: sponza\thorn_diffuse
 NormalMap: sponza\thorn_normal
 
 material: overgrowth
-Diffuse: 0.8880 0.8880 0.8880 1.0
+Diffuse: 0.6880 0.6880 0.6880 1.0
 Fresnel0: 0.0000 0.0000 0.0000
 Shininess: 0.2
 DiffuseMap: sponza\vase_plant_diffuse
 NormalMap: sponza\vase_plant_normal
 
 material: vase_plant
-Diffuse: 0.6880 0.8880 0.6880 1.0
-Fresnel0: 0.2000 0.200 0.2000
+Diffuse: 0.6880 0.6880 0.6880 1.0
+Fresnel0: 0.000 0.00 0.000
 Shininess: 0.2
 DiffuseMap: sponza\vase_plant_diffuse
 NormalMap: sponza\vase_plant_normal
@@ -28,8 +28,8 @@ NormalMap: sponza\vase_normal
 
 material: relief
 Diffuse: 0.5880 0.5880 0.5880 1.0
-Fresnel0: 0.0000 0.0000 0.0000
-Shininess: 0.01
+Fresnel0: 0.2000 0.2000 0.2000
+Shininess: 0.3
 DiffuseMap: sponza\relief_diff
 NormalMap: sponza\relief_normal
 

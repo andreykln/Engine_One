@@ -219,8 +219,7 @@ void Graphics::CreateCBuffers()
 	pointLights.lightStrength = DirectX::XMFLOAT3(0.9f, 0.501f, 0.0f);
 	pointLights.numOfLights = 2;
 	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
-	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.25f, 0.25f, 0.25f);
-// 	pointLights.mainLightPos = DirectX::XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
+	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
 	ID3D11Buffer* pPointLights = CreateConstantBuffer(pointLights, false, "Multiple point lights");
 	constBuffersMap.insert(std::make_pair(cbNames.multiplePointLights, pPointLights));
 
