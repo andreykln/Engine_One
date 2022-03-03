@@ -5,7 +5,7 @@
 static DirectX::XMFLOAT3 defaultLightDirection = DirectX::XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
 static DirectX::XMFLOAT3 defaultLightDirectionReflected = DirectX::XMFLOAT3(0.57735f, -0.57735f, -0.57735f);
 
-static DirectX::XMFLOAT3 defaultLightStrength = DirectX::XMFLOAT3(0.9f, 0.8f, 0.7f);
+static DirectX::XMFLOAT3 defaultLightStrength = DirectX::XMFLOAT3(0.6f, 0.5f, 0.4f);
 struct DirectionalLight
 {
 	DirectionalLight() { ZeroMemory(this, sizeof(this)); }

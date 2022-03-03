@@ -11,7 +11,7 @@ Graphics::Graphics(HWND wnd)
 	swapChainDesc.BufferDesc.Height = 0;
 	swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //R8G8B8A8_TYPELESS 
 	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	swapChainDesc.SampleDesc.Count = 1u;
@@ -94,7 +94,12 @@ Graphics::Graphics(HWND wnd)
 
 #endif
 	DX::ThrowIfFailed(pgfx_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pgfx_BackBuffer));
-	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), nullptr, pgfx_RenderTargetView.ReleaseAndGetAddressOf()));
+	//sRGB rtv, gives too bright results.
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Texture2D.MipSlice = 0;
+	DX::ThrowIfFailed(pgfx_pDevice->CreateRenderTargetView(pgfx_BackBuffer.Get(), &rtvDesc, pgfx_RenderTargetView.ReleaseAndGetAddressOf()));
 #ifdef MY_DEBUG
 	SetDeviceDebugName(pgfx_RenderTargetView.Get(), L"CreateRenderTargetView.");
 #endif
@@ -216,7 +221,7 @@ void Graphics::CreateCBuffers()
 	cbMultiplePointLight pointLights;
 	pointLights.lightPosition[0] = DirectX::XMFLOAT4(0.0f, 5.0f, 5.0f, 0.0f);
 	pointLights.lightPosition[1] = DirectX::XMFLOAT4(0.0f, 5.0f, -5.0f, 0.0f);
-	pointLights.lightStrength = DirectX::XMFLOAT3(0.9f, 0.501f, 0.0f);
+	pointLights.lightStrength = DirectX::XMFLOAT3(0.3f, 0.2f, 0.1f);
 	pointLights.numOfLights = 2;
 	pointLights.ambientLight = DirectX::XMFLOAT4(0.25f, 0.25f, 0.35f, 1.0f);
 	pointLights.mainLight.strength = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
@@ -243,7 +248,7 @@ void Graphics::CreateSRVs()
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += cubemapFiles[i] + L".dds";
-		pTemp = CreateSRV(path, true);
+		pTemp = CreateSRV(path, true, true);
 		cubeMaps.insert(std::make_pair(cubemapFiles[i], pTemp));
 	}
 
@@ -268,7 +273,7 @@ void Graphics::CreateSRVs()
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += diffuseMapNames[i] + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, true);
 		diffuseMaps.insert(std::make_pair(diffuseMapNames[i], pTemp));
 	}
 	std::vector<std::wstring> normalMapNames;
@@ -282,7 +287,7 @@ void Graphics::CreateSRVs()
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += normalMapNames[i] + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, false);
 		normalMaps.insert(std::make_pair(normalMapNames[i], pTemp));
 	}
 
@@ -902,7 +907,7 @@ void Graphics::CreateM3dModel(M3dRawData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].diffuseMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, true);
 		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
 	}
 	for (size_t i = 0; i < data.mats.size(); i++)
@@ -910,7 +915,7 @@ void Graphics::CreateM3dModel(M3dRawData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].normalMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, false);
 		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
 	}
 
@@ -939,7 +944,7 @@ void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].diffuseMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, true);
 		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
 	}
 	for (size_t i = 0; i < data.mats.size(); i++)
@@ -947,7 +952,7 @@ void Graphics::CreateM3dModel(M3dRawSkinnedData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].normalMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, false);
 		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
 	}
 	model.mBoneHierarchy.resize(data.skinnedInfo.mBoneHierarchy.size());
@@ -990,7 +995,7 @@ void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].diffuseMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, true);
 		diffuseMaps.insert(std::make_pair(data.mats[i].diffuseMapName, pTemp));
 	}
 	for (size_t i = 0; i < data.mats.size(); i++)
@@ -998,7 +1003,7 @@ void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
 		ID3D11ShaderResourceView* pTemp = nullptr;
 		std::wstring path = L"Textures\\";
 		path += data.mats[i].normalMapName + L".dds";
-		pTemp = CreateSRV(path, false);
+		pTemp = CreateSRV(path, false, false);
 		normalMaps.insert(std::make_pair(data.mats[i].normalMapName, pTemp));
 	}
 }
@@ -1577,7 +1582,7 @@ void Graphics::SetPointLightData()
 	pgfx_pDeviceContext->PSSetConstantBuffers(1u, 1u, &constBuffersMap.at(cbNames.multiplePointLights));
 }
 
-ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap)
+ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMap, bool srgb)
 {
 	CheckFileExistence(in_path);
 	DirectX::TexMetadata textureMetaData;
@@ -1597,7 +1602,14 @@ ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMa
 
 
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Format = textureFormat;
+	if (srgb)
+	{
+		texDesc.Format = DXGI_FORMAT_BC7_UNORM_SRGB;
+	}
+	else
+	{
+		texDesc.Format = textureFormat;
+	}
 	texDesc.Width = (UINT)textureMetaData.width;
 	texDesc.Height = (UINT)textureMetaData.height;
 	texDesc.ArraySize = (UINT)textureMetaData.arraySize;
@@ -1645,7 +1657,14 @@ ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMa
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResDesc;
-	shaderResDesc.Format = textureMetaData.format;
+	if (srgb)
+	{
+		shaderResDesc.Format = DXGI_FORMAT_BC7_UNORM_SRGB;
+	}
+	else
+	{
+		shaderResDesc.Format = textureMetaData.format;
+	}
 	if (cubeMap)
 	{
 		shaderResDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
@@ -1658,7 +1677,7 @@ ID3D11ShaderResourceView* Graphics::CreateSRV(std::wstring& in_path, bool cubeMa
 	shaderResDesc.Texture2D.MostDetailedMip = 0u;
 
 	ID3D11ShaderResourceView* pSRV = nullptr;
-
+	
 	hr = pgfx_pDevice->CreateShaderResourceView(pTexture, &shaderResDesc, &pSRV);
 	if (FAILED(hr))
 	{

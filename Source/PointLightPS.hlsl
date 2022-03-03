@@ -29,6 +29,7 @@ cbuffer cbMultiplePointLight : register(b1)
     float4 lightPos[2];
     float4 fogColor;
     float4 ambientLight;
+    //point light
     float3 lightStrength;
     float fogstart;
     float fogRange;
@@ -110,7 +111,7 @@ float4 main(VertexOut pin) : SV_TARGET
         float distance = length(dr.direction);
         dr.direction = normalize(dr.direction);
         dr.strength = lightStrength;
-        attenuation = (10.0f / (1.0f + distance * distance));
+        attenuation = (5.0f / (1.0f + distance * distance));
         result = float4(ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
         //if (distance > 5.0f)
            // result = float4(0.0f, 0.0f, 0.0f, 0.0f);

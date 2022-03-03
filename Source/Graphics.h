@@ -193,7 +193,7 @@ private:
 	template <typename CBData>
 	ID3D11Buffer* CreateConstantBuffer(const CBData& data, bool dynamic, const std::string& name = std::string());
 
-	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap);
+	ID3D11ShaderResourceView* CreateSRV(std::wstring& in_path, bool cubeMap, bool srgb);
 
 	const CBufferNames cbNames;
 	std::unordered_map<std::string, ID3D11Buffer*> constBuffersMap;

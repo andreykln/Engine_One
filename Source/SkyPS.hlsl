@@ -21,8 +21,6 @@ SamplerState smpLinearClamp : register(s4);
 float4 main(VertexOut vin) : SV_TARGET
 {
     float4 color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    
     color = cubeMap.Sample(smpLinearWrap, vin.PosL);
-    
     return color;
 }

@@ -31,8 +31,8 @@ App::App()
 // 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-// 	CreateTempleScene();
-	CreateSponzaCastle();
+	CreateTempleScene();
+// 	CreateSponzaCastle();
 
 
 	CreateAndBindSkybox();
@@ -52,8 +52,8 @@ void App::DoFrame()
 // 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-// 	DrawTempleScene();
-	DrawSponzaCastle();
+	DrawTempleScene();
+// 	DrawSponzaCastle();
 
 	CalculateFrameStats();
 

@@ -8,8 +8,8 @@
 ***************Materials*********************
 Name: soldier_head
 Diffuse: 1 1 1
-Fresnel0: 0.05 0.05 0.05
-Roughness: 0.5
+Fresnel0: 0.01 0.01 0.01
+Roughness: 0.9
 AlphaClip: 0
 MaterialTypeName: Skinned
 DiffuseMap: head_diff
@@ -17,8 +17,8 @@ NormalMap: head_norm
 
 Name: soldier_jacket
 Diffuse: 1 1 1
-Fresnel0: 0.05 0.05 0.05
-Roughness: 0.8
+Fresnel0: 0.01 0.01 0.01
+Roughness: 0.9
 AlphaClip: 0
 MaterialTypeName: Skinned
 DiffuseMap: jacket_diff
@@ -27,7 +27,7 @@ NormalMap: jacket_norm
 Name: soldier_pants
 Diffuse: 0.8 0.8 0.8
 Fresnel0: 0.01 0.01 0.01
-Roughness: 0.8
+Roughness: 0.9
 AlphaClip: 0
 MaterialTypeName: Skinned
 DiffuseMap: pants_diff
@@ -35,8 +35,8 @@ NormalMap: pants_norm
 
 Name: soldier_upBody1
 Diffuse: 1 1 1
-Fresnel0: 0.05 0.05 0.05
-Roughness: 0.4
+Fresnel0: 0.01 0.01 0.01
+Roughness: 0.9
 AlphaClip: 0
 MaterialTypeName: Skinned
 DiffuseMap: upBody_diff
@@ -44,8 +44,8 @@ NormalMap: upBody_norm
 
 Name: soldier_upBody2
 Diffuse: 1 1 1
-Fresnel0: 0.05 0.05 0.05
-Roughness: 0.3
+Fresnel0: 0.01 0.01 0.01
+Roughness: 0.9
 AlphaClip: 0
 MaterialTypeName: Skinned
 DiffuseMap: upBody_diff

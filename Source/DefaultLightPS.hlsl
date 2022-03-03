@@ -104,7 +104,13 @@ float4 main(VertexOut pin) : SV_TARGET
     float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
     
     litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
+    //gamma correction. Arbitrary number
+    //float p = 2.2;
+    //litColor = float4(pow(litColor.xyz, p), 1.0f);
+    
     // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a;
+    
+    
     return litColor;
 }

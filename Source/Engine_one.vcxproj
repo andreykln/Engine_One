@@ -185,6 +185,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     </ClCompile>
     <ClCompile Include="DisplacementWaves.cpp" />
     <ClCompile Include="Entry.cpp" />
+    <ClCompile Include="FXAA.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GeoSphere.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -227,6 +228,7 @@ xcopy /E /D /Y "$(ProjectDir)Textures\*" "$(OutDir)Textures\"</Command>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DisplacementWaves.h" />
     <ClInclude Include="DrawableBase.h" />
+    <ClInclude Include="FXAA.h" />
     <ClInclude Include="GPUWaves.h" />
     <ClInclude Include="M3dLoader.h" />
     <ClInclude Include="ParticleSystem.h" />
