@@ -32,13 +32,13 @@ FXAA::FXAA(Graphics& gfx)
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRenderTargetView(pTexture, &rtvDesc, &pFXAA_RTV));
 
 	std::vector<vbPosTex> vertices(6);
-	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 4.0f);
-	vertices[1].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 4.0f);
-	vertices[2].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 4.0f);
+	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
+	vertices[1].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
+	vertices[2].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
 
-	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 4.0f);
-	vertices[4].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 4.0f);
-	vertices[5].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 4.0f);
+	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[4].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[5].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
 
 	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
 	vertices[1].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
