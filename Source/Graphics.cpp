@@ -2002,7 +2002,9 @@ void Graphics::InitShaders()
 		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\ShadowMapSkinnedVS.cso");
 	VS_IL_Init(&pSkinnedDefaultLightVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
 		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\DefaultLightSkinnedVS.cso");
-
+	//FXAA
+	VS_IL_Init(&pFXAA_VS, IL.posTexIL, &pFXAA_IL, IL.nPosTex, L"Shaders\\Vertex\\FXAA_VS.cso");
+	PS_Init(&pFXAA_PS, L"Shaders\\Pixel\\FXAA_PS.cso");
 }
 
 void Graphics::BindVSandIA(ShaderPicker shader)
@@ -2120,7 +2122,10 @@ void Graphics::BindVSandIA(ShaderPicker shader)
 		pgfx_pDeviceContext->IASetInputLayout(pSkinnedIL);
 		pgfx_pDeviceContext->VSSetShader(pSkinnedDefaultLightVS, nullptr, 0u);
 		break;
-
+	case ShaderPicker::FXAA_VS_PS:
+		pgfx_pDeviceContext->IASetInputLayout(pFXAA_IL);
+		pgfx_pDeviceContext->VSSetShader(pFXAA_VS, nullptr, 0u);
+		break;
 	default:
 		break;
 	}
@@ -2193,6 +2198,11 @@ void Graphics::BindPS(ShaderPicker shader)
 	case ShaderPicker::ComputeWaves_VS_PS_CS:
 	{
 		pgfx_pDeviceContext->PSSetShader(pComputeWavesPS, nullptr, 0u);
+		break;
+	}
+	case ShaderPicker::FXAA_VS_PS:
+	{
+		pgfx_pDeviceContext->PSSetShader(pFXAA_PS, nullptr, 0u);
 		break;
 	}
 	default:

@@ -181,7 +181,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 			DirectX::XMStoreFloat4x4(&t, DirectX::XMMatrixIdentity());
 			rawData.worlds.push_back(t);
 		}
-		for (int h = 0; h < numOfChildren; h++)
+		for (UINT h = 0; h < numOfChildren; h++)
 		{
 
 			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
@@ -209,7 +209,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 
 
 		std::ifstream fin(matFileName);
-		for (int i = 0; i < scene->mNumMaterials; i++)
+		for (UINT i = 0; i < scene->mNumMaterials; i++)
 		{
 			M3dMaterial mat;
 			mat = ReadSponzaMat(matFileName, fin);

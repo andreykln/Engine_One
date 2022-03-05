@@ -28,6 +28,29 @@ FXAA::FXAA(Graphics& gfx)
 	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	rtvDesc.Texture2D.MipSlice = 0u;
+	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRenderTargetView(pTexture, &rtvDesc, &pFXAA_RTV));
+
+	std::vector<vbPosTex> vertices(6);
+	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 4.0f);
+	vertices[1].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 4.0f);
+	vertices[2].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 4.0f);
+
+	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 4.0f);
+	vertices[4].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 4.0f);
+	vertices[5].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 4.0f);
+
+	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+	vertices[1].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+	vertices[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	vertices[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	vertices[4].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	vertices[5].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+
+
+	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"FXAA quad VB");
+
+
 
 
 }

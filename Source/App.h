@@ -90,6 +90,7 @@ private:
  	Skull* pSkull = nullptr;
 	Sky* pSky = nullptr;
   	ShapesDemo shapes;
+	FXAA* pFXAA = nullptr;
 	//for buffer clearing
 	float colors[4]{ 0.0392f, 0.0392f, 0.17254f, 1.0f};
 

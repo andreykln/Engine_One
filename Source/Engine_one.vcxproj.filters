@@ -58,6 +58,9 @@
     <Filter Include="Shaders\Default\PointLight">
       <UniqueIdentifier>{4bc0701e-5491-482c-8b56-004d42a6a0dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Default\FXAA">
+      <UniqueIdentifier>{46a4f0aa-b582-4651-9493-e4781d2ba2da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entry.cpp">
@@ -381,6 +384,12 @@
     </FxCompile>
     <FxCompile Include="PointLightPS.hlsl">
       <Filter>Shaders\Default\PointLight</Filter>
+    </FxCompile>
+    <FxCompile Include="FXAA_VS.hlsl">
+      <Filter>Shaders\Default\FXAA</Filter>
+    </FxCompile>
+    <FxCompile Include="FXAA_PS.hlsl">
+      <Filter>Shaders\Default\FXAA</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

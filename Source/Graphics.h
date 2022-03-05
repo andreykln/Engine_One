@@ -415,6 +415,11 @@ private:
 	ID3D11VertexShader* pSkinnedShadowMapVS = nullptr;
 	ID3D11VertexShader* pSkinnedDefaultLightVS = nullptr;
 
+	//FXAA
+	ID3D11InputLayout* pFXAA_IL = nullptr;
+	ID3D11VertexShader* pFXAA_VS = nullptr;
+	ID3D11PixelShader* pFXAA_PS = nullptr;
+
 private:
 	void InitializeRenderStates();
 	void DestroyRenderStates();

@@ -1,6 +1,15 @@
 #pragma once
 #include "LightHelper.h"
 
+struct vbPosTex
+{
+	vbPosTex() : pos(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
+	vbPosTex(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v)
+		: pos(posX, posY, posZ), tex(u, v) {}
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 tex;
+};
+
 struct vbPosNormalTex
 {
 	vbPosNormalTex() : pos(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
@@ -359,6 +368,7 @@ enum class ShaderPicker
 	SkinnedModelShadowMap_VS,
 	SkinnedModelDefaultLight_VS,
 	PointLight_VS_PS,
+	FXAA_VS_PS,
 };
 
 enum class ParticlePick

@@ -28,11 +28,15 @@ App::App()
 // 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
 // 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
 // 	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
-// 	CreateShadowMapDemo();
+	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
-	CreateTempleScene();
+// 	CreateTempleScene();
 // 	CreateSponzaCastle();
+	//////////////////////////////////////////////////////////////////////////
+	pFXAA = new FXAA(wnd.GetGraphics());
+
+	//////////////////////////////////////////////////////////////////////////
 
 
 	CreateAndBindSkybox();
@@ -49,10 +53,10 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-// 	DrawShadowMapDemo();
+	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
-	DrawTempleScene();
+// 	DrawTempleScene();
 // 	DrawSponzaCastle();
 
 	CalculateFrameStats();
@@ -312,7 +316,7 @@ void App::DrawShadowMapDemo()
 // 		camera.GetProjecion(), camera.GetCameraPosition(), timer.TotalTime());
 
 	//shadow map
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
+	/*wnd.GetGraphics().BindVSandIA(ShaderPicker::ShadowMap_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::ShadowMap_VS_PS);
 	pShadowMap->BindDSVandSetNullRenderTarget(wnd.GetGraphics());
 	pShadowMap->UpdateScene(timer.DeltaTime());
@@ -438,11 +442,39 @@ void App::DrawShadowMapDemo()
 	pDC->IASetVertexBuffers(0u, 1u, pDispWaves->GetVertexBuffer(), &stride, &offset);
 	pDC->IASetIndexBuffer(pDispWaves->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0u);
 	pDC->DrawIndexed(pDispWaves->GetIndexCount(), 0u, 0u);
-	wnd.GetGraphics().UnbindAll();
+	wnd.GetGraphics().UnbindAll();*/
 
 
-	DrawSkyBox();
-	wnd.GetGraphics().ReleaseSSAOShaderResource();
+	//////////////////////////////////////////////////////////////////////////
+
+SetDefaultRTVAndViewPort();
+
+	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+	pDC->OMSetDepthStencilState(wnd.GetGraphics().disableDepthWrites, 0u);
+	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	wnd.GetGraphics().ConstBufferVSMatricesBind();
+	wnd.GetGraphics().VSDefaultMatricesUpdate(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+// 	pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+// 	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors); 
+// 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+// 		wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	wnd.GetGraphics().BindVSandIA(ShaderPicker::FXAA_VS_PS);
+	wnd.GetGraphics().BindPS(ShaderPicker::FXAA_VS_PS);
+	stride = sizeof(vbPosTex);
+	pDC->IASetVertexBuffers(0u, 1u, &pFXAA->pVertexBuffer, &stride, &offset);
+	pDC->Draw(6u, 0u);
+
+// 	SetDefaultRTVAndViewPort();
+// 	pDC->OMSetDepthStencilState(0u, 0u);
+
+	//////////////////////////////////////////////////////////////////////////
+
+
+
+
+	/*DrawSkyBox();
+	wnd.GetGraphics().ReleaseSSAOShaderResource();*/
 
 	
 }
