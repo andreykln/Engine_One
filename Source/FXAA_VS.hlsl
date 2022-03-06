@@ -1,7 +1,6 @@
 struct VertexIn
 {
     float3 pos : Position;
-    float2 texC : TexCoord;
 };
 struct VertexOut
 {
@@ -26,11 +25,10 @@ cbuffer cbDefaultMatricesVS : register(b0)
 VertexOut main(VertexIn vin)
 {
     VertexOut vout;
-   // vout.pos = mul(float4(vin.pos, 1.0f), world);
-   // vout.pos = mul(vout.pos, viewProjection);
     vout.pos = float4(vin.pos.xy, 0.0f, 1.0f);
     
-    
-    vout.texC = mul(float4(vin.texC, 0.0f, 0.0f), texTransform).xy;
+    float2 xy = 0.5f * float2(vin.pos.xy.x, -vin.pos.xy.y);
+   
+    vout.texC = xy + float2(0.5f, 0.5f);
     return vout;
 }

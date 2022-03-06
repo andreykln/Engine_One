@@ -1,13 +1,13 @@
 #pragma once
 #include "LightHelper.h"
 
-struct vbPosTex
+struct vbPos
 {
-	vbPosTex() : pos(0.0f, 0.0f, 0.0f), tex(0.0f, 0.0f) {};
-	vbPosTex(float posX, float posY, float posZ, float normX, float normY, float normZ, float u, float v)
-		: pos(posX, posY, posZ), tex(u, v) {}
+	vbPos() : pos(0.0f, 0.0f, 0.0f){};
+	vbPos(float posX, float posY, float posZ)
+		: pos(posX, posY, posZ){}
 	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 tex;
+
 };
 
 struct vbPosNormalTex

@@ -31,21 +31,27 @@ FXAA::FXAA(Graphics& gfx)
 	rtvDesc.Texture2D.MipSlice = 0u;
 	DX::ThrowIfFailed(gfx.pgfx_pDevice->CreateRenderTargetView(pTexture, &rtvDesc, &pFXAA_RTV));
 
-	std::vector<vbPosTex> vertices(6);
-	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
-	vertices[1].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
-	vertices[2].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+	std::vector<vbPos> vertices(3);
+	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 3.0f, 0.0f);
+	vertices[1].pos = DirectX::XMFLOAT3(3.0f, -1.0f, 0.0f);
+	vertices[2].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
 
-	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
-	vertices[4].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	vertices[5].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
 
-	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
-	vertices[1].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
-	vertices[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	vertices[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	vertices[4].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	vertices[5].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+	//fullscreen quad data. Leave it for now just in case
+// 	vertices[0].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
+// 	vertices[1].pos = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
+// 	vertices[2].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+// 
+// 	vertices[3].pos = DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f);
+// 	vertices[4].pos = DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f);
+// 	vertices[5].pos = DirectX::XMFLOAT3(-1.0f, 1.0f, 0.0f);
+// 
+// 	vertices[0].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
+// 	vertices[1].tex = DirectX::XMFLOAT2(1.0f, 0.0f);
+// 	vertices[2].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+// 	vertices[3].tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+// 	vertices[4].tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+// 	vertices[5].tex = DirectX::XMFLOAT2(0.0f, 0.0f);
 
 
 	pVertexBuffer = gfx.CreateVertexBuffer(vertices, false, false, L"FXAA quad VB");

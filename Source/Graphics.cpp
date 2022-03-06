@@ -2003,7 +2003,7 @@ void Graphics::InitShaders()
 	VS_IL_Init(&pSkinnedDefaultLightVS, IL.posNormalTexcTangentSkinned, &pSkinnedIL,
 		IL.nPosNormalTexcTangentSkinned, L"Shaders\\Vertex\\DefaultLightSkinnedVS.cso");
 	//FXAA
-	VS_IL_Init(&pFXAA_VS, IL.posTexIL, &pFXAA_IL, IL.nPosTex, L"Shaders\\Vertex\\FXAA_VS.cso");
+	VS_IL_Init(&pFXAA_VS, IL.positonIL, &pFXAA_IL, IL.nPosition, L"Shaders\\Vertex\\FXAA_VS.cso");
 	PS_Init(&pFXAA_PS, L"Shaders\\Pixel\\FXAA_PS.cso");
 }
 

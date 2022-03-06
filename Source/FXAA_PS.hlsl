@@ -14,6 +14,7 @@ SamplerComparisonState smpShadowMap : register(s2);
 SamplerState smpNormalMap : register(s3);
 //blur map
 SamplerState smpLinearClamp : register(s4);
+
 float4 main(VertexOut pin) : SV_TARGET
 {
     float4 c = drawingPass.Sample(smpAnisotropicWrap, pin.texC);

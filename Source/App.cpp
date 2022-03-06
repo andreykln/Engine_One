@@ -473,9 +473,9 @@ void App::DrawShadowMapDemo()
 
 	wnd.GetGraphics().BindVSandIA(ShaderPicker::FXAA_VS_PS);
 	wnd.GetGraphics().BindPS(ShaderPicker::FXAA_VS_PS);
-	stride = sizeof(vbPosTex);
+	stride = sizeof(vbPos);
 	pDC->IASetVertexBuffers(0u, 1u, &pFXAA->pVertexBuffer, &stride, &offset);
-	pDC->Draw(6u, 0u);
+	pDC->Draw(3u, 0u);
 	// release for the next pass
 	pDC->PSSetShaderResources(0u, 1u, &pNullSRV);
 
