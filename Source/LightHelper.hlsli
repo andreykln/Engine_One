@@ -288,3 +288,8 @@ float3 ComputeDirectionalLightEx(DirectionalLightEx L, MaterialEx mat, float3 no
 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
+
+float rgb2luma(float3 rgb)
+{
+    return sqrt(dot(rgb, float3(0.299, 0.587, 0.114)));
+}

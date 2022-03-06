@@ -349,14 +349,15 @@ void App::DrawShadowMapDemo()
 
 	//////////////////////////////////////////////////////////////////////////
 	//FXAA RTV
-// 	SetDefaultRTVAndViewPort();
-
-	pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors);
-	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
- 	wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	wnd.GetGraphics().SetViewport();
-
+ 	SetDefaultRTVAndViewPort();
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+		pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors);
+		wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+			wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		wnd.GetGraphics().SetViewport();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	// init main drawing buffers
 	stride = sizeof(vbPosNormalTexTangent);
@@ -460,25 +461,29 @@ void App::DrawShadowMapDemo()
 	DrawSkyBox();
 	wnd.GetGraphics().ReleaseSSAOShaderResource();
 
-	//FXAA
-	//////////////////////////////////////////////////////////////////////////
-	SetDefaultRTVAndViewPort();
-	pDC->PSSetShaderResources(0u, 1u, &pFXAA->pFXAA_SRV);
-	wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
-	pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	wnd.GetGraphics().ConstBufferVSMatricesBind();
-	wnd.GetGraphics().VSDefaultMatricesUpdate(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-// 	pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
-// 	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors); 
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		SetDefaultRTVAndViewPort();
 
-	wnd.GetGraphics().BindVSandIA(ShaderPicker::FXAA_VS_PS);
-	wnd.GetGraphics().BindPS(ShaderPicker::FXAA_VS_PS);
-	stride = sizeof(vbPos);
-	pDC->IASetVertexBuffers(0u, 1u, &pFXAA->pVertexBuffer, &stride, &offset);
-	pDC->Draw(3u, 0u);
-	// release for the next pass
-	pDC->PSSetShaderResources(0u, 1u, &pNullSRV);
+		//FXAA
+		//////////////////////////////////////////////////////////////////////////
+		SetDefaultRTVAndViewPort();
+		pDC->PSSetShaderResources(0u, 1u, &pFXAA->pFXAA_SRV);
+		wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+		pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		wnd.GetGraphics().ConstBufferVSMatricesBind();
+		wnd.GetGraphics().VSDefaultMatricesUpdate(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		// 	pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+		// 	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors); 
 
+		wnd.GetGraphics().BindVSandIA(ShaderPicker::FXAA_VS_PS);
+		wnd.GetGraphics().BindPS(ShaderPicker::FXAA_VS_PS);
+		stride = sizeof(vbPos);
+		pDC->IASetVertexBuffers(0u, 1u, &pFXAA->pVertexBuffer, &stride, &offset);
+		pDC->Draw(3u, 0u);
+		// release for the next pass
+		pDC->PSSetShaderResources(0u, 1u, &pNullSRV);
+	}
 	//////////////////////////////////////////////////////////////////////////
 
 }
