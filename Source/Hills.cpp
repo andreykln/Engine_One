@@ -19,7 +19,7 @@ Hills::Hills(Graphics& gfx, float in_width, float in_depth, UINT in_m, UINT in_n
 	pIndexBuffer = gfx.CreateIndexBuffer(grid.indices, L"Plate index buffer");
 	indexCount = static_cast<UINT>(grid.indices.size());
 
-	plateMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+	plateMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	plateMaterial.fresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
 	plateMaterial.shininess = 0.9f;
 }

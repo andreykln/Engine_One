@@ -94,7 +94,7 @@ float4 main(VertexOut pin) : SV_TARGET
 
     float4 result = float4(shadowFactor * ComputeDirectionalLightEx(dr, mat, bumpedNormalW, toEyeW), 0.0f);
  
-    float4 litColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 litColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     litColor = ambient + result;
     
 	// Add in specular reflections.
@@ -105,8 +105,8 @@ float4 main(VertexOut pin) : SV_TARGET
     
     litColor.rgb += shininess * fresnelFactor * reflectionColor.rgb;
     //gamma correction. Arbitrary number
-    float p = 2.2;
-    litColor = float4(pow(litColor.xyz, p), 1.0f);
+   // float p = 2.2;
+   // litColor = float4(pow(litColor.xyz, p), 1.0f);
     
     // Common convention to take alpha from diffuse albedo.
     litColor.a = diffuseAlbedo.a;

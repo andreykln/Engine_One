@@ -35,7 +35,7 @@ Cylinder::Cylinder(Graphics& gfx,
 	pIndexBuffer = gfx.CreateIndexBuffer(mesh.indices, L"Cylinder index buffer");
 	indexCount = static_cast<UINT>(mesh.indices.size());
 
-	cylinderMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	cylinderMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	cylinderMaterial.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	cylinderMaterial.shininess = 0.7f;
 

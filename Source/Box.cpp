@@ -26,7 +26,7 @@ Box::Box(Graphics& gfx, float width, float height, float depth)
 	indexCount = static_cast<UINT>(mesh.indices.size());
 	
 
-	boxMaterial.diffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	boxMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	boxMaterial.fresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	boxMaterial.shininess = 0.7f;
 }

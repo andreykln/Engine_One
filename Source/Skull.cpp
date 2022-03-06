@@ -17,7 +17,7 @@ Skull::Skull(Graphics& gfx, const std::wstring& path)
 	UINT vertices = 0;
 	UINT triangles = 0;
 
-	skullMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	skullMaterial.diffuseAlbedo = DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1.0f);
 	skullMaterial.fresnelR0 = DirectX::XMFLOAT3(0.6f, 0.6f, 0.6f);
 	skullMaterial.shininess = 0.8f;
 
