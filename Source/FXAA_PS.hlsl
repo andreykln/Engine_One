@@ -1,6 +1,6 @@
 #include "LightHelper.hlsli"
 
-#define EDGE_THRESHOLD_MIN 0.0312
+#define EDGE_THRESHOLD_MIN 0.0625
 #define EDGE_THRESHOLD_MAX 0.125
 #define QUALITY(q) ((q) < 5 ? 1.0 : ((q) > 5 ? ((q) < 10 ? 2.0 : ((q) < 11 ? 4.0 : 8.0)) : 1.5))
 #define ITERATIONS 12
@@ -23,8 +23,8 @@ SamplerState smpAnisotropicWrap : register(s1);
 SamplerComparisonState smpShadowMap : register(s2);
 //only for normal depth map
 SamplerState smpNormalMap : register(s3);
-//blur map
 SamplerState smpLinearClamp : register(s4);
+
 
 float4 main(VertexOut pin) : SV_TARGET
 {
@@ -33,10 +33,10 @@ float4 main(VertexOut pin) : SV_TARGET
   
     float lumaCenter = rgb2luma(colorCenter);
     // Luma at the four direct neighbours of the current fragment.
-    float lumaDown = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(0, -1)).rgb);
-    float lumaUp = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(0, 1)).rgb);
-    float lumaLeft = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(-1, 0)).rgb);
-    float lumaRight = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(1, 0)).rgb);
+    float lumaDown = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(0, -1)).rgb);
+    float lumaUp = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(0, 1)).rgb);
+    float lumaLeft = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(-1, 0)).rgb);
+    float lumaRight = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(1, 0)).rgb);
     
     // Find the maximum and minimum luma around the current fragment.
     float lumaMin = min(lumaCenter, min(min(lumaDown, lumaUp), min(lumaLeft, lumaRight)));
@@ -53,10 +53,10 @@ float4 main(VertexOut pin) : SV_TARGET
     }
     
     // Query the 4 remaining corners lumas.
-    float lumaDownLeft = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(-1, -1)).rgb);
-    float lumaUpRight = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(1, 1)).rgb);
-    float lumaUpLeft = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(-1, 1)).rgb);
-    float lumaDownRight = rgb2luma(drawingPass.Sample(smpAnisotropicWrap, pin.texC, int2(1, -1)).rgb);
+    float lumaDownLeft = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(-1, -1)).rgb);
+    float lumaUpRight = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(1, 1)).rgb);
+    float lumaUpLeft = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(-1, 1)).rgb);
+    float lumaDownRight = rgb2luma(drawingPass.Sample(smpLinearClamp, pin.texC, int2(1, -1)).rgb);
     
     // Combine the four edges lumas (using intermediary variables for future computations with the same values).
     float lumaDownUp = lumaDown + lumaUp;

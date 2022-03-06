@@ -134,7 +134,7 @@ void SkinnedData::Set(std::vector<int>& boneHierarchy,
 void SkinnedData::GetFinalTransforms(const std::string& clipName, float timePos, std::vector<DirectX::XMFLOAT4X4>& finalTransforms) const
 {
 	using namespace DirectX;
-	UINT numBones = mBoneOffsets.size();
+	UINT numBones = static_cast<UINT>(mBoneOffsets.size());
 
 	std::vector<XMFLOAT4X4> toParentTransforms(numBones);
 

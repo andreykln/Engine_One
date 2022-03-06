@@ -23,16 +23,13 @@ App::App()
 	cbComputeSSAOconstData ssaoData = pSSAO->GetAndBuildConstantBufferData();
 	wnd.GetGraphics().CreateRuntimeCBuffers(ssaoData, cbNames.ssaoConstData, "ssao constant data");
 
-// 	AssimpRawData assimprawData;
 
-// 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
-// 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
-// 	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
-	CreateShadowMapDemo();
+
+// 	CreateShadowMapDemo();
 // 	CreateComputeShaderWaves();
 // 	CreateTerrain();
 // 	CreateTempleScene();
-// 	CreateSponzaCastle();
+	CreateSponzaCastle();
 	//////////////////////////////////////////////////////////////////////////
 	pFXAA = new FXAA(wnd.GetGraphics());
 
@@ -53,11 +50,11 @@ void App::DoFrame()
 	wnd.GetGraphics().SetCommonShaderConstants(viewProjectionMatrix, camera.GetViewMatrix(),
 		camera.GetProjecion(), pShadowMap->GetLighViewProjection() ,camera.GetCameraPosition(), timer.DeltaTime(), timer.TotalTime());
 
-	DrawShadowMapDemo();
+// 	DrawShadowMapDemo();
 // 	DrawComputeShaderWaves();
 // 	DrawTerrain();
 // 	DrawTempleScene();
-// 	DrawSponzaCastle();
+	DrawSponzaCastle();
 
 	CalculateFrameStats();
 
@@ -846,8 +843,6 @@ void App::CreateSponzaCastle()
 	AssimpRawData assimprawData;
 	const DirectX::XMMATRIX castleScale = DirectX::XMMatrixScaling(0.025f, 0.025f, 0.025f);
 
-// 	m3dLoad->LoadAssimp("models\\sponza.obj", assimprawData, castleScale,
-// 		L"Survival_BackPack_DiffMap", L"Survival_BackPack_NMap");
 	m3dLoad->LoadSponza("models\\sponza.obj", "models\\sponzaMats.txt", assimprawData, castleScale);
 	wnd.GetGraphics().CreateAssimpModel(assimprawData, assimpNames.castle);
 
@@ -925,7 +920,18 @@ void App::DrawSponzaCastle()
 	wnd.GetGraphics().UpdateLightDirection(pShadowMap->GetNewLightDirection());
 	wnd.GetGraphics().SetShadowTransform(pShadowMap->GetShadowTransform());
 
-
+	//////////////////////////////////////////////////////////////////////////
+	//FXAA RTV
+	SetDefaultRTVAndViewPort();
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+		pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors);
+		wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
+			wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		wnd.GetGraphics().SetViewport();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	wnd.GetGraphics().SetPointLightData();
 
@@ -958,6 +964,32 @@ void App::DrawSponzaCastle()
 	ID3D11ShaderResourceView* nullsrv = nullptr;
 	pDC->PSSetShaderResources(2u, 1u, &nullsrv);
 	wnd.GetGraphics().ReleaseSSAOShaderResource();
+
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		SetDefaultRTVAndViewPort();
+
+		//FXAA
+		//////////////////////////////////////////////////////////////////////////
+		SetDefaultRTVAndViewPort();
+		pDC->PSSetShaderResources(0u, 1u, &pFXAA->pFXAA_SRV);
+		wnd.GetGraphics().pgfx_pDeviceContext->OMSetBlendState(wnd.GetGraphics().noBlendBS, blendFactorsZero, 0xffffffff);
+		pDC->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		wnd.GetGraphics().ConstBufferVSMatricesBind();
+		wnd.GetGraphics().VSDefaultMatricesUpdate(DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+		// 	pDC->OMSetRenderTargets(1u, &pFXAA->pFXAA_RTV, wnd.GetGraphics().pgfx_DepthStencilView.Get());
+		// 	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors); 
+
+		wnd.GetGraphics().BindVSandIA(ShaderPicker::FXAA_VS_PS);
+		wnd.GetGraphics().BindPS(ShaderPicker::FXAA_VS_PS);
+		stride = sizeof(vbPos);
+		pDC->IASetVertexBuffers(0u, 1u, &pFXAA->pVertexBuffer, &stride, &offset);
+		pDC->Draw(3u, 0u);
+		// release for the next pass
+		ID3D11ShaderResourceView* pNullSRV = nullptr;
+		pDC->PSSetShaderResources(0u, 1u, &pNullSRV);
+	}
+	//////////////////////////////////////////////////////////////////////////
 
 }
 
