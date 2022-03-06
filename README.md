@@ -1,6 +1,6 @@
 This DirectX 11 demo includes SSAO, shadow mapping, BRDF light, FXAA (based on NVIDIA white paper).
 In order to run it, switch platform to x64.
-Use WASD to control camera, hold left mouse button to control view directon, R to reset camera position, 5 to disable SSAO.
+Use WASD to control camera, hold left mouse button to control view directon, R to reset camera position, 5 to disable SSAO, 1 to enable FXAA.
 
 Sponza castle
 ![image](sponza0.png)
