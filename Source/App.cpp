@@ -355,6 +355,7 @@ void App::DrawShadowMapDemo()
 	pDC->ClearRenderTargetView(pFXAA->pFXAA_RTV, colors);
 	wnd.GetGraphics().pgfx_pDeviceContext->ClearDepthStencilView(
  	wnd.GetGraphics().pgfx_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	wnd.GetGraphics().SetViewport();
 
 	//////////////////////////////////////////////////////////////////////////
 	// init main drawing buffers

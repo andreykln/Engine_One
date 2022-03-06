@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "dxgi.lib")
 #include <d3d11.h>
 #include <wrl.h>
 #include <vector>
@@ -266,7 +267,8 @@ private:
 
 
 	HWND windowHandle;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> pgfx_SwapChain;
+	Microsoft::WRL::ComPtr<IDXGIFactory2> pFactory2;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> pgfx_SwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_BackBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pgfx_TextureDepthStencil;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDrawReflectionState;

@@ -60,7 +60,7 @@ void M3dLoader::LoadAssimp(const std::string& filename,
 			DirectX::XMStoreFloat4x4(&t, DirectX::XMMatrixIdentity());
 			rawData.worlds.push_back(t);
 		}
-		for (int h = 0; h < numOfChildren; h++)
+		for (UINT h = 0; h < numOfChildren; h++)
 		{
 			
 			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);

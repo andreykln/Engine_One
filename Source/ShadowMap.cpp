@@ -105,7 +105,7 @@ void ShadowMapGen::UpdateSceneSponza(float dt)
 	DirectX::XMVECTOR V0 = DirectX::XMLoadFloat3(&newLightDirection);
 	DirectX::XMVECTOR V1 = DirectX::XMLoadFloat3(&defaultLightDirectionReflected);
 
-	DirectX::XMVECTOR NV = DirectX::XMVectorLerp(V0, V1, sinf(0.2 * dt));
+	DirectX::XMVECTOR NV = DirectX::XMVectorLerp(V0, V1, sinf(0.2f * dt));
 	DirectX::XMStoreFloat3(&newLightDirection, NV);
 }
 

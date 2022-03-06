@@ -6,41 +6,35 @@
 Graphics::Graphics(HWND wnd)
 {
 	windowHandle = wnd;
-	DXGI_SWAP_CHAIN_DESC swapChainDesc{ 0 };
-	swapChainDesc.BufferDesc.Width = 0;
-	swapChainDesc.BufferDesc.Height = 0;
-	swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-	swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //R8G8B8A8_TYPELESS 
-	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{ 0 };
+	swapChainDesc.Width = resolution_width;
+	swapChainDesc.Height = resolution_height;
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 2u;
 	swapChainDesc.SampleDesc.Count = 1u;
 	swapChainDesc.SampleDesc.Quality = 0u;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = 2u; 
-	swapChainDesc.OutputWindow = wnd;
-	swapChainDesc.Windowed = true;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	swapChainDesc.Flags = 0;
+	swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; //DXGI_SWAP_EFFECT_DISCARD
+	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+	swapChainDesc.Flags = 0u; //DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING 
+
 	
-	DX::ThrowIfFailed(D3D11CreateDeviceAndSwapChain(
-		NULL,
-		D3D_DRIVER_TYPE_HARDWARE,
-		NULL,
-#ifdef MY_DEBUG
+	DX::ThrowIfFailed(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
 		D3D11_CREATE_DEVICE_DEBUG,
-#endif
-#ifndef MY_DEBUG
-		0u,
-#endif // !MY_DEBUG
-		d3dFeatureLevels, 
-		featureLevelNum, 
+		d3dFeatureLevels,
+		featureLevelNum,
 		D3D11_SDK_VERSION,
-		&swapChainDesc,
-		pgfx_SwapChain.ReleaseAndGetAddressOf(),
 		pgfx_pDevice.ReleaseAndGetAddressOf(),
-		&featureLevelIsSupported, 
+		&featureLevelIsSupported,
 		pgfx_pDeviceContext.ReleaseAndGetAddressOf()));
+
+	DX::ThrowIfFailed(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(pFactory2.ReleaseAndGetAddressOf())));
+	pFactory2->CreateSwapChainForHwnd(pgfx_pDevice.Get(), windowHandle,
+		&swapChainDesc, 0, 0, pgfx_SwapChain.ReleaseAndGetAddressOf());
+
+
+	
 #ifdef MY_DEBUG
 	pgfx_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice));
 	SetDeviceDebugName(pgfx_pDeviceContext.Get(), L"DeviceContextCreation.");
@@ -119,7 +113,12 @@ Graphics::~Graphics()
 
 void Graphics::EndFrame()
 {
-	DX::ThrowIfFailed(pgfx_SwapChain->Present(0u, 0u));
+	DXGI_PRESENT_PARAMETERS par;
+	par.DirtyRectsCount = 0u;
+	par.pDirtyRects = NULL;
+	par.pScrollOffset = NULL;
+	par.pScrollRect = NULL;
+	DX::ThrowIfFailed(pgfx_SwapChain->Present1(0u, 0u, &par));
 	pgfx_pDeviceContext->OMSetRenderTargets(1u, pgfx_RenderTargetView.GetAddressOf(), pgfx_DepthStencilView.Get());
 	pgfx_pDeviceContext->RSSetViewports(1u, &vp);
 }
