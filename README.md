@@ -6,7 +6,7 @@ shadow mapping
 
 BRDF light
 
-FXAA (based on NVIDIA white paper)
+FXAA (based on NVIDIA white paper by Timothy Lottes)
 
 occlusion culling with AABB
 
