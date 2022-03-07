@@ -20,6 +20,7 @@ FXAA on/off
 ![image](screenshots/fxaa0.png)
 ![image](screenshots/fxaa1.png)
 
-This scene is based on Frank Luna's book, includes character animation
+This scene is based on Frank Luna's book, includes character animation.
+
 Demo in action: https://youtu.be/oOEK57hT8gs
 ![image](screenshots/Temple.png)
