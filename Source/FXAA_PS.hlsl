@@ -29,7 +29,7 @@ SamplerState smpLinearClamp : register(s4);
 float4 main(VertexOut pin) : SV_TARGET
 {
  
-    float3 colorCenter = drawingPass.Sample(smpAnisotropicWrap, pin.texC);
+    float3 colorCenter = drawingPass.Sample(smpAnisotropicWrap, pin.texC).xyz;
   
     float lumaCenter = rgb2luma(colorCenter);
     // Luma at the four direct neighbours of the current fragment.
@@ -146,7 +146,7 @@ float4 main(VertexOut pin) : SV_TARGET
 	// If both sides have not been reached, continue to explore.
     if (!reachedBoth)
     {
-		
+		[unroll]
         for (int i = 2; i < ITERATIONS; i++)
         {
 			// If needed, read luma in 1st direction, compute delta.
@@ -236,7 +236,7 @@ float4 main(VertexOut pin) : SV_TARGET
     }
 	
 	// Read the color at the new UV coordinates, and use it.
-    float3 finalCol = drawingPass.Sample(smpAnisotropicWrap, finalUv);
+    float3 finalCol = drawingPass.Sample(smpAnisotropicWrap, finalUv).xyz;
     float4 c = float4(finalCol, drawingPass.Sample(smpAnisotropicWrap, finalUv).w);
     return c;
     
