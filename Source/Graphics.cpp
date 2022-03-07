@@ -969,6 +969,9 @@ void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
 	AssimpModel model;
 	model.pVertexBuffer = CreateVertexBuffer(data.vertices, false, false, L"Temple Base vertices");
 	model.pIndexBuffer = CreateIndexBuffer(data.indices, L"temple base indices");
+	model.boundingBoxes.resize(data.boundingBoxes.size());
+	model.boundingBoxes = data.boundingBoxes;
+
 	MaterialM3d m;
 	for (auto& a : data.mats)
 	{
@@ -987,6 +990,7 @@ void Graphics::CreateAssimpModel(AssimpRawData& data, const std::string& name)
 	{
 		model.worlds[i] = DirectX::XMLoadFloat4x4(&data.worlds[i]);
 		model.worlds[i] = model.worlds[i]  * data.scale;
+		model.boundingBoxes[i].Transform(model.boundingBoxes[i], model.worlds[i]);
 	}
 	assimpModelMap.insert(std::make_pair(name, model));
 	for (size_t i = 0; i < data.mats.size(); i++)
@@ -1113,50 +1117,66 @@ void Graphics::DrawSponzaModel(std::string name, Technique tech, DirectX::XMMATR
 	AssimpModel model = assimpModelMap.at(name);
 	pgfx_pDeviceContext->IASetVertexBuffers(0u, 1u, &model.pVertexBuffer, &stride, &offset);
 	pgfx_pDeviceContext->IASetIndexBuffer(model.pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	DirectX::BoundingFrustum camFrustum;
+	BoundingFrustum::CreateFromMatrix(camFrustum, mProjection);
+
+	DirectX::XMMATRIX invView = DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(mView), mView);
+	BoundingFrustum localSpaceFrustum;
+
+	camFrustum.Transform(localSpaceFrustum, invView);
+
 	for (size_t i = 0; i < model.subsets.size(); i++)
 	{
-		const UINT matID = model.subsets[i].ID;
-		DirectX::XMMATRIX w = model.worlds[i] * world;
-		switch (tech)
+		bool inFrustum = (localSpaceFrustum.Contains(model.boundingBoxes[i])) != DirectX::DISJOINT;
+		if (inFrustum || tech != Technique::PointLight)
 		{
-		case Technique::NormalMap:
-		{
-			NormalMap(w);
-			break;
-		}
-		case Technique::DefaultLight:
-		case Technique::PointLight:
-		{
-			MaterialEx mat;
-			mat.diffuseAlbedo = model.mats[matID].mat.diffuseAlbedo;
-			mat.fresnelR0 = model.mats[matID].mat.fresnelR0;
-			mat.shininess = model.mats[matID].mat.shininess;
-			const std::wstring diffMap = model.mats[matID].diffuseMapName;
-			const std::wstring normalMap = model.mats[matID].normalMapName;
-			DefaultLightUpdate(mat, false, usessao, true, diffMap, normalMap);
-			break;
-		}
-		case Technique::ShadowMap:
-		{
-			pgfx_pDeviceContext->RSSetState(ShadowMapBiasRS);
-			RSStateChanged = true;
-			ShadowMap(w, mLightViewProjection);
-			break;
-		}
-		default:
-			break;
-		}
-		if (matID == 22 || matID == 8 || matID == 2)
-		{
-			pgfx_pDeviceContext->RSSetState(NoCullRS);
-			RSStateChanged = true;
-		}
-		VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
-		pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
-		if (RSStateChanged)
-		{
-			pgfx_pDeviceContext->RSSetState(0u);
-			RSStateChanged = false;
+
+			const UINT matID = model.subsets[i].ID;
+			DirectX::XMMATRIX w = model.worlds[i] * world;
+			switch (tech)
+			{
+			case Technique::NormalMap:
+			{
+				NormalMap(w);
+				break;
+			}
+			case Technique::DefaultLight:
+			case Technique::PointLight:
+			{
+				MaterialEx mat;
+				mat.diffuseAlbedo = model.mats[matID].mat.diffuseAlbedo;
+				mat.fresnelR0 = model.mats[matID].mat.fresnelR0;
+				mat.shininess = model.mats[matID].mat.shininess;
+				const std::wstring diffMap = model.mats[matID].diffuseMapName;
+				const std::wstring normalMap = model.mats[matID].normalMapName;
+				DefaultLightUpdate(mat, false, usessao, true, diffMap, normalMap);
+				break;
+			}
+			case Technique::ShadowMap:
+			{
+				pgfx_pDeviceContext->RSSetState(ShadowMapBiasRS);
+				RSStateChanged = true;
+				ShadowMap(w, mLightViewProjection);
+				break;
+			}
+			default:
+				break;
+			}
+			//switch state for grass in pots, ceiling and chains
+			if (matID == 22 || matID == 8 || matID == 2)
+			{
+				pgfx_pDeviceContext->RSSetState(NoCullRS);
+				RSStateChanged = true;
+			}
+			VSDefaultMatricesUpdate(w, DirectX::XMMatrixIdentity(), DirectX::XMMatrixIdentity());
+			pgfx_pDeviceContext->DrawIndexed(model.subsets[i].FaceCount * 3, model.subsets[i].FaceStart * 3, model.subsets[i].VertexStart);
+			if (RSStateChanged)
+			{
+				pgfx_pDeviceContext->RSSetState(0u);
+				RSStateChanged = false;
+			}
+		
 		}
 	}
 

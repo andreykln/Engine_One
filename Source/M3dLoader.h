@@ -1,11 +1,12 @@
 #pragma once
 #include <fstream>
 #include <vector>
-//for WinBase.h in Utility
+#include <DirectXCollision.h>
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags 
 
+//for WinBase.h in Utility
 #include <windows.h>
 #include "UtilityStructures.h"
 
@@ -59,6 +60,8 @@ struct AssimpRawData
 	std::vector<M3dMaterial> mats;
 	std::vector<DirectX::XMFLOAT4X4> worlds;
 	DirectX::XMMATRIX scale;
+	std::vector<DirectX::BoundingBox> boundingBoxes;
+
 };
 class M3dLoader
 {
