@@ -51,6 +51,7 @@ class Graphics
 		std::vector<MaterialM3d> mats;
 		std::vector<Subset> subsets;
 		std::vector<DirectX::XMMATRIX> worlds;
+		std::vector<DirectX::BoundingBox> boundingBoxes;
 	};
 	struct SkinnedModelInstance
 	{

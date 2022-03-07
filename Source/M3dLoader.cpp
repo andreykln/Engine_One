@@ -151,6 +151,8 @@ void M3dLoader::LoadSponza(const std::string& filename,
 							AssimpRawData& rawData,
 							const DirectX::XMMATRIX& scale)
 {
+	using namespace DirectX;
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filename,
 		aiProcess_ConvertToLeftHanded |
@@ -186,27 +188,6 @@ void M3dLoader::LoadSponza(const std::string& filename,
 
 			rawData.worlds[h] = ConvertAiMatrixToD3DMatrix(scene->mRootNode->mChildren[h]->mTransformation);
 		}
-		std::vector<std::string> matNames;
-
-// 		for (int i = 0; i < scene->mNumMaterials; i++)
-// 		{
-// 			matNames.emplace_back(scene->mMaterials[i]->GetName().C_Str());
-// 		}
-		//edit some names manually so they have sensible names
-		//TODO delete?
-// 		matNames[0] = "fabric_red";
-// 		matNames[2] = "vase_plant";
-// 		matNames[4] = "background";
-// 		matNames[5] = "fabric_red";
-// 		matNames[14] = "UNKNOWN0";
-// 		matNames[25] = "lion";
-// 		matNames[16] = "fabric_green";
-// 		matNames[17] = "fabric_blue";
-// 		matNames[18] = "fabric_red";
-// 		matNames[19] = "curtain_blue";
-// 		matNames[20] = "curtain_red";
-// 		matNames[21] = "curtain_green";
-
 
 		std::ifstream fin(matFileName);
 		for (UINT i = 0; i < scene->mNumMaterials; i++)
@@ -219,6 +200,7 @@ void M3dLoader::LoadSponza(const std::string& filename,
 		numMesh = scene->mNumMeshes;
 		//remove outer walls
 		numMesh -= 4;
+		rawData.boundingBoxes.resize(numMesh);
 		for (UINT i = 0; i < numMesh; i++)
 		{
 			aiMesh* t = scene->mMeshes[i];
@@ -233,6 +215,9 @@ void M3dLoader::LoadSponza(const std::string& filename,
 			{
 				fix = 1.0f;
 			}
+			DirectX::XMFLOAT3 vMin = DirectX::XMFLOAT3(FLT_MAX, FLT_MAX, FLT_MAX);
+			DirectX::XMFLOAT3 vMax = DirectX::XMFLOAT3(FLT_MIN, FLT_MIN, FLT_MIN);
+
 			for (UINT j = 0; j < nVert; j++)
 			{
 				vbPosNormalTexTangent v;
@@ -240,6 +225,10 @@ void M3dLoader::LoadSponza(const std::string& filename,
 				v.pos.x = t->mVertices[j].x;
 				v.pos.y = t->mVertices[j].y;
 				v.pos.z = t->mVertices[j].z;
+				vMin = DirectX::XMFLOAT3(std::min(v.pos.x, vMin.x), std::min(v.pos.y, vMin.y), std::min(v.pos.z, vMin.z));
+				vMax = DirectX::XMFLOAT3(std::max(v.pos.x, vMax.x), std::max(v.pos.y, vMax.y), std::max(v.pos.z, vMax.z));
+
+
 				v.normal.x = t->mNormals[j].x * fix;
 				v.normal.y = t->mNormals[j].y * fix;
 				v.normal.z = t->mNormals[j].z * fix;
@@ -256,6 +245,11 @@ void M3dLoader::LoadSponza(const std::string& filename,
 				}
 				pRawModel->vertices.push_back(v);
 			}
+			DirectX::XMVECTOR vMinV = DirectX::XMLoadFloat3(&vMin);
+			DirectX::XMVECTOR vMaxV = DirectX::XMLoadFloat3(&vMax);
+			DirectX::XMStoreFloat3(&rawData.boundingBoxes[i].Center, 0.5f * (vMinV + vMaxV));
+			DirectX::XMStoreFloat3(&rawData.boundingBoxes[i].Extents, 0.5f * (vMaxV - vMinV));
+
 			for (UINT k = 0; k < t->mNumFaces; k++)
 			{
 				const aiFace& face = t->mFaces[k];
